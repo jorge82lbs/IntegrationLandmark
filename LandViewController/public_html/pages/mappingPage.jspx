@@ -1,0 +1,750 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <f:view>
+        <af:document title="Mapeo" id="d1" smallIconSource="/images/system-monitor-arrow-icon.png">
+            <af:messages id="m1"/>
+            <af:form id="f1">
+            <af:resource type="javascript">
+                    function enforcePreventUserInput(evt) {                    
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('p1oadLogin');
+                        if (popup != null) {
+                            AdfPage.PAGE.addBusyStateListener(popup, handleBusyState);
+                            evt.preventUserInput();
+                        }
+                    }
+                
+                    function handleBusyState(evt) {
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('p1oadLogin');
+                        if (popup != null) {
+                            if (evt.isBusy()) {
+                                popup.show();
+                            }
+                            else {
+                                popup.hide();
+                                AdfPage.PAGE.removeBusyStateListener(popup, handleBusyState);
+                            }
+                        }
+                    }        
+                </af:resource>
+                <af:pageTemplate viewId="/templates/pgmLandTemplate.jspx" id="pt1">
+                    <f:facet name="content">
+                     <af:panelGroupLayout layout="scroll" id="PnlCont"
+                                             inlineStyle="border-style:none;">
+                            <af:panelHeader text="Mapeo" id="PnlHead"
+                                type="default"
+                                messageType="none"
+                                shortDesc="Mapeo"
+                                inlineStyle="border-style:none; font-size:small;">
+                            <f:facet name="toolbar">
+                                <af:statusIndicator id="StiIndicator" shortDesc="Status Indicator"/>
+                            </f:facet>
+                            </af:panelHeader>
+                            <af:separator id="sepTitle"/>
+                            <af:panelGroupLayout layout="horizontal" id="PnlGpTbl" styleClass="AFStretchWidth"
+                                                 valign="top" halign="left" 
+                                                 inlineStyle="border-style:none; height:415px;">
+                            <af:panelSplitter id="PnlSpliMain" splitterPosition="302"
+                                      inlineStyle="width:1350px; "
+                                      collapsed="false"
+                                      firstBorder="skin">
+                                <f:facet name="first">
+                                    <af:panelGroupLayout layout="scroll" halign="center"
+                                                         xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+                                                         id="PnlGpAln">
+                                          <af:outputFormatted value="Opciones de Búsqueda" id="LblBsc"
+                                                            inlineStyle="color:Olive; font-weight:bold;
+                                                            font-size:small; text-align:left;"/>
+                                        <af:separator id="sdedew"/>
+                                        <af:panelGroupLayout layout="horizontal" id="PnlUtil" halign="right"
+                                                            inlineStyle="border-style:none;">
+                                            <af:link text=" " id="BtnReset" 
+                                                                icon="/images/action_refresh_blue.gif"
+                                                                partialSubmit="true"
+                                                                shortDesc="Reiniciar valores de búsqueda"
+                                                     actionListener="#{MappingBean.resetFilterValues}">
+                                            </af:link>
+                                            <af:spacer id="SpcAx" width="10" height="5"/>
+                                            
+                                            <af:link icon="/images/excel.gif"
+                                                               id="LnkExel"
+                                                               inlineStyle="text-align:center;"                                                   
+                                                               shortDesc="Exportar a Excel">
+                                                <af:exportCollectionActionListener exportedId="tblMain"
+                                                                           type="excelHTML"
+                                                                           filename="LogXLS.xls"/>
+                                            </af:link>
+                                            
+                                            <af:spacer id="SpcAxTbl" width="10" height="5"/>
+                                            <af:link text=" " id="BtnResetTbl"
+                                                            icon="/images/restaurar.gif" 
+                                                            shortDesc="Reiniciar tabla"
+                                                     action="#{MappingBean.refreshMainTable}">
+                                            </af:link>
+                                        </af:panelGroupLayout>
+                                        <af:panelFormLayout id="PnlSearch" rows="16"
+                                                          maxColumns="1">                                            
+                                            <af:inputText label="idMappingFilter"                                                  
+                                                  id="TxtFilterId"
+                                                  visible="false"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterIdMapping}"/>
+                                            
+                                            <af:inputText label="Relación"                                                  
+                                                  id="TxtFilterName"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterNomRelation}"/>
+                                            <af:inputText label="Valor"                                                  
+                                                  id="TxtFilterValueRelation"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterValueRelation}"/>
+                                                
+                                            <af:separator id="s1"/>
+                                                     
+                                            <af:inputText label="Sistema"                                                  
+                                                  id="TxtFilterSystemRelation"
+                                                  visible="false"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterSystemRelation}"/>
+                                            
+                                            <af:inputText label="Origen"                                                  
+                                                  id="TxtFilterNomOrigin"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterNomOrigin}"/>
+                                            <af:inputText label="Valor Origen"                                                  
+                                                  id="TxtFilterValueOrigin"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterValueOrigin}"/>
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Sistema Origen"
+                                                                binding="#{MappingBean.poFilterSystemOriginSel}"
+                                                                shortDesc="Sistema Origen"
+                                                                partialTriggers="BtnReset"
+                                                                id="soc1">
+                                                <f:selectItems value="#{MappingBean.listSystems}" id="sid1"/>
+                                            </af:selectOneChoice>
+                                            <af:inputText label="Sistema Origen"                                                  
+                                                  id="TxtFilterSystemOrigin"
+                                                  visible="false"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterSystemOrigin}"/>                                            
+                                            <af:separator id="s2"/>  
+                                            <af:inputText label="Destino"                                                  
+                                                  id="TxtFilterNomDestiny"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterNomDestiny}"/>
+                                            <af:inputText label="Valor Destino"                                                  
+                                                  id="TxtFilterValueDestiny"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterValueDestiny}"/>
+                                            
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Sistema Origen"
+                                                                binding="#{MappingBean.poFilterSystemDestinySel}"
+                                                                shortDesc="Sistema Origen"
+                                                                partialTriggers="BtnReset"
+                                                                id="soc12">
+                                                <f:selectItems value="#{MappingBean.listSystems}" id="sid13"/>
+                                            </af:selectOneChoice>
+                                            <af:inputText label="Sistema Destino"                                                  
+                                                  id="TxtFilterSystemDestiny"
+                                                  visible="false"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterSystemDestiny}"/>
+                                            
+                                            <af:separator id="s3"/>
+                                            <af:inputText label="Usado En"                                                  
+                                                  id="TxtFilterUsedBy"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterUsedBy}"/>
+                                            
+                                            <af:inputText label="Descripción"                                                  
+                                                  id="TxtFilterDescription"
+                                                  partialTriggers="BtnReset"
+                                                  binding="#{MappingBean.poFilterDescription}"/>
+                                                                                              
+                                        <af:spacer width="10" height="10" id="s33"/>
+                                        <af:button text="Buscar por Filtros"
+                                                  id="BtnSearch"
+                                                  icon="/images/View.gif"
+                                                  shortDesc="Buscar Elementos"
+                                                  action="#{MappingBean.searchFilterAction}"/>
+                                        </af:panelFormLayout>
+                                    </af:panelGroupLayout>
+                                  </f:facet>
+                                  <f:facet name="second">
+                                   <!-- ################################### TABLA PRINCIPAL ############################### !-->
+                                        <af:table value="#{bindings.LmkIntMappingCatVwView1.collectionModel}" var="row"
+                                                  rows="#{bindings.LmkIntMappingCatVwView1.rangeSize}"
+                                                  emptyText="#{bindings.LmkIntMappingCatVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                                  rowBandingInterval="0"
+                                                  selectedRowKeys="#{bindings.LmkIntMappingCatVwView1.collectionModel.selectedRow}"
+                                                  selectionListener="#{bindings.LmkIntMappingCatVwView1.collectionModel.makeCurrent}"
+                                                  rowSelection="single"
+                                                  fetchSize="#{bindings.LmkIntMappingCatVwView1.rangeSize}"
+                                                  id="tblMain"
+                                              filterVisible="true"
+                                              styleClass="AFStretchWidth"
+                                      autoHeightRows="20"
+                                      columnStretching="column:c31"
+                                      binding="#{MappingBean.poTblMain}" >
+                                <af:column align="center" id="colCrudSweb"
+                                        frozen="true" sortable="false"
+                                        visible="#{UserMenuBean.lsOprCrud}"
+                                        width="85">
+                                    <f:facet name="header">
+                                    <af:group id="g2">
+                                        <af:link icon="/images/Create.gif"
+                                                   id="LnkAlta" text="Nuevo"
+                                                   inlineStyle="text-align:center;"
+                                                   shortDesc="Alta"
+                                                 actionListener="#{MappingBean.showSavePopup}"/>
+                                    </af:group>
+                                    </f:facet>
+                                    <af:panelGroupLayout layout="horizontal"
+                                                        id="PnlOpc" valign="top"
+                                                        halign="left">
+                                        <af:link icon="/images/editIcon_int.png"
+                                                 id="LnkEditSweb"
+                                                 partialSubmit="true"
+                                                 inlineStyle="text-align:center;"
+                                                 actionListener="#{MappingBean.showEditPopup}"
+                                                 shortDesc="Editar"/>
+                                        <af:spacer width="10" id="s8r911w" height="5"/>
+                                        <af:link icon="/images/deleteIcon_int.png"
+                                                 id="LnkDelSweb"
+                                                 inlineStyle="text-align:center;"
+                                                 partialSubmit="true"
+                                                  actionListener="#{MappingBean.showDeletePopup}"
+                                                 shortDesc="Eliminar"/>
+                                        <af:spacer width="10" id="spacer1" height="5"/>
+                                    </af:panelGroupLayout>
+                                </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IdMapping.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.IdMapping.label}"
+                                                       id="c1">
+                                                <af:outputText value="#{row.IdMapping}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IdMapping.tooltip}"
+                                                               id="ot1">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntMappingCatVwView1.hints.IdMapping.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NomRelation.name}"
+                                                       sortable="true" align="center" frozen="true"
+                                                       headerText="Nombre"
+                                                       id="c2">
+                                                <af:outputText value="#{row.NomRelation}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NomRelation.tooltip}"
+                                                               id="ot2"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.ValValueRelation.name}"
+                                                       sortable="true" visible="false" frozen="true"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.ValValueRelation.label}"
+                                                       id="c5">
+                                                <af:outputText value="#{row.ValValueRelation}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.ValValueRelation.tooltip}"
+                                                               id="ot5"/>
+                                            </af:column>
+                                            
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NomOrigin.name}"
+                                                       sortable="true" align="center" frozen="true"
+                                                       headerText="Nombre Origen"
+                                                       id="c3">
+                                                <af:outputText value="#{row.NomOrigin}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NomOrigin.tooltip}"
+                                                               id="ot3"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.ValValueOrigin.name}"
+                                                       sortable="true" align="center" frozen="true"
+                                                       headerText="Valor Origen"
+                                                       id="c6">
+                                                <af:outputText value="#{row.ValValueOrigin}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.ValValueOrigin.tooltip}"
+                                                               id="ot6"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndSysOrigin.name}"
+                                                       sortable="true"  align="center"
+                                                       headerText="Sistema Origen"
+                                                       id="c9">
+                                                <af:outputText value="#{row.IndSysOrigin}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IndSysOrigin.tooltip}"
+                                                               id="ot9"/>
+                                            </af:column>
+                                            
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NomDestiny.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Nombre Destino"
+                                                       id="c4">
+                                                <af:outputText value="#{row.NomDestiny}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NomDestiny.tooltip}"
+                                                               id="ot4"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.ValValueDestiny.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Valor Destino"
+                                                       id="c7">
+                                                <af:outputText value="#{row.ValValueDestiny}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.ValValueDestiny.tooltip}"
+                                                               id="ot7"/>
+                                            </af:column>
+                                             <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndSysDestiny.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Sistema Destino"
+                                                       id="c10">
+                                                <af:outputText value="#{row.IndSysDestiny}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IndSysDestiny.tooltip}"
+                                                               id="ot10"/>
+                                            </af:column>
+                                            
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndSysSystem.name}"
+                                                       sortable="true" align="center" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.IndSysSystem.label}"
+                                                       id="c8">
+                                                <af:outputText value="#{row.IndSysSystem}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IndSysSystem.tooltip}"
+                                                               id="ot8"/>
+                                            </af:column>
+                                            
+                                           
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndUsedBy.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Usado En"
+                                                       id="c11">
+                                                <af:outputText value="#{row.IndUsedBy}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IndUsedBy.tooltip}"
+                                                               id="ot11"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndDescription.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Descripcion"
+                                                       id="c12">
+                                                <af:outputText value="#{row.IndDescription}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IndDescription.tooltip}"
+                                                               id="ot12"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IdMappingRel.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.IdMappingRel.label}"
+                                                       id="c13">
+                                                <af:outputText value="#{row.IdMappingRel}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.IdMappingRel.tooltip}"
+                                                               id="ot13">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntMappingCatVwView1.hints.IdMappingRel.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndEstatus.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Estatus"
+                                                       id="c14">
+                                                <af:selectBooleanCheckbox text="" label=" "
+                                                                  id="sbcEst"
+                                                                  disabled="true"
+                                                                  value="#{row.IndEstatus == '1'}"
+                                                                  />
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.AttributeCategory.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.AttributeCategory.label}"
+                                                       id="c15">
+                                                <af:outputText value="#{row.AttributeCategory}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.AttributeCategory.tooltip}"
+                                                               id="ot15"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute1.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute1.label}"
+                                                       id="c16">
+                                                <af:outputText value="#{row.Attribute1}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute1.tooltip}"
+                                                               id="ot16"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute2.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute2.label}"
+                                                       id="c17">
+                                                <af:outputText value="#{row.Attribute2}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute2.tooltip}"
+                                                               id="ot17"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute3.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute3.label}"
+                                                       id="c18">
+                                                <af:outputText value="#{row.Attribute3}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute3.tooltip}"
+                                                               id="ot18"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute4.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute4.label}"
+                                                       id="c19">
+                                                <af:outputText value="#{row.Attribute4}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute4.tooltip}"
+                                                               id="ot19"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute5.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute5.label}"
+                                                       id="c20">
+                                                <af:outputText value="#{row.Attribute5}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute5.tooltip}"
+                                                               id="ot20"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute6.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute6.label}"
+                                                       id="c21">
+                                                <af:outputText value="#{row.Attribute6}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute6.tooltip}"
+                                                               id="ot21"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute7.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute7.label}"
+                                                       id="c22">
+                                                <af:outputText value="#{row.Attribute7}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute7.tooltip}"
+                                                               id="ot22"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute8.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute8.label}"
+                                                       id="c23">
+                                                <af:outputText value="#{row.Attribute8}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute8.tooltip}"
+                                                               id="ot23"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute9.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute9.label}"
+                                                       id="c24">
+                                                <af:outputText value="#{row.Attribute9}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute9.tooltip}"
+                                                               id="ot24"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute10.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute10.label}"
+                                                       id="c25">
+                                                <af:outputText value="#{row.Attribute10}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute10.tooltip}"
+                                                               id="ot25"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute11.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute11.label}"
+                                                       id="c26">
+                                                <af:outputText value="#{row.Attribute11}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute11.tooltip}"
+                                                               id="ot26"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute12.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute12.label}"
+                                                       id="c27">
+                                                <af:outputText value="#{row.Attribute12}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute12.tooltip}"
+                                                               id="ot27"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute13.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute13.label}"
+                                                       id="c28">
+                                                <af:outputText value="#{row.Attribute13}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute13.tooltip}"
+                                                               id="ot28"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute14.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.Attribute14.label}"
+                                                       id="c29">
+                                                <af:outputText value="#{row.Attribute14}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute14.tooltip}"
+                                                               id="ot29"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.Attribute15.name}"
+                                                       sortable="true"  align="center"
+                                                       headerText="Usuario"
+                                                       id="c30">
+                                                <af:outputText value="#{row.Attribute15}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.Attribute15.tooltip}"
+                                                               id="ot30"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.FecCreationDate.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Fecha Creación"
+                                                       id="c31">
+                                                <af:outputText value="#{row.FecCreationDate}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.FecCreationDate.tooltip}"
+                                                               id="ot31">
+                                                    <af:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NumCreatedBy.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.NumCreatedBy.label}"
+                                                       id="c32">
+                                                <af:outputText value="#{row.NumCreatedBy}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NumCreatedBy.tooltip}"
+                                                               id="ot32">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntMappingCatVwView1.hints.NumCreatedBy.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.FecLastUpdateDate.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.FecLastUpdateDate.label}"
+                                                       id="c33">
+                                                <af:outputText value="#{row.FecLastUpdateDate}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.FecLastUpdateDate.tooltip}"
+                                                               id="ot33">
+                                                    <af:convertDateTime pattern="#{bindings.LmkIntMappingCatVwView1.hints.FecLastUpdateDate.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdatedBy.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdatedBy.label}"
+                                                       id="c34">
+                                                <af:outputText value="#{row.NumLastUpdatedBy}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdatedBy.tooltip}"
+                                                               id="ot34">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdatedBy.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdateLogin.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdateLogin.label}"
+                                                       id="c35">
+                                                <af:outputText value="#{row.NumLastUpdateLogin}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdateLogin.tooltip}"
+                                                               id="ot35">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntMappingCatVwView1.hints.NumLastUpdateLogin.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                        </af:table>
+                                    </f:facet>
+                            </af:panelSplitter>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>     
+                    </f:facet>
+                </af:pageTemplate>
+                
+                <!-- ################################### POPUP ALTA ############################################# !-->
+                <af:popup id="popupSaveParameter" contentDelivery="lazyUncached"
+                          binding="#{MappingBean.poPopupSave}">
+                    <af:panelWindow id="PnlSave" modal="true" closeIconVisible="false"
+                                    title="Alta" titleIconSource="/images/date_new.gif" 
+                                    styleClass="AFStretchWidth">
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpAlta" valign="middle" halign="center" 
+                        styleClass="AFStretchWidth">
+                            <af:panelFormLayout id="PnlFrmAlta" rows="16" maxColumns="1" inlineStyle="width:400px;">                                 
+                                    <af:inputText label="Relación"                                                  
+                                                  id="TxtSaveName"
+                                                  binding="#{MappingBean.poSaveNomRelation}"/>
+                                            <af:inputText label="Valor"                                                  
+                                                  id="TxtSaveValueRelation"
+                                                  binding="#{MappingBean.poSaveValueRelation}"/>
+                                            <af:separator id="s1save"/>
+                                            <af:inputText label="Sistema"                                                  
+                                                  id="TxtSaveSystemRelation"
+                                                  visible="false"
+                                                  binding="#{MappingBean.poSaveSystemRelation}"/>
+                                            
+                                            <af:inputText label="Origen"                                                  
+                                                  id="TxtSaveNomOrigin"
+                                                  binding="#{MappingBean.poSaveNomOrigin}"/>
+                                            <af:inputText label="Valor Origen"                                                  
+                                                  id="TxtSaveValueOrigin"
+                                                  binding="#{MappingBean.poSaveValueOrigin}"/>
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Sistema Origen"
+                                                                binding="#{MappingBean.poSaveSystemOriginSel}"
+                                                                shortDesc="Sistema Origen"
+                                                                id="soc1save">
+                                                <f:selectItems value="#{MappingBean.listSystems}" id="sid1save"/>
+                                            </af:selectOneChoice>
+                                            <af:inputText label="Sistema Origen"                                                  
+                                                  id="TxtSaveSystemOrigin"
+                                                  visible="false"
+                                                  binding="#{MappingBean.poSaveSystemOrigin}"/>                                            
+                                            <af:separator id="s2save"/>  
+                                            <af:inputText label="Destino"                                                  
+                                                  id="TxtSaveNomDestiny"
+                                                  binding="#{MappingBean.poSaveNomDestiny}"/>
+                                            <af:inputText label="Valor Destino"                                                  
+                                                  id="TxtSaveValueDestiny"
+                                                  binding="#{MappingBean.poSaveValueDestiny}"/>
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Sistema Destino"
+                                                                binding="#{MappingBean.poSaveSystemDestinySel}"
+                                                                shortDesc="Sistema Destino"
+                                                                id="soc2save">
+                                                <f:selectItems value="#{MappingBean.listSystems}" id="sid2save"/>
+                                            </af:selectOneChoice>
+                                            
+                                            <af:inputText label="Usado En"                                                  
+                                                  id="TxtSaveUsedBy"
+                                                  binding="#{MappingBean.poSaveUsedBy}"/>
+                                            
+                                            <af:inputText label="Descripción"                                                  
+                                                  id="TxtSaveDescription"
+                                                  binding="#{MappingBean.poSaveDescription}"/>
+                                            
+                                            
+                                    <af:selectBooleanCheckbox text="" label="Estatus" id="sbcSta"
+                                                              binding="#{MappingBean.poPopSaveStatus}"/>
+                                    <af:separator id="sepTitleEncFin"/>                                  
+                                <af:spacer width="10" height="10" id="SpPopTm2"/>
+                            </af:panelFormLayout>
+                            <af:panelGroupLayout id="PnlFrmBtnsPg">
+                                <af:button text="Aceptar" id="BtnAceptAlt" icon="/images/aceptar.gif"
+                                            shortDesc="Guardar"
+                                           action="#{MappingBean.saveAction}"/>
+                                <af:spacer width="10" height="10" id="SpcPopSaveCancel"/>
+                                <af:button text="Cancelar" id="BtnCancelAlt" icon="/images/cancelar.gif" 
+                                shortDesc="Cierra el Popup." immediate="true"
+                                           action="#{MappingBean.cancelSaveAction}"/>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:panelWindow>
+                </af:popup>
+                <!-- ################################### POPUP ELIMINAR ######################################### !-->
+                <af:popup id="popupDelete" contentDelivery="lazyUncached"                          
+                          binding="#{MappingBean.poPopupDelete}">
+                  <af:panelWindow id="PnlDelete" 
+                               inlineStyle="border-style:none;"
+                               modal="true" 
+                               closeIconVisible="false"
+                               title="Eliminar" 
+                               titleIconSource="/images/date_delete.gif">
+                    <af:panelGroupLayout layout="vertical" 
+                                      id="PnlDeleteWsMsg" 
+                                      inlineStyle="border-style:none;" 
+                                      valign="middle" 
+                                      halign="center">
+                      <af:spacer width="10" height="10" id="SpcLogin_41aDel"/>
+                      <af:panelLabelAndMessage id="PnlLblMsg"
+                                               inlineStyle="border-style:none; color:Olive;"
+                                               binding="#{MappingBean.poDeleteMsgLbl}"/>
+                         <af:spacer width="50" height="25" id="SpcPopDel01"/>
+                         <af:outputText id="TxtIdBindingsDelete" binding="#{MappingBean.poDeleteIdBinding}" 
+                         visible="false"/>
+                         <af:panelGroupLayout layout="horizontal" id="PnlEliminarBtns" inlineStyle="border-style:none;" 
+                         valign="middle" halign="center">
+                           <af:button text="Aceptar" id="BtnEliminarAceptar"
+                                             icon="/images/aceptar.gif"
+                                             action="#{MappingBean.deleteAction}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
+                           <af:spacer width="10" height="25" id="SpcPopDel02"/>
+                           <af:button text="Cancelar" id="BtnEliminarCancelar"
+                                             icon="/images/cancelar.gif"
+                                             action="#{MappingBean.cancelDelete}"/>
+                       </af:panelGroupLayout> 
+                    </af:panelGroupLayout>
+                  </af:panelWindow>
+                </af:popup>
+                <!-- ################################### POPUP EDITAR ############################################ !-->
+                <af:popup id="popupUdateService" contentDelivery="lazyUncached"
+                          binding="#{MappingBean.poPopupUpdate}">
+                    <af:panelWindow id="PnlUpdService" modal="true" closeIconVisible="false"
+                                    title="Editar" titleIconSource="/images/note.gif" 
+                                    styleClass="AFStretchWidth">
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpUpdWs" valign="middle" halign="center" 
+                        styleClass="AFStretchWidth">
+                            <af:panelFormLayout id="PnlFrmUpdWs" rows="17" maxColumns="1" inlineStyle="width:400px;">                                 
+                                    <af:inputText label="id"                                                  
+                                                  visible="false"
+                                                  id="it9Upd"
+                                                  binding="#{MappingBean.poPopUpIdMapping}">
+                                    </af:inputText>
+                                    <af:inputText label="Relación"                                                  
+                                                  id="TxtUpdName"
+                                                  binding="#{MappingBean.poUpdNomRelation}"/>
+                                            <af:inputText label="Valor"                                                  
+                                                  id="TxtUpdValueRelation"
+                                                  binding="#{MappingBean.poUpdValueRelation}"/>
+                                            <af:separator id="s1Upd"/>
+                                            <af:inputText label="Sistema"                                                  
+                                                  id="TxtUpdSystemRelation"
+                                                  visible="false"
+                                                  binding="#{MappingBean.poUpdSystemRelation}"/>
+                                            
+                                            <af:inputText label="Origen"                                                  
+                                                  id="TxtUpdNomOrigin"
+                                                  binding="#{MappingBean.poUpdNomOrigin}"/>
+                                            <af:inputText label="Valor Origen"                                                  
+                                                  id="TxtUpdValueOrigin"
+                                                  binding="#{MappingBean.poUpdValueOrigin}"/>
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Sistema Origen"
+                                                                binding="#{MappingBean.poUpdSystemOriginSel}"
+                                                                shortDesc="Sistema Origen"
+                                                                id="soc1Upd">
+                                                <f:selectItems value="#{MappingBean.listSystems}" id="sid1Upd"/>
+                                            </af:selectOneChoice>
+                                            <af:inputText label="Sistema Origen"                                                  
+                                                  id="TxtUpdSystemOrigin"
+                                                  visible="false"
+                                                  binding="#{MappingBean.poUpdSystemOrigin}"/>                                            
+                                            <af:separator id="s2Upd"/>  
+                                            <af:inputText label="Destino"                                                  
+                                                  id="TxtUpdNomDestiny"
+                                                  binding="#{MappingBean.poUpdNomDestiny}"/>
+                                            <af:inputText label="Valor Destino"                                                  
+                                                  id="TxtUpdValueDestiny"
+                                                  binding="#{MappingBean.poUpdValueDestiny}"/>
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Sistema Destino"
+                                                                binding="#{MappingBean.poUpdSystemDestinySel}"
+                                                                shortDesc="Sistema Destino"
+                                                                id="soc2Upd">
+                                                <f:selectItems value="#{MappingBean.listSystems}" id="sid2Upd"/>
+                                            </af:selectOneChoice>
+                                            
+                                            <af:inputText label="Usado En"                                                  
+                                                  id="TxtUpdUsedBy"
+                                                  binding="#{MappingBean.poUpdUsedBy}"/>
+                                            
+                                            <af:inputText label="Descripción"                                                  
+                                                  id="TxtUpdDescription"
+                                                  binding="#{MappingBean.poUpdDescription}"/>
+                                            
+                                    <af:selectBooleanCheckbox text="" label="Estatus" id="sbcStaUpd"
+                                                              binding="#{MappingBean.poPopUpdStatus}"/>
+                                    <af:separator id="sepTiEncFin"/>                                  
+                                <af:spacer width="10" height="10" id="SpPopTUpd"/>
+                            </af:panelFormLayout>
+                            <af:panelGroupLayout id="PnlFrmBtnsPgUpd">
+                                <af:button text="Aceptar" id="BtnAceptUpdWs" icon="/images/aceptar.gif"
+                                            shortDesc="Guardar"
+                                           action="#{MappingBean.updateAction}"/>
+                                <af:spacer width="10" height="10" id="SpcUpd111"/>
+                                <af:button text="Cancelar" id="BtnCancelUpd" icon="/images/cancelar.gif" 
+                                shortDesc="Cierra el Popup." immediate="true"
+                                           action="#{MappingBean.cancelUpdateAction}"/>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:panelWindow>
+                </af:popup>
+                
+                
+                <!-- ################################### POPUP LOADING .... ##################################### !-->
+                <af:popup id="popLoading" contentDelivery="immediate">
+                  <af:dialog id="dlgLoading" type="none" title="Procesando Información" closeIconVisible="false">
+                    <af:panelGroupLayout id="PnlLoading" layout="vertical" halign="center">
+                      <af:image source="/images/loading110.gif" id="ImgIdxLoad" shortDesc="Espere..."/>
+                      <af:outputText value="... por favor espere." id="LblIdxLoad1Login"/>
+                    </af:panelGroupLayout>
+                  </af:dialog>
+                </af:popup>
+            </af:form>
+        </af:document>
+    </f:view>
+</jsp:root>

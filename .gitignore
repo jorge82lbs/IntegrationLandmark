@@ -1,0 +1,7 @@
+
+
+*.class
+*.ear
+*.war
+*.tmp
+*.jdb

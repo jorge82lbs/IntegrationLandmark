@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+          xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <af:pageTemplateDef var="attrs">
+    <af:xmlContent>
+      <component xmlns="http://xmlns.oracle.com/adf/faces/rich/component">
+        <display-name>pgmLandTemplate</display-name>
+        <facet>
+          <description>Content of Integration Landmark Application</description>
+          <facet-name>content</facet-name>
+        </facet>
+      </component>
+    </af:xmlContent>
+    <af:panelStretchLayout topHeight="78px" startWidth="100px" id="PnlTemplate"
+                           inlineStyle="border-style:none;">
+      <f:facet name="top">
+        <af:panelStretchLayout id="PnlTempHeader"
+                               inlineStyle="border-style:none;"
+                               topHeight="107px" styleClass="AFStretchWidth">
+          <f:facet name="top">
+              <af:panelStretchLayout id="PnlTempHeaderLogo" inlineStyle="border-style:none;background-color:#DAE5F5;" 
+                                     bottomHeight="75px" topHeight="60px" styleClass="AFStretchWidth" startWidth="52px"
+                                     endWidth="306px">
+              <f:facet name="start">
+                  <af:panelGroupLayout id="PnlImg"
+                                inlineStyle="text-align:center;">
+                      <af:image source="/images/iconTvsa24x24.png"
+                                shortDesc="ImgTempOrdLogo" id="ImgTempLogo"
+                                inlineStyle="border-style:none; text-align:center;"/>
+                  </af:panelGroupLayout>
+                </f:facet>                
+                <f:facet name="center">
+                    <af:panelGroupLayout id="PnlTxtCen"
+                                layout="vertical" valign="middle"
+                                halign="end"
+                                inlineStyle="text-align:start; vertical-align:middle;">
+                      <af:outputLabel value="Monitoreo y Configuración de Servicios" id="LblTemp8Cen"
+                                      inlineStyle="color:#18345B; font-size:small; font-weight:bold;"
+                                      />      
+                      <af:outputLabel value="Integraci&#243;n Landmark" id="LblTemp8CenHbyn"
+                                      inlineStyle="color:#18345B;"
+                                      />      
+                  </af:panelGroupLayout>
+                </f:facet>
+                <f:facet name="end">
+                  <af:panelGroupLayout id="PnlTxt"
+                                       inlineStyle="text-align:end; vertical-align:middle;"
+                                       layout="vertical" valign="baseline"
+                                       halign="end">
+                      <af:spacer height="1" width="15" id="SpcAlto"/>
+                      <af:outputLabel value="Inicio de sesión: #{UserInfoBean.psDateTimeLogin}" id="LblTemp_8"
+                                      inlineStyle="color:#E17521; font-weight:bold;"/>                      
+                  </af:panelGroupLayout>
+              </f:facet>
+                <f:facet name="bottom">
+                    <af:panelGroupLayout id="PnlTempMenuCont" layout="scroll" 
+                                         inlineStyle="border-style:none;background-color:#18345B;">
+                     
+                      <af:panelGroupLayout id="PnlTempInfoCont" 
+                                           inlineStyle="border-style:none; background-color:#E17521;" 
+                                           layout="vertical">
+                        <af:panelGroupLayout layout="horizontal" id="PnlTempInfo" inlineStyle="border-style:none;">
+                          <f:facet name="separator">
+                            <af:spacer width="5" height="20" id="SpcTempInfo_1" inlineStyle="border-style:none;"/>                            
+                          </f:facet>
+                          <af:spacer width="5" height="20" id="SpcTempInfo_2" inlineStyle="border-style:none;"/>
+                          <af:statusIndicator id="pt_si1"/>
+                          <af:spacer width="3" height="20" id="SpcTempInfo22" inlineStyle="border-style:none;"/>
+                          <af:image source="/images/user-blue-16.png" shortDesc="Usuario" id="ImgTempIcoUser"/>
+                          <af:outputLabel value="Bienvenido:" id="LblTemp_1"
+                                          inlineStyle="color:#18345B; font-family:Arial, Helvetica, sans-serif; 
+                                          font-weight:bold; font-size:12.0px;"/>
+                          <af:outputLabel value=" #{UserInfoBean.psUserFullName}" id="LblTemp_2" 
+                                          shortDesc="#{UserInfoBean.psEmail}"
+                                          inlineStyle="color:Black; font-family:Arial, Helvetica, sans-serif; 
+                                          font-size:12px; font-weight:bold;"/>
+                          <af:outputLabel value="(" id="LblTemp_9"
+                                          inlineStyle="color:Black;" visible="false"/>
+                          <af:outputLabel value="Inicio de sesión: UserInfoBean.logged" id="LblTemp_10"
+                                          inlineStyle="color:Black;" visible="false"/>
+                          <af:outputLabel value=")" id="LblTemp_11"
+                                          inlineStyle="color:Black;" visible="false"/>                        
+                        </af:panelGroupLayout>                    
+                      </af:panelGroupLayout>
+                      
+                      <af:panelGroupLayout id="PnlTempMenu" inlineStyle="border-style:none; background-color:#CACBE5" 
+                                layout="vertical">
+                        <af:toolbox id="TbxTempMnu"
+                                    inlineStyle="border-style:none;">          
+                          <af:menuBar id="MnuTempBar" 
+                                      inlineStyle="border-style:none;">
+                            <af:group id="GrpTempMnu">
+                                        <af:commandMenuItem id="MnuTemp1" text="Inicio"
+                                                            action="homePage" 
+                                                            shortDesc="Inicio" 
+                                                            icon="/images/home16x16.png"/>
+                                        
+                                        <af:commandMenuItem id="MnuTemp22" text="Cargar Archivos"
+                                                            action="loadFilePage"
+                                                            shortDesc="Carga de Archivos" 
+                                                            icon="/images/Upload.gif"/>
+                                                            
+                                        <af:commandMenuItem id="MnuTemp232" text="Estatus de Archivos"
+                                                            action="statusFilesPage"
+                                                            shortDesc="Estatus de Archivos" 
+                                                            icon="/images/list_settings.gif"/>
+                                                            
+                                        <af:commandMenuItem id="MnuTemp2" text="Monitoreo"
+                                                            action="monitorPage"
+                                                            shortDesc="Monitoreo" 
+                                                            icon="/images/icon_monitor_pc.gif"/>
+                                                            
+                                        <af:commandMenuItem id="MnuTemp7" text="Configuración y Ejecución" 
+                                                            shortDesc="Configuración" 
+                                                            action="processPage"                                                            
+                                                            icon="/images/icon_world_dynamic.gif"/>
+                                                  
+                                        <af:commandMenuItem id="MnuTemp12" text="Mapeo de Parámetros" 
+                                                            shortDesc="Mapeo"
+                                                            action="mappingPage"
+                                                            icon="/images/refresh.gif"/>
+                                                            
+                                         <af:commandMenuItem id="MnuTemp121s" text="Notificaciones" 
+                                                            shortDesc="Notificaciones"
+                                                            action="notificationsPage"
+                                                            icon="/images/notifications216x16.png"/>
+                                 
+                                        <af:commandMenuItem id="MnuTemp121" text="Parámetros Generales" 
+                                                            shortDesc="Parámetros Generales"
+                                                            action="gralConfigPage"
+                                                            icon="/images/Wrench.gif"/>
+                                        
+                                        <af:commandMenuItem id="MnuTemp1212" text="Bitácora" 
+                                                            shortDesc="Bitácora de Servicios"
+                                                            action="bitacoraPage"
+                                                            icon="/images/page_find.gif"/>
+                                                            
+                                        <af:commandMenuItem id="MnuTemp13" text="Salir"
+                                                            partialSubmit="true"
+                                                            shortDesc="Salir" 
+                                                            icon="/images/logout-icon16x16.png">
+                                            <af:showPopupBehavior popupId="::PopSalir" triggerType="click"/>
+                                        </af:commandMenuItem> 
+                            </af:group>                            
+                         </af:menuBar>
+                       </af:toolbox>
+                      </af:panelGroupLayout>
+                      <af:panelStretchLayout id="PnlTempLn_3" 
+                                             inlineStyle="border-style:none; background-color:#FF801A; height:1px;"
+                                             styleClass="AFStretchWidth"/>
+                      <af:popup id="PopSalir" contentDelivery="lazyUncached" binding="#{LoginBean.poPopupExitConfirm}">
+                            <af:panelWindow id="PnlSalir" 
+                                            inlineStyle="border-style:none;"
+                                            modal="true" 
+                                            closeIconVisible="false"
+                                            title="Salir Integración Landmark" 
+                                            titleIconSource="/images/logout2-icon16x16.png">
+                                <af:panelGroupLayout layout="vertical" 
+                                                     id="PnlSalirMsg" 
+                                                     inlineStyle="border-style:none;" 
+                                                     valign="middle" 
+                                                     halign="center">
+                                    <af:panelLabelAndMessage label="¿Desea Salir de Integración Landmark?" 
+                                                             id="PnlLblMsgSalir"                                                    
+                                                             inlineStyle="border-style:none; color:Olive;"/>
+                                    <af:spacer width="50" height="25" id="SpcLoadOrder10Salir"/>
+                                    <af:panelGroupLayout layout="horizontal" 
+                                                        id="PnlSalirBtns" 
+                                                        inlineStyle="border-style:none;" 
+                                                        valign="middle" 
+                                                        halign="center">
+                                        <af:button text="Aceptar" 
+                                                   id="BtnSalirAceptar"
+                                                   action="#{LoginBean.exitAppIntegraion}"
+                                                   icon="/images/aceptar.gif"
+                                                   />
+                                        <af:spacer width="10" height="25" id="SpcLoadOrder11Salir"/>
+                                        <af:button text="Cancelar" 
+                                                   id="BtnSalirCancelar"
+                                                   action="#{LoginBean.cancelExitAppIntegraion}"
+                                                   icon="/images/cancelar.gif"/>
+                                    </af:panelGroupLayout>                  
+                                </af:panelGroupLayout>
+                            </af:panelWindow>
+                        </af:popup>
+                    </af:panelGroupLayout>
+                </f:facet>
+              </af:panelStretchLayout>
+          </f:facet>
+        </af:panelStretchLayout>
+      </f:facet>
+      <f:facet name="center">
+        <af:panelStretchLayout id="PnlTempCont" inlineStyle="border-style:none;">
+          <f:facet name="center">
+              <af:facetRef facetName="content"/>
+          </f:facet>
+        </af:panelStretchLayout>
+      </f:facet>
+    </af:panelStretchLayout>
+  </af:pageTemplateDef>
+</jsp:root>

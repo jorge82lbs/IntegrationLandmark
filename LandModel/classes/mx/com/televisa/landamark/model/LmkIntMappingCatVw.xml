@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+<!---->
+<Entity
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="LmkIntMappingCatVw"
+  Version="12.1.3.10.47"
+  InheritPersonalization="merge"
+  DBObjectType="table"
+  DBObjectName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+  AliasName="LmkIntMappingCatVw"
+  BindingStyle="JDBC">
+  <Attribute
+    Name="IdMapping"
+    ColumnName="ID_MAPPING"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NomRelation"
+    Precision="150"
+    ColumnName="NOM_RELATION"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="NomOrigin"
+    Precision="150"
+    ColumnName="NOM_ORIGIN"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="NomDestiny"
+    Precision="150"
+    ColumnName="NOM_DESTINY"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="ValValueRelation"
+    Precision="150"
+    ColumnName="VAL_VALUE_RELATION"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="ValValueOrigin"
+    Precision="150"
+    ColumnName="VAL_VALUE_ORIGIN"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="ValValueDestiny"
+    Precision="150"
+    ColumnName="VAL_VALUE_DESTINY"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndSysSystem"
+    Precision="100"
+    ColumnName="IND_SYS_SYSTEM"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndSysOrigin"
+    Precision="100"
+    ColumnName="IND_SYS_ORIGIN"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndSysDestiny"
+    Precision="100"
+    ColumnName="IND_SYS_DESTINY"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndUsedBy"
+    Precision="100"
+    ColumnName="IND_USED_BY"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndDescription"
+    Precision="200"
+    ColumnName="IND_DESCRIPTION"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="200"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IdMappingRel"
+    ColumnName="ID_MAPPING_REL"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="IndEstatus"
+    Precision="1"
+    ColumnName="IND_ESTATUS"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="AttributeCategory"
+    Precision="150"
+    ColumnName="ATTRIBUTE_CATEGORY"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute1"
+    Precision="150"
+    ColumnName="ATTRIBUTE1"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute2"
+    Precision="150"
+    ColumnName="ATTRIBUTE2"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute3"
+    Precision="150"
+    ColumnName="ATTRIBUTE3"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute4"
+    Precision="150"
+    ColumnName="ATTRIBUTE4"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute5"
+    Precision="150"
+    ColumnName="ATTRIBUTE5"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute6"
+    Precision="150"
+    ColumnName="ATTRIBUTE6"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute7"
+    Precision="150"
+    ColumnName="ATTRIBUTE7"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute8"
+    Precision="150"
+    ColumnName="ATTRIBUTE8"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute9"
+    Precision="150"
+    ColumnName="ATTRIBUTE9"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute10"
+    Precision="150"
+    ColumnName="ATTRIBUTE10"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute11"
+    Precision="150"
+    ColumnName="ATTRIBUTE11"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute12"
+    Precision="150"
+    ColumnName="ATTRIBUTE12"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute13"
+    Precision="150"
+    ColumnName="ATTRIBUTE13"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute14"
+    Precision="150"
+    ColumnName="ATTRIBUTE14"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute15"
+    Precision="150"
+    ColumnName="ATTRIBUTE15"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="FecCreationDate"
+    IsNotNull="true"
+    ColumnName="FEC_CREATION_DATE"
+    SQLType="TIMESTAMP"
+    Type="java.sql.Timestamp"
+    ColumnType="TIMESTAMP"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NumCreatedBy"
+    IsNotNull="true"
+    ColumnName="NUM_CREATED_BY"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="FecLastUpdateDate"
+    IsNotNull="true"
+    ColumnName="FEC_LAST_UPDATE_DATE"
+    SQLType="TIMESTAMP"
+    Type="java.sql.Timestamp"
+    ColumnType="TIMESTAMP"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NumLastUpdatedBy"
+    IsNotNull="true"
+    ColumnName="NUM_LAST_UPDATED_BY"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NumLastUpdateLogin"
+    ColumnName="NUM_LAST_UPDATE_LOGIN"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_MAPPING_CAT_VW"
+    PrimaryKey="true"/>
+  <Key
+    Name="LmkintmappingcatvwPrimaryKey"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DBObjectName" Value="LMKINTMAPPINGCATVW_PRIMARY_KEY"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IdMapping"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.NomRelation"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.NomOrigin"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.NomDestiny"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.ValValueRelation"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.ValValueOrigin"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.ValValueDestiny"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IndSysSystem"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IndSysOrigin"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IndSysDestiny"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IndUsedBy"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IndDescription"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IdMappingRel"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.IndEstatus"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.AttributeCategory"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute1"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute2"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute3"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute4"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute5"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute6"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute7"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute8"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute9"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute10"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute11"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute12"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute13"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute14"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.Attribute15"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.FecCreationDate"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.NumCreatedBy"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.FecLastUpdateDate"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.NumLastUpdatedBy"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntMappingCatVw.NumLastUpdateLogin"/>
+    </AttrArray>
+  </Key>
+</Entity>

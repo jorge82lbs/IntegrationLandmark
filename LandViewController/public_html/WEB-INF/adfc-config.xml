@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <view id="indexPage">
+    <page>/indexPage.jspx</page>
+  </view>
+  <view id="homePage">
+    <page>/pages/homePage.jspx</page>
+  </view>
+  <view id="gralConfigPage">
+    <page>/pages/gralConfigPage.jspx</page>
+  </view>
+  <view id="bitacoraPage">
+    <page>/pages/bitacoraPage.jspx</page>
+  </view>
+  <view id="monitorPage">
+    <page>/pages/monitorPage.jspx</page>
+  </view>
+  <view id="notificationsPage">
+    <page>/pages/notificationsPage.jspx</page>
+  </view>
+  <view id="mappingPage">
+    <page>/pages/mappingPage.jspx</page>
+  </view>
+  <view id="processPage">
+    <page>/pages/processPage.jspx</page>
+  </view>
+  <view id="loadFilePage">
+    <page>/pages/loadFilePage.jspx</page>
+  </view>
+  <view id="statusFilesPage">
+    <page>/pages/statusFilesPage.jspx</page>
+  </view>
+  <control-flow-rule id="__2">
+    <from-activity-id>*</from-activity-id>
+    <control-flow-case id="__3">
+      <from-outcome>homePage</from-outcome>
+      <to-activity-id>homePage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__6">
+      <from-outcome>gralConfigPage</from-outcome>
+      <to-activity-id>gralConfigPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__9">
+      <from-outcome>bitacoraPage</from-outcome>
+      <to-activity-id>bitacoraPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__11">
+      <from-outcome>monitorPage</from-outcome>
+      <to-activity-id>monitorPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__12">
+      <from-outcome>notificationsPage</from-outcome>
+      <to-activity-id>notificationsPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__13">
+      <from-outcome>mappingPage</from-outcome>
+      <to-activity-id>mappingPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__14">
+      <from-outcome>processPage</from-outcome>
+      <to-activity-id>processPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__18">
+      <from-outcome>loadFilePage</from-outcome>
+      <to-activity-id>loadFilePage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__19">
+      <from-outcome>statusFilesPage</from-outcome>
+      <to-activity-id>statusFilesPage</to-activity-id>
+    </control-flow-case>
+  </control-flow-rule>
+  <managed-bean id="__4">
+    <managed-bean-name>LoginBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.LoginBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__1">
+    <managed-bean-name>UserInfoBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.users.UserInfoBean</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__5">
+    <managed-bean-name>UserMenuBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.users.UserMenuBean</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__7">
+    <managed-bean-name>GralConfigBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.GralConfigBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__8">
+    <managed-bean-name>BitacoraBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.BitacoraBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__10">
+    <managed-bean-name>MonitorBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.MonitorBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__15">
+    <managed-bean-name>MappingBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.MappingBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__16">
+    <managed-bean-name>NotificationsBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.NotificationsBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__17">
+    <managed-bean-name>ProcessBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.ProcessBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+</adfc-config>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://xmlns.oracle.com/adfm/application" version="12.1.3.10.47" id="DataBindings"
+             SeparateXMLFiles="false" Package="mx.com.televisa.landamark.view" ClientType="Generic">
+  <pageMap>
+    <page path="/pages/gralConfigPage.jspx" usageId="mx_com_televisa_landamark_view_gralConfigPagePageDef"/>
+    <page path="/pages/bitacoraPage.jspx" usageId="mx_com_televisa_landamark_view_bitacoraPagePageDef"/>
+    <page path="/pages/mappingPage.jspx" usageId="mx_com_televisa_landamark_view_mappingPagePageDef"/>
+    <page path="/pages/notificationsPage.jspx" usageId="mx_com_televisa_landamark_view_notificationsPagePageDef"/>
+    <page path="/pages/monitorPage.jspx" usageId="mx_com_televisa_landamark_view_monitorPagePageDef"/>
+    <page path="/pages/processPage.jspx" usageId="mx_com_televisa_landamark_view_processPagePageDef"/>
+  </pageMap>
+  <pageDefinitionUsages>
+    <page id="mx_com_televisa_landamark_view_gralConfigPagePageDef" path="pages.gralConfigPagePageDef"/>
+    <page id="mx_com_televisa_landamark_view_bitacoraPagePageDef" path="pages.bitacoraPagePageDef"/>
+    <page id="mx_com_televisa_landamark_view_mappingPagePageDef" path="pages.mappingPagePageDef"/>
+    <page id="mx_com_televisa_landamark_view_notificationsPagePageDef" path="pages.notificationsPagePageDef"/>
+    <page id="mx_com_televisa_landamark_view_monitorPagePageDef" path="pages.monitorPagePageDef"/>
+    <page id="mx_com_televisa_landamark_view_processPagePageDef" path="pages.processPagePageDef"/>
+  </pageDefinitionUsages>
+  <dataControlUsages>
+    <BC4JDataControl id="AppModuleDataControl" Package="mx.com.televisa.landamark.model"
+                     FactoryClass="oracle.adf.model.bc4j.DataControlFactoryImpl" SupportsTransactions="true"
+                     SupportsFindMode="true" SupportsRangesize="true" SupportsResetState="true"
+                     SupportsSortCollection="true" Configuration="AppModuleLocal" syncMode="Immediate"
+                     xmlns="http://xmlns.oracle.com/adfm/datacontrol"/>
+  </dataControlUsages>
+</Application>

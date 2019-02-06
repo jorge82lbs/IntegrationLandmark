@@ -1,0 +1,554 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <f:view>
+        <af:document title="Notificaciones" id="d1" smallIconSource="/images/system-monitor-arrow-icon.png">
+            <af:messages id="m1"/>
+            <af:form id="f1">
+            <af:resource type="javascript">
+                    function enforcePreventUserInput(evt) {                    
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('p1oadLogin');
+                        if (popup != null) {
+                            AdfPage.PAGE.addBusyStateListener(popup, handleBusyState);
+                            evt.preventUserInput();
+                        }
+                    }
+                
+                    function handleBusyState(evt) {
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('p1oadLogin');
+                        if (popup != null) {
+                            if (evt.isBusy()) {
+                                popup.show();
+                            }
+                            else {
+                                popup.hide();
+                                AdfPage.PAGE.removeBusyStateListener(popup, handleBusyState);
+                            }
+                        }
+                    }        
+                </af:resource>
+                <af:pageTemplate viewId="/templates/pgmLandTemplate.jspx" id="pt1">
+                    <f:facet name="content">
+                     <af:panelGroupLayout layout="scroll" id="PnlCont"
+                                             inlineStyle="border-style:none;">
+                            <af:panelHeader text="Notificaciones" id="PnlHead"
+                                type="default"
+                                messageType="none"
+                                shortDesc="Configuración de Notificaciones"
+                                inlineStyle="border-style:none; font-size:small;">
+                            <f:facet name="toolbar">
+                                <af:statusIndicator id="StiIndicator" shortDesc="Status Indicator"/>
+                            </f:facet>
+                            </af:panelHeader>
+                            <af:separator id="sepTitle"/>
+                            <af:spacer width="8" id="spacer314" height="8"/> 
+                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                label="Servicio"
+                                                binding="#{NotificationsBean.poFilterServiceSel}"
+                                                shortDesc="Proceso a configurar"
+                                                id="soc1" inlineStyle="color:Black; font-weight:bold;">
+                                <f:selectItems value="#{NotificationsBean.listAllServices}" id="sid1"/>
+                            </af:selectOneChoice>
+                             <af:spacer width="8" id="spacer31" height="8"/> 
+                            <af:panelGroupLayout layout="horizontal" id="PnlGpTbl" styleClass="AFStretchWidth"
+                                                 valign="top" halign="left" 
+                                                 inlineStyle="border-style:none; height:415px;">
+                            <!-- ################################### TABLA PRINCIPAL ##################################################### !-->
+                                <af:table value="#{bindings.LmkIntNotificationsVwView1.collectionModel}" var="row"
+                                          rows="#{bindings.LmkIntNotificationsVwView1.rangeSize}"
+                                          emptyText="#{bindings.LmkIntNotificationsVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                          rowBandingInterval="0"
+                                          selectedRowKeys="#{bindings.LmkIntNotificationsVwView1.collectionModel.selectedRow}"
+                                          selectionListener="#{bindings.LmkIntNotificationsVwView1.collectionModel.makeCurrent}"
+                                          rowSelection="single"
+                                          fetchSize="#{bindings.LmkIntNotificationsVwView1.rangeSize}" 
+                                          id="tblMain"
+                                              filterVisible="true"
+                                              styleClass="AFStretchWidth"
+                                      autoHeightRows="20"
+                                      columnStretching="column:c27"
+                                      binding="#{NotificationsBean.poTblMain}" >
+                                <af:column align="center" id="colCrudSweb"
+                                            frozen="true" sortable="false"
+                                            visible="#{UserMenuBean.lsOprCrud}"
+                                            width="85">
+                                        <f:facet name="header">
+                                        <af:group id="g2">
+                                            <af:link icon="/images/newIcon_int.png"
+                                                       id="LnkAlta" text="Nuevo"
+                                                       inlineStyle="text-align:center;"
+                                                       shortDesc="Alta de Notificaciones"
+                                                     actionListener="#{NotificationsBean.showSavePopup}"/>
+                                        </af:group>
+                                        </f:facet>
+                                        <af:panelGroupLayout layout="horizontal"
+                                                            id="PnlOpc" valign="top"
+                                                            halign="left">
+                                            <af:link icon="/images/editIcon_int.png"
+                                                     id="LnkEditSweb"
+                                                     inlineStyle="text-align:center;"
+                                                     partialSubmit="true"
+                                                     actionListener="#{NotificationsBean.showEditPopup}"
+                                                     shortDesc="Editar Servicio"/>
+                                            <af:spacer width="8" id="s8r911w" height="5"/>
+                                            <af:link icon="/images/deleteIcon_int.png"
+                                                     id="LnkDelSweb"
+                                                     inlineStyle="text-align:center;"
+                                                     partialSubmit="true"
+                                                      actionListener="#{NotificationsBean.showDeletePopup}"
+                                                     shortDesc="Eliminar Servicio"/>
+                                            <af:spacer width="8" id="spacer1" height="5"/>                                            
+                                        </af:panelGroupLayout>
+                                    </af:column>   
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IdNotification.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.IdNotification.label}"
+                                               id="c1">
+                                        <af:outputText value="#{row.IdNotification}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IdNotification.tooltip}"
+                                                       id="ot1">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.LmkIntNotificationsVwView1.hints.IdNotification.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IdService.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.IdService.label}"
+                                               id="c2">
+                                        <af:outputText value="#{row.IdService}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IdService.tooltip}"
+                                                       id="ot2">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.LmkIntNotificationsVwView1.hints.IdService.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.NomService.name}"
+                                               sortable="true" align="center" frozen="true" width="200"
+                                               headerText="Servicio"
+                                               id="c3">
+                                        <af:outputText value="#{row.NomService}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.NomService.tooltip}"
+                                                       id="ot3"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IndProcess.name}"
+                                               sortable="true" align="center" frozen="true" visible="false"
+                                               headerText="Proceso"
+                                               id="c4">
+                                        <af:outputText value="#{row.IndProcess}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IndProcess.tooltip}"
+                                                       id="ot4">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.LmkIntNotificationsVwView1.hints.IndProcess.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.NomProcess.name}"
+                                               sortable="true" align="center" frozen="true"
+                                               headerText="Proceso" width="150"
+                                               id="c5">
+                                        <af:outputText value="#{row.NomProcess}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.NomProcess.tooltip}"
+                                                       id="ot5"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IndUsersGroup.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.IndUsersGroup.label}"
+                                               id="c6">
+                                        <af:outputText value="#{row.IndUsersGroup}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IndUsersGroup.tooltip}"
+                                                       id="ot6"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.NomGroup.name}"
+                                               sortable="true" align="center" frozen="true"
+                                               headerText="Grupo Usuarios" width="180"
+                                               id="c7">
+                                        <af:outputText value="#{row.NomGroup}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.NomGroup.tooltip}"
+                                                       id="ot7"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IndSubject.name}"
+                                               sortable="true" align="center" 
+                                               headerText="Asunto" width="120"
+                                               id="c8">
+                                        <af:outputText value="#{row.IndSubject}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IndSubject.tooltip}"
+                                                       id="ot8"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IndMessage.name}"
+                                               sortable="true" align="center" 
+                                               headerText="Mensaje Corto" width="180"
+                                               id="c9">
+                                        <af:outputText value="#{row.IndMessage}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IndMessage.tooltip}"
+                                                       id="ot9"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.IndEstatus.name}"
+                                               sortable="true" align="center"
+                                               headerText="Estatus"
+                                               id="c10">
+                                        <af:outputText value="#{row.IndEstatus}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IndEstatus.tooltip}"
+                                                       id="ot10"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.AttributeCategory.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.AttributeCategory.label}"
+                                               id="c11">
+                                        <af:outputText value="#{row.AttributeCategory}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.AttributeCategory.tooltip}"
+                                                       id="ot11"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute1.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute1.label}"
+                                               id="c12">
+                                        <af:outputText value="#{row.Attribute1}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute1.tooltip}"
+                                                       id="ot12"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute2.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute2.label}"
+                                               id="c13">
+                                        <af:outputText value="#{row.Attribute2}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute2.tooltip}"
+                                                       id="ot13"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute3.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute3.label}"
+                                               id="c14">
+                                        <af:outputText value="#{row.Attribute3}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute3.tooltip}"
+                                                       id="ot14"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute4.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute4.label}"
+                                               id="c15">
+                                        <af:outputText value="#{row.Attribute4}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute4.tooltip}"
+                                                       id="ot15"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute5.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute5.label}"
+                                               id="c16">
+                                        <af:outputText value="#{row.Attribute5}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute5.tooltip}"
+                                                       id="ot16"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute6.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute6.label}"
+                                               id="c17">
+                                        <af:outputText value="#{row.Attribute6}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute6.tooltip}"
+                                                       id="ot17"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute7.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute7.label}"
+                                               id="c18">
+                                        <af:outputText value="#{row.Attribute7}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute7.tooltip}"
+                                                       id="ot18"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute8.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute8.label}"
+                                               id="c19">
+                                        <af:outputText value="#{row.Attribute8}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute8.tooltip}"
+                                                       id="ot19"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute9.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute9.label}"
+                                               id="c20">
+                                        <af:outputText value="#{row.Attribute9}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute9.tooltip}"
+                                                       id="ot20"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute10.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute10.label}"
+                                               id="c21">
+                                        <af:outputText value="#{row.Attribute10}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute10.tooltip}"
+                                                       id="ot21"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute11.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute11.label}"
+                                               id="c22">
+                                        <af:outputText value="#{row.Attribute11}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute11.tooltip}"
+                                                       id="ot22"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute12.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute12.label}"
+                                               id="c23">
+                                        <af:outputText value="#{row.Attribute12}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute12.tooltip}"
+                                                       id="ot23"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute13.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute13.label}"
+                                               id="c24">
+                                        <af:outputText value="#{row.Attribute13}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute13.tooltip}"
+                                                       id="ot24"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute14.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.Attribute14.label}"
+                                               id="c25">
+                                        <af:outputText value="#{row.Attribute14}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute14.tooltip}"
+                                                       id="ot25"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.Attribute15.name}"
+                                               sortable="true" align="center" width="100"
+                                               headerText="Usuario"
+                                               id="c26">
+                                        <af:outputText value="#{row.Attribute15}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.Attribute15.tooltip}"
+                                                       id="ot26"/>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.FecCreationDate.name}"
+                                               sortable="true" align="center" width="100"
+                                               headerText="Fecha Creación"
+                                               id="c27">
+                                        <af:outputText value="#{row.FecCreationDate}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.FecCreationDate.tooltip}"
+                                                       id="ot27">
+                                            <af:convertDateTime pattern="yyyy-MM-dd hh:mm:ss"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.NumCreatedBy.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.NumCreatedBy.label}"
+                                               id="c28">
+                                        <af:outputText value="#{row.NumCreatedBy}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.NumCreatedBy.tooltip}"
+                                                       id="ot28">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.LmkIntNotificationsVwView1.hints.NumCreatedBy.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.FecLastUpdateDate.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.FecLastUpdateDate.label}"
+                                               id="c29">
+                                        <af:outputText value="#{row.FecLastUpdateDate}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.FecLastUpdateDate.tooltip}"
+                                                       id="ot29">
+                                            <af:convertDateTime pattern="#{bindings.LmkIntNotificationsVwView1.hints.FecLastUpdateDate.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdatedBy.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdatedBy.label}"
+                                               id="c30">
+                                        <af:outputText value="#{row.NumLastUpdatedBy}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdatedBy.tooltip}"
+                                                       id="ot30">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdatedBy.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                    <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdateLogin.name}"
+                                               sortable="true" visible="false"
+                                               headerText="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdateLogin.label}"
+                                               id="c31">
+                                        <af:outputText value="#{row.NumLastUpdateLogin}"
+                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdateLogin.tooltip}"
+                                                       id="ot31">
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.LmkIntNotificationsVwView1.hints.NumLastUpdateLogin.format}"/>
+                                        </af:outputText>
+                                    </af:column>
+                                </af:table>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>     
+                    </f:facet>                
+                </af:pageTemplate>
+                
+                <!-- ################################### POPUP ALTA ############################################# !-->
+                <af:popup id="popupSave" contentDelivery="lazyUncached"
+                          binding="#{NotificationsBean.poPopupSave}">
+                    <af:panelWindow id="PnlSave" modal="true" closeIconVisible="false"
+                                    title="Alta" titleIconSource="/images/date_new.gif" 
+                                    styleClass="AFStretchWidth">
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpAlta" valign="middle" halign="center" 
+                        styleClass="AFStretchWidth">
+                            <af:panelFormLayout id="PnlFrmAlta" rows="16" maxColumns="1" inlineStyle="width:400px;">  
+                                            <af:inputText label="idNotification"                                                  
+                                                  id="TxtSaveIdNot" visible="false"
+                                                  binding="#{NotificationsBean.poSaveIdNotification}"/>
+                                            
+                                            <af:inputText label="liIdService"                                                  
+                                                  id="TxtSaveIdService" visible="false"
+                                                  binding="#{NotificationsBean.poSaveIdService}"/>
+                                            
+                                            <af:inputText label="liIndService"                                                  
+                                                  id="TxtSaveIndService" readOnly="true"
+                                                  binding="#{NotificationsBean.poSaveIndService}"/>
+                                            
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Proceso"
+                                                                binding="#{NotificationsBean.poSaveIndProcessSel}"
+                                                                shortDesc="Proceso"
+                                                                id="soc2savpe">
+                                                <f:selectItems value="#{NotificationsBean.listProcess}" id="sid2sapve"/>
+                                            </af:selectOneChoice>      
+                                            
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Grupo Usuarios"
+                                                                binding="#{NotificationsBean.poSaveIndUsersGroupSel}"
+                                                                shortDesc="Grupo Usuarios"
+                                                                id="soc2savpegu">
+                                                <f:selectItems value="#{NotificationsBean.listUsersGroups}" id="sid2sapvegu"/>
+                                            </af:selectOneChoice>   
+                                            <af:inputText label="Asunto"                                                  
+                                                  id="TxtSaveIndSubject"
+                                                  binding="#{NotificationsBean.poSaveIndSubject}"/>
+                                            
+                                            <af:inputText label="Mensaje"                                                  
+                                                  id="TxtSaveIndMessage"
+                                                  binding="#{NotificationsBean.poSaveIndMessage}"/>
+                                            
+                                    <af:selectBooleanCheckbox text="" label="Estatus" id="sbcSta"
+                                                              binding="#{NotificationsBean.poPopSaveStatus}"/>
+                                    <af:separator id="sepTitleEncFin"/>                                  
+                                <af:spacer width="10" height="10" id="SpPopTm2"/>
+                            </af:panelFormLayout>
+                            <af:panelGroupLayout id="PnlFrmBtnsPg">
+                                <af:button text="Aceptar" id="BtnAceptAlt" icon="/images/aceptar.gif"
+                                            shortDesc="Guardar"
+                                           action="#{NotificationsBean.saveAction}"/>
+                                <af:spacer width="10" height="10" id="SpcPopSaveCancel"/>
+                                <af:button text="Cancelar" id="BtnCancelAlt" icon="/images/cancelar.gif" 
+                                shortDesc="Cierra el Popup." immediate="true"
+                                           action="#{NotificationsBean.cancelSaveAction}"/>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:panelWindow>
+                </af:popup>
+                <!-- ################################### POPUP ELIMINAR ######################################### !-->
+                <af:popup id="popupDelete" contentDelivery="lazyUncached"                          
+                          binding="#{NotificationsBean.poPopupDelete}">
+                  <af:panelWindow id="PnlDelete" 
+                               inlineStyle="border-style:none;"
+                               modal="true" 
+                               closeIconVisible="false"
+                               title="Eliminar" 
+                               titleIconSource="/images/date_delete.gif">
+                    <af:panelGroupLayout layout="vertical" 
+                                      id="PnlDeleteWsMsg" 
+                                      inlineStyle="border-style:none;" 
+                                      valign="middle" 
+                                      halign="center">
+                      <af:spacer width="10" height="10" id="SpcLogin_41aDel"/>
+                      <af:panelLabelAndMessage id="PnlLblMsg"
+                                               inlineStyle="border-style:none; color:Olive;"
+                                               binding="#{NotificationsBean.poDeleteMsgLbl}"/>
+                         <af:spacer width="50" height="25" id="SpcPopDel01"/>
+                         <af:outputText id="TxtIdBindingsDelete" binding="#{NotificationsBean.poDeleteIdBinding}" 
+                         visible="false"/>
+                         <af:panelGroupLayout layout="horizontal" id="PnlEliminarBtns" inlineStyle="border-style:none;" 
+                         valign="middle" halign="center">
+                           <af:button text="Aceptar" id="BtnEliminarAceptar"
+                                             icon="/images/aceptar.gif"
+                                             action="#{NotificationsBean.deleteAction}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
+                           <af:spacer width="10" height="25" id="SpcPopDel02"/>
+                           <af:button text="Cancelar" id="BtnEliminarCancelar"
+                                             icon="/images/cancelar.gif"
+                                             action="#{NotificationsBean.cancelDelete}"/>
+                       </af:panelGroupLayout> 
+                    </af:panelGroupLayout>
+                  </af:panelWindow>
+                </af:popup>
+                <!-- ################################### POPUP EDITAR ############################################ !-->
+                <af:popup id="popupUdateService" contentDelivery="lazyUncached"
+                          binding="#{NotificationsBean.poPopupUpdate}">
+                    <af:panelWindow id="PnlUpdService" modal="true" closeIconVisible="false"
+                                    title="Editar" titleIconSource="/images/note.gif" 
+                                    styleClass="AFStretchWidth">
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpUpdWs" valign="middle" halign="center" 
+                        styleClass="AFStretchWidth">
+                            <af:panelFormLayout id="PnlFrmUpdWs" rows="17" maxColumns="1" inlineStyle="width:400px;">                                 
+                                    <af:inputText label="id"                                                  
+                                                  visible="false"
+                                                  id="it9Upd"
+                                                  binding="#{NotificationsBean.poPopUpIdNotification}">
+                                    </af:inputText>
+                                      
+                                    <af:inputText label="liIdService"                                                  
+                                                  id="TxtUpdIdService" visible="false"
+                                                  binding="#{NotificationsBean.poUpdIdService}"/>
+                                            
+                                            <af:inputText label="liIndService"                                                  
+                                                  id="TxtUpdIndService" readOnly="true"
+                                                  binding="#{NotificationsBean.poUpdIndService}"/>
+                                            
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Proceso"
+                                                                binding="#{NotificationsBean.poUpdIndProcessSel}"
+                                                                shortDesc="Proceso"
+                                                                id="soc2Upde">
+                                                <f:selectItems value="#{NotificationsBean.listProcess}" id="sid2sUpde"/>
+                                            </af:selectOneChoice>      
+                                            
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
+                                                                label="Grupo Usuarios"
+                                                                binding="#{NotificationsBean.poUpdIndUsersGroupSel}"
+                                                                shortDesc="Grupo Usuarios"
+                                                                id="soc2saUpdegu">
+                                                <f:selectItems value="#{NotificationsBean.listUsersGroups}" id="sid2saUpdu"/>
+                                            </af:selectOneChoice>   
+                                            <af:inputText label="Asunto"                                                  
+                                                  id="TxtUpdIndSubject"
+                                                  binding="#{NotificationsBean.poUpdIndSubject}"/>
+                                            
+                                            <af:inputText label="Mensaje"                                                  
+                                                  id="TxtUpdIndMessage"
+                                                  binding="#{NotificationsBean.poUpdIndMessage}"/>
+                                      
+                                    <af:selectBooleanCheckbox text="" label="Estatus" id="sbcStaUpd"
+                                                              binding="#{NotificationsBean.poPopUpdStatus}"/>
+                                    <af:separator id="sepTiEncFin"/>                                  
+                                <af:spacer width="10" height="10" id="SpPopTUpd"/>
+                            </af:panelFormLayout>
+                            <af:panelGroupLayout id="PnlFrmBtnsPgUpd">
+                                <af:button text="Aceptar" id="BtnAceptUpdWs" icon="/images/aceptar.gif"
+                                            shortDesc="Guardar"
+                                           action="#{NotificationsBean.updateAction}"/>
+                                <af:spacer width="10" height="10" id="SpcUpd111"/>
+                                <af:button text="Cancelar" id="BtnCancelUpd" icon="/images/cancelar.gif" 
+                                shortDesc="Cierra el Popup." immediate="true"
+                                           action="#{NotificationsBean.cancelUpdateAction}"/>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:panelWindow>
+                </af:popup>
+                
+                
+                <!-- ################################### POPUP LOADING .... ##################################### !-->
+                <af:popup id="popLoading" contentDelivery="immediate">
+                  <af:dialog id="dlgLoading" type="none" title="Procesando Información" closeIconVisible="false">
+                    <af:panelGroupLayout id="PnlLoading" layout="vertical" halign="center">
+                      <af:image source="/images/loading110.gif" id="ImgIdxLoad" shortDesc="Espere..."/>
+                      <af:outputText value="... por favor espere." id="LblIdxLoad1Login"/>
+                    </af:panelGroupLayout>
+                  </af:dialog>
+                </af:popup>
+            </af:form>
+        </af:document>
+    </f:view>
+</jsp:root>
