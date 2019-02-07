@@ -40,6 +40,8 @@ import javax.ws.rs.core.UriBuilder;
 
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 
+import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
+
 import oracle.adf.model.BindingContext;
 import oracle.adf.model.binding.DCBindingContainer;
 import oracle.adf.model.binding.DCIteratorBinding;
@@ -444,6 +446,7 @@ public class UtilFaces {
      * @return void
      */
     public void insertBitacoraServiceService(LmkIntServiceBitacoraRowBean loBean) {
+        System.out.println("Insertando en bitacora");
        ApplicationModule         loAm =
            Configuration.createRootApplicationModule(gsAmDef, gsConfig);
        AppModuleImpl loService = (AppModuleImpl)loAm;
@@ -573,4 +576,71 @@ public class UtilFaces {
         }
         return lbRes;
     }
+    
+    /**
+     * Agrega registro del log de servicio
+     * @autor Jorge Luis Bautista Santiago
+     * @param tiIdLogServices
+     * @param tiIdService
+     * @param tiIndProcess
+     * @param tsIndResponse
+     * @param piNumUser
+     * @param tiNumEvtbProcessId
+     * @param tiNumPgmProcessID
+     * @param tsProceso
+     * @return void
+     */
+    public void insertLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
+       ApplicationModule         loAm =
+           Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+       AppModuleImpl loService = (AppModuleImpl)loAm;
+       try {
+           loService.insertServicesLogModel(toLmkBean);
+       } catch (Exception loEx) {
+           System.out.println("Util-ERROR(insertLogServiceService): " + loEx.getMessage());
+       } finally {
+           Configuration.releaseRootApplicationModule(loAm, true);
+           loAm.remove();
+       }
+    }
+    
+    /**
+    * Actualiza registro del log de servicio
+    * @autor Jorge Luis Bautista Santiago
+    * @param tiIdLogServices
+    * @param tiIdService
+    * @param tiIndProcess
+    * @param tsIndResponse
+    * @param tiNumUser
+    * @param tiNumEvtbProcessId
+    * @param tiNumPgmProcessID
+    * @param tsProceso
+    * @return void
+    */
+    public void updateLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
+       ApplicationModule         loAm =
+           Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+       AppModuleImpl loService = (AppModuleImpl)loAm;
+       try {
+           loService.updateServicesLogModel(toLmkBean);
+           
+           /*
+           loService.updateServicesLogModel(tiIdLogServices, 
+                                            tiIdService,
+                                            tiIndProcess,
+                                            tsIndResponse,
+                                            tiNumEvtbProcessId,
+                                            tiNumPgmProcessID,
+                                            tsProceso,
+                                            tiIdUser,
+                                            tsUserName
+                                            );*/
+       } catch (Exception loEx) {
+           System.out.println("ERROR en update LogService:"+loEx.getMessage());
+       } finally {
+           Configuration.releaseRootApplicationModule(loAm, true);
+           loAm.remove();
+       }
+    }
+    
 }

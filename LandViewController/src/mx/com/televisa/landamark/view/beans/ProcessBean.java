@@ -65,6 +65,7 @@ import oracle.jbo.client.Configuration;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 
 import org.quartz.CronScheduleBuilder;
+import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -312,6 +313,7 @@ public class ProcessBean {
         executeProcessAction("EXECUTE", 
                              getPoExecuteIdBinding(), 
                              getPoExecuteNomBinding(),
+                             getPoExecuteTypeService(),
                              getPoPopupExecute());
         return null;
     }
@@ -319,39 +321,18 @@ public class ProcessBean {
     /**
      * Ejecuta la logica de ejecucion de servicio para Programas
      * @autor Jorge Luis Bautista Santiago
-     * @param piIdUser
-     * @param psUserName
-     * @param psIdService
-     * @param psServiceToInvoke
-     * @param psServiceAction
-     * @param psIdTrigger
+     * @param toPrcBean
      * @param poService
      * @return ExecuteServiceResponseBean
      */
     public ExecuteServiceResponseBean processServiceExecution(ProcessServiceBean toPrcBean,
+                                                              Class<? extends Job> loClassCron,
                                                               AppModuleImpl poService
                                                               ){
         ExecuteServiceResponseBean         loRes = new ExecuteServiceResponseBean();
         String                             lsFinalMessage = "";
         String                             lsColorMessage = "red";
         
-        /*List<LmkIntServicesParamsRowBean> laList = 
-            poService.getParametersServiceByIdService(Integer.parseInt(toPrcBean.getLsIdService())); 
-        // FECHA//
-        String                             lsDateQuery = null;
-        for(LmkIntServicesParamsRowBean loParm : laList){
-            if(loParm.getLsIndParameter().equalsIgnoreCase("FECHA")){
-                lsDateQuery = loParm.getLsIndValParameter();
-            }                       
-        }
-        //CANALES//
-        List<String>                       laChannels = new ArrayList<String>();
-        for(LmkIntServicesParamsRowBean loParm : laList){
-            if(loParm.getLsIndParameter().equalsIgnoreCase("CANAL")){
-                laChannels.add(loParm.getLsIndValParameter());
-            }                       
-        }*/
-        //if(lsDateQuery != null && laChannels.size() > 0){
         if(toPrcBean.getLsServiceAction().equalsIgnoreCase("EXECUTE")){
             lsFinalMessage = 
                 "El Servicio de " + toPrcBean.getLsServiceToInvoke() + 
@@ -380,7 +361,7 @@ public class ProcessBean {
                 loBean.setLiIdLogServices(0);
                 loBean.setLiIdService(Integer.parseInt(toPrcBean.getLsIdService()));
                 loBean.setLiIndProcess(liIndProcess);
-                loBean.setLsIndEvento("Ejecucion Manual de Servicio Dummy");
+                loBean.setLsIndEvento("Ejecucion Manual de Servicio "+toPrcBean.getLsServiceName());
                 loBean.setLiNumProcessId(liNumEvtbProcessId);
                 loBean.setLiNumPgmProcessId(liNumPgmProcessID);
                 loBean.setLsIdBitacora("0");
@@ -392,7 +373,7 @@ public class ProcessBean {
                 try {
                     loScheduler = new StdSchedulerFactory().getScheduler();
                     JobDetail loJob = 
-                        JobBuilder.newJob(ExecuteDummyCron.class).build();
+                        JobBuilder.newJob(loClassCron).build();
                     Trigger   loTrigger = 
                         TriggerBuilder.newTrigger().withIdentity(toPrcBean.getLsIdTrigger()).build();
                     JobDataMap loJobDataMap=  loJob.getJobDataMap();
@@ -401,11 +382,12 @@ public class ProcessBean {
                     loJobDataMap.put("lsUserName", toPrcBean.getLsUserName()); 
                     //loJobDataMap.put("lsIdRequest", lsIdRequest); 
                     loJobDataMap.put("lsTypeRequest", "normal");
+                    loJobDataMap.put("lsTypeProcess", toPrcBean.getLsTypeProcess());
+                    loJobDataMap.put("lsServiceName", toPrcBean.getLsServiceName());
                     loScheduler.scheduleJob(loJob, loTrigger);
                     loScheduler.start();
                     
                 } catch (Exception loEx) {
-                    
                     lsFinalMessage = loEx.getMessage();
                     lsColorMessage = "red";
                 } 
@@ -431,7 +413,7 @@ public class ProcessBean {
                         if(lsCronExpression != null){
                             loScheduler = new StdSchedulerFactory().getScheduler();
                             JobDetail loJob = 
-                                JobBuilder.newJob(ExecuteDummyCron.class).build();
+                                JobBuilder.newJob(loClassCron).build();
                             if(loRowCron.getLsIndPeriodicity().equalsIgnoreCase("MINUTOS")){
                                 lbSimple = true;
                             }
@@ -488,8 +470,9 @@ public class ProcessBean {
                             loJobDataMap.put("lsIdService", toPrcBean.getLsIdService()); 
                             loJobDataMap.put("liIdUser", String.valueOf(toPrcBean.getLiIdUser())); 
                             loJobDataMap.put("lsUserName", toPrcBean.getLsUserName()); 
-                            //loJobDataMap.put("lsIdRequest", lsIdRequest);      
                             loJobDataMap.put("lsTypeRequest", "normal");
+                            loJobDataMap.put("lsTypeProcess", toPrcBean.getLsTypeProcess());
+                            loJobDataMap.put("lsServiceName", toPrcBean.getLsServiceName());
                             loScheduler.scheduleJob(loJob, loTrigger);
                             Integer piIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("BeginCron");
@@ -500,14 +483,12 @@ public class ProcessBean {
                             loBean.setLiIdLogServices(0);
                             loBean.setLiIdService(Integer.parseInt(toPrcBean.getLsIdService()));
                             loBean.setLiIndProcess(piIndProcess);
-                            loBean.setLsIndEvento("Inicio Programado del Servicio Dummy");
+                            loBean.setLsIndEvento("Inicio Programado del Servicio "+toPrcBean.getLsServiceName());
                             loBean.setLiNumProcessId(piNumEvtbProcessId);
                             loBean.setLiNumPgmProcessId(piNumPgmProcessID);
                             loBean.setLsIdBitacora("0");
                             loBean.setLiIdUser(toPrcBean.getLiIdUser());
                             loBean.setLsUserName(toPrcBean.getLsUserName());
-                            
-                            
                             new UtilFaces().insertBitacoraServiceService(loBean);
                             
                             new UtilFaces().updateStatusCronService(Integer.parseInt(toPrcBean.getLsIdService()),
@@ -543,14 +524,7 @@ public class ProcessBean {
             }
         }
         
-        /*                            
-        }
-        else{
-            lsFinalMessage = "ATENCION: Insuficientes Parametros de Ejecucion";
-            lsColorMessage = "red";
-        }*/
-        
-        /*###### Detener Cron del Servicio de Programas #####*/
+        /*###### Detener Cron del Servicio #####*/
         if(toPrcBean.getLsServiceAction().equalsIgnoreCase("STOP")){
             String    lsNewCronExpression = "0 0 1 1/1 * ? *"; 
             Scheduler loScheduler;
@@ -571,7 +545,7 @@ public class ProcessBean {
                 loBean.setLiIdLogServices(0);
                 loBean.setLiIdService(Integer.parseInt(toPrcBean.getLsIdService()));
                 loBean.setLiIndProcess(liIndProcess);
-                loBean.setLsIndEvento("Inicio Programado del Servicio Dummy");
+                loBean.setLsIndEvento("Servicio "+toPrcBean.getLsServiceName()+" en segundo plano ha sido Detenido");
                 loBean.setLiNumProcessId(liNumEvtbProcessId);
                 loBean.setLiNumPgmProcessId(liNumPgmProcessID);
                 loBean.setLsIdBitacora("0");
@@ -623,6 +597,7 @@ public class ProcessBean {
         executeProcessAction("BEGIN", 
                              getPoBeginIdBinding(), 
                              getPoBeginNomBinding(),
+                             getPoBeginTypeService(),
                              getPoPopupBegin());
         return null;
     }
@@ -636,7 +611,8 @@ public class ProcessBean {
      */
     public void executeProcessAction(String lsAction, 
                                      RichOutputText loIdService, 
-                                     RichOutputText loNomService,
+                                     RichOutputText loTypeService,
+                                     RichOutputText loNameService,
                                      RichPopup toPopup){
        
         String              lsFinalMessage = "Acción Satisfactoria";
@@ -660,32 +636,54 @@ public class ProcessBean {
                 loIdService.getValue() == null ? null : 
                 loIdService.getValue().toString();    
             System.out.println(">>>> lsIdService: "+lsIdService);
-            String lsServiceToInvoke = 
-                loNomService.getValue() == null ? null : 
-                loNomService.getValue().toString();
-            System.out.println(">>>> lsServiceToInvoke: "+lsServiceToInvoke);
+            String lsTypeService = 
+                loTypeService.getValue() == null ? null : 
+                loTypeService.getValue().toString();
+            System.out.println(">>>> lsTypeService: "+lsTypeService);
+            
+            String lsNameService = 
+                loNameService.getValue() == null ? null : 
+                loNameService.getValue().toString();
+            System.out.println(">>>> lsNameService: "+lsNameService);
+            
             String lsServiceAction = lsAction;   
-            String lsIdTrigger = lsIdService + "-" + lsServiceToInvoke;
+            String lsIdTrigger = lsIdService + "-" + lsTypeService;
             System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> ["+lsServiceAction+"]*********");
             lsGeneralAction = lsServiceAction;
             System.out.println(">>>> lsGeneralAction: "+lsGeneralAction);
             ProcessServiceBean loProcessBean = new ProcessServiceBean();
+            loProcessBean.setLiIdUser(liIdUser);
+            loProcessBean.setLsUserName(lsUserName);
+            loProcessBean.setLsIdTrigger(lsIdTrigger);
+            loProcessBean.setLsIdService(lsIdService);
+            loProcessBean.setLsServiceToInvoke(lsTypeService);
+            loProcessBean.setLsServiceAction(lsServiceAction);
             
-            if(lsServiceToInvoke != null){
+            loProcessBean.setLsTypeProcess(lsTypeService);
+            loProcessBean.setLsServiceName(lsNameService);
+            
+            if(lsTypeService != null){
                 /*################ DUMMY ############################*/
-                if(lsServiceToInvoke.equalsIgnoreCase("DummyProcess")){
-                    loProcessBean.setLiIdUser(liIdUser);
-                    loProcessBean.setLsUserName(lsUserName);
-                    loProcessBean.setLsIdService(lsIdService);
-                    loProcessBean.setLsServiceToInvoke(lsServiceToInvoke);
-                    loProcessBean.setLsServiceAction(lsServiceAction);
-                    loProcessBean.setLsIdTrigger(lsIdTrigger);
-                    System.out.println(">>>> Ejecutar processServiceExecution: ");
+                if(lsTypeService.equalsIgnoreCase("DummyProcess")){
+                    System.out.println(">>>> Ejecutar processServiceExecution para DummyProcess: ");
                     ExecuteServiceResponseBean loRes =
-                        processServiceExecution(loProcessBean,loService);
+                    processServiceExecution(loProcessBean, 
+                                            ExecuteDummyCron.class,
+                                            loService);
                     lsColorMessage = loRes.getLsColor();
                     lsFinalMessage = loRes.getLsMessage();
                 }
+                /*################ PARRILLAS AND PROGRAMAS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessParrillasProgramas")){
+                    System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                ExecuteDummyCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                
             }                        
         } catch (Exception loEx) {
             lsFinalMessage = loEx.getMessage();
@@ -739,6 +737,7 @@ public class ProcessBean {
         executeProcessAction("STOP", 
                              getPoStopIdBinding(), 
                              getPoStopNomBinding(),
+                             getPoStopTypeService(),
                              getPoPopupStop());
         return null;
     }

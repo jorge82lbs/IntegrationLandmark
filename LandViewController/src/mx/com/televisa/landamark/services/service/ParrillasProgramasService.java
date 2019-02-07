@@ -8,13 +8,14 @@ import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
 
-public class DummyService {
-    public DummyService() {
+public class ParrillasProgramasService {
+    public ParrillasProgramasService() {
         super();
     }
-    public ResponseService executeDummyBean(BasicInputParameters loInput){
+    
+    public ResponseService executeService(BasicInputParameters loInput){
         ResponseService loResponseService = new ResponseService();
-        String lsReturn = "Son mis pitbulls y el bolo";
+        String lsReturn = "Parrillas Programas execute";
         loResponseService.setLiIdRequest(loInput.getLiIdRequest());
         loResponseService.setLiIdService(loInput.getLiIdService());
         loResponseService.setLiIdUser(loInput.getLiIdUser());
@@ -34,12 +35,13 @@ public class DummyService {
         loSlb.setLsIndEstatus("1");
         loSlb.setLsIndResponse("N");
         loSlb.setLsIndServiceType(loInput.getLsServiceType());
-        loSlb.setLsMessage("Execute DummyProccess");
+        loSlb.setLsMessage("Execute "+loInput.getLsServiceType());
         loSlb.setLsUserName(loInput.getLsUserName());
         loSlb.setLiIdUser(loInput.getLiIdUser());
         new UtilFaces().insertLogServiceService(loSlb);
         
-        System.out.println("Ejecutando DummyBean a las "+new Date()+" Input["+loInput.getLsMessage()+"]");
+        System.out.println("Ejecutando "+loInput.getLsServiceType()+" a las "+
+                           new Date()+" Input["+loInput.getLsMessage()+"]");
 
         return loResponseService;
     }

@@ -29,6 +29,24 @@ public class ProcessServiceBean {
     private String lsServiceToInvoke;
     private String lsServiceAction;
     private String lsIdTrigger;
+    private String lsServiceName;
+    private String lsTypeProcess;
+
+    public void setLsServiceName(String lsServiceName) {
+        this.lsServiceName = lsServiceName;
+    }
+
+    public String getLsServiceName() {
+        return lsServiceName;
+    }
+
+    public void setLsTypeProcess(String lsTypeProcess) {
+        this.lsTypeProcess = lsTypeProcess;
+    }
+
+    public String getLsTypeProcess() {
+        return lsTypeProcess;
+    }
 
     public void setLsIdTrigger(String lsIdTrigger) {
         this.lsIdTrigger = lsIdTrigger;

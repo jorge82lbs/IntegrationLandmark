@@ -13,6 +13,34 @@ public class LmkIntServicesLogRowBean {
     private Integer liNumPgmProcessId;
     private String lsIndServiceType;
     private String lsIndEstatus;
+    private String lsMessage;
+    private String lsUserName;
+    private Integer liIdUser;
+
+    public void setLiIdUser(Integer liIdUser) {
+        this.liIdUser = liIdUser;
+    }
+
+    public Integer getLiIdUser() {
+        return liIdUser;
+    }
+
+    public void setLsUserName(String lsUserName) {
+        this.lsUserName = lsUserName;
+    }
+
+    public String getLsUserName() {
+        return lsUserName;
+    }
+    
+
+    public void setLsMessage(String lsMessage) {
+        this.lsMessage = lsMessage;
+    }
+
+    public String getLsMessage() {
+        return lsMessage;
+    }
 
     public void setLiIdLogServices(Integer liIdLogServices) {
         this.liIdLogServices = liIdLogServices;

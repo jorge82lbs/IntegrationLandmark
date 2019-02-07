@@ -3,10 +3,8 @@ package mx.com.televisa.landamark.services.jobs;
 import java.util.Date;
 
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
-import mx.com.televisa.landamark.services.service.DummyService;
-
+import mx.com.televisa.landamark.services.service.ParrillasProgramasService;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
-
 import mx.com.televisa.landamark.view.types.ResponseService;
 
 import org.quartz.Job;
@@ -14,8 +12,8 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class ExecuteDummyCron implements Job{
-    public ExecuteDummyCron() {
+public class ParrillasProgramasCron implements Job{
+    public ParrillasProgramasCron() {
         super();
     }
 
@@ -28,9 +26,7 @@ public class ExecuteDummyCron implements Job{
         String                    lsIdUser = loDataMap.getString("liIdUser");
         String                    lsTypeProcess = loDataMap.getString("lsTypeProcess");
         Integer                            liIdRequest = 
-            new ViewObjectDao().getMaxIdParadigm("Request") + 1;
-        
-        DummyService loDummyService = new DummyService();
+            new ViewObjectDao().getMaxIdParadigm("Request") + 1;        
         
         BasicInputParameters loInput = new BasicInputParameters();
         loInput.setLiIdRequest(liIdRequest);
@@ -40,8 +36,9 @@ public class ExecuteDummyCron implements Job{
         loInput.setLsUserName(lsUserName);
         loInput.setLsServiceType(lsTypeProcess);
         
-        ResponseService loPits = loDummyService.executeDummyBean(loInput);
+        ParrillasProgramasService loService = new ParrillasProgramasService();
+        ResponseService loPits = loService.executeService(loInput);
         
-        System.out.println("ID["+liIdRequest+"]Finish de Cron >> Dummy ["+loPits.getLsMessageResponse()+"]");
+        System.out.println("ID["+liIdRequest+"]Finish de Cron >> "+lsTypeProcess+" ["+loPits.getLsMessageResponse()+"]");
     }
 }

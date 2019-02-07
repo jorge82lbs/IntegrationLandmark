@@ -207,15 +207,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     /**
      * Insert en tabla de LOG de Servicios
      * @autor Jorge Luis Bautista Santiago  
-     * @param piIdBitacora
-     * @param piIdLogServices
-     * @param piIdService
-     * @param piIndProcess
-     * @param psIndResponse
-     * @param piNumUser
-     * @param piNumEvtbProcessId
-     * @param piNumPgmProcessID
-     * @param psProceso
+     * @param toBean
      * @return void
      */
     public void insertServiceBitacoraModel(LmkIntServiceBitacoraRowBean toBean) {   
@@ -244,7 +236,8 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             loNewRow.setNumCreatedBy(lsIdUser);
             loNewRow.setNumLastUpdateLogin(lsIdUser);
             loNewRow.setNumLastUpdatedBy(lsIdUser);
-            loObj.insertRow(loNewRow);          
+            loObj.insertRow(loNewRow);      
+            System.out.println("INSERT BITACORA SUCCESS");
         } catch (Exception loEx) {
             System.out.println("Insert ERROR insertBitacoraLogModel !!"+loEx.getMessage());
         }finally{                        
@@ -492,30 +485,42 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      * @param toLmkBean
      * @return void
      */
-    public void insertServicesLogModel(LmkIntServicesLogRowBean toLmkBean) {   
-       
-        
+    public void insertServicesLogModel(LmkIntServicesLogRowBean toLmkBean) {  
+        Integer liIdUser = toLmkBean.getLiIdUser();
+        String lsUserName = toLmkBean.getLsUserName();
+        System.out.println("toLmkBean.getLiIdLogServices(): ["+toLmkBean.getLiIdLogServices()+"]");
+        System.out.println("toLmkBean.getLiIdService(): ["+toLmkBean.getLiIdService()+"]");
+        System.out.println("toLmkBean.getLiIndProcess(): ["+toLmkBean.getLiIndProcess()+"]");
+        System.out.println("toLmkBean.getLsIndResponse(): ["+toLmkBean.getLsIndResponse()+"]");
+        System.out.println("toLmkBean.getLiNumPgmProcessId(): ["+toLmkBean.getLiNumPgmProcessId()+"]");
+        System.out.println("toLmkBean.getLsIndServiceType(): ["+toLmkBean.getLsIndServiceType()+"]");
+        System.out.println("IdUser: ["+liIdUser+"]");
+        System.out.println("UserName: ["+lsUserName+"]");
+        System.out.println("Timestamp: ["+getCurrentTimestamp()+"]");
         LmkIntServicesLogTabViewImpl    loObj = 
             getLmkIntServicesLogTabView1();
         LmkIntServicesLogTabViewRowImpl loRow = 
             (LmkIntServicesLogTabViewRowImpl)loObj.createRow();        
         try {
+            System.out.println("Insertando en LmkIntServicesLogTab");
             loRow.setIdLogServices(toLmkBean.getLiIdLogServices());
             loRow.setIdService(toLmkBean.getLiIdService());
             loRow.setIndProcess(toLmkBean.getLiIndProcess());
             loRow.setIndResponse(toLmkBean.getLsIndResponse());
-            loRow.setNumUser(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
+            loRow.setNumUser(liIdUser);
             loRow.setNumProcessId(toLmkBean.getLiNumProcessId());
             loRow.setNumPgmProcessId(toLmkBean.getLiNumPgmProcessId());            
-            loRow.setFecRequest(new Timestamp(System.currentTimeMillis()));            
+            loRow.setFecRequest(getCurrentTimestamp());        
+            loRow.setIndServiceType(toLmkBean.getLsIndServiceType());
             loRow.setIndEstatus("1");            
-            loRow.setFecCreationDate(new Timestamp(System.currentTimeMillis()));
-            loRow.setFecLastUpdateDate(new Timestamp(System.currentTimeMillis()));
-            loRow.setAttribute15(getValueSessionFromAttribute("loggedPgmIntegrationUser"));
-            loRow.setNumCreatedBy(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
-            loRow.setNumLastUpdateLogin(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
-            loRow.setNumLastUpdatedBy(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
+            loRow.setFecCreationDate(getCurrentTimestamp());
+            loRow.setFecLastUpdateDate(getCurrentTimestamp());
+            loRow.setAttribute15(lsUserName);
+            loRow.setNumCreatedBy(liIdUser);
+            loRow.setNumLastUpdateLogin(liIdUser);
+            loRow.setNumLastUpdatedBy(liIdUser);
             loObj.insertRow(loRow);          
+            System.out.println("Insertando en LmkIntServicesLogTab........ OK");
         } catch (Exception loEx) {
             System.out.println("Insert ERROR insertServicesLogModel !!"+loEx.getMessage());
         }finally{                        
@@ -531,7 +536,8 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      */
     public void updateServicesLogModel(LmkIntServicesLogRowBean toLmkBean) {   
         try {
-            
+            Integer liIdUser = toLmkBean.getLiIdUser();
+            String lsUserName = toLmkBean.getLsUserName();
             LmkIntServicesLogTabViewImpl    loObj = 
                 getLmkIntServicesLogTabView1();
             loObj.setWhereClause("ID_LOG_SERVICES = " + toLmkBean.getLiIdLogServices());
@@ -547,15 +553,15 @@ public class AppModuleImpl extends ApplicationModuleImpl {
                 loRow.setIdService(toLmkBean.getLiIdService());
                 loRow.setIndProcess(toLmkBean.getLiIndProcess());
                 loRow.setIndResponse(toLmkBean.getLsIndResponse());
-                loRow.setNumUser(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
+                loRow.setNumUser(liIdUser);
                 loRow.setNumProcessId(toLmkBean.getLiNumProcessId());
                 loRow.setNumPgmProcessId(toLmkBean.getLiNumPgmProcessId());            
                 loRow.setFecRequest(new Timestamp(System.currentTimeMillis()));            
                 loRow.setIndEstatus(toLmkBean.getLsIndEstatus());        
                 loRow.setFecLastUpdateDate(getCurrentTimestamp());
-                loRow.setAttribute14(getValueSessionFromAttribute("loggedPgmIntegrationUser"));                
-                loRow.setNumLastUpdateLogin(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
-                loRow.setNumLastUpdatedBy(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
+                loRow.setAttribute14(lsUserName);                
+                loRow.setNumLastUpdateLogin(liIdUser);
+                loRow.setNumLastUpdatedBy(liIdUser);
             }//loObj.insertRow(loRow);          
         } catch (Exception loEx) {
             System.out.println("update ERROR!!"+loEx.getMessage());
