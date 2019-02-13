@@ -237,7 +237,6 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             loNewRow.setNumLastUpdateLogin(lsIdUser);
             loNewRow.setNumLastUpdatedBy(lsIdUser);
             loObj.insertRow(loNewRow);      
-            System.out.println("INSERT BITACORA SUCCESS");
         } catch (Exception loEx) {
             System.out.println("Insert ERROR insertBitacoraLogModel !!"+loEx.getMessage());
         }finally{                        
@@ -488,7 +487,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     public void insertServicesLogModel(LmkIntServicesLogRowBean toLmkBean) {  
         Integer liIdUser = toLmkBean.getLiIdUser();
         String lsUserName = toLmkBean.getLsUserName();
-        System.out.println("toLmkBean.getLiIdLogServices(): ["+toLmkBean.getLiIdLogServices()+"]");
+        /*System.out.println("toLmkBean.getLiIdLogServices(): ["+toLmkBean.getLiIdLogServices()+"]");
         System.out.println("toLmkBean.getLiIdService(): ["+toLmkBean.getLiIdService()+"]");
         System.out.println("toLmkBean.getLiIndProcess(): ["+toLmkBean.getLiIndProcess()+"]");
         System.out.println("toLmkBean.getLsIndResponse(): ["+toLmkBean.getLsIndResponse()+"]");
@@ -496,7 +495,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
         System.out.println("toLmkBean.getLsIndServiceType(): ["+toLmkBean.getLsIndServiceType()+"]");
         System.out.println("IdUser: ["+liIdUser+"]");
         System.out.println("UserName: ["+lsUserName+"]");
-        System.out.println("Timestamp: ["+getCurrentTimestamp()+"]");
+        System.out.println("Timestamp: ["+getCurrentTimestamp()+"]");*/
         LmkIntServicesLogTabViewImpl    loObj = 
             getLmkIntServicesLogTabView1();
         LmkIntServicesLogTabViewRowImpl loRow = 
@@ -1635,6 +1634,14 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      */
     public ViewObjectImpl getLmkIntServicesLogVwView1() {
         return (ViewObjectImpl) findViewObject("LmkIntServicesLogVwView1");
+    }
+
+    /**
+     * Container's getter for LmkIntListChannelsAllVw1View1.
+     * @return LmkIntListChannelsAllVw1View1
+     */
+    public ViewObjectImpl getLmkIntListChannelsAllVw1View1() {
+        return (ViewObjectImpl) findViewObject("LmkIntListChannelsAllVw1View1");
     }
 }
 

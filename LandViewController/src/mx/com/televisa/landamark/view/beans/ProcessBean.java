@@ -27,6 +27,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+import javax.servlet.ServletContext;
+
 import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
@@ -36,6 +38,7 @@ import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
+import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
 import mx.com.televisa.landamark.view.types.ExecuteServiceResponseBean;
 import mx.com.televisa.landamark.view.types.ProcessServiceBean;
 import mx.com.televisa.landamark.view.types.SelectOneItemBean;
@@ -210,7 +213,10 @@ public class ProcessBean {
     private RichOutputText            poExecuteTypeService;
     private RichOutputText            poBeginTypeService;
     private RichOutputText            poStopTypeService;
-    
+    private RichPopup poPopupParams;
+    private RichInputText poParamsIdService;
+    private RichInputText poParamsNomService;
+
     /**
      * Muestra popup para ejecutar el servicio
      * @autor Jorge Luis Bautista Santiago
@@ -384,6 +390,7 @@ public class ProcessBean {
                     loJobDataMap.put("lsTypeRequest", "normal");
                     loJobDataMap.put("lsTypeProcess", toPrcBean.getLsTypeProcess());
                     loJobDataMap.put("lsServiceName", toPrcBean.getLsServiceName());
+                    loJobDataMap.put("lsPathFiles", getRealPath());                    
                     loScheduler.scheduleJob(loJob, loTrigger);
                     loScheduler.start();
                     
@@ -473,6 +480,7 @@ public class ProcessBean {
                             loJobDataMap.put("lsTypeRequest", "normal");
                             loJobDataMap.put("lsTypeProcess", toPrcBean.getLsTypeProcess());
                             loJobDataMap.put("lsServiceName", toPrcBean.getLsServiceName());
+                            loJobDataMap.put("lsPathFiles", getRealPath());
                             loScheduler.scheduleJob(loJob, loTrigger);
                             Integer piIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("BeginCron");
@@ -613,7 +621,7 @@ public class ProcessBean {
                                      RichOutputText loIdService, 
                                      RichOutputText loTypeService,
                                      RichOutputText loNameService,
-                                     RichPopup toPopup){
+                                     RichPopup toPopup){               
        
         String              lsFinalMessage = "Acción Satisfactoria";
         String              lsColorMessage = "blue";
@@ -627,30 +635,30 @@ public class ProcessBean {
             liIdUser = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser") == null ? null :
                 Integer.parseInt(loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser"));
-            System.out.println(">>>> liIdUser: "+liIdUser);
+            //System.out.println(">>>> liIdUser: "+liIdUser);
             lsUserName = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser") == null ? null :
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser").toString();
-            System.out.println(">>>> lsUserName: "+lsUserName);
+            //System.out.println(">>>> lsUserName: "+lsUserName);
             String lsIdService = 
                 loIdService.getValue() == null ? null : 
                 loIdService.getValue().toString();    
-            System.out.println(">>>> lsIdService: "+lsIdService);
+            //System.out.println(">>>> lsIdService: "+lsIdService);
             String lsTypeService = 
                 loTypeService.getValue() == null ? null : 
                 loTypeService.getValue().toString();
-            System.out.println(">>>> lsTypeService: "+lsTypeService);
+            //System.out.println(">>>> lsTypeService: "+lsTypeService);
             
             String lsNameService = 
                 loNameService.getValue() == null ? null : 
                 loNameService.getValue().toString();
-            System.out.println(">>>> lsNameService: "+lsNameService);
+            //System.out.println(">>>> lsNameService: "+lsNameService);
             
             String lsServiceAction = lsAction;   
             String lsIdTrigger = lsIdService + "-" + lsTypeService;
             System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> ["+lsServiceAction+"]*********");
             lsGeneralAction = lsServiceAction;
-            System.out.println(">>>> lsGeneralAction: "+lsGeneralAction);
+            //System.out.println(">>>> lsGeneralAction: "+lsGeneralAction);
             ProcessServiceBean loProcessBean = new ProcessServiceBean();
             loProcessBean.setLiIdUser(liIdUser);
             loProcessBean.setLsUserName(lsUserName);
@@ -678,7 +686,7 @@ public class ProcessBean {
                     System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
-                                                ExecuteDummyCron.class,
+                                                ParrillasProgramasCron.class,
                                                 loService);
                     lsColorMessage = loRes.getLsColor();
                     lsFinalMessage = loRes.getLsMessage();
@@ -3444,5 +3452,55 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         return poStopTypeService;
     }
 
+    public static FacesContext getFacesContext() {
+       return FacesContext.getCurrentInstance();
+    }
     
+    public ServletContext getContext() {
+       return (ServletContext)getFacesContext().getExternalContext().getContext();
+   }
+    
+    public String getRealPath(){
+        ServletContext        loContext = getContext();
+        return loContext.getRealPath("/");
+    }
+    
+    public String getContextPath(){
+        ServletContext        loContext = getContext();
+        return loContext.getContextPath();
+    }
+
+    public void setPoPopupParams(RichPopup poPopupParams) {
+        this.poPopupParams = poPopupParams;
+    }
+
+    public RichPopup getPoPopupParams() {
+        return poPopupParams;
+    }
+
+    public void setPoParamsIdService(RichInputText poParamsIdService) {
+        this.poParamsIdService = poParamsIdService;
+    }
+
+    public RichInputText getPoParamsIdService() {
+        return poParamsIdService;
+    }
+
+    public void setPoParamsNomService(RichInputText poParamsNomService) {
+        this.poParamsNomService = poParamsNomService;
+    }
+
+    public RichInputText getPoParamsNomService() {
+        return poParamsNomService;
+    }
+
+    public String saveParamsAction() {
+        // Add event code here...
+        return null;
+    }
+
+    public String cancelSaveParamsAction() {
+        // Add event code here...
+        return null;
+    }
 }

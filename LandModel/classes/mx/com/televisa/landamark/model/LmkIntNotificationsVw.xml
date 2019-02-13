@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+<!---->
+<Entity
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="LmkIntNotificationsVw"
+  Version="12.1.3.10.47"
+  InheritPersonalization="merge"
+  DBObjectType="table"
+  DBObjectName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+  AliasName="LmkIntNotificationsVw"
+  BindingStyle="JDBC">
+  <Attribute
+    Name="IdNotification"
+    ColumnName="ID_NOTIFICATION"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="IdService"
+    ColumnName="ID_SERVICE"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NomService"
+    IsNotNull="true"
+    Precision="26"
+    ColumnName="NOM_SERVICE"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="26"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndProcess"
+    ColumnName="IND_PROCESS"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NomProcess"
+    IsNotNull="true"
+    Precision="26"
+    ColumnName="NOM_PROCESS"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="26"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndUsersGroup"
+    Precision="150"
+    ColumnName="IND_USERS_GROUP"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="NomGroup"
+    IsNotNull="true"
+    Precision="26"
+    ColumnName="NOM_GROUP"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="26"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndSubject"
+    Precision="150"
+    ColumnName="IND_SUBJECT"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndMessage"
+    Precision="550"
+    ColumnName="IND_MESSAGE"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="550"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndEstatus"
+    Precision="1"
+    ColumnName="IND_ESTATUS"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="1"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="AttributeCategory"
+    Precision="150"
+    ColumnName="ATTRIBUTE_CATEGORY"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute1"
+    Precision="150"
+    ColumnName="ATTRIBUTE1"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute2"
+    Precision="150"
+    ColumnName="ATTRIBUTE2"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute3"
+    Precision="150"
+    ColumnName="ATTRIBUTE3"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute4"
+    Precision="150"
+    ColumnName="ATTRIBUTE4"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute5"
+    Precision="150"
+    ColumnName="ATTRIBUTE5"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute6"
+    Precision="150"
+    ColumnName="ATTRIBUTE6"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute7"
+    Precision="150"
+    ColumnName="ATTRIBUTE7"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute8"
+    Precision="150"
+    ColumnName="ATTRIBUTE8"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute9"
+    Precision="150"
+    ColumnName="ATTRIBUTE9"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute10"
+    Precision="150"
+    ColumnName="ATTRIBUTE10"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute11"
+    Precision="150"
+    ColumnName="ATTRIBUTE11"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute12"
+    Precision="150"
+    ColumnName="ATTRIBUTE12"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute13"
+    Precision="150"
+    ColumnName="ATTRIBUTE13"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute14"
+    Precision="150"
+    ColumnName="ATTRIBUTE14"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="Attribute15"
+    Precision="150"
+    ColumnName="ATTRIBUTE15"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="FecCreationDate"
+    IsNotNull="true"
+    ColumnName="FEC_CREATION_DATE"
+    SQLType="TIMESTAMP"
+    Type="java.sql.Timestamp"
+    ColumnType="TIMESTAMP"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NumCreatedBy"
+    IsNotNull="true"
+    ColumnName="NUM_CREATED_BY"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="FecLastUpdateDate"
+    IsNotNull="true"
+    ColumnName="FEC_LAST_UPDATE_DATE"
+    SQLType="TIMESTAMP"
+    Type="java.sql.Timestamp"
+    ColumnType="TIMESTAMP"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NumLastUpdatedBy"
+    IsNotNull="true"
+    ColumnName="NUM_LAST_UPDATED_BY"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NumLastUpdateLogin"
+    ColumnName="NUM_LAST_UPDATE_LOGIN"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
+    PrimaryKey="true"/>
+  <Key
+    Name="LmkintnotificationsvwPrimaryKey"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DBObjectName" Value="LMKINTNOTIFICATIONSVW_PRIMARY_"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IdNotification"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IdService"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.NomService"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IndProcess"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.NomProcess"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IndUsersGroup"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.NomGroup"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IndSubject"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IndMessage"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.IndEstatus"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.AttributeCategory"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute1"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute2"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute3"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute4"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute5"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute6"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute7"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute8"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute9"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute10"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute11"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute12"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute13"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute14"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.Attribute15"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.FecCreationDate"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.NumCreatedBy"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.FecLastUpdateDate"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.NumLastUpdatedBy"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntNotificationsVw.NumLastUpdateLogin"/>
+    </AttrArray>
+  </Key>
+</Entity>

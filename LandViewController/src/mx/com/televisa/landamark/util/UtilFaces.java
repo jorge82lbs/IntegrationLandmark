@@ -446,7 +446,6 @@ public class UtilFaces {
      * @return void
      */
     public void insertBitacoraServiceService(LmkIntServiceBitacoraRowBean loBean) {
-        System.out.println("Insertando en bitacora");
        ApplicationModule         loAm =
            Configuration.createRootApplicationModule(gsAmDef, gsConfig);
        AppModuleImpl loService = (AppModuleImpl)loAm;

@@ -1,5 +1,7 @@
 package mx.com.televisa.landamark.model.types;
 
+import java.io.InputStream;
+
 public class LmkIntXmlFilesRowBean {
     public LmkIntXmlFilesRowBean() {
         super();
@@ -10,10 +12,36 @@ public class LmkIntXmlFilesRowBean {
     private String lsNomFile;
     private String lsIndFileType;
     private String lsIndServiceType;
-    //private Blob loIndFileStream;
+    private InputStream loIndFileStream;
     private String lsIndEstatus;
     private String lsFecCreationDate;
     private String lsNomUserName;
+    private String lsNomUserPathFile;
+    private Integer liIdUser;
+
+    public void setLiIdUser(Integer liIdUser) {
+        this.liIdUser = liIdUser;
+    }
+
+    public Integer getLiIdUser() {
+        return liIdUser;
+    }
+
+    public void setLsNomUserPathFile(String lsNomUserPathFile) {
+        this.lsNomUserPathFile = lsNomUserPathFile;
+    }
+
+    public String getLsNomUserPathFile() {
+        return lsNomUserPathFile;
+    }
+
+    public void setLoIndFileStream(InputStream loIndFileStream) {
+        this.loIndFileStream = loIndFileStream;
+    }
+
+    public InputStream getLoIndFileStream() {
+        return loIndFileStream;
+    }
 
     public void setLiIdFileXml(Integer liIdFileXml) {
         this.liIdFileXml = liIdFileXml;

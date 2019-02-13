@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='windows-1252' ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+
+<Entity
+   xmlns="http://xmlns.oracle.com/bc4j"
+   Name="LmkIntListChannelsAllVw1"
+   Version="12.1.3.10.47"
+   InheritPersonalization="merge"
+   DBObjectType="table"
+   DBObjectName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+   AliasName="LmkIntListChannelsAllVw1"
+   BindingStyle="JDBC" >
+   <Attribute
+      Name="IdParameter"
+      ColumnName="ID_PARAMETER"
+      SQLType="INTEGER"
+      Type="java.lang.Integer"
+      ColumnType="INTEGER"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+   </Attribute>
+   <Attribute
+      Name="NomParameter"
+      Precision="50"
+      ColumnName="NOM_PARAMETER"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IndDescParameter"
+      Precision="350"
+      ColumnName="IND_DESC_PARAMETER"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="350" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IndUsedBy"
+      Precision="50"
+      ColumnName="IND_USED_BY"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="50" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IndValueParameter"
+      Precision="150"
+      ColumnName="IND_VALUE_PARAMETER"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="150" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="IndEstatus"
+      Precision="1"
+      ColumnName="IND_ESTATUS"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="1" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ValMostrar"
+      IsNotNull="true"
+      Precision="5"
+      ColumnName="VAL_MOSTRAR"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="ValValue"
+      IsNotNull="true"
+      Precision="9"
+      ColumnName="VAL_VALUE"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="9" />
+      </DesignTime>
+   </Attribute>
+   <Attribute
+      Name="Selected"
+      IsNotNull="true"
+      Precision="5"
+      ColumnName="SELECTED"
+      SQLType="VARCHAR"
+      Type="java.lang.String"
+      ColumnType="VARCHAR"
+      TableName="EVENTAS.LMK_INT_LIST_CHANNELS_ALL_VW"
+      PrimaryKey="true" >
+      <DesignTime>
+         <Attr Name="_DisplaySize" Value="5" />
+      </DesignTime>
+   </Attribute>
+   <Key
+      Name="Lmkintlistchannelsallvw1PrimaryKey"
+      PrimaryKey="true" >
+      <AttrArray Name="Attributes">
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.IdParameter" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.NomParameter" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.IndDescParameter" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.IndUsedBy" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.IndValueParameter" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.IndEstatus" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.ValMostrar" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.ValValue" />
+         <Item Value="mx.com.televisa.landamark.model.LmkIntListChannelsAllVw1.Selected" />
+      </AttrArray>
+      <DesignTime>
+         <Attr Name="_DBObjectName" Value="LMKINTLISTCHANNELSALLVW1PRIMAR" />
+      </DesignTime>
+   </Key>
+</Entity>

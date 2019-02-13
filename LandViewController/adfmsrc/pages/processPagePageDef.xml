@@ -6,6 +6,8 @@
     <variableIterator id="variables"/>
     <iterator Binds="LmkIntServicesCatVwView1" RangeSize="25" DataControl="AppModuleDataControl"
               id="LmkIntServicesCatVwView1Iterator"/>
+    <iterator Binds="LmkIntListChannelsAllVw1View1" RangeSize="25" DataControl="AppModuleDataControl"
+              id="LmkIntListChannelsAllVw1View1Iterator"/>
   </executables>
   <bindings>
     <tree IterBinding="LmkIntServicesCatVwView1Iterator" id="LmkIntServicesCatVwView1">
@@ -49,6 +51,22 @@
           <Item Value="FecLastUpdateDate"/>
           <Item Value="NumLastUpdatedBy"/>
           <Item Value="NumLastUpdateLogin"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="LmkIntListChannelsAllVw1View1Iterator" id="LmkIntListChannelsAllVw1View1">
+      <nodeDefinition DefName="mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVw1View"
+                      Name="LmkIntListChannelsAllVw1View10">
+        <AttrNames>
+          <Item Value="IdParameter"/>
+          <Item Value="NomParameter"/>
+          <Item Value="IndDescParameter"/>
+          <Item Value="IndUsedBy"/>
+          <Item Value="IndValueParameter"/>
+          <Item Value="IndEstatus"/>
+          <Item Value="ValMostrar"/>
+          <Item Value="ValValue"/>
+          <Item Value="Selected"/>
         </AttrNames>
       </nodeDefinition>
     </tree>

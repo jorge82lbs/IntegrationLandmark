@@ -7,6 +7,24 @@ public class BasicInputParameters {
     private String lsUserName;
     private String lsMessage;
     private String lsServiceType;
+    private String lsServiceName;
+    private String lsPathFiles;
+
+    public void setLsPathFiles(String lsPathFiles) {
+        this.lsPathFiles = lsPathFiles;
+    }
+
+    public String getLsPathFiles() {
+        return lsPathFiles;
+    }
+
+    public void setLsServiceName(String lsServiceName) {
+        this.lsServiceName = lsServiceName;
+    }
+
+    public String getLsServiceName() {
+        return lsServiceName;
+    }
 
     public void setLsMessage(String lsMessage) {
         this.lsMessage = lsMessage;

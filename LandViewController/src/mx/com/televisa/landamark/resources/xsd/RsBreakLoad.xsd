@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:ns0="http://mx/com/televisa/landamark/services/beans/rsbreakload" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            targetNamespace="http://mx/com/televisa/landamark/services/beans/rsbreakload"
+            attributeFormDefault="qualified"
+            elementFormDefault="qualified"
+            >
+   <xsd:complexType name="BreakLoadFile">
+      <xsd:sequence>
+         <xsd:element name="IdRequest" type="xsd:string" minOccurs="1"/>   
+         <xsd:element name="IdService" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="UserName" type="xsd:string" minOccurs="1"/>         
+         <xsd:element name="IdUser" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="FileName" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="RsBreakLoad" type="ns0:RsBreakLoad"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+      <xsd:complexType name="RsBreakLoad">
+      <xsd:sequence>
+         <xsd:element name="FileHeaderRecord" type="ns0:FileHeaderRecord"/>
+         <xsd:element name="ChannelHeaderRecord" type="ns0:ChannelHeaderRecord"/>
+         <xsd:element name="BreaksCollection" type="ns0:BreaksCollection"/>
+         <xsd:element name="ChannelTrailerRecord" type="ns0:ChannelTrailerRecord"/>
+         <xsd:element name="FileTrailerRecord" type="ns0:FileTrailerRecord"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+      <xsd:complexType name="BreaksCollection">
+      <xsd:sequence>
+         <xsd:element name="BreaksList" type="ns0:BreakRecord" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:complexType>   
+   
+   <xsd:complexType name="FileHeaderRecord">
+      <xsd:sequence>
+         <xsd:element name="RecordType" type="xsd:integer" minOccurs="1"/>
+         <xsd:element name="FileCreationDate" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="FileCreationTime" type="xsd:string" minOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="ChannelHeaderRecord">
+      <xsd:sequence>
+         <xsd:element name="RecordType" type="xsd:integer" minOccurs="1"/>
+         <xsd:element name="RegionalSalesAreaCode" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="SalesAreaCode" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="Id" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="BreakScheduleDate" type="xsd:string" minOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="BreakRecord">
+      <xsd:sequence>
+         <xsd:element name="RecordType" type="xsd:integer" minOccurs="1"/>
+         <xsd:element name="RegionalSalesAreaCode" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="SalesAreaCode" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="BreakScheduleDate" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="BreakNominalTime" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="BreakDuration" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="BreakTypeCode" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="PositioninProgramme" type="xsd:string" minOccurs="1"/>
+         <xsd:element name="BreakNumber" type="xsd:string" minOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+    <xsd:complexType name="ChannelTrailerRecord">
+      <xsd:sequence>
+         <xsd:element name="RecordType" type="xsd:integer" minOccurs="1"/>
+         <xsd:element name="RecordCount" type="xsd:string" minOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="FileTrailerRecord">
+      <xsd:sequence>
+         <xsd:element name="RecordType" type="xsd:integer" minOccurs="1"/>
+         <xsd:element name="RecordCount" type="xsd:string" minOccurs="1"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+</xsd:schema>

@@ -1,64 +1,83 @@
-<?xml version="1.0" encoding="windows-1252" ?>
+<?xml version='1.0' encoding='windows-1252' ?>
 <!DOCTYPE AppModule SYSTEM "jbo_03_01.dtd">
-<!---->
+
 <AppModule
-  xmlns="http://xmlns.oracle.com/bc4j"
-  Name="AppModule"
-  Version="12.1.3.10.47"
-  InheritPersonalization="merge"
-  ClearCacheOnRollback="true"
-  ComponentClass="mx.com.televisa.landamark.model.AppModuleImpl"
-  DefClass="mx.com.televisa.landamark.model.AppModuleDefImpl">
-  <DesignTime>
-    <Attr Name="_isDefCodegen" Value="true"/>
-    <Attr Name="_isCodegen" Value="true"/>
-  </DesignTime>
-  <ViewUsage
-    Name="EvetvIntConfigParamTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.EvetvIntConfigParamTabView"/>
-  <ViewUsage
-    Name="LmkIntConfigParamTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntConfigParamTabView"/>
-  <ViewUsage
-    Name="LmkIntCronConfigTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntCronConfigTabView"/>
-  <ViewUsage
-    Name="LmkIntMappingCatTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntMappingCatTabView"/>
-  <ViewUsage
-    Name="LmkIntNotificationsTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsTabView"/>
-  <ViewUsage
-    Name="LmkIntRequestsTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntRequestsTabView"/>
-  <ViewUsage
-    Name="LmkIntServiceBitacoraTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServiceBitacoraTabView"/>
-  <ViewUsage
-    Name="LmkIntServicesCatTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesCatTabView"/>
-  <ViewUsage
-    Name="LmkIntServicesLogTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogTabView"/>  
-  <ViewUsage
-    Name="LmkIntXmlFilesTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntXmlFilesTabView"/>
-  <ViewUsage
-    Name="LmkIntServicesBitacoraVwView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesBitacoraVwView"/>
-  <ViewUsage
-    Name="LmkIntMappingCatVwView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntMappingCatVwView"/>
-  <ViewUsage
-    Name="LmkIntNotificationsVwView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsVwView"/>
-  <ViewUsage
-    Name="LmkIntServicesParamsTabView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesParamsTabView"/>
-  <ViewUsage
-    Name="LmkIntServicesCatVwView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesCatVwView"/>
-  <ViewUsage
-    Name="LmkIntServicesLogVwView1"
-    ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogVwView"/>
+   xmlns="http://xmlns.oracle.com/bc4j"
+   Name="AppModule"
+   Version="12.1.3.10.47"
+   InheritPersonalization="merge"
+   ComponentClass="mx.com.televisa.landamark.model.AppModuleImpl"
+   DefClass="mx.com.televisa.landamark.model.AppModuleDefImpl" >
+   <DesignTime>
+      <Attr Name="_isDefCodegen" Value="true" />
+      <Attr Name="_isCodegen" Value="true" />
+   </DesignTime>
+   <ViewUsage
+      Name="EvetvIntConfigParamTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.EvetvIntConfigParamTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntConfigParamTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntConfigParamTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntCronConfigTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntCronConfigTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntMappingCatTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntMappingCatTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntNotificationsTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntRequestsTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntRequestsTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServiceBitacoraTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServiceBitacoraTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServicesCatTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesCatTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServicesLogTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntXmlFilesTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntXmlFilesTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServicesBitacoraVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesBitacoraVwView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntMappingCatVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntMappingCatVwView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntNotificationsVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsVwView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServicesParamsTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesParamsTabView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServicesCatVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesCatVwView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntServicesLogVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogVwView" >
+   </ViewUsage>
+   <ViewUsage
+      Name="LmkIntListChannelsAllVw1View1"
+      ViewObjectName="mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVw1View" >
+   </ViewUsage>
 </AppModule>
