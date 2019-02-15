@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVwViewImpl;
+import mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVwViewRowImpl;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 
 import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntListChannelsAllVwRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntNotificationsRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntRequestsRowBean;
@@ -260,13 +263,52 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     
     /******************************* Configuracion de Parametros de Servicios *************************************/
     
+    public List<LmkIntListChannelsAllVwRowBean> getAllChannels(String where){
+        List<LmkIntListChannelsAllVwRowBean> loList = 
+            new ArrayList<LmkIntListChannelsAllVwRowBean>();
+        LmkIntListChannelsAllVwViewImpl loImpl = getLmkIntListChannelsAllVwView1(); 
+        loImpl.setWhereClause(where);
+        loImpl.setRangeSize(-1);
+        loImpl.executeQuery();
+        Row[] loAu = loImpl.getAllRowsInRange();
+        loList.clear();
+        if(loAu.length > 0) {
+            for(int liI = 0; liI < loAu.length; liI++){
+                LmkIntListChannelsAllVwViewRowImpl loRow = 
+                    new LmkIntListChannelsAllVwViewRowImpl();
+                loRow = (LmkIntListChannelsAllVwViewRowImpl) loAu[liI];
+                
+                LmkIntListChannelsAllVwRowBean loBean = new LmkIntListChannelsAllVwRowBean();
+                loBean.setLfRowId(loRow.getRowId1());
+                loBean.setLiIdService(loRow.getIdService());
+                loBean.setLiIdParameter(loRow.getIdParameter());
+                loBean.setLsNomService(loRow.getNomService());
+                loBean.setLsIndDescService(loRow.getIndDescService());
+                loBean.setLiIdParameter(loRow.getIdParameter());
+                loBean.setLsNomParameter(loRow.getNomParameter());
+                loBean.setLsIndDescParameter(loRow.getIndDescParameter());
+                loBean.setLsIndUsedBy(loRow.getIndUsedBy());
+                loBean.setLsIndValueParameter(loRow.getIndValueParameter());
+                loBean.setLsIndEstatus(loRow.getIndEstatus());
+                loBean.setLtFecCreationDate(loRow.getFecCreationDate());
+                loBean.setLsValMostrar(loRow.getValMostrar());
+                loBean.setLsValValue(loRow.getValValue());
+                loBean.setLsSelected(loRow.getSelected());
+                loList.add(loBean);
+            }
+        }
+        return loList;
+    }
+    
+    
     /**
      * Delete en tabla de Configuracion de Parametros Servicios
      * @autor Jorge Luis Bautista Santiago  
      * @param piIdService   
      * @return void
      */
-    public void deleteServicesParamsModelByServ(Integer piIdService) {             
+    public void deleteServicesParamsModelByServ(Integer piIdService) {    
+        System.out.println("Eliminando parametros de los servicios ");
         try {
             LmkIntServicesParamsTabViewImpl    loObj = 
                 getLmkIntServicesParamsTabView1();
@@ -374,13 +416,17 @@ public class AppModuleImpl extends ApplicationModuleImpl {
         LmkIntServicesParamsTabViewRowImpl loRow = 
             (LmkIntServicesParamsTabViewRowImpl)loObj.createRow();        
         try {
-                    
+            /*System.out.println("#############################################");
+            System.out.println("toLmkBean.getLiIdParameterServ(): "+toLmkBean.getLiIdParameterServ());
+            System.out.println("toLmkBean.getLiIdService(): "+toLmkBean.getLiIdService());
+            System.out.println("toLmkBean.getLsIndParameter(): "+toLmkBean.getLsIndParameter());
+            System.out.println("toLmkBean.getLsIndValParameter(): "+toLmkBean.getLsIndValParameter());
+            System.out.println("toLmkBean.getLsIndEstatus(): "+toLmkBean.getLsIndEstatus());*/
             loRow.setIdParameterServ(toLmkBean.getLiIdParameterServ());            
             loRow.setIdService(toLmkBean.getLiIdService());            
             loRow.setIndParameter(toLmkBean.getLsIndParameter());         
             loRow.setIndValParameter(toLmkBean.getLsIndValParameter());         
             loRow.setIndEstatus(toLmkBean.getLsIndEstatus());  
-            
             loRow.setFecCreationDate(getCurrentTimestamp());
             loRow.setFecLastUpdateDate(getCurrentTimestamp());
             loRow.setAttribute15(getValueSessionFromAttribute("loggedPgmIntegrationIdUser"));
@@ -1637,11 +1683,11 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     }
 
     /**
-     * Container's getter for LmkIntListChannelsAllVw1View1.
-     * @return LmkIntListChannelsAllVw1View1
+     * Container's getter for LmkIntListChannelsAllVwView1.
+     * @return LmkIntListChannelsAllVwView1
      */
-    public ViewObjectImpl getLmkIntListChannelsAllVw1View1() {
-        return (ViewObjectImpl) findViewObject("LmkIntListChannelsAllVw1View1");
+    public LmkIntListChannelsAllVwViewImpl getLmkIntListChannelsAllVwView1() {
+        return (LmkIntListChannelsAllVwViewImpl) findViewObject("LmkIntListChannelsAllVwView1");
     }
 }
 

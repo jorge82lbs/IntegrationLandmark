@@ -43,8 +43,7 @@ public class ParrillasProgramasCron implements Job{
      * @return void
      */
     @Override
-    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {
-        System.out.println("Ejecucion de Cron >> ParrillasProgramasCron ["+new Date()+"]");
+    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {        
         JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
         String                    lsIdService = loDataMap.getString("lsIdService");  
         String                    lsUserName = loDataMap.getString("lsUserName");

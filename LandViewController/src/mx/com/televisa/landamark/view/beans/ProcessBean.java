@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
+
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
@@ -36,17 +41,25 @@ import mx.com.televisa.landamark.model.types.LmkIntServicesCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 
+import mx.com.televisa.landamark.model.types.LmkIntListChannelsAllVwRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
+import mx.com.televisa.landamark.users.UserMenuBean;
 import mx.com.televisa.landamark.view.types.ExecuteServiceResponseBean;
 import mx.com.televisa.landamark.view.types.ProcessServiceBean;
 import mx.com.televisa.landamark.view.types.SelectOneItemBean;
 
 import mx.com.televisa.landamark.util.UtilFaces;
 
+import mx.com.televisa.landamark.view.types.ChannelParameterBean;
+
+import oracle.adf.model.BindingContext;
+import oracle.adf.model.binding.DCBindingContainer;
+import oracle.adf.model.binding.DCIteratorBinding;
 import oracle.adf.view.rich.component.rich.RichPopup;
 import oracle.adf.view.rich.component.rich.data.RichTable;
+import oracle.adf.view.rich.component.rich.input.RichInputDate;
 import oracle.adf.view.rich.component.rich.input.RichInputNumberSpinbox;
 import oracle.adf.view.rich.component.rich.input.RichInputText;
 import oracle.adf.view.rich.component.rich.input.RichSelectBooleanCheckbox;
@@ -63,9 +76,17 @@ import oracle.adf.view.rich.context.AdfFacesContext;
 import oracle.adfinternal.view.faces.model.binding.FacesCtrlHierNodeBinding;
 
 import oracle.jbo.ApplicationModule;
+import oracle.jbo.Row;
+import oracle.jbo.ViewObject;
 import oracle.jbo.client.Configuration;
 
+import oracle.jbo.uicli.binding.JUCtrlHierBinding;
+
+import org.apache.myfaces.trinidad.component.UIXIterator;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
+
+import org.apache.myfaces.trinidad.event.SelectionEvent;
+import org.apache.myfaces.trinidad.model.CollectionModel;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
@@ -213,10 +234,247 @@ public class ProcessBean {
     private RichOutputText            poExecuteTypeService;
     private RichOutputText            poBeginTypeService;
     private RichOutputText            poStopTypeService;
-    private RichPopup poPopupParams;
-    private RichInputText poParamsIdService;
-    private RichInputText poParamsNomService;
+    private RichPopup                 poPopupParams;
+    private RichInputText             poParamsIdService;
+    private RichInputText             poParamsNomService;
+    private RichInputDate             poInitialDate;
+    private RichInputDate             poFinalDate;
+    private RichTable                 poTblParams;
+    private UIXIterator poChannelsIterator;
+    private RichSelectBooleanCheckbox poSelected;
+    private RichInputText poIdServiceByTbl;
 
+    /**
+     * Realiza la validación sintáctica de la expresión. 
+     * @param expression
+     * @return Object
+     */
+    public static Object resolveExpression(String expression) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Application app = facesContext.getApplication();
+        ExpressionFactory elFactory = app.getExpressionFactory();
+        ELContext elContext = facesContext.getELContext();
+        ValueExpression valueExp =
+            elFactory.createValueExpression(elContext, expression,
+                                            Object.class);
+        return valueExp.getValue(elContext);
+    }
+
+    /**
+     * Obtiene lista de canales para la lista del jspx
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<ChannelParameterBean> getListAllChannels() {
+        String lsIdService = 
+            getPoIdServiceByTbl().getValue() == null ? "0" : 
+            getPoIdServiceByTbl().getValue().toString();
+           
+        System.out.println("lsIdService: "+lsIdService);    
+        
+        UserMenuBean loUserMenuBean = (UserMenuBean)resolveExpression("#{UserMenuBean}");
+        System.out.println("Privilegio de Monitor: "+loUserMenuBean.getLsRolMonitor());        
+        
+        if(lsIdService.equalsIgnoreCase("0")){
+            FacesCtrlHierNodeBinding loNode = 
+                (FacesCtrlHierNodeBinding) getPoTblMain().getSelectedRowData();
+            lsIdService = 
+                loNode.getAttribute("IdService") == null ? "-1" : 
+                loNode.getAttribute("IdService").toString(); 
+        }
+        System.out.println("lsIdService FINAL: "+lsIdService);    
+        List<ChannelParameterBean> laList = new ArrayList<ChannelParameterBean>();
+        
+        ApplicationModule                         loAm = 
+            Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+        AppModuleImpl                       loService = 
+            (AppModuleImpl)loAm;        
+        try{           
+            String lsWhere = "1 = 1";
+            lsWhere += 
+            " AND ID_SERVICE = " + lsIdService;
+            
+             List<LmkIntListChannelsAllVwRowBean> laAllRows = 
+                 loService.getAllChannels(lsWhere);
+            for(int liI = 0; liI < laAllRows.size(); liI++){
+                ChannelParameterBean loItem = new ChannelParameterBean();
+                loItem.setLsChannel(laAllRows.get(liI).getLsNomParameter());
+                loItem.setLsSelected(laAllRows.get(liI).getLsSelected());
+                laList.add(loItem);
+            }
+          
+        }catch(Exception loEx){
+            ;
+        }
+        finally{
+            Configuration.releaseRootApplicationModule(loAm, true);
+        }
+        return laList;
+    }
+
+    /**
+     * Convierte a cadena una fecha con la mascara deseada
+     * @autor Jorge Luis Bautista Santiago
+     * @param ttObjectDate
+     * @param tsOutputMask
+     * @return String
+     */
+    public static String convertDateMask(java.util.Date ttObjectDate,
+                                        String tsOutputMask) {
+        SimpleDateFormat loSdfOut = new SimpleDateFormat(tsOutputMask);
+        java.util.Date   ltDate = ttObjectDate;
+        String           lsFormatted = "";
+                         lsFormatted = loSdfOut.format(ltDate);
+        return lsFormatted;
+    }
+
+    /**
+     * Guarda en base de datos los valores de los parametros del serevicio
+     * @autor Jorge Luis Bautista Santiago
+     * @return String
+     */
+    public String saveParamsAction() {
+        boolean lbSuccess = true;
+        String  lsMessErr = "OK";
+        String                   lsIdService = 
+            getPoParamsIdService().getValue() == null ? "" : 
+            getPoParamsIdService().getValue().toString();
+        
+        System.out.println("saveParamsAction - lsIdService: "+lsIdService);
+        
+        /* Fechas */
+        java.util.Date ltDateIni = 
+            getPoInitialDate().getValue() == null ? null : 
+            (java.util.Date)getPoInitialDate().getValue();        
+        java.util.Date ltDateFin = 
+            getPoFinalDate().getValue() == null ? null : 
+            (java.util.Date)getPoFinalDate().getValue(); 
+        
+        if(ltDateIni != null && ltDateFin != null){            
+        
+            String lsFecIni = convertDateMask(ltDateIni, "yyyy-MM-dd");
+            String lsFecFin = convertDateMask(ltDateFin, "yyyy-MM-dd");
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl loService = 
+                (AppModuleImpl)loAm;        
+            try{
+                loService.deleteServicesParamsModelByServ(Integer.parseInt(lsIdService));
+                for (int liI = getPoChannelsIterator().getFirst(); 
+                     liI < getPoChannelsIterator().getRowCount() ;liI++) {
+                    ChannelParameterBean loRow = 
+                        (ChannelParameterBean)getPoChannelsIterator().getRowData(liI);
+                    String                   lsCanal = 
+                        loRow.getLsChannel() == null ? "" : 
+                        loRow.getLsChannel();
+                    String                   lsSelected = 
+                             loRow.getLsSelected() == null ? "" : 
+                             loRow.getLsSelected();
+                    System.out.println("lsCanal: "+lsCanal+"  \tlsSelected: "+lsSelected);
+                    
+                    LmkIntServicesParamsRowBean loLmkParamBean = new LmkIntServicesParamsRowBean();            
+                    Integer                  liId = 
+                        new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                    loLmkParamBean.setLiIdParameterServ(liId);
+                    loLmkParamBean.setLiIdService(Integer.parseInt(lsIdService));
+                    String lsValue = "0";
+                    if(lsSelected.equalsIgnoreCase("true")){
+                        lsValue = "1";
+                    }                                                
+                    loLmkParamBean.setLsIndParameter(lsCanal);
+                    loLmkParamBean.setLsIndValParameter(lsValue);                        
+                    loLmkParamBean.setLsIndEstatus("1");    
+                    loService.insertServicesParamsModel(loLmkParamBean); 
+                    
+                }
+                
+                LmkIntServicesParamsRowBean loLmkFiBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdFi = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loLmkFiBean.setLiIdParameterServ(liIdFi);
+                loLmkFiBean.setLiIdService(Integer.parseInt(lsIdService));
+                loLmkFiBean.setLsIndEstatus("1");
+                loLmkFiBean.setLsIndParameter("FECHA_INICIAL");
+                loLmkFiBean.setLsIndValParameter(lsFecIni);                        
+                loService.insertServicesParamsModel(loLmkFiBean); 
+                
+                LmkIntServicesParamsRowBean loLmkFfBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdFf = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loLmkFfBean.setLiIdParameterServ(liIdFf);
+                loLmkFfBean.setLiIdService(Integer.parseInt(lsIdService));
+                loLmkFfBean.setLsIndEstatus("1");
+                loLmkFfBean.setLsIndParameter("FECHA_FINAL");
+                loLmkFfBean.setLsIndValParameter(lsFecFin);                        
+                loService.insertServicesParamsModel(loLmkFfBean); 
+                
+            } catch (Exception loEx) {
+                lbSuccess = false;   
+                lsMessErr = loEx.getMessage();
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+            }            
+            if(lbSuccess){
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("Parámetros asignados correctamente");
+                loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }else{
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("Error de Comunicacion " + lsMessErr);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }
+            new UtilFaces().hidePopup(getPoPopupParams());                        
+        }else{
+            FacesMessage loMsg;
+            loMsg = new FacesMessage("Las fechas son Requeridas");
+            loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }
+        return null;
+    }
+
+    /**
+     * Cancela accion de guardar parametros del servicio
+     * @autor Jorge Luis Bautista Santiago
+     * @return String
+     */
+    public String cancelSaveParamsAction() {
+        new UtilFaces().hidePopup(getPoPopupExecute());      
+        FacesContext       loContext = FacesContext.getCurrentInstance();
+        ExternalContext    loEctx = loContext.getExternalContext();
+        String             lsUrl = 
+            loEctx.getRequestContextPath() + "/faces/processPage";
+        try {
+            loEctx.redirect(lsUrl);
+        } catch (IOException loEx) {
+            ;
+        }
+        return null;
+    }
+
+    /**
+     * Actualiza iterador de la tabla principal con condiciones de busqueda
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsWhere
+     * @return void
+     */
+    public void refreshWhereTableIterator(String tsWhere){
+        try{
+            DCBindingContainer loDCBinding = 
+                (DCBindingContainer)BindingContext.getCurrent().getCurrentBindingsEntry();         
+            DCIteratorBinding  loDCIterator = 
+                loDCBinding.findIteratorBinding("LmkIntListChannelsAllVwView1Iterator");        
+            ViewObject         loVO = loDCIterator.getViewObject();
+            loVO.setWhereClause(tsWhere);
+            loVO.executeQuery();
+            AdfFacesContext.getCurrentInstance().addPartialTarget(getPoChannelsIterator());
+        }catch(Exception loEx){
+            System.out.println("Error al actualizar canales "+loEx.getMessage());
+        }
+    }
+    
     /**
      * Muestra popup para ejecutar el servicio
      * @autor Jorge Luis Bautista Santiago
@@ -1596,10 +1854,10 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loNode.getAttribute("IndDescService") == null ? "" : 
             loNode.getAttribute("IndDescService").toString();
         
-        getPoMergeIdService().setValue(lsIdService);        
-        getPoMergeNomService().setValue(lsDesService);
+        getPoParamsIdService().setValue(lsIdService);        
+        getPoParamsNomService().setValue(lsDesService);
         
-        // Obtener valores si es que ya se han guardado y settear valores  
+        
         ApplicationModule         loAm = 
             Configuration.createRootApplicationModule(gsAmDef, gsConfig);
         AppModuleImpl loService = 
@@ -1608,49 +1866,21 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             
             List<LmkIntServicesParamsRowBean> loColBean = 
                 new ArrayList<LmkIntServicesParamsRowBean>();
-            
             loColBean = loService.getParametersServiceByIdService(Integer.parseInt(lsIdService));
             
             if(loColBean.size()>0){
                 for(LmkIntServicesParamsRowBean loBean : loColBean){
-                    if(loBean.getLsIndParameter().equalsIgnoreCase("2CAN")){
-                        if(loBean.getLsIndValParameter().equalsIgnoreCase("1")){
-                            getPoMerge2can().setSelected(true);        
-                        }
-                        else{
-                            getPoMerge2can().setSelected(false);        
-                        }
+                    if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL")){
+                        getPoInitialDate().setValue(loBean.getLsIndValParameter());    
                     }
-                    if(loBean.getLsIndParameter().equalsIgnoreCase("5CAN")){
-                        if(loBean.getLsIndValParameter().equalsIgnoreCase("1")){
-                            getPoMerge5can().setSelected(true);        
-                        }
-                        else{
-                            getPoMerge5can().setSelected(false);        
-                        }
-                    }
-                    if(loBean.getLsIndParameter().equalsIgnoreCase("9CAN")){
-                        if(loBean.getLsIndValParameter().equalsIgnoreCase("1")){
-                            getPoMerge9can().setSelected(true);        
-                        }
-                        else{
-                            getPoMerge9can().setSelected(false);        
-                        }
-                    }
-                    if(loBean.getLsIndParameter().equalsIgnoreCase("CLIENTE")){
-                        getPoMergeCliente().setValue(loBean.getLsIndValParameter());    
+                    if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                        getPoFinalDate().setValue(loBean.getLsIndValParameter());    
                     }
                 }
             }else{
-                getPoMerge2can().setSelected(false);        
-                getPoMerge5can().setSelected(false);        
-                getPoMerge9can().setSelected(false);   
-                getPoMergeCliente().setValue(null);    
+                getPoInitialDate().setValue(null);    
+                getPoFinalDate().setValue(null);    
             }
-            
-            
-            
-            
         }catch (Exception loEx) {
             FacesMessage loMsg;
             loMsg = new FacesMessage("No es posible obtener parémetros " + loEx);
@@ -1660,7 +1890,11 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             Configuration.releaseRootApplicationModule(loAm, true);
         }
         
-        new UtilFaces().showPopup(getPoPopupMerge());
+        String lsWhere = "1 = 1";
+        lsWhere += " AND ID_SERVICE = "+lsIdService;
+        this.refreshWhereTableIterator(lsWhere);
+        
+        new UtilFaces().showPopup(getPoPopupParams());
     }
     
     /**
@@ -3493,14 +3727,64 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
     public RichInputText getPoParamsNomService() {
         return poParamsNomService;
     }
-
-    public String saveParamsAction() {
-        // Add event code here...
-        return null;
+    
+    public void setPoInitialDate(RichInputDate poInitialDate) {
+        this.poInitialDate = poInitialDate;
     }
 
-    public String cancelSaveParamsAction() {
-        // Add event code here...
-        return null;
+    public RichInputDate getPoInitialDate() {
+        return poInitialDate;
+    }
+
+    public void setPoFinalDate(RichInputDate poFinalDate) {
+        this.poFinalDate = poFinalDate;
+    }
+
+    public RichInputDate getPoFinalDate() {
+        return poFinalDate;
+    }
+
+    public void setPoTblParams(RichTable poTblParams) {
+        this.poTblParams = poTblParams;
+    }
+
+    public RichTable getPoTblParams() {
+        return poTblParams;
+    }
+
+    public void setPoChannelsIterator(UIXIterator poChannelsIterator) {
+        this.poChannelsIterator = poChannelsIterator;
+    }
+
+    public UIXIterator getPoChannelsIterator() {
+        return poChannelsIterator;
+    }
+
+    public void setPoSelected(RichSelectBooleanCheckbox poSelected) {
+        this.poSelected = poSelected;
+    }
+
+    public RichSelectBooleanCheckbox getPoSelected() {
+        return poSelected;
+    }
+
+    public void setPoIdServiceByTbl(RichInputText poIdServiceByTbl) {
+        this.poIdServiceByTbl = poIdServiceByTbl;
+    }
+
+    public RichInputText getPoIdServiceByTbl() {
+        return poIdServiceByTbl;
+    }
+
+    public void selectRowMainTable(SelectionEvent toSelectionEvent) {
+        toSelectionEvent.getSource();
+        FacesCtrlHierNodeBinding loNode = 
+            (FacesCtrlHierNodeBinding) getPoTblMain().getSelectedRowData();
+        String                   lsIdService = 
+            loNode.getAttribute("IdService") == null ? "" : 
+            loNode.getAttribute("IdService").toString();         
+        getPoIdServiceByTbl().setValue(lsIdService);
+        
+        
     }
 }

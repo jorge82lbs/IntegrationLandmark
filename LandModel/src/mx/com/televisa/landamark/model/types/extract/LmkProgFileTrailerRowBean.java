@@ -9,10 +9,26 @@ public class LmkProgFileTrailerRowBean {
     private Integer liRecordCount;
     private Integer liAllowableGap;
     private String lsStnid;
-    private Date ltBcstdt;
-    private String lsPgmid;
+    private String lsStrdt;
+    private String lsEdt;    
     private Timestamp ltFechaCreacion;
 
+
+    public void setLsStrdt(String lsStrdt) {
+        this.lsStrdt = lsStrdt;
+    }
+
+    public String getLsStrdt() {
+        return lsStrdt;
+    }
+
+    public void setLsEdt(String lsEdt) {
+        this.lsEdt = lsEdt;
+    }
+
+    public String getLsEdt() {
+        return lsEdt;
+    }
 
     public void setLiRecordType(Integer liRecordType) {
         this.liRecordType = liRecordType;
@@ -44,23 +60,7 @@ public class LmkProgFileTrailerRowBean {
 
     public String getLsStnid() {
         return lsStnid;
-    }
-
-    public void setLtBcstdt(Date ltBcstdt) {
-        this.ltBcstdt = ltBcstdt;
-    }
-
-    public Date getLtBcstdt() {
-        return ltBcstdt;
-    }
-
-    public void setLsPgmid(String lsPgmid) {
-        this.lsPgmid = lsPgmid;
-    }
-
-    public String getLsPgmid() {
-        return lsPgmid;
-    }
+    }   
 
     public void setLtFechaCreacion(Timestamp ltFechaCreacion) {
         this.ltFechaCreacion = ltFechaCreacion;

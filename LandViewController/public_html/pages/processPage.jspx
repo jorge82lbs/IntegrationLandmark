@@ -171,19 +171,28 @@
                                   </f:facet>
                                   <f:facet name="second">
                                   <af:panelGroupLayout id="pgl2" layout="vertical">
+                                  
+                                  <af:inputText id="TxtIdService"
+                                                  label="IdServicec" columns="20"
+                                                  visible="true"
+                                                  partialTriggers="tbl"
+                                                  binding="#{ProcessBean.poIdServiceByTbl}">
+                                    </af:inputText>
+                                  
+                                  
                                    <!-- ######################### TABLA PRINCIPAL SERVICIOS ################# !-->
                                     <af:table value="#{bindings.LmkIntServicesCatVwView1.collectionModel}"
                                               var="row" rows="#{bindings.LmkIntServicesCatVwView1.rangeSize}"
                                               emptyText="#{bindings.LmkIntServicesCatVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
                                               rowBandingInterval="0"
                                               selectedRowKeys="#{bindings.LmkIntServicesCatVwView1.collectionModel.selectedRow}"
-                                              selectionListener="#{bindings.LmkIntServicesCatVwView1.collectionModel.makeCurrent}"
+                                              selectionListener="#{ProcessBean.selectRowMainTable}"
                                               rowSelection="single"
                                               fetchSize="#{bindings.LmkIntServicesCatVwView1.rangeSize}"
                                               id="tbl"
                                               columnStretching="column:c33"
                                       styleClass="AFStretchWidth"
-                                    binding="#{ProcessBean.poTblMain}" autoHeightRows="6">
+                                    binding="#{ProcessBean.poTblMain}" autoHeightRows="10">
                                     <af:column align="center" id="colCrudSweb"
                                             frozen="true" sortable="false"
                                             visible="#{UserMenuBean.lsOprCrud}"
@@ -805,27 +814,73 @@
                 </af:popup>
                 
                 <!-- ################################### POPUP ALTA PARAMETROS ##################################################### !-->
-                <af:popup id="popupParms" contentDelivery="lazyUncached"
-                          binding="#{ProcessBean.poPopupParams}">
+                <af:popup id="popupParms" contentDelivery="lazyUncached" clientComponent="true"
+                          binding="#{ProcessBean.poPopupParams}" partialTriggers="pt1:tbl:LnkParm">
                     <af:panelWindow id="PnlSaveParams" modal="true" closeIconVisible="false"
                                     title="Asignación de Parámetros" titleIconSource="/images/note_new.gif" 
-                                    styleClass="AFStretchWidth">
+                                    inlineStyle="border-style:none; width:25em; height:30em;"
+                                    partialTriggers="pt1:tbl:LnkParm">
                         <af:panelGroupLayout layout="vertical" id="PnlGrpParams" valign="middle" halign="center"
-                        styleClass="AFStretchWidth">
-                            <af:panelFormLayout id="PnlFrmParams" rows="5" maxColumns="1" inlineStyle="width:400px;">     
+                        styleClass="AFStretchWidth" >
+                            <af:panelFormLayout id="PnlFrmParams" rows="5" maxColumns="1">     
                                     <af:inputText label="idServicio"                                                  
                                                   shortDesc="idServicio"
                                                   visible="false"
                                                   id="TxtParamsIdService"
                                                   binding="#{ProcessBean.poParamsIdService}">
                                     </af:inputText>
-                                    <af:inputText label="Servicio"                                                  
+                                    <af:inputText label=" "                                                  
                                                   shortDesc="Servicio"
                                                   id="TxtParamsService"
                                                   readOnly="true"
-                                                  binding="#{ProcessBean.poParamsNomService}">
+                                                  binding="#{ProcessBean.poParamsNomService}"
+                                                  inlineStyle="font-weight:bolder; font-size:large;">
                                     </af:inputText>
                             </af:panelFormLayout>
+                            <af:spacer width="10" height="5" id="spa12"/>
+                            
+                        <af:panelGroupLayout layout="horizontal" id="PnlGrpPDat" valign="middle" halign="left"
+                        styleClass="AFStretchWidth">
+                        <af:panelFormLayout id="PnlFrmParamsd" rows="5" maxColumns="1">     
+                            <af:inputDate label="Fecha Incial" 
+                                           id="TxtFilterFecIni" 
+                                           columns="9" 
+                                           binding="#{ProcessBean.poInitialDate}"                                                       
+                                           >
+                                <af:convertDateTime pattern="yyyy-MM-dd" secondaryPattern="yyyy/MM/dd"/>
+                              </af:inputDate>
+                              <af:inputDate label="Fecha Final"                                                       
+                                           id="TxtFilterFecFin" 
+                                           columns="9" 
+                                           binding="#{ProcessBean.poFinalDate}"
+                                           >
+                                <af:convertDateTime pattern="yyyy-MM-dd" secondaryPattern="yyyy/MM/dd"/>
+                              </af:inputDate>
+                              </af:panelFormLayout>
+                            </af:panelGroupLayout>
+                            <af:spacer width="10" height="5" id="sp4a12"/>
+                            <af:separator id="s153grt"/>
+                            <!-- ################################### ITERADOR DE CANALES DE PARAMETROS GENERALES ##################################################### !-->
+                            <af:panelGroupLayout layout="scroll" id="PnlGrpIter" valign="middle" halign="left"
+                            inlineStyle="border-style:none; height:10em;">
+                            <af:iterator id="i1" var="row" varStatus="rowStatus"
+                                         value="#{ProcessBean.listAllChannels}"
+                                         binding="#{ProcessBean.poChannelsIterator}">
+                                    <af:panelGroupLayout id="PnlIterador" layout="horizontal" clientComponent="true" halign="center">
+                                      <af:spacer width="10" height="10" id="s32"/>
+                                      <af:panelGroupLayout id="PnlItem1" layout="horizontal" halign="center" inlineStyle="width:100px;">
+                                        <af:outputText value="#{row.lsChannel}" id="LblParameter"/>
+                                      </af:panelGroupLayout>
+                                      <af:spacer width="5" height="10" id="s32index"/>
+                                      <af:panelGroupLayout id="PnlSubHeader" layout="horizontal" halign="start" clientComponent="true" inlineStyle="width:80px;">
+                                        <af:selectBooleanCheckbox text=" " label=" " clientComponent="true" value="#{row.lsSelected}" id="ChkSelected"
+                                                                  binding="#{ProcessBean.poSelected}"/>
+                                      </af:panelGroupLayout>
+                                    </af:panelGroupLayout>
+                                  </af:iterator>
+                                 </af:panelGroupLayout> 
+                                 <af:separator id="s153g3rt"/>
+                            <af:spacer width="10" height="10" id="spa1"/>
                             <af:panelGroupLayout id="PnPg">
                                 <af:button text="Aceptar" id="BtmnAltPm" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
@@ -835,153 +890,6 @@
                                 shortDesc="Cierra el Popup" immediate="true"
                                            action="#{ProcessBean.cancelSaveParamsAction}"/>
                             </af:panelGroupLayout>
-                            <!-- ################################### TABLA DE CANALES DE PARAMETROS GENERALES ##################################################### !-->
-                            <af:table value="#{bindings.LmkIntListChannelsAllVw1View1.collectionModel}" var="row"
-                                      rows="#{bindings.LmkIntListChannelsAllVw1View1.rangeSize}"
-                                      emptyText="#{bindings.LmkIntListChannelsAllVw1View1.viewable ? 'No data to display.' : 'Access Denied.'}"
-                                      rowBandingInterval="0"
-                                      selectedRowKeys="#{bindings.LmkIntListChannelsAllVw1View1.collectionModel.selectedRow}"
-                                      selectionListener="#{bindings.LmkIntListChannelsAllVw1View1.collectionModel.makeCurrent}"
-                                      rowSelection="single"
-                                      fetchSize="#{bindings.LmkIntListChannelsAllVw1View1.rangeSize}" id="t1">
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.name}"
-                                           sortable="true"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.label}"
-                                           visible="false"
-                                           id="c38">
-                                    <af:inputText value="#{row.bindings.IdParameter.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.tooltip}"
-                                                  id="it1">
-                                        <f:validator binding="#{row.bindings.IdParameter.validator}"/>
-                                        <af:convertNumber groupingUsed="false"
-                                                          pattern="#{bindings.LmkIntListChannelsAllVw1View1.hints.IdParameter.format}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.NomParameter.name}"
-                                           sortable="true" align="center"
-                                           headerText="Canal"
-                                           id="c39">
-                                    <af:inputText value="#{row.bindings.NomParameter.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.NomParameter.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.NomParameter.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.NomParameter.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.NomParameter.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.NomParameter.tooltip}"
-                                                  id="it2">
-                                        <f:validator binding="#{row.bindings.NomParameter.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.name}"
-                                           sortable="true"
-                                           visible="false"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.label}"
-                                           id="c40">
-                                    <af:inputText value="#{row.bindings.IndDescParameter.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndDescParameter.tooltip}"
-                                                  id="it3">
-                                        <f:validator binding="#{row.bindings.IndDescParameter.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.name}"
-                                           sortable="true"
-                                           visible="false"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.label}"
-                                           id="c41">
-                                    <af:inputText value="#{row.bindings.IndUsedBy.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndUsedBy.tooltip}"
-                                                  id="it4">
-                                        <f:validator binding="#{row.bindings.IndUsedBy.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.name}"
-                                           sortable="true"
-                                           visible="false"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.label}"
-                                           id="c42">
-                                    <af:inputText value="#{row.bindings.IndValueParameter.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndValueParameter.tooltip}"
-                                                  id="it5">
-                                        <f:validator binding="#{row.bindings.IndValueParameter.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.name}"
-                                           sortable="true"
-                                           visible="false"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.label}"
-                                           id="c43">
-                                    <af:inputText value="#{row.bindings.IndEstatus.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.IndEstatus.tooltip}"
-                                                  id="it6">
-                                        <f:validator binding="#{row.bindings.IndEstatus.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.name}"
-                                           sortable="true"
-                                           visible="false"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.label}"
-                                           id="c44">
-                                    <af:inputText value="#{row.bindings.ValMostrar.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValMostrar.tooltip}"
-                                                  id="it7">
-                                        <f:validator binding="#{row.bindings.ValMostrar.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.name}"
-                                           sortable="true"
-                                           visible="false"
-                                           headerText="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.label}"
-                                           id="c45">
-                                    <af:inputText value="#{row.bindings.ValValue.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.ValValue.tooltip}"
-                                                  id="it8">
-                                        <f:validator binding="#{row.bindings.ValValue.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                                <af:column sortProperty="#{bindings.LmkIntListChannelsAllVw1View1.hints.Selected.name}"
-                                           sortable="true" align="center"
-                                           headerText="Seleccionado"
-                                           id="c46">
-                                           
-                                           
-                                    <af:inputText value="#{row.bindings.Selected.inputValue}"
-                                                  label="#{bindings.LmkIntListChannelsAllVw1View1.hints.Selected.label}"
-                                                  required="#{bindings.LmkIntListChannelsAllVw1View1.hints.Selected.mandatory}"
-                                                  columns="#{bindings.LmkIntListChannelsAllVw1View1.hints.Selected.displayWidth}"
-                                                  maximumLength="#{bindings.LmkIntListChannelsAllVw1View1.hints.Selected.precision}"
-                                                  shortDesc="#{bindings.LmkIntListChannelsAllVw1View1.hints.Selected.tooltip}"
-                                                  id="it9">
-                                        <f:validator binding="#{row.bindings.Selected.validator}"/>
-                                    </af:inputText>
-                                </af:column>
-                            </af:table>
                         </af:panelGroupLayout>
                     </af:panelWindow>
                 </af:popup>

@@ -155,13 +155,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkBrkFileHeaderRowBean> getBrkFileHeader(){
+    public List<LmkBrkFileHeaderRowBean> getBrkFileHeader(String lsWhere){
         List<LmkBrkFileHeaderRowBean> loRes = 
             new ArrayList<LmkBrkFileHeaderRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryBrkFileHeader(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -194,13 +194,14 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryBrkFileHeader(){
+    public String getQueryBrkFileHeader(String lsWhere){
         String lsQuery = "SELECT RECORD_TYPE,\n" + 
         "        FILE_CREATION_DATE,\n" + 
         "        FILE_CREATION_TIME,\n" + 
         "        STNID,\n" + 
         "        BCSTDT\n" + 
         "   FROM EVENTAS.LMK_BRK_FILE_HEADER";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }
@@ -211,13 +212,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkBrkChannelHeaderRowBean> getBrkChannelHeader(){
+    public List<LmkBrkChannelHeaderRowBean> getBrkChannelHeader(String lsWhere){
         List<LmkBrkChannelHeaderRowBean> loRes = 
             new ArrayList<LmkBrkChannelHeaderRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryBrkChannelHeader(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -253,7 +254,7 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryBrkChannelHeader(){
+    public String getQueryBrkChannelHeader(String lsWhere){
         String lsQuery = "SELECT RECORD_TYPE,\n" + 
         "        REGIONAL_SALES_AREA_CODE,\n" + 
         "        SALES_AREA_CODE,\n" + 
@@ -263,6 +264,7 @@ public class ParrillasProgramasDao {
         "        BCSTDT,\n" + 
         "        FECHA_CREACION\n" + 
         "   FROM EVENTAS.LMK_BRK_CHANNEL_HEADER";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }
@@ -274,13 +276,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkBrkBreakRowBean> getBrkBreak(){
+    public List<LmkBrkBreakRowBean> getBrkBreak(String lsWhere){
         List<LmkBrkBreakRowBean> loRes = 
             new ArrayList<LmkBrkBreakRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryBrkBreak(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -320,7 +322,7 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryBrkBreak(){
+    public String getQueryBrkBreak(String lsWhere){
         String lsQuery = "SELECT RECORD_TYPE,\n" + 
         "        REGIONAL_SALES_CODE,\n" + 
         "        SALES_AREA_CODE,\n" + 
@@ -334,6 +336,7 @@ public class ParrillasProgramasDao {
         "        BCSTDT,\n" + 
         "        FECHA_CREACION\n" + 
         "   FROM EVENTAS.LMK_BRK_BREAK";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }
@@ -344,13 +347,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkBrkChannelTrailerRowBean> getBrkChannelTrailer(){
+    public List<LmkBrkChannelTrailerRowBean> getBrkChannelTrailer(String lsWhere){
         List<LmkBrkChannelTrailerRowBean> loRes = 
             new ArrayList<LmkBrkChannelTrailerRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryBrkChannelTrailer(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -383,13 +386,14 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryBrkChannelTrailer(){
+    public String getQueryBrkChannelTrailer(String lsWhere){
         String lsQuery = " SELECT RECORD_TYPE,\n" + 
         "        RECORD_COUNT,\n" + 
         "        STNID,\n" + 
         "        BCSTDT,\n" + 
         "        FECHA_CREACION \n" + 
         "   FROM EVENTAS.LMK_BRK_CHANNEL_TRAILER";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }
@@ -401,13 +405,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkBrkFileTrailerRowBean> getBrkFileTrailer(){
+    public List<LmkBrkFileTrailerRowBean> getBrkFileTrailer(String lsWhere){
         List<LmkBrkFileTrailerRowBean> loRes = 
             new ArrayList<LmkBrkFileTrailerRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryBrkFileTrailer(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -440,13 +444,14 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryBrkFileTrailer(){
+    public String getQueryBrkFileTrailer(String lsWhere){
         String lsQuery = " SELECT RECORD_TYPE,\n" + 
         "        RECORD_COUNT,\n" + 
         "        STNID,\n" + 
         "        BCSTDT,\n" + 
         "        FECHA_CREACION \n" + 
         "   FROM EVENTAS.LMK_BRK_CHANNEL_TRAILER";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }
@@ -459,13 +464,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkProgRowBean> getProgProgramme(){
+    public List<LmkProgRowBean> getProgProgramme(String lsWhere){
         List<LmkProgRowBean> loRes = 
             new ArrayList<LmkProgRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryProgProgramme(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -517,7 +522,7 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryProgProgramme(){
+    public String getQueryProgProgramme(String lsWhere){
         String lsQuery = "SELECT RECORD_TYPE,\n" + 
         "        SALES_AREA_CODE,\n" + 
         "        TRANSMISSION_REGION_CODE,\n" + 
@@ -543,6 +548,7 @@ public class ParrillasProgramasDao {
         "        PGMID,\n" + 
         "        FECHA_CREACION\n" + 
         "   FROM EVENTAS.LMK_PROG";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }
@@ -552,13 +558,13 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public List<LmkProgFileTrailerRowBean> getProgProgrammeTrailer(){
+    public List<LmkProgFileTrailerRowBean> getProgProgrammeTrailer(String lsWhere){
         List<LmkProgFileTrailerRowBean> loRes = 
             new ArrayList<LmkProgFileTrailerRowBean>();
         
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
-        String                  lsQueryParadigm = getQueryBrkFileHeader();        
+        String                  lsQueryParadigm = getQueryProgProgrammeTrailer(lsWhere);        
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -568,8 +574,9 @@ public class ParrillasProgramasDao {
                 loItem.setLiRecordCount(loRs.getInt("RECORD_COUNT"));
                 loItem.setLiAllowableGap(loRs.getInt("ALLOWABLE_GAP"));                
                 loItem.setLsStnid(loRs.getString("STNID"));
-                loItem.setLtBcstdt(loRs.getDate("BCSTDT"));
-                loItem.setLsPgmid(loRs.getString("PGMID"));
+                loItem.setLsStrdt(loRs.getString("STRDT"));
+                loItem.setLsEdt(loRs.getString("EDT"));
+                
                 loItem.setLtFechaCreacion(loRs.getTimestamp("FECHA_CREACION"));
                 loRes.add(loItem);
             }
@@ -593,15 +600,16 @@ public class ParrillasProgramasDao {
      * @autor Jorge Luis Bautista Santiago
      * @return List
      */
-    public String getQueryProgProgrammeTrailer(){
+    public String getQueryProgProgrammeTrailer(String lsWhere){
         String lsQuery = "SELECT RECORD_TYPE,\n" + 
         "        RECORD_COUNT,\n" + 
         "        ALLOWABLE_GAP,\n" + 
         "        STNID,\n" + 
-        "        BCSTDT,\n" + 
-        "        PGMID,\n" + 
+        "        STRDT,\n" + 
+        "        EDT,\n" + 
         "        FECHA_CREACION\n" + 
         "   FROM EVENTAS.LMK_PROG_FILE_TRAILER\n";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
     }

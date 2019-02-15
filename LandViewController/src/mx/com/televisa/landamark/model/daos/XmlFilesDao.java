@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
+import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 
 public class XmlFilesDao {
     public XmlFilesDao() {
@@ -26,8 +27,14 @@ public class XmlFilesDao {
      * @param LmkIntXmlFilesRowBean
      * @return boolean
      */
-    public boolean insertLmkIntXmlFilesTab(LmkIntXmlFilesRowBean toXmlFile) {
-        boolean    liResponse = false;
+    public ResponseUpdDao insertLmkIntXmlFilesTab(LmkIntXmlFilesRowBean toXmlFile) {
+        ResponseUpdDao    loResponse = new ResponseUpdDao();
+
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {;
+        }
+
         Connection loCnn = new ConnectionAs400().getConnection();
         Integer    liIdXml = getMaxIdParadigm("RstXmlFiles") + 1;
         try {
@@ -44,9 +51,10 @@ public class XmlFilesDao {
             "                                            NUM_CREATED_BY,\n" + 
             "                                            FEC_LAST_UPDATE_DATE,\n" + 
             "                                            NUM_LAST_UPDATED_BY,\n" + 
+            "                                            ATTRIBUTE1,\n" + 
             "                                            IND_FILE_STREAM\n" + 
             "                                           )\n" + 
-            "                                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "                                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement loStmt = loCnn.prepareStatement(lsSql);
             loStmt.setInt(1, liIdXml);
             loStmt.setInt(2, toXmlFile.getLiIdRequest());
@@ -61,11 +69,24 @@ public class XmlFilesDao {
             loStmt.setInt(11, toXmlFile.getLiIdUser());
             loStmt.setTimestamp(12, getCurrentTimestamp());
             loStmt.setInt(13, toXmlFile.getLiIdUser());
-            loStmt.setBinaryStream(14, toXmlFile.getLoIndFileStream());
-            liResponse = loStmt.execute();
+            loStmt.setString(14, toXmlFile.getLsAttribute1());
+            loStmt.setBinaryStream(15, toXmlFile.getLoIndFileStream());
+            boolean lbRes = loStmt.execute();
+            if(lbRes){
+                loResponse.setLsResponse("OK");
+                loResponse.setLsMessage("OK");
+                loResponse.setLiAffected(1);
+            }else{
+                loResponse.setLsResponse("ERROR");
+                loResponse.setLsMessage("false");
+                loResponse.setLiAffected(0);
+            }
             
         } catch (SQLException loExSql) {
             System.out.println("ERROR XML_FILE: "+loExSql.getMessage());
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLsMessage(loExSql.getMessage());
+            loResponse.setLiAffected(0);
         }
         finally{
             try {
@@ -74,7 +95,7 @@ public class XmlFilesDao {
                 loEx.printStackTrace();
             }
         }
-        return liResponse;
+        return loResponse;
     }
     
     /**

@@ -19,6 +19,10 @@ import java.io.IOException;
 
 import java.io.InputStream;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.List;
@@ -43,11 +47,20 @@ import mx.com.televisa.landamark.model.types.extract.LmkBrkFileHeaderRowBean;
 import mx.com.televisa.landamark.model.types.extract.LmkBrkFileTrailerRowBean;
 import mx.com.televisa.landamark.model.types.extract.LmkProgFileTrailerRowBean;
 import mx.com.televisa.landamark.model.types.extract.LmkProgRowBean;
+import mx.com.televisa.landamark.services.jobs.service.ParrillasProgramasImpCron;
 import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
 import mx.com.televisa.landamark.view.types.LmkDynaParameters;
 import mx.com.televisa.landamark.view.types.MapDynaParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
+
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
 
 import utils.system;
 
@@ -137,23 +150,8 @@ public class ParrillasProgramasService {
         // - Extraer parámetros de la tabla
         List<LmkIntServicesParamsRowBean> loParams = 
             loSpDao.getLmkIntServicesParams(loBitBean.getLiIdService());
-        //### Validacion parametros:
-        for(LmkIntServicesParamsRowBean loPrm: loParams){
-            if(loPrm.getLsIndParameter().equalsIgnoreCase("2CAN")){
-                ls2Can = loPrm.getLsIndValParameter();
-            }
-            if(loPrm.getLsIndParameter().equalsIgnoreCase("5CAN")){
-                ls5Can = loPrm.getLsIndValParameter();
-            }
-            if(loPrm.getLsIndParameter().equalsIgnoreCase("9CAN")){
-                ls9Can = loPrm.getLsIndValParameter();
-            }
-            if(loPrm.getLsIndParameter().equalsIgnoreCase("CLIENTE")){
-                lsCliente = loPrm.getLsIndValParameter();
-            }
-        }
         
-        if( (ls2Can+ls5Can+ls9Can+lsCliente).trim().length() == 0 ){
+        if( loParams.size() < 3 ){ //FI, FF y al menos un canal
             lbProcess = false;
             liIndProcess = 
                         new UtilFaces().getIdConfigParameterByName("GeneralError");//ExtractData
@@ -169,40 +167,57 @@ public class ParrillasProgramasService {
             
         }
         else{
-            // - Invocar Stored Procedure
-            /*
-            String tsStnid = "";
-            String tsStrdt = ""; 
-            String tsEdt = "";
-            ResponseUpdDao loRes = loPpDao.callLmkProgBrkPr(tsStnid, tsStrdt, tsEdt);
-            liIndProcess = 
-                        new UtilFaces().getIdConfigParameterByName("ExeProcedure");//ExtractData
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(loInput.getLiIdService());
-                    loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento("Se ha invocado LMK_PROG_BRK("+tsStnid+","+tsStrdt+","+tsEdt+")");
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       loInput.getLiIdUser(), 
-                                                       loInput.getLsUserName());
-            */
-            //if(loRes.getLsResponse().equalsIgnoreCase("ERROR")){
-            if(1==2){
-                liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("GeneralError");//Error en invocacion de SP
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(loInput.getLiIdService());
-                        loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        //loBitBean.setLsIndEvento("Error en Servicio "+loInput.getLsServiceName()+" "+loRes.getLsMessage());
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           loInput.getLiIdUser(), 
-                                                           loInput.getLsUserName());
+            String lsFecInicial = "";
+            String lsFecFinal = "";
+            List<String> laChannels = new ArrayList<String>();
+            for(LmkIntServicesParamsRowBean loBean:loParams){
+                if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL")){
+                    lsFecInicial = loBean.getLsIndValParameter();
+                }
+                if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                    lsFecFinal = loBean.getLsIndValParameter();
+                }
+                if(!loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL") &&
+                !loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                     if(loBean.getLsIndValParameter().equalsIgnoreCase("1")){
+                         laChannels.add(loBean.getLsIndParameter());
+                     }
+                }
+                
             }
-            else{
-                // - Leer Tablas involucradas
+            
+            for(String lsChannel : laChannels){
+                String lsTrigger = lsChannel+getIdBitacora();
+                 //Invocar job asincrono simple
+                 Scheduler loScheduler;
+                 try {
+                     loScheduler = new StdSchedulerFactory().getScheduler();
+                     JobDetail loJob = 
+                         JobBuilder.newJob(ParrillasProgramasImpCron.class).build();
+                     Trigger   loTrigger = 
+                         TriggerBuilder.newTrigger().withIdentity(lsTrigger).build();
+                     JobDataMap loJobDataMap=  loJob.getJobDataMap();
+                     //------------------------------------------
+                     loJobDataMap.put("lsIdService", String.valueOf(loInput.getLiIdService())); 
+                     loJobDataMap.put("lsIdUser", String.valueOf(loInput.getLiIdUser())); 
+                     loJobDataMap.put("lsUserName", loInput.getLsUserName()); 
+                     loJobDataMap.put("lsTypeProcess", loInput.getLsServiceType());
+                     loJobDataMap.put("lsServiceName", loInput.getLsServiceName());
+                     loJobDataMap.put("lsPathFiles", loInput.getLsPathFiles());                           
+                     loJobDataMap.put("lsIdLogService", String.valueOf(liIdLogService)); 
+                     //------------------------------------------
+                     loJobDataMap.put("lsFecInicial", lsFecInicial); 
+                     loJobDataMap.put("lsFecFinal", lsFecFinal); 
+                     loJobDataMap.put("lsIdChannel", lsChannel); 
+                     loScheduler.scheduleJob(loJob, loTrigger);
+                     loScheduler.start();
+                     
+                 } catch (Exception loEx) {
+                     System.out.println("Error en invocacion de cron final "+loEx.getMessage());
+                 }         
+                    
+            }                            
+            // - Leer Tablas involucradas
                 
                 // Para el BREAK
                 ////////// FILE HEADER RECORD
@@ -229,7 +244,7 @@ public class ParrillasProgramasService {
                 //List<LmkProgFileTrailerRowBean> laPrgTrb = loPpDao.getProgProgrammeTrailer();
                 
                 // - Armar y creear archivo, convertir de acuerdo al mapeo
-                File loFile = getPlainFileBreak(loInput.getLsPathFiles());
+                /*File loFile = getPlainFileBreak(loInput.getLsPathFiles());
                 liIndProcess = 
                             new UtilFaces().getIdConfigParameterByName("Execute");
                         loBitBean.setLiIdLogServices(liIdLogService);
@@ -286,14 +301,10 @@ public class ParrillasProgramasService {
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                loInput.getLiIdUser(), 
                                                                loInput.getLsUserName());
-                }
+                }*/
                 // - Enviar archivo a ruta FTP
-            }
         }
                                 
-        System.out.println("Ejecutando "+loInput.getLsServiceType()+" a las "+
-                           new Date()+" Input["+loInput.getLsMessage()+"]");
-
         return loResponseService;
     }
     
@@ -325,6 +336,18 @@ public class ParrillasProgramasService {
             System.out.println("Error al escribir "+e.getMessage());
         }
         return loFileResponse;
+    }
+    
+    /**
+     * Obtiene, en base a la fecha, el id_paradigm a manejar en intergracion
+     * @autor Jorge Luis Bautista Santiago     
+     * @return String
+     */
+    public String getIdBitacora(){
+        String lsResponse = null;
+        DateFormat loDf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
+        return lsResponse;
     }
     
 }
