@@ -117,7 +117,9 @@
                                                   id="BtnSearch"
                                                   icon="/images/View.gif"
                                                   shortDesc="Buscar Elementos"
-                                                    action="#{GralConfigBean.searchFilterAction}"/>
+                                                    action="#{GralConfigBean.searchFilterAction}">
+                                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                    </af:button>
                                       </af:panelFormLayout>
                                     </af:panelGroupLayout>
                                   </f:facet>
@@ -139,7 +141,6 @@
                                       binding="#{GralConfigBean.poTblMain}" >
                                 <af:column align="center" id="colCrudSweb"
                                         frozen="true" sortable="false"
-                                        visible="#{UserMenuBean.lsOprCrud}"
                                         width="85">
                                     <f:facet name="header">
                                     <af:group id="g2">
@@ -456,11 +457,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPg">
                                 <af:button text="Aceptar" id="BtnAceptAlt" icon="/images/aceptar.gif"
                                             shortDesc="Guardar Parámetro"
-                                           action="#{GralConfigBean.saveParameterAction}"/>
+                                           action="#{GralConfigBean.saveParameterAction}">
+                                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                    </af:button>
                                 <af:spacer width="10" height="10" id="SpcPopSaveCancel"/>
                                 <af:button text="Cancelar" id="BtnCancelAlt" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{GralConfigBean.cancelSaveParameterAction}"/>
+                                           action="#{GralConfigBean.cancelSaveParameterAction}">
+                                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                    </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -496,7 +501,9 @@
                            <af:spacer width="10" height="25" id="SpcPopDel02"/>
                            <af:button text="Cancelar" id="BtnEliminarCancelar"
                                              icon="/images/cancelar.gif"
-                                             action="#{GralConfigBean.cancelDeleteParameter}"/>
+                                             action="#{GralConfigBean.cancelDeleteParameter}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
                        </af:panelGroupLayout> 
                     </af:panelGroupLayout>
                   </af:panelWindow>
@@ -550,16 +557,19 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPgUpd">
                                 <af:button text="Aceptar" id="BtnAceptUpdWs" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{GralConfigBean.updateParameterAction}"/>
+                                           action="#{GralConfigBean.updateParameterAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcUpd111"/>
                                 <af:button text="Cancelar" id="BtnCancelUpd" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{GralConfigBean.cancelUpdateParameterAction}"/>
+                                           action="#{GralConfigBean.cancelUpdateParameterAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
                 </af:popup>
-                
                 
                 <!-- ################################### POPUP LOADING .... ##################################### !-->
                 <af:popup id="popLoading" contentDelivery="immediate">

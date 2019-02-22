@@ -35,6 +35,44 @@
     EntityUsage="LmkIntServicesLogVw"
     AliasName="NOM_SERVICE"/>
   <ViewAttribute
+    Name="IdFileXml"
+    PrecisionRule="true"
+    EntityAttrName="IdFileXml"
+    EntityUsage="LmkIntServicesLogVw"
+    AliasName="ID_FILE_XML"/>
+  <ViewAttribute
+    Name="IdRequest"
+    PrecisionRule="true"
+    EntityAttrName="IdRequest"
+    EntityUsage="LmkIntServicesLogVw"
+    AliasName="ID_REQUEST"/>
+  <ViewAttribute
+    Name="NomFile"
+    PrecisionRule="true"
+    EntityAttrName="NomFile"
+    EntityUsage="LmkIntServicesLogVw"
+    AliasName="NOM_FILE"/>
+  <ViewAttribute
+    Name="IndParameters"
+    PrecisionRule="true"
+    EntityAttrName="IndParameters"
+    EntityUsage="LmkIntServicesLogVw"
+    AliasName="IND_PARAMETERS"/>
+  <ViewAttribute
+    Name="ShowRequest"
+    IsNotNull="true"
+    PrecisionRule="true"
+    EntityAttrName="ShowRequest"
+    EntityUsage="LmkIntServicesLogVw"
+    AliasName="SHOW_REQUEST"/>
+  <ViewAttribute
+    Name="ShowResponse"
+    IsNotNull="true"
+    PrecisionRule="true"
+    EntityAttrName="ShowResponse"
+    EntityUsage="LmkIntServicesLogVw"
+    AliasName="SHOW_RESPONSE"/>
+  <ViewAttribute
     Name="IndProcess"
     PrecisionRule="true"
     EntityAttrName="IndProcess"
@@ -225,4 +263,9 @@
     EntityAttrName="NumLastUpdateLogin"
     EntityUsage="LmkIntServicesLogVw"
     AliasName="NUM_LAST_UPDATE_LOGIN"/>
+  <SortCriteria>
+    <Sort
+      Attribute="FecCreationDate"
+      Ascending="false"/>
+  </SortCriteria>
 </ViewObject>

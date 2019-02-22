@@ -15,6 +15,12 @@
           <Item Value="IdLogServices"/>
           <Item Value="IdService"/>
           <Item Value="NomService"/>
+          <Item Value="IdFileXml"/>
+          <Item Value="IdRequest"/>
+          <Item Value="NomFile"/>
+          <Item Value="IndParameters"/>
+          <Item Value="ShowRequest"/>
+          <Item Value="ShowResponse"/>
           <Item Value="IndProcess"/>
           <Item Value="IndProcessNom"/>
           <Item Value="IndResponse"/>

@@ -91,12 +91,14 @@
                                                   partialTriggers="BtnReset"
                                                   binding="#{MappingBean.poFilterIdMapping}"/>
                                             
-                                            <af:inputText label="Relación"                                                  
+                                            <af:inputText label="Nombre"                                                  
                                                   id="TxtFilterName"
                                                   partialTriggers="BtnReset"
                                                   binding="#{MappingBean.poFilterNomRelation}"/>
+                                                  
                                             <af:inputText label="Valor"                                                  
                                                   id="TxtFilterValueRelation"
+                                                   visible="false"
                                                   partialTriggers="BtnReset"
                                                   binding="#{MappingBean.poFilterValueRelation}"/>
                                                 
@@ -110,6 +112,7 @@
                                             
                                             <af:inputText label="Origen"                                                  
                                                   id="TxtFilterNomOrigin"
+                                                   visible="false"
                                                   partialTriggers="BtnReset"
                                                   binding="#{MappingBean.poFilterNomOrigin}"/>
                                             <af:inputText label="Valor Origen"                                                  
@@ -136,6 +139,7 @@
                                                   binding="#{MappingBean.poFilterNomDestiny}"/>
                                             <af:inputText label="Valor Destino"                                                  
                                                   id="TxtFilterValueDestiny"
+                                                   visible="false"
                                                   partialTriggers="BtnReset"
                                                   binding="#{MappingBean.poFilterValueDestiny}"/>
                                             
@@ -169,7 +173,9 @@
                                                   id="BtnSearch"
                                                   icon="/images/View.gif"
                                                   shortDesc="Buscar Elementos"
-                                                  action="#{MappingBean.searchFilterAction}"/>
+                                                  action="#{MappingBean.searchFilterAction}">
+                                            <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                        </af:button>
                                         </af:panelFormLayout>
                                     </af:panelGroupLayout>
                                   </f:facet>
@@ -191,7 +197,6 @@
                                       binding="#{MappingBean.poTblMain}" >
                                 <af:column align="center" id="colCrudSweb"
                                         frozen="true" sortable="false"
-                                        visible="#{UserMenuBean.lsOprCrud}"
                                         width="85">
                                     <f:facet name="header">
                                     <af:group id="g2">
@@ -251,7 +256,7 @@
                                             
                                             <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NomOrigin.name}"
                                                        sortable="true" align="center" frozen="true"
-                                                       headerText="Nombre Origen"
+                                                       headerText="Nombre Origen" visible="false"
                                                        id="c3">
                                                 <af:outputText value="#{row.NomOrigin}"
                                                                shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NomOrigin.tooltip}"
@@ -265,6 +270,14 @@
                                                                shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.ValValueOrigin.tooltip}"
                                                                id="ot6"/>
                                             </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.ValValueDestiny.name}"
+                                                       sortable="true" align="center" frozen="true"
+                                                       headerText="Valor Destino"
+                                                       id="c7">
+                                                <af:outputText value="#{row.ValValueDestiny}"
+                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.ValValueDestiny.tooltip}"
+                                                               id="ot7"/>
+                                            </af:column>
                                             <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndSysOrigin.name}"
                                                        sortable="true"  align="center"
                                                        headerText="Sistema Origen"
@@ -276,19 +289,11 @@
                                             
                                             <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.NomDestiny.name}"
                                                        sortable="true" align="center"
-                                                       headerText="Nombre Destino"
+                                                       headerText="Nombre Destino" visible="false"
                                                        id="c4">
                                                 <af:outputText value="#{row.NomDestiny}"
                                                                shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.NomDestiny.tooltip}"
                                                                id="ot4"/>
-                                            </af:column>
-                                            <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.ValValueDestiny.name}"
-                                                       sortable="true" align="center"
-                                                       headerText="Valor Destino"
-                                                       id="c7">
-                                                <af:outputText value="#{row.ValValueDestiny}"
-                                                               shortDesc="#{bindings.LmkIntMappingCatVwView1.hints.ValValueDestiny.tooltip}"
-                                                               id="ot7"/>
                                             </af:column>
                                              <af:column sortProperty="#{bindings.LmkIntMappingCatVwView1.hints.IndSysDestiny.name}"
                                                        sortable="true" align="center"
@@ -544,11 +549,12 @@
                         <af:panelGroupLayout layout="vertical" id="PnlGrpAlta" valign="middle" halign="center" 
                         styleClass="AFStretchWidth">
                             <af:panelFormLayout id="PnlFrmAlta" rows="16" maxColumns="1" inlineStyle="width:400px;">                                 
-                                    <af:inputText label="Relación"                                                  
+                                    <af:inputText label="Nombre"                                                  
                                                   id="TxtSaveName"
                                                   binding="#{MappingBean.poSaveNomRelation}"/>
                                             <af:inputText label="Valor"                                                  
                                                   id="TxtSaveValueRelation"
+                                                   visible="false"
                                                   binding="#{MappingBean.poSaveValueRelation}"/>
                                             <af:separator id="s1save"/>
                                             <af:inputText label="Sistema"                                                  
@@ -558,6 +564,7 @@
                                             
                                             <af:inputText label="Origen"                                                  
                                                   id="TxtSaveNomOrigin"
+                                                   visible="false"
                                                   binding="#{MappingBean.poSaveNomOrigin}"/>
                                             <af:inputText label="Valor Origen"                                                  
                                                   id="TxtSaveValueOrigin"
@@ -576,6 +583,7 @@
                                             <af:separator id="s2save"/>  
                                             <af:inputText label="Destino"                                                  
                                                   id="TxtSaveNomDestiny"
+                                                   visible="false"
                                                   binding="#{MappingBean.poSaveNomDestiny}"/>
                                             <af:inputText label="Valor Destino"                                                  
                                                   id="TxtSaveValueDestiny"
@@ -605,11 +613,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPg">
                                 <af:button text="Aceptar" id="BtnAceptAlt" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{MappingBean.saveAction}"/>
+                                           action="#{MappingBean.saveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcPopSaveCancel"/>
                                 <af:button text="Cancelar" id="BtnCancelAlt" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{MappingBean.cancelSaveAction}"/>
+                                           action="#{MappingBean.cancelSaveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -664,11 +676,12 @@
                                                   id="it9Upd"
                                                   binding="#{MappingBean.poPopUpIdMapping}">
                                     </af:inputText>
-                                    <af:inputText label="Relación"                                                  
+                                    <af:inputText label="Nombre"                                                  
                                                   id="TxtUpdName"
                                                   binding="#{MappingBean.poUpdNomRelation}"/>
                                             <af:inputText label="Valor"                                                  
                                                   id="TxtUpdValueRelation"
+                                                   visible="false"
                                                   binding="#{MappingBean.poUpdValueRelation}"/>
                                             <af:separator id="s1Upd"/>
                                             <af:inputText label="Sistema"                                                  
@@ -678,6 +691,7 @@
                                             
                                             <af:inputText label="Origen"                                                  
                                                   id="TxtUpdNomOrigin"
+                                                   visible="false"
                                                   binding="#{MappingBean.poUpdNomOrigin}"/>
                                             <af:inputText label="Valor Origen"                                                  
                                                   id="TxtUpdValueOrigin"
@@ -696,6 +710,7 @@
                                             <af:separator id="s2Upd"/>  
                                             <af:inputText label="Destino"                                                  
                                                   id="TxtUpdNomDestiny"
+                                                   visible="false"
                                                   binding="#{MappingBean.poUpdNomDestiny}"/>
                                             <af:inputText label="Valor Destino"                                                  
                                                   id="TxtUpdValueDestiny"

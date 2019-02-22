@@ -206,4 +206,9 @@
     EntityAttrName="NumLastUpdateLogin"
     EntityUsage="LmkIntServicesBitacoraVw"
     AliasName="NUM_LAST_UPDATE_LOGIN"/>
+  <SortCriteria>
+    <Sort
+      Attribute="FecCreationDate"
+      Ascending="false"/>
+  </SortCriteria>
 </ViewObject>

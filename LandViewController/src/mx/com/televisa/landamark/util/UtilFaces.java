@@ -9,13 +9,6 @@
 */
 package mx.com.televisa.landamark.util;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-
-import mx.com.televisa.landamark.model.AppModuleImpl;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,31 +27,26 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
-//import javax.ws.rs.core.UriBuilder;
-
-import javax.ws.rs.core.UriBuilder;
-
+import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
-
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 
 import oracle.adf.model.BindingContext;
 import oracle.adf.model.binding.DCBindingContainer;
 import oracle.adf.model.binding.DCIteratorBinding;
 import oracle.adf.view.rich.component.rich.RichPopup;
-
 import oracle.adf.view.rich.component.rich.data.RichTable;
 import oracle.adf.view.rich.context.AdfFacesContext;
 
 import oracle.jbo.ApplicationModule;
 import oracle.jbo.ViewObject;
-
 import oracle.jbo.client.Configuration;
 
 import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+//import javax.ws.rs.core.UriBuilder;
 
 /** Esta clase ofrece metodos de utileria para ayuda en el desarrollo<br/>
  *
@@ -144,10 +132,12 @@ public class UtilFaces {
                 loDCBinding.findIteratorBinding(tsIteraror);        
             ViewObject         loVO = loDCIterator.getViewObject();
             loVO.setWhereClause(tsWhere);
+            //System.out.println(loVO.getQuery());   
             loVO.executeQuery();
             AdfFacesContext.getCurrentInstance().addPartialTarget(toRichTable);
         }catch(Exception loIntExp){
             System.out.println("Error al actualiza front tsIteraror "+tsIteraror);   
+            System.out.println(loIntExp.getMessage());
         }
     }
 
@@ -435,14 +425,7 @@ public class UtilFaces {
     /**
      * Agrega registro en bitacora del servicio
      * @autor Jorge Luis Bautista Santiago
-     * @param tiIdLogServices
-     * @param tiIdService
-     * @param tiIndProcess
-     * @param psIndResponse
-     * @param piNumUser
-     * @param tiNumEvtbProcessId
-     * @param tiNumPgmProcessID
-     * @param psProceso
+     * @param toBean
      * @return void
      */
     public void insertBitacoraServiceService(LmkIntServiceBitacoraRowBean loBean) {
@@ -579,14 +562,7 @@ public class UtilFaces {
     /**
      * Agrega registro del log de servicio
      * @autor Jorge Luis Bautista Santiago
-     * @param tiIdLogServices
-     * @param tiIdService
-     * @param tiIndProcess
-     * @param tsIndResponse
-     * @param piNumUser
-     * @param tiNumEvtbProcessId
-     * @param tiNumPgmProcessID
-     * @param tsProceso
+     * @param toLmkBean
      * @return void
      */
     public void insertLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
@@ -606,14 +582,7 @@ public class UtilFaces {
     /**
     * Actualiza registro del log de servicio
     * @autor Jorge Luis Bautista Santiago
-    * @param tiIdLogServices
-    * @param tiIdService
-    * @param tiIndProcess
-    * @param tsIndResponse
-    * @param tiNumUser
-    * @param tiNumEvtbProcessId
-    * @param tiNumPgmProcessID
-    * @param tsProceso
+    * @param toLmkBean
     * @return void
     */
     public void updateLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
@@ -622,18 +591,6 @@ public class UtilFaces {
        AppModuleImpl loService = (AppModuleImpl)loAm;
        try {
            loService.updateServicesLogModel(toLmkBean);
-           
-           /*
-           loService.updateServicesLogModel(tiIdLogServices, 
-                                            tiIdService,
-                                            tiIndProcess,
-                                            tsIndResponse,
-                                            tiNumEvtbProcessId,
-                                            tiNumPgmProcessID,
-                                            tsProceso,
-                                            tiIdUser,
-                                            tsUserName
-                                            );*/
        } catch (Exception loEx) {
            System.out.println("ERROR en update LogService:"+loEx.getMessage());
        } finally {

@@ -18,6 +18,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import mx.com.televisa.landamark.model.AppModuleImpl;
@@ -74,10 +75,12 @@ public class NotificationsBean {
     private RichInputText poUpdIndMessage;
     String                            gsEntityView = "LmkIntNotificationsVwView1";
     String                            gsEntityIterator = "LmkIntNotificationsVwView1Iterator";
+                                                          
     String                            gsAppModule = "AppModuleDataControl";
     String                            gsAmDef = "mx.com.televisa.landamark.model.AppModuleImpl";
     String                            gsConfig = "AppModuleLocal";
-    
+    private RichInputText poNomService;
+
     public NotificationsBean() {
     }
     
@@ -90,31 +93,36 @@ public class NotificationsBean {
         String                     lsFieldErrorRq = "";
         boolean                    lbProcess = true;
         
-        //Integer                    liIdNotification = 
-        //    new ViewObjectDao().getMaxIdParadigm("Notifications") + 1;
+        Integer                    liIdNotification = 
+            new ViewObjectDao().getMaxIdParadigm("Notifications") + 1;
+        System.out.println("########## liIdNotification: "+liIdNotification);
         
-        String                   lsIdNotification = 
-            getPoSaveIdNotification().getValue() == null ? "" : 
-            getPoSaveIdNotification().getValue().toString();
         String                   lsIdService = 
             getPoSaveIdService().getValue() == null ? "" : 
             getPoSaveIdService().getValue().toString();
+        
+        System.out.println("########## lsIdService: "+lsIdService);
+        
         String                   liIndProcess = 
             getPoSaveIndProcessSel().getValue() == null ? "" : 
             getPoSaveIndProcessSel().getValue().toString();
+        System.out.println("########## liIndProcess: "+liIndProcess);
         String                   lsIndUsersGroup = 
             getPoSaveIndUsersGroupSel().getValue() == null ? "" : 
             getPoSaveIndUsersGroupSel().getValue().toString();
+        System.out.println("########## lsIndUsersGroup: "+lsIndUsersGroup);
         String                   lsIndSubject = 
             getPoSaveIndSubject().getValue() == null ? "" : 
             getPoSaveIndSubject().getValue().toString();
+        System.out.println("########## lsIndSubject: "+lsIndSubject);
         String                   lsIndMessage = 
             getPoSaveIndMessage().getValue() == null ? "" : 
             getPoSaveIndMessage().getValue().toString();
-        
+        System.out.println("########## lsIndMessage: "+lsIndMessage);
         String                     lsIndEstatus = 
             getPoPopSaveStatus().getValue() == null ? "":
             getPoPopSaveStatus().getValue().toString();
+        System.out.println("########## lsIndEstatus: "+lsIndEstatus);
         String                     lsStatusTab = "0";
         if(lsIndEstatus.equalsIgnoreCase("true")){
             lsStatusTab = "1";
@@ -143,8 +151,17 @@ public class NotificationsBean {
             AppModuleImpl loService = 
                 (AppModuleImpl)loAm;                
             try{
+                /*System.out.println("Datos a guardar.............");
+                System.out.println("liIdNotification: "+liIdNotification);
+                System.out.println("lsIdService: "+lsIdService);
+                System.out.println("liIndProcess: "+liIndProcess);
+                System.out.println("lsIndUsersGroup: "+lsIndUsersGroup);                
+                System.out.println("lsIndSubject: "+lsIndSubject);                
+                System.out.println("lsIndMessage: "+lsIndMessage);                
+                System.out.println("lsStatusTab: "+lsStatusTab);
+                */
                 LmkIntNotificationsRowBean loLmkBean = new LmkIntNotificationsRowBean();
-                loLmkBean.setLiIdNotification(Integer.parseInt(lsIdNotification));                
+                loLmkBean.setLiIdNotification(liIdNotification);
                 loLmkBean.setLiIdService(Integer.parseInt(lsIdService));                
                 loLmkBean.setLiIndProcess(Integer.parseInt(liIndProcess)); 
                 loLmkBean.setLsIndUsersGroup(lsIndUsersGroup);                
@@ -184,7 +201,21 @@ public class NotificationsBean {
      * @return String
      */
     public String cancelSaveAction() {
-        new UtilFaces().hidePopup(getPoPopupSave());
+        new UtilFaces().refreshTableWhereIterator("1 = 1",
+                                                  gsEntityIterator,
+                                                  getPoTblMain()
+                                                  );
+        
+        new UtilFaces().hidePopup(getPoPopupSave());     
+        /*FacesContext       loContext = FacesContext.getCurrentInstance();
+        ExternalContext    loEctx = loContext.getExternalContext();
+        String             lsUrl = 
+            loEctx.getRequestContextPath() + "/faces/notificationsPage";
+        try {
+            loEctx.redirect(lsUrl);
+        } catch (IOException loEx) {
+            ;
+        }*/
         return null;
     }
     
@@ -329,17 +360,39 @@ public class NotificationsBean {
      * @return String
      */
     public String cancelUpdateAction() {
+        new UtilFaces().refreshTableWhereIterator("1 = 1",
+                                                  gsEntityIterator,
+                                                  getPoTblMain()
+                                                  );
         new UtilFaces().hidePopup(getPoPopupUpdate());
+        
+        return null;
+        
+        
+        /*
+        new UtilFaces().refreshTableWhereIterator("1 = 1",
+                                                  gsEntityIterator,
+                                                  getPoTblMain()
+                                                  );
+        new UtilFaces().hidePopup(getPoPopupUpdate());
+*/
+        /*
         FacesContext       loContext = FacesContext.getCurrentInstance();
         ExternalContext    loEctx = loContext.getExternalContext();
         String             lsUrl = 
             loEctx.getRequestContextPath() + "/faces/notificationsPage";        
         try {
+            String lsIdService = getPoUpdIdService().getValue().toString();
+            String lsNomService = getPoUpdIndService().getValue().toString();
             loEctx.redirect(lsUrl);
+            getPoTblMain().setVisible(true);
+            getPoUpdIndUsersGroupSel().setValue(lsIdService);
+            getPoNomService().setValue(lsNomService);
+            
         } catch (IOException loEx) {
             ;
-        }
-        return null;
+        }*/
+        //return null;
     }
 
     /**
@@ -353,11 +406,11 @@ public class NotificationsBean {
             new ArrayList<SelectItem>();
         ViewObjectDao           loMd = new ViewObjectDao();
         List<SelectOneItemBean> laAllWs = 
-            loMd.getListGeneralParametersModelFilter("SYSTEMS_INTEGRATION");
+            loMd.getListAllWebServicesModel();
         for(SelectOneItemBean loWs: laAllWs){
             SelectItem loItm = new SelectItem();           
-            //loItm.setValue(loWs.getLsId());
-            loItm.setValue(loWs.getLsValue());
+            loItm.setValue(loWs.getLsId());
+            //loItm.setValue(loWs.getLsValue());
             loItm.setDescription(loWs.getLsDescription());
             loItm.setLabel(loWs.getLsValue());
             laList.add(loItm);
@@ -377,11 +430,11 @@ public class NotificationsBean {
             new ArrayList<SelectItem>();
         ViewObjectDao           loMd = new ViewObjectDao();
         List<SelectOneItemBean> laAllWs = 
-            loMd.getListGeneralParametersModelFilter("SYSTEMS_INTEGRATION");
+            loMd.getListGeneralParametersModelFilter("PROCESS_EMAIL_PGM");
         for(SelectOneItemBean loWs: laAllWs){
             SelectItem loItm = new SelectItem();           
-            //loItm.setValue(loWs.getLsId());
-            loItm.setValue(loWs.getLsValue());
+            loItm.setValue(loWs.getLsId());
+            //loItm.setValue(loWs.getLsValue());
             loItm.setDescription(loWs.getLsDescription());
             loItm.setLabel(loWs.getLsValue());
             laList.add(loItm);
@@ -401,7 +454,7 @@ public class NotificationsBean {
             new ArrayList<SelectItem>();
         ViewObjectDao           loMd = new ViewObjectDao();
         List<SelectOneItemBean> laAllWs = 
-            loMd.getListGeneralParametersModelFilter("SYSTEMS_INTEGRATION");
+            loMd.getListGeneralParametersModelFilter("EMAIL_USERS_GROUPS");
         for(SelectOneItemBean loWs: laAllWs){
             SelectItem loItm = new SelectItem();           
             //loItm.setValue(loWs.getLsId());
@@ -421,15 +474,20 @@ public class NotificationsBean {
      * @return String
      */
     public void showSavePopup(ActionEvent toActionEvent) {
-        toActionEvent.getSource();   
-        String                   lsIdService = 
-            getPoFilterServiceSel().getValue() == null ? "" : 
-            getPoFilterServiceSel().getValue().toString();
+        toActionEvent.getSource();
         
-        String                   lsIndService = "Buscar Descripcion del Servicio";
+        String                   lsIdService = 
+            getPoFilterServiceSel().getValue() == null ? "0" : 
+            getPoFilterServiceSel().getValue().toString(); 
+        String                   lsDesService = 
+        getPoNomService().getValue() == null ? "0" : 
+        getPoNomService().getValue().toString(); 
+        
+        System.out.println("lsIdService: "+lsIdService);
+        System.out.println("lsDesService: "+lsDesService);
         
         getPoSaveIdService().setValue(lsIdService);    
-        getPoSaveIndService().setValue(lsIndService);    
+        getPoSaveIndService().setValue(lsDesService);    
         
         getPoSaveIdNotification().setValue("");    
         getPoSaveIndMessage().setValue("");    
@@ -496,7 +554,7 @@ public class NotificationsBean {
         //liNomProcess
         //getPoUpdIndProcessSel().setValue(liIndProcess);
         //lsIndUsersGroup
-        getPoUpdIndUsersGroupSel().setValue(lsIndUsersGroup);                
+        getPoUpdIndUsersGroupSel().setValue(lsNomUsersGroup);                
         //lsNomUsersGroup        
         //lsIndSubject
         getPoUpdIndSubject().setValue(lsIndSubject);                
@@ -511,7 +569,6 @@ public class NotificationsBean {
         
         new UtilFaces().showPopup(getPoPopupUpdate());
     }
-    
 
     /**
      * Muestra popup que solicita datos para eliminar
@@ -723,4 +780,38 @@ public class NotificationsBean {
     public RichInputText getPoUpdIndMessage() {
         return poUpdIndMessage;
     }
+
+    public void selectServiceListener(ValueChangeEvent loValueChangeEvent) {
+        String lsIdService = 
+            loValueChangeEvent.getNewValue() == null ? null : 
+            loValueChangeEvent.getNewValue().toString();
+        System.out.println("lsIdService: "+lsIdService);
+        if(lsIdService == null){
+            getPoTblMain().setVisible(false);
+        }
+        else{
+            //Buscar nombre del servicio
+            String lsNomService = 
+                new ViewObjectDao().getNomServiceByIdService(lsIdService);
+            
+            new UtilFaces().refreshTableWhereIterator("ID_SERVICE = "+lsIdService,
+                                                      gsEntityIterator,
+                                                      getPoTblMain()
+                                                      );
+            
+            getPoTblMain().setVisible(true);
+            getPoNomService().setValue(lsNomService);
+        }
+        
+    }
+
+    public void setPoNomService(RichInputText poNomService) {
+        this.poNomService = poNomService;
+    }
+
+    public RichInputText getPoNomService() {
+        return poNomService;
+    }
+
+    
 }

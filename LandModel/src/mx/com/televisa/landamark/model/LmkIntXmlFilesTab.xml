@@ -311,7 +311,8 @@
     SQLType="TIMESTAMP"
     Type="java.sql.Timestamp"
     ColumnType="TIMESTAMP"
-    TableName="EVENTAS.LMK_INT_XML_FILES_TAB"/>
+    TableName="EVENTAS.LMK_INT_XML_FILES_TAB"
+    PrimaryKey="true"/>
   <Attribute
     Name="NumCreatedBy"
     IsNotNull="true"
@@ -351,6 +352,7 @@
     </DesignTime>
     <AttrArray Name="Attributes">
       <Item Value="mx.com.televisa.landamark.model.LmkIntXmlFilesTab.IdFileXml"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntXmlFilesTab.FecCreationDate"/>
     </AttrArray>
   </Key>
 </Entity>

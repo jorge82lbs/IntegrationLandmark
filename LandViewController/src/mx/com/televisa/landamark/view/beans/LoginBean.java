@@ -35,6 +35,7 @@ import mx.com.televisa.landamark.users.UserInfoBean;
 import mx.com.televisa.landamark.users.UserMenuBean;
 import mx.com.televisa.landamark.secman.SecurityManagerWs;
 
+import mx.com.televisa.landamark.users.UserOperationList;
 import mx.com.televisa.landamark.util.UtilFaces;
 
 import oracle.adf.view.rich.component.rich.RichPopup;
@@ -78,17 +79,13 @@ public class LoginBean {
         String  lsTokenSecman;
         if (lsUserName != null && lsPassword != null) {                        
             try {                
-                /*lsTokenSecman = 
-                    validateSecmanUser(lsUserName, lsPassword); 
-                */
-                    lsTokenSecman = "123456789"; //TEMPORAL
+                
+                //lsTokenSecman = validateSecmanUser(lsUserName, lsPassword); 
+                lsTokenSecman = "123456789"; //TEMPORAL
                 if (lsTokenSecman != null) {
-                    System.out.println("obteniendo permisos");
-                    /*Usuario loUserIntegration = 
-                        getSecmanUserPermission(lsUserName);*/
+                    //Usuario loUserIntegration = getSecmanUserPermission(lsUserName);
                     //if(loUserIntegration != null){
                     if(true){
-                        System.out.println("obteniendo permisos...oko");
                         //Settear Datos--------------------------
                         FacesContext        loContext = FacesContext.getCurrentInstance();
                         ExternalContext     loEctx = loContext.getExternalContext();        
@@ -104,33 +101,30 @@ public class LoginBean {
                         loUserInfo.setPsEmail("jlbautistas@teleevisa.com.mx");//loUserIntegration.getMailUsuario().getMailUsuario());
                         loUserInfo.setPsIdUser("666");//loUserIntegration.getIdUsuario().getIdUsuario());
                         loUserInfo.setPsUserName("jlbautistas");//loUserIntegration.getUserName().getUserName());
+                        /*
+                        loUserInfo.setPsUserFullName(loUserIntegration.getNomMostrar().getNomMostrar());
+                        loUserInfo.setPsEmail(loUserIntegration.getMailUsuario().getMailUsuario());
+                        loUserInfo.setPsIdUser(loUserIntegration.getIdUsuario().getIdUsuario());
+                        loUserInfo.setPsUserName(loUserIntegration.getUserName().getUserName());
+                        */
                         loUserInfo.setPsDateTimeLogin(ldDateFormat.format(ldDate));
                         loUserInfo.setPsToken(lsTokenSecman);
                         loSession.setAttribute("loggedPgmIntegrationUser", loUserInfo.getPsUserName());                             
                         loSession.setAttribute("loggedPgmIntegrationIdUser", loUserInfo.getPsIdUser()); 
                         //### Asignar Operaciones a Usuario Firmado
-                        System.out.println("Asignando operaciones");
-                        UserMenuBean loMenu = getUserMenuBean(lsUserName);
-                        System.out.println("loMenu.getLsOprCrud(): "+loMenu.getLsOprCrud());
-                        System.out.println("loMenu.getLsOprDeleteCron(): "+loMenu.getLsOprDeleteCron());
-                        System.out.println("loMenu.getLsOprExecuteCron(): "+loMenu.getLsOprExecuteCron());
-                        System.out.println("loMenu.getLsOprInsertCron(): "+loMenu.getLsOprInsertCron());
-                        System.out.println("loMenu.getLsRolBitacora(): "+loMenu.getLsRolBitacora());
-                        System.out.println("loMenu.getLsRolMonitor(): "+loMenu.getLsRolMonitor());
-                        System.out.println("loMenu.getLsRolParametersConfig(): "+loMenu.getLsRolParametersConfig());
+                        
+                        getUserMenuBean(lsUserName);
+                        
                         String              lsUrl = 
                             loEctx.getRequestContextPath() + "/faces/homePage";
-                        System.out.println("Redireccionando correctamente........");
                         loEctx.redirect(lsUrl);
                     }
                     else{
-                        System.out.println("error al obtener permisos");
                         lbFlagError = true;
                         lsErrorMessage = "No es Posible Obtener Permisos";
                     }
                 }
             } catch (IOException loEx) {
-                System.out.println("Error al redireccionar a home");
                 lbFlagError = true;
                 lsErrorMessage = loEx.getMessage();
             } catch (Exception loExp) {
@@ -159,69 +153,69 @@ public class LoginBean {
      * @return List
      */
     public UserMenuBean getUserMenuBean(String tsUserName) throws Exception {
+        
+        UserOperationList        loUserOperationList = 
+            (UserOperationList) new UtilFaces().resolveExpression("#{UserOperationList}");
+        loUserOperationList.setLsUserName(tsUserName);
+        List<String> laList = new ArrayList<String>();
+        
         UserMenuBean        loMenu = 
             (UserMenuBean) new UtilFaces().resolveExpression("#{UserMenuBean}");
         String              lsFlag = "false";
-        lsFlag = "true"; //TEMPORAL
-        loMenu.setLsRolBitacora(lsFlag);
-        loMenu.setLsRolGeneralParams(lsFlag);
-        loMenu.setLsRolMonitor(lsFlag);
-        loMenu.setLsRolNotificationsConfig(lsFlag);
-        loMenu.setLsRolParametersConfig(lsFlag);
-        loMenu.setLsRolServicesConfig(lsFlag);
-        loMenu.setLsRolTaskConfig(lsFlag);                        
-        loMenu.setLsOprCrud(lsFlag);
-        loMenu.setLsOprDeleteCron(lsFlag);
-        loMenu.setLsOprExecuteCron(lsFlag);
-        loMenu.setLsOprInitStopCron(lsFlag);
-        loMenu.setLsOprInsertCron(lsFlag);
-        loMenu.setLsRolUsrVtaTradicional(lsFlag);
+        lsFlag = "true";
+        
+        loMenu.setLsPantallaBitacora(lsFlag);
+        loMenu.setLsPantallaGralConfig(lsFlag);
+        loMenu.setLsPantallaLoadFile(lsFlag);
+        loMenu.setLsPantallaMapping(lsFlag);
+        loMenu.setLsPantallaMonitor(lsFlag);
+        loMenu.setLsPantallaNotifications(lsFlag);
+        loMenu.setLsPantallaProcess(lsFlag);
+        loMenu.setLsPantallaStatusFiles(lsFlag);
+        
+        loMenu.setLsOprDeleteCron("true");
+        loMenu.setLsOprExecuteCron("true");
+        loMenu.setLsOprInitStopCron("true");
+        loMenu.setLsOprInsertCron("true");
         /*
         List<String>        laOperaciones = 
             getSecmanUserOperations(tsUserName);
         for (int liI = 0; liI < laOperaciones.size(); liI++) {
+            //System.out.println("####### Operation["+laOperaciones.get(liI)+"] ######");
             lsFlag = "true";
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolBitacora"))
-                loMenu.setLsRolBitacora(lsFlag);
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaBitacora"))
+                loMenu.setLsPantallaBitacora(lsFlag);
             
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolGeneralParams"))
-                loMenu.setLsRolGeneralParams(lsFlag);                            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaGralConfig"))
+                loMenu.setLsPantallaGralConfig(lsFlag);                            
                                         
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolMonitor"))
-                loMenu.setLsRolMonitor(lsFlag);
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaLoadFile"))
+                loMenu.setLsPantallaLoadFile(lsFlag);
             
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolNotificationsConfig"))
-                loMenu.setLsRolNotificationsConfig(lsFlag);
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaMapping"))
+                loMenu.setLsPantallaMapping(lsFlag);
             
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolParametersConfig"))
-                loMenu.setLsRolParametersConfig(lsFlag);
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaMonitor"))
+                loMenu.setLsPantallaMonitor(lsFlag);
             
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolServicesConfig"))
-                loMenu.setLsRolServicesConfig(lsFlag);
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaNotifications"))
+                loMenu.setLsPantallaNotifications(lsFlag);
             
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolTaskConfig"))
-                loMenu.setLsRolTaskConfig(lsFlag);                        
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaProcess"))
+                loMenu.setLsPantallaProcess(lsFlag);                        
             
-            if (laOperaciones.get(liI).equalsIgnoreCase("OprCrud"))
-                loMenu.setLsOprCrud(lsFlag);
-            
-            if (laOperaciones.get(liI).equalsIgnoreCase("OprDeleteCron"))
-                loMenu.setLsOprDeleteCron(lsFlag);
-            
-            if (laOperaciones.get(liI).equalsIgnoreCase("OprExecuteCron"))
-                loMenu.setLsOprExecuteCron(lsFlag);
-            
-            if (laOperaciones.get(liI).equalsIgnoreCase("OprInitStopCron"))
-                loMenu.setLsOprInitStopCron(lsFlag);
-            
-            if (laOperaciones.get(liI).equalsIgnoreCase("OprInsertCron"))
-                loMenu.setLsOprInsertCron(lsFlag);
-            
-            if (laOperaciones.get(liI).equalsIgnoreCase("RolUsrVtaTradicional"))
-                loMenu.setLsRolUsrVtaTradicional(lsFlag);                                
-            
-        }
-        */
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaStatusFiles")){
+                loMenu.setLsPantallaStatusFiles(lsFlag);    
+            }
+            if(laOperaciones.get(liI).startsWith("Ch-")){
+                String[] laChn = laOperaciones.get(liI).split("-");
+                if(laChn.length > 1){
+                    laList.add(laChn[1]);
+                    loUserOperationList.setLaOpertations(laList);
+                }
+            }
+        }*/
+        
         return loMenu;
     }
     
@@ -236,7 +230,7 @@ public class LoginBean {
         try {
             lsResponse = 
                 loSecMan.getUserOperations(tsUserName,
-                                          "IntegrationEveTv");
+                                          "IntegrationLandmark");
         } catch (Exception loEx) {
             throw new Exception(loEx.getMessage());
         }
@@ -261,16 +255,14 @@ public class LoginBean {
         String            lsResponse = null;   
         SecurityManagerWs loSecMan = new SecurityManagerWs();
         try {
-            System.out.println("Validando temporalmente en Integracion");
             lsResponse = 
                 loSecMan.loginSecurityManager(tsUserName,
                                               tsPassword, 
-                                              "IntegrationEveTv");
+                                              "IntegrationLandmark");
 
         } catch (Exception loEx) {
             throw new Exception(loEx.getMessage());
         }
-        System.out.println("Token: "+lsResponse);
         return lsResponse;
     }
         
@@ -290,21 +282,17 @@ public class LoginBean {
         HttpServletResponse loResponse = (HttpServletResponse) loEctx.getResponse();
         SecurityManagerWs   loSecMan = new SecurityManagerWs();
         try {
-            System.out.println("Conectando con base de datos");
             ApplicationModule   loAm =
                 Configuration.createRootApplicationModule(lsAmDef, lsConfig);
             AppModuleImpl loService = (AppModuleImpl)loAm;
-            System.out.println("Salir de Secman");
             try {
-                String lsUserName = "jlbautistas";
-                    //loService.getValueSessionFromAttribute("loggedIntegrationUser") == null ? null :
-                    //loService.getValueSessionFromAttribute("loggedIntegrationUser").toString();                
-                loSecMan.logoutSecurityManager(lsUserName, "IntegrationEveTv");
-                System.out.println("Saliendo de Secman correctamente");
+                String lsUserName = 
+                    loService.getValueSessionFromAttribute("loggedPgmIntegrationUser") == null ? null :
+                    loService.getValueSessionFromAttribute("loggedPgmIntegrationUser").toString();                
+                loSecMan.logoutSecurityManager(lsUserName, "IntegrationLandmark");
             } catch (Exception loEx) {
                 System.out.println("Util-ERROR: "+loEx.getMessage());
             } finally {
-                System.out.println("liberando conexión con base de datos");
                 Configuration.releaseRootApplicationModule(loAm, true);
                 loAm.remove();
             }
@@ -346,7 +334,7 @@ public class LoginBean {
         try {
             lsResponse = 
                 loSecMan.getSecmanUserDataSession(tsUserName,
-                                              "IntegrationEveTv");
+                                              "IntegrationLandmark");
         } catch (Exception loEx) {
             throw new Exception(loEx.getMessage());
         }

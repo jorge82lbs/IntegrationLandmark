@@ -101,13 +101,12 @@ public class AppModuleImpl extends ApplicationModuleImpl {
                                ){
         Blob lsValue = null;
         try{
-            LmkIntXmlFilesTabViewImpl loObject = getLmkIntXmlFilesTabView1();
-            //String lsWhere = "ID_FILE_XML = 203";//+tsIdService+"";
+            LmkIntXmlFilesTabViewImpl loObject = 
+                getLmkIntXmlFilesTabView1();
             String lsWhere = "ID_REQUEST = " + tsIdRequest + 
                              " AND ID_SERVICE = "+tsIdService+
-                             " AND IND_FILE_TYPE = '" + tsFileType + "'";
+                             " AND UPPER(IND_FILE_TYPE) = UPPER('" + tsFileType + "')";
             loObject.setWhereClause(lsWhere);
-            //System.out.println(loObject.getQuery());
             loObject.setRangeSize(-1);
             loObject.executeQuery();
             Row[] laObjs = loObject.getAllRowsInRange();
@@ -150,6 +149,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
                 (LmkIntXmlFilesTabViewRowImpl)loRow;
             lsValue = loPgen.getIndFileStream();
         }
+        
         return lsValue;
     }
     
@@ -160,15 +160,17 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      * @return EvetvIntCronConfigTabRowBean
      */
     public LmkIntXmlFilesRowBean getRowXmlFilesModel(Integer tiIdRequest, 
-                                                       Integer piIdService,
-                                                       String lsType) {   
-        LmkIntXmlFilesRowBean loRowResponse = new LmkIntXmlFilesRowBean();     
+                                                     Integer piIdService,
+                                                     Integer piIdFileXml,
+                                                     String lsType) {   
+        LmkIntXmlFilesRowBean loRowResponse = new LmkIntXmlFilesRowBean();    
        try {
             LmkIntXmlFilesTabViewImpl    loObj = 
                 getLmkIntXmlFilesTabView1();
             String lsWhere = "ID_REQUEST = " + tiIdRequest + 
                             " AND ID_SERVICE = " + piIdService + 
-                            " AND IND_FILE_TYPE = '"+lsType+"'";
+            " AND ID_FILE_XML = " + piIdFileXml + 
+                            " AND UPPER(IND_FILE_TYPE) = UPPER('"+lsType+"')";
             loObj.setWhereClause(lsWhere);                      
             //System.out.println(loObj.getQuery());
             loObj.setRangeSize(-1);
@@ -183,7 +185,6 @@ public class AppModuleImpl extends ApplicationModuleImpl {
                loRowResponse.setLiIdService(loRowView.getIdService());
                loRowResponse.setLsIndServiceType(loRowView.getIndServiceType());
                loRowResponse.setLsIndEstatus(loRowView.getIndEstatus());
-               //loRowResponse.setLsFecCreationDate(loRowView.getFecCreationDate());
                loRowResponse.setLsNomFile(loRowView.getNomFile());
                loRowResponse.setLsNomUserName(loRowView.getNomUserName());
                //loRowResponse.setLoIndFileStream(loRowView.getIndFileStream());
@@ -1625,15 +1626,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     public LmkIntServicesLogTabViewImpl getLmkIntServicesLogTabView1() {
         return (LmkIntServicesLogTabViewImpl) findViewObject("LmkIntServicesLogTabView1");
     }
-    
-    /**
-     * Container's getter for LmkIntXmlFilesTabView1.
-     * @return LmkIntXmlFilesTabView1
-     */
-    public LmkIntXmlFilesTabViewImpl getLmkIntXmlFilesTabView1() {
-        return (LmkIntXmlFilesTabViewImpl) findViewObject("LmkIntXmlFilesTabView1");
-    }
-
+        
     /**
      * Container's getter for LmkIntServicesBitacoraVwView1.
      * @return LmkIntServicesBitacoraVwView1
@@ -1651,14 +1644,6 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     }
 
     /**
-     * Container's getter for LmkIntNotificationsVwView1.
-     * @return LmkIntNotificationsVwView1
-     */
-    public ViewObjectImpl getLmkIntNotificationsVwView1() {
-        return (ViewObjectImpl) findViewObject("LmkIntNotificationsVwView1");
-    }
-
-    /**
      * Container's getter for LmkIntServicesParamsTabView1.
      * @return LmkIntServicesParamsTabView1
      */
@@ -1673,6 +1658,22 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     public ViewObjectImpl getLmkIntServicesCatVwView1() {
         return (ViewObjectImpl) findViewObject("LmkIntServicesCatVwView1");
     }
+    
+    /**
+     * Container's getter for LmkIntListChannelsAllVwView1.
+     * @return LmkIntListChannelsAllVwView1
+     */
+    public LmkIntListChannelsAllVwViewImpl getLmkIntListChannelsAllVwView1() {
+        return (LmkIntListChannelsAllVwViewImpl) findViewObject("LmkIntListChannelsAllVwView1");
+    }
+
+    /**
+     * Container's getter for LmkIntXmlFilesTabView1.
+     * @return LmkIntXmlFilesTabView1
+     */
+    public LmkIntXmlFilesTabViewImpl getLmkIntXmlFilesTabView1() {
+        return (LmkIntXmlFilesTabViewImpl) findViewObject("LmkIntXmlFilesTabView1");
+    }
 
     /**
      * Container's getter for LmkIntServicesLogVwView1.
@@ -1683,11 +1684,11 @@ public class AppModuleImpl extends ApplicationModuleImpl {
     }
 
     /**
-     * Container's getter for LmkIntListChannelsAllVwView1.
-     * @return LmkIntListChannelsAllVwView1
+     * Container's getter for LmkIntNotificationsVwView1.
+     * @return LmkIntNotificationsVwView1
      */
-    public LmkIntListChannelsAllVwViewImpl getLmkIntListChannelsAllVwView1() {
-        return (LmkIntListChannelsAllVwViewImpl) findViewObject("LmkIntListChannelsAllVwView1");
+    public ViewObjectImpl getLmkIntNotificationsVwView1() {
+        return (ViewObjectImpl) findViewObject("LmkIntNotificationsVwView1");
     }
 }
 

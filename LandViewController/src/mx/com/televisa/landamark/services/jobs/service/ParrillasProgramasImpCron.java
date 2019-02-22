@@ -22,9 +22,11 @@ import java.util.Date;
 import java.util.List;
 
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
+import mx.com.televisa.landamark.model.daos.MappingCatDao;
 import mx.com.televisa.landamark.model.daos.ParrillasProgramasDao;
 
 import mx.com.televisa.landamark.model.daos.XmlFilesDao;
+import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
@@ -171,7 +173,7 @@ public class ParrillasProgramasImpCron implements Job{
                 loXmlBean.setLsNomUserPathFile(lsPathFiles);
                 loXmlBean.setLiIdUser(liIdUser);
                 loXmlBean.setLoIndFileStream(loFis);
-                loXmlBean.setLsAttribute1("Parametros: "+lsChannel+","+lsFecInicial+","+lsFecFinal);
+                loXmlBean.setLsAttribute1(""+lsChannel+","+lsFecInicial+","+lsFecFinal);
                 // - Guardar archivo en bd
                 ResponseUpdDao loXmlFile = 
                     loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
@@ -192,6 +194,46 @@ public class ParrillasProgramasImpCron implements Job{
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
+                
+                
+                //Eliminar registros de las tablas con parametros de CANAL, FECHA_INICIAL y FECHA_FINAL
+                ResponseUpdDao loResDelProgramm = 
+                    loPpDao.deleteLmkProgProgramm(lsChannel, lsFecInicial, lsFecFinal);
+                if(!loResDelProgramm.getLsResponse().equalsIgnoreCase("OK")){
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("GeneralError");
+                }else{
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("Execute");
+                }
+                loBitBean.setLiIdLogServices(liIdLogService);
+                loBitBean.setLiIdService(liIdService);
+                loBitBean.setLiIndProcess(liIndProcess);
+                loBitBean.setLiNumProcessId(0);
+                loBitBean.setLiNumPgmProcessId(0);
+                loBitBean.setLsIndEvento(loResDelProgramm.getLsMessage());
+                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                           liIdUser, 
+                                           lsUserName);
+                
+                ResponseUpdDao loResDelFileTrailer = 
+                    loPpDao.deleteLmkProgFileTrailer(lsChannel, lsFecInicial, lsFecFinal);
+                if(!loResDelFileTrailer.getLsResponse().equalsIgnoreCase("OK")){
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("GeneralError");
+                }else{
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("Execute");
+                }
+                loBitBean.setLiIdLogServices(liIdLogService);
+                loBitBean.setLiIdService(liIdService);
+                loBitBean.setLiIndProcess(liIndProcess);
+                loBitBean.setLiNumProcessId(0);
+                loBitBean.setLiNumPgmProcessId(0);
+                loBitBean.setLsIndEvento(loResDelFileTrailer.getLsMessage());
+                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                           liIdUser, 
+                                           lsUserName);
                 
                 
             } catch (FileNotFoundException e) {
@@ -246,7 +288,7 @@ public class ParrillasProgramasImpCron implements Job{
                                 String tsPath,
                                 String tsChannel){
         
-        String lsFileName = tsChannel+"-A2"+this.getPrefixFileName()+"PLAN.PROG";
+        String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+"PLAN.PROG";
         File loFileResponse = new File(tsPath+"files\\"+lsFileName);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
@@ -271,10 +313,10 @@ public class ParrillasProgramasImpCron implements Job{
                 loProg.getLsEpisodeName()+","+ 
                 loProg.getLiEpisodeId()+","+ 
                 loProg.getLsCertification()+","+ 
-                loProg.getLsProgrammeCategory()+","+ 
-                loProg.getLsStnid()+","+ 
-                loProg.getLtBcstdt()+","+                                
-                loProg.getLsPgmid()+",";
+                loProg.getLsProgrammeCategory()+",";
+                //loProg.getLsStnid()+","+ 
+                //loProg.getLtBcstdt()+","+                                
+                //loProg.getLsPgmid()+",";
                 loWriter.write(lsRow);
                 loWriter.write("\r\n");
             }      
@@ -282,10 +324,10 @@ public class ParrillasProgramasImpCron implements Job{
             for(LmkProgFileTrailerRowBean loProgTrailer : laPrgTrb){
                 String lsRow = loProgTrailer.getLiRecordType()+","+ 
                 loProgTrailer.getLiRecordCount()+","+ 
-                loProgTrailer.getLiAllowableGap()+","+ 
-                loProgTrailer.getLsStnid()+","+ 
-                loProgTrailer.getLsStrdt()+","+
-                loProgTrailer.getLsEdt()+",";                              
+                loProgTrailer.getLiAllowableGap()+",";
+                //loProgTrailer.getLsStnid()+","+ 
+                //loProgTrailer.getLsStrdt()+","+
+                //loProgTrailer.getLsEdt()+",";                              
                 loWriter.write(lsRow);
                 loWriter.write("\r\n");
             }  
@@ -297,6 +339,22 @@ public class ParrillasProgramasImpCron implements Job{
         }
         return loFileResponse;
     }
-    
+    /**
+     * Crea archivo .PROG en base a las tablas de Paradigm
+     * @autor Jorge Luis Bautista Santiago   
+     * @param String
+     * @return String
+     */
+    public String getMappingChannelName(String tsChannelPgm){
+        String lsChannelLmk = ""+tsChannelPgm;
+        MappingCatDao loMappingCatDao = new MappingCatDao();
+        String lsWhere = " IND_USED_BY      = 'FILE_CHANNEL_NAME'\n" + 
+        "   AND VAL_VALUE_ORIGIN = '" + tsChannelPgm + "'";
+        List<LmkIntMappingCatRowBean> laList = loMappingCatDao.getLmkIntServicesParams(lsWhere);
+        if(laList.size() > 0){
+            lsChannelLmk = laList.get(0).getLsValValueDestiny();
+        }
+        return lsChannelLmk;
+    }            
     
 }

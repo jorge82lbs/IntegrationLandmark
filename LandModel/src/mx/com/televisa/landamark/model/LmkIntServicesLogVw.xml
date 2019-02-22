@@ -40,6 +40,76 @@
     </DesignTime>
   </Attribute>
   <Attribute
+    Name="IdFileXml"
+    ColumnName="ID_FILE_XML"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="IdRequest"
+    ColumnName="ID_REQUEST"
+    SQLType="INTEGER"
+    Type="java.lang.Integer"
+    ColumnType="INTEGER"
+    TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
+    PrimaryKey="true"/>
+  <Attribute
+    Name="NomFile"
+    Precision="150"
+    ColumnName="NOM_FILE"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="IndParameters"
+    Precision="150"
+    ColumnName="IND_PARAMETERS"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="150"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="ShowRequest"
+    IsNotNull="true"
+    Precision="5"
+    ColumnName="SHOW_REQUEST"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="5"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
+    Name="ShowResponse"
+    IsNotNull="true"
+    Precision="5"
+    ColumnName="SHOW_RESPONSE"
+    SQLType="VARCHAR"
+    Type="java.lang.String"
+    ColumnType="VARCHAR"
+    TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="5"/>
+    </DesignTime>
+  </Attribute>
+  <Attribute
     Name="IndProcess"
     ColumnName="IND_PROCESS"
     SQLType="INTEGER"
@@ -116,7 +186,7 @@
   <Attribute
     Name="IndCalculateStatus"
     IsNotNull="true"
-    Precision="7"
+    Precision="8"
     ColumnName="IND_CALCULATE_STATUS"
     SQLType="VARCHAR"
     Type="java.lang.String"
@@ -124,7 +194,7 @@
     TableName="EVENTAS.LMK_INT_SERVICES_LOG_VW"
     PrimaryKey="true">
     <DesignTime>
-      <Attr Name="_DisplaySize" Value="7"/>
+      <Attr Name="_DisplaySize" Value="8"/>
     </DesignTime>
   </Attribute>
   <Attribute
@@ -402,6 +472,12 @@
       <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IdLogServices"/>
       <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IdService"/>
       <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.NomService"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IdFileXml"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IdRequest"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.NomFile"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IndParameters"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.ShowRequest"/>
+      <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.ShowResponse"/>
       <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IndProcess"/>
       <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IndProcessNom"/>
       <Item Value="mx.com.televisa.landamark.model.LmkIntServicesLogVw.IndResponse"/>

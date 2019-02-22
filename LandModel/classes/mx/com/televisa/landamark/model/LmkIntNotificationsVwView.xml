@@ -30,7 +30,6 @@
     AliasName="ID_SERVICE"/>
   <ViewAttribute
     Name="NomService"
-    IsNotNull="true"
     PrecisionRule="true"
     EntityAttrName="NomService"
     EntityUsage="LmkIntNotificationsVw"
@@ -43,7 +42,6 @@
     AliasName="IND_PROCESS"/>
   <ViewAttribute
     Name="NomProcess"
-    IsNotNull="true"
     PrecisionRule="true"
     EntityAttrName="NomProcess"
     EntityUsage="LmkIntNotificationsVw"
@@ -56,7 +54,6 @@
     AliasName="IND_USERS_GROUP"/>
   <ViewAttribute
     Name="NomGroup"
-    IsNotNull="true"
     PrecisionRule="true"
     EntityAttrName="NomGroup"
     EntityUsage="LmkIntNotificationsVw"

@@ -1,20 +1,20 @@
 package mx.com.televisa.landamark.model.types;
 
 public class LmkIntConfigParamRowBean {
-   private Integer lsIdParameter;
-   private String lsNomParameter;
+   private Integer liIdParameter;
+
+    public void setLiIdParameter(Integer liIdParameter) {
+        this.liIdParameter = liIdParameter;
+    }
+
+    public Integer getLiIdParameter() {
+        return liIdParameter;
+    }
+    private String lsNomParameter;
    private String lsDescParameter;
    private String lsUsedBy;
    private String lsValueParameter;
    private String lsStatus;
-
-    public void setLsIdParameter(Integer lsIdParameter) {
-        this.lsIdParameter = lsIdParameter;
-    }
-
-    public Integer getLsIdParameter() {
-        return lsIdParameter;
-    }
 
     public void setLsNomParameter(String lsNomParameter) {
         this.lsNomParameter = lsNomParameter;

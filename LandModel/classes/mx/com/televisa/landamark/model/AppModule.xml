@@ -50,21 +50,13 @@
       ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogTabView" >
    </ViewUsage>
    <ViewUsage
-      Name="LmkIntXmlFilesTabView1"
-      ViewObjectName="mx.com.televisa.landamark.model.LmkIntXmlFilesTabView" >
-   </ViewUsage>
-   <ViewUsage
       Name="LmkIntServicesBitacoraVwView1"
       ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesBitacoraVwView" >
    </ViewUsage>
    <ViewUsage
       Name="LmkIntMappingCatVwView1"
       ViewObjectName="mx.com.televisa.landamark.model.LmkIntMappingCatVwView" >
-   </ViewUsage>
-   <ViewUsage
-      Name="LmkIntNotificationsVwView1"
-      ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsVwView" >
-   </ViewUsage>
+   </ViewUsage>   
    <ViewUsage
       Name="LmkIntServicesParamsTabView1"
       ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesParamsTabView" >
@@ -74,10 +66,15 @@
       ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesCatVwView" >
    </ViewUsage>
    <ViewUsage
-      Name="LmkIntServicesLogVwView1"
-      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogVwView" >
-   </ViewUsage>
-   <ViewUsage
       Name="LmkIntListChannelsAllVwView1"
       ViewObjectName="mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVwView"/>
+   <ViewUsage
+      Name="LmkIntXmlFilesTabView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntXmlFilesTabView"/>
+   <ViewUsage
+      Name="LmkIntServicesLogVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogVwView"/>
+   <ViewUsage
+      Name="LmkIntNotificationsVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsVwView"/>
 </AppModule>

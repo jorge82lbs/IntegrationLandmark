@@ -100,41 +100,49 @@
                                         <af:commandMenuItem id="MnuTemp22" text="Cargar Archivos"
                                                             action="loadFilePage"
                                                             shortDesc="Carga de Archivos" 
+                                                            rendered="#{UserMenuBean.lsPantallaLoadFile}"
                                                             icon="/images/Upload.gif"/>
                                                             
                                         <af:commandMenuItem id="MnuTemp232" text="Estatus de Archivos"
                                                             action="statusFilesPage"
+                                                            rendered="#{UserMenuBean.lsPantallaStatusFiles}"
                                                             shortDesc="Estatus de Archivos" 
                                                             icon="/images/list_settings.gif"/>
                                                             
                                         <af:commandMenuItem id="MnuTemp2" text="Monitoreo"
                                                             action="monitorPage"
                                                             shortDesc="Monitoreo" 
+                                                            rendered="#{UserMenuBean.lsPantallaMonitor}"
                                                             icon="/images/icon_monitor_pc.gif"/>
                                                             
                                         <af:commandMenuItem id="MnuTemp7" text="Configuración y Ejecución" 
                                                             shortDesc="Configuración" 
-                                                            action="processPage"                                                            
+                                                            action="processPage"         
+                                                            rendered="#{UserMenuBean.lsPantallaProcess}"
                                                             icon="/images/icon_world_dynamic.gif"/>
                                                   
                                         <af:commandMenuItem id="MnuTemp12" text="Mapeo de Parámetros" 
                                                             shortDesc="Mapeo"
                                                             action="mappingPage"
+                                                            rendered="#{UserMenuBean.lsPantallaMapping}"
                                                             icon="/images/refresh.gif"/>
                                                             
                                          <af:commandMenuItem id="MnuTemp121s" text="Notificaciones" 
                                                             shortDesc="Notificaciones"
                                                             action="notificationsPage"
+                                                            rendered="#{UserMenuBean.lsPantallaNotifications}"
                                                             icon="/images/notifications216x16.png"/>
                                  
                                         <af:commandMenuItem id="MnuTemp121" text="Parámetros Generales" 
                                                             shortDesc="Parámetros Generales"
                                                             action="gralConfigPage"
+                                                            rendered="#{UserMenuBean.lsPantallaGralConfig}"
                                                             icon="/images/Wrench.gif"/>
                                         
                                         <af:commandMenuItem id="MnuTemp1212" text="Bitácora" 
                                                             shortDesc="Bitácora de Servicios"
                                                             action="bitacoraPage"
+                                                            rendered="#{UserMenuBean.lsPantallaBitacora}"
                                                             icon="/images/page_find.gif"/>
                                                             
                                         <af:commandMenuItem id="MnuTemp13" text="Salir"

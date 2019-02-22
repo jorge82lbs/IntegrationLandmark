@@ -46,6 +46,7 @@ import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
 import mx.com.televisa.landamark.users.UserMenuBean;
+import mx.com.televisa.landamark.users.UserOperationList;
 import mx.com.televisa.landamark.view.types.ExecuteServiceResponseBean;
 import mx.com.televisa.landamark.view.types.ProcessServiceBean;
 import mx.com.televisa.landamark.view.types.SelectOneItemBean;
@@ -268,12 +269,12 @@ public class ProcessBean {
     public List<ChannelParameterBean> getListAllChannels() {
         String lsIdService = 
             getPoIdServiceByTbl().getValue() == null ? "0" : 
-            getPoIdServiceByTbl().getValue().toString();
-           
-        System.out.println("lsIdService: "+lsIdService);    
-        
-        UserMenuBean loUserMenuBean = (UserMenuBean)resolveExpression("#{UserMenuBean}");
-        System.out.println("Privilegio de Monitor: "+loUserMenuBean.getLsRolMonitor());        
+            getPoIdServiceByTbl().getValue().toString();           
+        /*
+        UserOperationList loUserOperationList = (UserOperationList)resolveExpression("#{UserOperationList}");
+        for(String lsOperation : loUserOperationList.getLaOpertations()){
+            System.out.println("lsOperation: "+lsOperation);            
+        } */       
         
         if(lsIdService.equalsIgnoreCase("0")){
             FacesCtrlHierNodeBinding loNode = 
@@ -282,7 +283,6 @@ public class ProcessBean {
                 loNode.getAttribute("IdService") == null ? "-1" : 
                 loNode.getAttribute("IdService").toString(); 
         }
-        System.out.println("lsIdService FINAL: "+lsIdService);    
         List<ChannelParameterBean> laList = new ArrayList<ChannelParameterBean>();
         
         ApplicationModule                         loAm = 
@@ -340,8 +340,6 @@ public class ProcessBean {
             getPoParamsIdService().getValue() == null ? "" : 
             getPoParamsIdService().getValue().toString();
         
-        System.out.println("saveParamsAction - lsIdService: "+lsIdService);
-        
         /* Fechas */
         java.util.Date ltDateIni = 
             getPoInitialDate().getValue() == null ? null : 
@@ -370,7 +368,6 @@ public class ProcessBean {
                     String                   lsSelected = 
                              loRow.getLsSelected() == null ? "" : 
                              loRow.getLsSelected();
-                    System.out.println("lsCanal: "+lsCanal+"  \tlsSelected: "+lsSelected);
                     
                     LmkIntServicesParamsRowBean loLmkParamBean = new LmkIntServicesParamsRowBean();            
                     Integer                  liId = 
@@ -959,7 +956,6 @@ public class ProcessBean {
             Configuration.releaseRootApplicationModule(loAm, true);
             loAm.remove();            
             if(!lsGeneralAction.equalsIgnoreCase("EXECUTE")){
-                System.out.println("Actualizando tabla principal");
                 refreshMainTable();
             }
             
@@ -1760,7 +1756,6 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loLmk2CanBean.setLsIndParameter("2CAN");
             loLmk2CanBean.setLsIndValParameter(lslsInd2canTab);                        
             loService.insertServicesParamsModel(loLmk2CanBean);  
-            System.out.println("2CAN insert ok");
             LmkIntServicesParamsRowBean loLmk5CanBean = new LmkIntServicesParamsRowBean();            
             Integer                  liId5can = 
                 new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
@@ -1770,7 +1765,6 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loLmk5CanBean.setLsIndParameter("5CAN");
             loLmk5CanBean.setLsIndValParameter(lslsInd5canTab);                        
             loService.insertServicesParamsModel(loLmk5CanBean);  
-            System.out.println("5CAN insert ok");
             LmkIntServicesParamsRowBean loLmk9CanBean = new LmkIntServicesParamsRowBean();            
             Integer                  liId9can = 
                 new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
@@ -1780,7 +1774,6 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loLmk9CanBean.setLsIndParameter("9CAN");
             loLmk9CanBean.setLsIndValParameter(lsInd9canTab);                        
             loService.insertServicesParamsModel(loLmk9CanBean);  
-            System.out.println("9CAN insert ok");
             LmkIntServicesParamsRowBean loLmkCtenBean = new LmkIntServicesParamsRowBean();            
             Integer                  liIdCte = 
                 new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
@@ -1790,7 +1783,6 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loLmkCtenBean.setLsIndParameter("CLIENTE");
             loLmkCtenBean.setLsIndValParameter(lsCliente);                        
             loService.insertServicesParamsModel(loLmkCtenBean);  
-            System.out.println("CLIENTE insert ok");
             FacesMessage loMsg;
             loMsg = new FacesMessage("Parámetros Asignados Satisfactoriamente");
             loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
@@ -1852,18 +1844,16 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loNode.getAttribute("IdService").toString();
         String                   lsDesService = 
             loNode.getAttribute("IndDescService") == null ? "" : 
-            loNode.getAttribute("IndDescService").toString();
+            loNode.getAttribute("IndDescService").toString();        
         
-        getPoParamsIdService().setValue(lsIdService);        
+        getPoParamsIdService().setValue(lsIdService);     
         getPoParamsNomService().setValue(lsDesService);
-        
-        
+                
         ApplicationModule         loAm = 
             Configuration.createRootApplicationModule(gsAmDef, gsConfig);
         AppModuleImpl loService = 
             (AppModuleImpl)loAm;        
         try{
-            
             List<LmkIntServicesParamsRowBean> loColBean = 
                 new ArrayList<LmkIntServicesParamsRowBean>();
             loColBean = loService.getParametersServiceByIdService(Integer.parseInt(lsIdService));
@@ -1875,6 +1865,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
                     }
                     if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
                         getPoFinalDate().setValue(loBean.getLsIndValParameter());    
+
                     }
                 }
             }else{
@@ -1889,11 +1880,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         } finally {
             Configuration.releaseRootApplicationModule(loAm, true);
         }
-        
-        String lsWhere = "1 = 1";
-        lsWhere += " AND ID_SERVICE = "+lsIdService;
-        this.refreshWhereTableIterator(lsWhere);
-        
+               
         new UtilFaces().showPopup(getPoPopupParams());
     }
     
@@ -1907,10 +1894,12 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         toActionEvent.getSource();
         getPoFilterService().setValue("");
         getPoFilterWsdl().setValue("");
-        getPoFilterSystem().setValue("");
-        getPoFilterSystemOr().setValue("");
-        getPoFilterSystemDes().setValue("");
-        getPoFilterStatusSel().setValue("");
+        getPoFilterSystem().setValue(null);
+        getPoFilterSystemOr().setValue(null);
+        getPoFilterSystemDes().setValue(null);
+        getPoFilterStatusSel().setValue(null);
+        getPoFilterDesServiceSel().setValue(null);
+        getPoFilterServiceSel().setValue(null);
         getPoFilterAsynSel().setValue("");
     }
 
@@ -1956,20 +1945,20 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             lsQuery += " AND UPPER(IND_SERVICE_WSDL) LIKE '" +
                        lsIndServiceWsdl.toUpperCase() + "%'";
         }
-                
+         */       
         String lsIndSystem = 
             getPoFilterSystem().getValue() == null ? "" : 
             getPoFilterSystem().getValue().toString();
         if(!lsIndSystem.equalsIgnoreCase("")){
             lsQuery += " AND IND_SYSTEM = '" + lsIndSystem + "'";
         }
+        /*  
         String lsIndOrigin = 
             getPoFilterSystemOr().getValue() == null ? "" : 
             getPoFilterSystemOr().getValue().toString();
         if(!lsIndOrigin.equalsIgnoreCase("")){
             lsQuery += " AND IND_ORIGIN = '" + lsIndOrigin + "'";
-        }
-        
+        }        
         String lsIndDestiny = 
             getPoFilterSystemDes().getValue() == null ? "" :
             getPoFilterSystemDes().getValue().toString();
@@ -1990,8 +1979,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             getPoFilterStatusSel().getValue().toString();        
         if(!lsIndEstatus.equalsIgnoreCase("")){
             lsQuery += " AND IND_ESTATUS = '" + lsIndEstatus + "'";
-        }
-                
+        }       
         new UtilFaces().refreshTableWhereIterator(lsQuery,
                                                   gsEntityIterator,
                                                   getPoTblMain()

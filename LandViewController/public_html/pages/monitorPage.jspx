@@ -66,7 +66,6 @@
                                                      actionListener="#{MonitorBean.resetFilterValues}">
                                             </af:link>
                                             <af:spacer id="SpcAx" width="10" height="5"/>
-                                            
                                             <af:link icon="/images/excel.gif"
                                                                id="LnkExel"
                                                                inlineStyle="text-align:center;"                                                   
@@ -75,7 +74,6 @@
                                                                            type="excelHTML"
                                                                            filename="LogXLS.xls"/>
                                             </af:link>
-                                            
                                             <af:spacer id="SpcAxTbl" width="10" height="5"/>
                                             <af:link text=" " id="BtnResetTbl"
                                                             icon="/images/restaurar.gif" 
@@ -130,13 +128,15 @@
                                                   id="BtnSearch"
                                                   icon="/images/View.gif"
                                                   shortDesc="Buscar Elementos"
-                                                  action="#{MonitorBean.searchFilterLogServicesAction}"/>
+                                                  action="#{MonitorBean.searchFilterLogServicesAction}">
+                                            <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                        </af:button>
                                         </af:panelFormLayout>
                                     </af:panelGroupLayout>
                                   </f:facet>
                                   <f:facet name="second">
                                   <!-- ################################### TABLA PRINCIPAL ############################### !-->
-                                    <af:table value="#{bindings.LmkIntServicesLogVwView1.collectionModel}" var="row"
+                                   <af:table value="#{bindings.LmkIntServicesLogVwView1.collectionModel}" var="row"
                                               rows="#{bindings.LmkIntServicesLogVwView1.rangeSize}"
                                               emptyText="#{bindings.LmkIntServicesLogVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
                                               rowBandingInterval="0"
@@ -191,6 +191,56 @@
                                                            shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.NomService.tooltip}"
                                                            id="ot3"/>
                                         </af:column>
+                                        
+                                        
+                                        <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.IdFileXml.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogVwView1.hints.IdFileXml.label}"
+                                                       id="c4n">
+                                                <af:outputText value="#{row.IdFileXml}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.IdFileXml.tooltip}"
+                                                               id="ot4n">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogVwView1.hints.IdFileXml.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.IdRequest.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogVwView1.hints.IdRequest.label}"
+                                                       id="c5n">
+                                                <af:outputText value="#{row.IdRequest}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.IdRequest.tooltip}"
+                                                               id="ot5n">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogVwView1.hints.IdRequest.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.NomFile.name}"
+                                                       sortable="true" frozen="true" align="center"
+                                                       headerText="Archivo" width="190"
+                                                       id="c6n">
+                                                <af:outputText value="#{row.NomFile}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.NomFile.tooltip}"
+                                                               id="ot6n"/>
+                                            </af:column>                                            
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.ShowRequest.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogVwView1.hints.ShowRequest.label}"
+                                                       id="c8n">
+                                                <af:outputText value="#{row.ShowRequest}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.ShowRequest.tooltip}"
+                                                               id="ot8n"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.ShowResponse.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogVwView1.hints.ShowResponse.label}"
+                                                       id="c9n">
+                                                <af:outputText value="#{row.ShowResponse}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.ShowResponse.tooltip}"
+                                                               id="ot9n"/>
+                                            </af:column>
+                                        
+                                        
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.IndProcess.name}"
                                                    sortable="true" visible="false"
                                                    headerText="#{bindings.LmkIntServicesLogVwView1.hints.IndProcess.label}"
@@ -233,9 +283,9 @@
                                         <af:column filterable="false" sortable="false"
                                            frozen="true" align="center"
                                            headerText="Request"
-                                           id="c3Q" width="100">
+                                           id="c3Q" width="75">
                                     <af:link icon="/images/page_right.gif" id="LnkDeRRr"
-                                             inlineStyle="text-align:center;" 
+                                             inlineStyle="text-align:center;" visible="#{row.ShowRequest}"
                                              shortDesc="View Details">
                                         <af:fileDownloadActionListener method="#{MonitorBean.downloadFileRequestAction}" />         
                                     </af:link>
@@ -244,15 +294,15 @@
                                 <af:column filterable="false" sortable="false"
                                            frozen="true" align="center"
                                            headerText="Response"
-                                           id="c3Qr" width="100">
+                                           id="c3Qr" width="75">
                                     <af:link icon="/images/page_left.gif" id="LnkDeRRrss"
-                                             inlineStyle="text-align:center;" 
+                                             inlineStyle="text-align:center;" visible="#{row.ShowResponse}"
                                              shortDesc="View Details">
                                         <af:fileDownloadActionListener method="#{MonitorBean.downloadFileResponseAction}"/>         
                                     </af:link>
                                 </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.FecRequest.name}"
-                                                   sortable="true" align="center"
+                                                   sortable="true" align="center" visible="false"
                                                    headerText="Solicitud"
                                                    id="c9">
                                             <af:outputText value="#{row.FecRequest}"
@@ -263,7 +313,7 @@
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.FecResponse.name}"
                                                    sortable="true" align="center"
-                                                   headerText="Respuesta"
+                                                   headerText="Respuesta"  visible="false"
                                                    id="c8">
                                             <af:outputText value="#{row.FecResponse}"
                                                            shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.FecResponse.tooltip}"
@@ -294,9 +344,17 @@
                                                                   pattern="#{bindings.LmkIntServicesLogVwView1.hints.NumPgmProcessId.format}"/>
                                             </af:outputText>
                                         </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.IndParameters.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Parámetros" width="160"
+                                                       id="c7n">
+                                                <af:outputText value="#{row.IndParameters}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.IndParameters.tooltip}"
+                                                               id="ot7n"/>
+                                            </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.IndCalculateStatus.name}"
                                                    sortable="true" align="center"
-                                                   headerText="Estatus"
+                                                   headerText="Estatus" width="80"
                                                    id="c12">
                                             <af:outputText value="#{row.IndCalculateStatus}"
                                                            shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.IndCalculateStatus.tooltip}"
@@ -432,14 +490,14 @@
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.Attribute15.name}"
                                                    sortable="true" align="center"
-                                                   headerText="Usuario"
+                                                   headerText="Usuario" width="100"
                                                    id="c29">
                                             <af:outputText value="#{row.Attribute15}"
                                                            shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.Attribute15.tooltip}"
                                                            id="ot29"/>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.FecCreationDate.name}"
-                                                   sortable="true" align="center"
+                                                   sortable="true" align="center" width="170"
                                                    headerText="Fecha Creacion"
                                                    id="c30">
                                             <af:outputText value="#{row.FecCreationDate}"
@@ -492,6 +550,7 @@
                                             </af:outputText>
                                         </af:column>
                                     </af:table>
+                                
                                   </f:facet>
                             </af:panelSplitter>
                             </af:panelGroupLayout>

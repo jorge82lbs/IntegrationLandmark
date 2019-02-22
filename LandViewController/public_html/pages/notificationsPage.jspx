@@ -47,15 +47,22 @@
                                                 label="Servicio"
                                                 binding="#{NotificationsBean.poFilterServiceSel}"
                                                 shortDesc="Proceso a configurar"
+                                                autoSubmit="true"
+                                                valueChangeListener="#{NotificationsBean.selectServiceListener}" 
                                                 id="soc1" inlineStyle="color:Black; font-weight:bold;">
                                 <f:selectItems value="#{NotificationsBean.listAllServices}" id="sid1"/>
+                                
                             </af:selectOneChoice>
+                            <af:inputText label="NomService"                                                  
+                                          id="TxtNomService" visible="false"
+                                          partialTriggers="soc1"
+                                          binding="#{NotificationsBean.poNomService}"/>
                              <af:spacer width="8" id="spacer31" height="8"/> 
                             <af:panelGroupLayout layout="horizontal" id="PnlGpTbl" styleClass="AFStretchWidth"
                                                  valign="top" halign="left" 
                                                  inlineStyle="border-style:none; height:415px;">
                             <!-- ################################### TABLA PRINCIPAL ##################################################### !-->
-                                <af:table value="#{bindings.LmkIntNotificationsVwView1.collectionModel}" var="row"
+                             <af:table value="#{bindings.LmkIntNotificationsVwView1.collectionModel}" var="row"
                                           rows="#{bindings.LmkIntNotificationsVwView1.rangeSize}"
                                           emptyText="#{bindings.LmkIntNotificationsVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
                                           rowBandingInterval="0"
@@ -63,15 +70,16 @@
                                           selectionListener="#{bindings.LmkIntNotificationsVwView1.collectionModel.makeCurrent}"
                                           rowSelection="single"
                                           fetchSize="#{bindings.LmkIntNotificationsVwView1.rangeSize}" 
-                                          id="tblMain"
+                                          id="tbl"
                                               filterVisible="true"
                                               styleClass="AFStretchWidth"
                                       autoHeightRows="20"
                                       columnStretching="column:c27"
+                                      visible="false"
+                                      partialTriggers="::soc1"
                                       binding="#{NotificationsBean.poTblMain}" >
                                 <af:column align="center" id="colCrudSweb"
                                             frozen="true" sortable="false"
-                                            visible="#{UserMenuBean.lsOprCrud}"
                                             width="85">
                                         <f:facet name="header">
                                         <af:group id="g2">
@@ -86,7 +94,7 @@
                                                             id="PnlOpc" valign="top"
                                                             halign="left">
                                             <af:link icon="/images/editIcon_int.png"
-                                                     id="LnkEditSweb"
+                                                     id="LnkEdit"
                                                      inlineStyle="text-align:center;"
                                                      partialSubmit="true"
                                                      actionListener="#{NotificationsBean.showEditPopup}"
@@ -186,9 +194,11 @@
                                                sortable="true" align="center"
                                                headerText="Estatus"
                                                id="c10">
-                                        <af:outputText value="#{row.IndEstatus}"
-                                                       shortDesc="#{bindings.LmkIntNotificationsVwView1.hints.IndEstatus.tooltip}"
-                                                       id="ot10"/>
+                                       <af:selectBooleanCheckbox text="" label=" "
+                                                                  id="sbcEst"
+                                                                  disabled="true"
+                                                                  value="#{row.IndEstatus == '1'}"
+                                                                  />
                                     </af:column>
                                     <af:column sortProperty="#{bindings.LmkIntNotificationsVwView1.hints.AttributeCategory.name}"
                                                sortable="true" visible="false"
@@ -379,7 +389,8 @@
                 
                 <!-- ################################### POPUP ALTA ############################################# !-->
                 <af:popup id="popupSave" contentDelivery="lazyUncached"
-                          binding="#{NotificationsBean.poPopupSave}">
+                          binding="#{NotificationsBean.poPopupSave}"
+                          partialTriggers="pt1:tbl:LnkEdit">
                     <af:panelWindow id="PnlSave" modal="true" closeIconVisible="false"
                                     title="Alta" titleIconSource="/images/date_new.gif" 
                                     styleClass="AFStretchWidth">
@@ -389,15 +400,13 @@
                                             <af:inputText label="idNotification"                                                  
                                                   id="TxtSaveIdNot" visible="false"
                                                   binding="#{NotificationsBean.poSaveIdNotification}"/>
-                                            
                                             <af:inputText label="liIdService"                                                  
                                                   id="TxtSaveIdService" visible="false"
                                                   binding="#{NotificationsBean.poSaveIdService}"/>
-                                            
-                                            <af:inputText label="liIndService"                                                  
+                                            <af:inputText label=" "                                                  
                                                   id="TxtSaveIndService" readOnly="true"
                                                   binding="#{NotificationsBean.poSaveIndService}"/>
-                                            
+                                            <af:separator id="sepTncFin"/>                                  
                                             <af:selectOneChoice unselectedLabel="-- Seleccione --"
                                                                 label="Proceso"
                                                                 binding="#{NotificationsBean.poSaveIndProcessSel}"
@@ -429,11 +438,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPg">
                                 <af:button text="Aceptar" id="BtnAceptAlt" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{NotificationsBean.saveAction}"/>
+                                           action="#{NotificationsBean.saveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcPopSaveCancel"/>
                                 <af:button text="Cancelar" id="BtnCancelAlt" icon="/images/cancelar.gif" 
-                                shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{NotificationsBean.cancelSaveAction}"/>
+                                shortDesc="Cierra el Popup"
+                                           action="#{NotificationsBean.cancelSaveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -468,18 +481,20 @@
                             </af:button>
                            <af:spacer width="10" height="25" id="SpcPopDel02"/>
                            <af:button text="Cancelar" id="BtnEliminarCancelar"
-                                             icon="/images/cancelar.gif"
-                                             action="#{NotificationsBean.cancelDelete}"/>
+                                     icon="/images/cancelar.gif"
+                                     action="#{NotificationsBean.cancelDelete}"/>
                        </af:panelGroupLayout> 
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>
                 <!-- ################################### POPUP EDITAR ############################################ !-->
                 <af:popup id="popupUdateService" contentDelivery="lazyUncached"
-                          binding="#{NotificationsBean.poPopupUpdate}">
-                    <af:panelWindow id="PnlUpdService" modal="true" closeIconVisible="false"
+                          binding="#{NotificationsBean.poPopupUpdate}"
+                          partialTriggers="pt1:tbl:LnkEdit">
+                          <af:panelWindow id="PnlUpdService" modal="true" closeIconVisible="false"
                                     title="Editar" titleIconSource="/images/note.gif" 
-                                    styleClass="AFStretchWidth">
+                                    styleClass="AFStretchWidth"
+                                    partialTriggers="pt1:tbl:LnkEdit">
                         <af:panelGroupLayout layout="vertical" id="PnlGrpUpdWs" valign="middle" halign="center" 
                         styleClass="AFStretchWidth">
                             <af:panelFormLayout id="PnlFrmUpdWs" rows="17" maxColumns="1" inlineStyle="width:400px;">                                 
@@ -528,11 +543,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPgUpd">
                                 <af:button text="Aceptar" id="BtnAceptUpdWs" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{NotificationsBean.updateAction}"/>
+                                           action="#{NotificationsBean.updateAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcUpd111"/>
                                 <af:button text="Cancelar" id="BtnCancelUpd" icon="/images/cancelar.gif" 
-                                shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{NotificationsBean.cancelUpdateAction}"/>
+                                shortDesc="Cierra el Popup"
+                                           action="#{NotificationsBean.cancelUpdateAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>

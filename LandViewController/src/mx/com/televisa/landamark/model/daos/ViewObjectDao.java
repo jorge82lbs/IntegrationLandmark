@@ -189,6 +189,34 @@ public class ViewObjectDao implements ViewObjectInterface{
         return liReturn;
     }
 
+    public String getNomServiceByIdService(String tsIdService) {
+        String     liReturn = "0"; 
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = 
+        "     SELECT IND_DESC_SERVICE\n" + 
+        "       FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB       \n" + 
+        "      WHERE ID_SERVICE = " + tsIdService + "";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                liReturn = loRs.getString(1);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
+    }
+
     @Override
     public String getProcessIdByNomParameter(String tsNomParameter) {
         String     liReturn = "0"; 

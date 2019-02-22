@@ -92,11 +92,15 @@ public class SecurityManagerWs {
         String    lsToken = null;
         String    lsUser = "";
         String    lsPassword = "";
+               
         UtilFaces loUf = new UtilFaces();
         try {
-            String lsKey= loUf.getKeyDecoder();
+            String lsKey= loUf.getKeyDecoder();            
             lsUser = loUf.encryptObject(tsUser,lsKey);
             lsPassword = loUf.encryptObject(tsPassword, lsKey);
+            System.out.println("lsKey: "+lsKey);
+            System.out.println("lsUser(encrypt): "+lsUser);
+            System.out.println("lsPassword(encrypt): "+lsPassword);
         } catch (Exception loEx) {
             lsToken = null;
         }
@@ -104,7 +108,6 @@ public class SecurityManagerWs {
             new SecmanBsAutenticar_Service();
     
         try{
-          
             SecmanBsAutenticar         loSecmanBsAuth = 
                 loSecmanBsAuthService.getSecmanBsAutenticarSoap12HttpPort();
             UserLogin                  loUserLogin = new UserLogin();
@@ -115,7 +118,7 @@ public class SecurityManagerWs {
             loUserLogin.setToken("");
             ProcessResponse            loProcessResponse;
             loProcessResponse = loSecmanBsAuth.autenticarUsuario(loUserLogin);
-            if (loProcessResponse.getResult().startsWith("FAILED")){                
+            if (loProcessResponse.getResult().startsWith("FAILED")){    
                 throw new Exception (loProcessResponse.getError());
             }
             else{
@@ -130,7 +133,7 @@ public class SecurityManagerWs {
     }
     
     /**
-     * Valida en Security Manager si el usuario y contraseÃ±a son permitidos en la
+     * Valida en Security Manager si el usuario y contraseña son permitidos en la
      * Aplicacion
      * @autor Jorge Luis Bautista Santiago
      * @param tsUser

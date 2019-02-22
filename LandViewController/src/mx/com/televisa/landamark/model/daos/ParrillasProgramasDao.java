@@ -614,4 +614,84 @@ public class ParrillasProgramasDao {
         return lsQuery;
     }
     
+    /**
+     * Ejecuta llamado a Procedimiento Almacenado en Paradigm
+     * @autor Jorge Luis Bautista Santiago
+     * @return ResponseUpdDao
+     */
+    public ResponseUpdDao deleteLmkProgProgramm(String tsStnid, 
+                                                String tsStrdt, 
+                                                String tsEdt) {
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        String lsParameters = tsStnid+","+tsStrdt+","+tsEdt;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "DELETE \n" + 
+            "  FROM EVENTAS.LMK_PROG \n" + 
+            " WHERE STNID = '"+tsStnid+"'\n" + 
+            "   AND DATE(BCSTDT) BETWEEN DATE('"+tsStrdt+"') \n" + 
+            "                        AND DATE('"+tsEdt+"')";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            Integer liRes = loStmt.executeUpdate(lsQueryParadigm);
+            loResponseUpdDao.setLiAffected(liRes);
+            loResponseUpdDao.setLsMessage("Registros eliminados EVENTAS.LMK_PROG("+lsParameters+")");
+            loResponseUpdDao.setLsResponse("OK");
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage("ERROR (deleteLmkProgProgramm): "+loExSql.getMessage());
+            loResponseUpdDao.setLsResponse("OK");
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+       
+        return loResponseUpdDao;
+    }
+    
+    /**
+     * Ejecuta llamado a Procedimiento Almacenado en Paradigm
+     * @autor Jorge Luis Bautista Santiago
+     * @return ResponseUpdDao
+     */
+    public ResponseUpdDao deleteLmkProgFileTrailer(String tsStnid, 
+                                                   String tsStrdt, 
+                                                   String tsEdt) {
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        String lsParameters = tsStnid+","+tsStrdt+","+tsEdt;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "DELETE \n" + 
+            "  FROM EVENTAS.LMK_PROG_FILE_TRAILER \n" + 
+            " WHERE STNID = '"+tsStnid+"'\n" + 
+            "   AND DATE(STRDT) = DATE('"+tsStrdt+"')\n" + 
+            "   AND DATE(EDT)   = DATE('"+tsEdt+"')";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            Integer liRes = loStmt.executeUpdate(lsQueryParadigm);
+            loResponseUpdDao.setLiAffected(liRes);
+            loResponseUpdDao.setLsMessage("Registros eliminados EVENTAS.LMK_PROG_FILE_TRAILER("+lsParameters+")");
+            loResponseUpdDao.setLsResponse("OK");
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage("ERROR (deleteLmkFileTrailer): "+loExSql.getMessage());
+            loResponseUpdDao.setLsResponse("OK");
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+       
+        return loResponseUpdDao;
+    }
+    
 }

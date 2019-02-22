@@ -125,24 +125,21 @@
                                         unselectedLabel="-- Seleccione --"
                                                         binding="#{ProcessBean.poFilterSystem}" 
                                                         partialTriggers="BtnReset">
-                                            <af:selectItem label="Ibope" value="Ibope" id="si2Fil"/>
-                                            <af:selectItem label="Paradigm" value="Paradigm" id="si3Fil"/>
+                                            <f:selectItems value="#{MappingBean.listSystems}" id="sid991"/>
                                         </af:selectOneChoice>
                                         <af:selectOneChoice label="Sistema Origen" id="selSystemOrFil" 
                                         unselectedLabel="-- Seleccione --"
                                                             binding="#{ProcessBean.poFilterSystemOr}"
                                                             visible="false"
                                                             partialTriggers="BtnReset">                                            
-                                            <af:selectItem label="Ibope" value="Ibope" id="si2OrFil"/>
-                                            <af:selectItem label="Paradigm" value="Paradigm" id="si3OrFil"/>
+                                            <f:selectItems value="#{MappingBean.listSystems}" id="sid147876"/>
                                         </af:selectOneChoice>
                                         <af:selectOneChoice label="Sistema Destino" id="selSystemDesFil" 
                                         unselectedLabel="-- Seleccione --"
                                                             binding="#{ProcessBean.poFilterSystemDes}" 
                                                             visible="false"
                                                             partialTriggers="BtnReset">
-                                            <af:selectItem label="Ibope" value="Ibope" id="si2DeFil"/>
-                                            <af:selectItem label="Paradigm" value="Paradigm" id="si3DeFil"/>
+                                            <f:selectItems value="#{MappingBean.listSystems}" id="sid12"/>
                                         </af:selectOneChoice>    
                                         
                                         <af:selectOneChoice label="As&#237;ncrono" id="selAsFil" 
@@ -164,8 +161,10 @@
                                                   id="BtnSearch"
                                                   icon="/images/ver_orden.gif"
                                                   shortDesc="Buscar Elementos"
-                                                  action="#{ProcessBean.searchFilterAction}"/>
-                                                  <af:spacer id="SpcfAx" width="10" height="160"/>
+                                                  action="#{ProcessBean.searchFilterAction}">
+                                            <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                        </af:button>
+                                        <af:spacer id="SpcfAx" width="10" height="160"/>
                                       </af:panelFormLayout>
                                     </af:panelGroupLayout>
                                   </f:facet>
@@ -174,7 +173,7 @@
                                   
                                   <af:inputText id="TxtIdService"
                                                   label="IdServicec" columns="20"
-                                                  visible="true"
+                                                  visible="false"
                                                   partialTriggers="tbl"
                                                   binding="#{ProcessBean.poIdServiceByTbl}">
                                     </af:inputText>
@@ -195,7 +194,6 @@
                                     binding="#{ProcessBean.poTblMain}" autoHeightRows="10">
                                     <af:column align="center" id="colCrudSweb"
                                             frozen="true" sortable="false"
-                                            visible="#{UserMenuBean.lsOprCrud}"
                                             width="85">
                                         <f:facet name="header">
                                         <af:group id="g2">
@@ -612,20 +610,17 @@
                                     <af:selectOneChoice label="Sistema Propietario" id="selSystem"
                                     unselectedLabel="-- Seleccione --"
                                                         binding="#{ProcessBean.poSaveSystem}">
-                                        <af:selectItem label="Ibope" value="Ibope" id="si2p"/>
-                                        <af:selectItem label="Paradigm" value="Paradigm" id="si3p"/>
+                                        <f:selectItems value="#{MappingBean.listSystems}" id="sid121"/>
                                     </af:selectOneChoice>
                                     <af:selectOneChoice label="Sistema Origen" id="selSystemOr" 
                                     unselectedLabel="-- Seleccione --" visible="false"
                                                         binding="#{ProcessBean.poSaveSystemOr}">
-                                        <af:selectItem label="Ibope" value="Ibope" id="si2Or"/>
-                                        <af:selectItem label="Paradigm" value="Paradigm" id="si3Or"/>
+                                        <f:selectItems value="#{MappingBean.listSystems}" id="sid144"/>
                                     </af:selectOneChoice>
                                     <af:selectOneChoice label="Sistema Destino" id="selSystemDes" 
                                     unselectedLabel="-- Seleccione --" visible="false"
                                                         binding="#{ProcessBean.poSaveSystemDes}">                                        
-                                        <af:selectItem label="Ibope" value="Ibope" id="si2De"/>
-                                        <af:selectItem label="Paradigm" value="Paradigm" id="si3De"/>
+                                        <f:selectItems value="#{MappingBean.listSystems}" id="sid128"/>
                                     </af:selectOneChoice>
                                     
                                     <af:selectBooleanCheckbox text="" label="As&#237;ncrono" id="sbcAs"
@@ -639,11 +634,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPg">
                                 <af:button text="Aceptar" id="BtnAltWs" icon="/images/aceptar.gif"
                                             shortDesc="Guardar Servicio"
-                                           action="#{ProcessBean.saveAction}"/>
+                                           action="#{ProcessBean.saveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcLoadOrder_111"/>
                                 <af:button text="Cancelar" id="BtnCancelAlt" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{ProcessBean.cancelSaveAction}"/>
+                                           action="#{ProcessBean.cancelSaveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -679,7 +678,9 @@
                            <af:spacer width="10" height="25" id="SpcLoadOrder_11"/>
                            <af:button text="Cancelar" id="BtnEliminarCancelar"
                                              icon="/images/cancelar.gif"
-                                             action="#{ProcessBean.cancelDeleteAction}"/>
+                                             action="#{ProcessBean.cancelDeleteAction}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
                        </af:panelGroupLayout> 
                     </af:panelGroupLayout>
                   </af:panelWindow>
@@ -722,20 +723,17 @@
                                                         binding="#{ProcessBean.poUpdSystem}"
                                                         partialTriggers="pt1:tbl:LnkEditSweb"
                                                         >
-                                        <af:selectItem label="Ibope" value="Ibope" id="si2Upd"/>
-                                        <af:selectItem label="Paradigm" value="Paradigm" id="si3Upd"/>
+                                        <f:selectItems value="#{MappingBean.listSystems}" id="sid111"/>
                                     </af:selectOneChoice>
                                     <af:selectOneChoice label="Sistema Origen" id="selUpdSystemOr"
                                     unselectedLabel="-- Seleccione --" visible="false"
                                                         binding="#{ProcessBean.poUpdSystemOr}">
-                                        <af:selectItem label="Ibope" value="Ibope" id="si2OrUpd"/>
-                                        <af:selectItem label="Paradigm" value="Paradigm" id="si3OrUpd"/>
+                                        <f:selectItems value="#{MappingBean.listSystems}" id="sid1234"/>
                                     </af:selectOneChoice>
                                     <af:selectOneChoice label="Sistema Destino" id="selUpdSystemDes" 
                                     unselectedLabel="-- Seleccione --" visible="false"
                                                         binding="#{ProcessBean.poUpdSystemDes}">                                        
-                                        <af:selectItem label="Ibope" value="Ibope" id="si2DeUpd"/>
-                                        <af:selectItem label="Paradigm" value="Paradigm" id="si3DeUpd"/>
+                                        <f:selectItems value="#{MappingBean.listSystems}" id="sid3321"/>
                                     </af:selectOneChoice>
                                     <af:selectBooleanCheckbox text="" label="As&#237;ncrono" id="sbcAsUpd"
                                                               binding="#{ProcessBean.poUpdAsyn}"
@@ -749,11 +747,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsPgUpd">
                                 <af:button text="Aceptar" id="BtnAceptUpdWs" icon="/images/aceptar.gif"
                                             shortDesc="Guardar Servicio"
-                                           action="#{ProcessBean.updateAction}"/>
+                                           action="#{ProcessBean.updateAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcUpd111"/>
                                 <af:button text="Cancelar" id="BtnCancelAltUpd" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup." immediate="true"
-                                           action="#{ProcessBean.cancelUpdateAction}"/>
+                                           action="#{ProcessBean.cancelUpdateAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -803,11 +805,15 @@
                             <af:panelGroupLayout id="PnlFrmBtnsmPg">
                                 <af:button text="Aceptar" id="BtmnAltWs" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{ProcessBean.mergeAction}"/>
+                                           action="#{ProcessBean.mergeAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcLoadOrmder_111"/>
                                 <af:button text="Cancelar" id="BtnCancelmAlt" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup" immediate="true"
-                                           action="#{ProcessBean.cancelMergeAction}"/>
+                                           action="#{ProcessBean.cancelMergeAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -884,11 +890,15 @@
                             <af:panelGroupLayout id="PnPg">
                                 <af:button text="Aceptar" id="BtmnAltPm" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{ProcessBean.saveParamsAction}"/>
+                                           action="#{ProcessBean.saveParamsAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcLoadPm"/>
                                 <af:button text="Cancelar" id="BtnCancelPmt" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup" immediate="true"
-                                           action="#{ProcessBean.cancelSaveParamsAction}"/>
+                                           action="#{ProcessBean.cancelSaveParamsAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -1188,11 +1198,15 @@
                             <af:panelGroupLayout id="PnlFrmBtTab">
                                 <af:button text="Aceptar" id="BtmnAltTab" icon="/images/aceptar.gif"
                                             shortDesc="Guardar"
-                                           action="#{ProcessBean.saveCronAction}"/>
+                                           action="#{ProcessBean.saveCronAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                                 <af:spacer width="10" height="10" id="SpcLoadOrmderTab11"/>
                                 <af:button text="Cancelar" id="BtnCancelmAltTab" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup" immediate="true"
-                                           action="#{ProcessBean.cancelSaveCronAction}"/>
+                                           action="#{ProcessBean.cancelSaveCronAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
@@ -1234,7 +1248,9 @@
                            <af:spacer width="10" height="25" id="Spcexex_11"/>
                            <af:button text="Cancelar" id="BtnExeCancelar"
                                              icon="/images/cancelar.gif"
-                                             action="#{ProcessBean.cancelExecuteAction}"/>
+                                             action="#{ProcessBean.cancelExecuteAction}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
                        </af:panelGroupLayout> 
                     </af:panelGroupLayout>
                   </af:panelWindow>

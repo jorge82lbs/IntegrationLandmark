@@ -130,7 +130,9 @@
                                                   id="BtnSearch"
                                                   icon="/images/View.gif"
                                                   shortDesc="Buscar Elementos"
-                                                  action="#{BitacoraBean.searchFilterLogServicesAction}"/>
+                                                  action="#{BitacoraBean.searchFilterLogServicesAction}">
+                                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                    </af:button>
                                       </af:panelFormLayout>
                                     </af:panelGroupLayout>
                                   </f:facet>
@@ -201,7 +203,7 @@
                                     </af:column>
                                     <af:column sortProperty="#{bindings.LmkIntServicesBitacoraVwView1.hints.IndProcessNom.name}"
                                                filterable="false"                                                        
-                                               width="150"
+                                               width="120"
                                                sortable="true" headerText="Proceso" id="c6">
                                         <af:outputText value="#{row.IndProcessNom}"
                                                        shortDesc="#{bindings.LmkIntServicesBitacoraVwView1.hints.IndProcessNom.tooltip}"
@@ -247,8 +249,8 @@
                                                        id="ot10"/>
                                     </af:column>                                            
                                     <af:column sortProperty="#{bindings.LmkIntServicesBitacoraVwView1.hints.Attribute15.name}"
-                                               filterable="false" 
-                                               width="150"
+                                               filterable="false" align="center"
+                                               width="90"
                                                sortable="true" headerText="Usuario" id="c26">
                                         <af:outputText value="#{row.Attribute15}"
                                                        shortDesc="#{bindings.LmkIntServicesBitacoraVwView1.hints.Attribute15.tooltip}"

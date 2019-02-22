@@ -28,8 +28,7 @@
     PrimaryKey="true"/>
   <Attribute
     Name="NomService"
-    IsNotNull="true"
-    Precision="26"
+    Precision="150"
     ColumnName="NOM_SERVICE"
     SQLType="VARCHAR"
     Type="java.lang.String"
@@ -37,7 +36,7 @@
     TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
     PrimaryKey="true">
     <DesignTime>
-      <Attr Name="_DisplaySize" Value="26"/>
+      <Attr Name="_DisplaySize" Value="150"/>
     </DesignTime>
   </Attribute>
   <Attribute
@@ -50,8 +49,7 @@
     PrimaryKey="true"/>
   <Attribute
     Name="NomProcess"
-    IsNotNull="true"
-    Precision="26"
+    Precision="50"
     ColumnName="NOM_PROCESS"
     SQLType="VARCHAR"
     Type="java.lang.String"
@@ -59,7 +57,7 @@
     TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
     PrimaryKey="true">
     <DesignTime>
-      <Attr Name="_DisplaySize" Value="26"/>
+      <Attr Name="_DisplaySize" Value="50"/>
     </DesignTime>
   </Attribute>
   <Attribute
@@ -77,8 +75,7 @@
   </Attribute>
   <Attribute
     Name="NomGroup"
-    IsNotNull="true"
-    Precision="26"
+    Precision="150"
     ColumnName="NOM_GROUP"
     SQLType="VARCHAR"
     Type="java.lang.String"
@@ -86,7 +83,7 @@
     TableName="EVENTAS.LMK_INT_NOTIFICATIONS_VW"
     PrimaryKey="true">
     <DesignTime>
-      <Attr Name="_DisplaySize" Value="26"/>
+      <Attr Name="_DisplaySize" Value="150"/>
     </DesignTime>
   </Attribute>
   <Attribute

@@ -187,16 +187,6 @@ public class MappingBean {
             lsFieldErrorRq += "Relación,";
             lbProcess = false;   
         }
-        if(lsValueRelation.length() < 1){
-            lsFieldErrorRq += "Valor,";
-            lbProcess = false;   
-        }
-        
-        
-        if(lsNomOrigin.length() < 1){
-            lsFieldErrorRq += "Nombre Origen,";
-            lbProcess = false;   
-        }
         if(lsValueOrigin.length() < 1){
             lsFieldErrorRq += "Valor Origen,";
             lbProcess = false;   
@@ -206,10 +196,6 @@ public class MappingBean {
             lbProcess = false;   
         }
         
-        if(lsNomDestiny.length() < 1){
-            lsFieldErrorRq += "Nombre Destino,";
-            lbProcess = false;   
-        }
         if(lsValueDestiny.length() < 1){
             lsFieldErrorRq += "Valor Destino,";
             lbProcess = false;   
@@ -241,9 +227,7 @@ public class MappingBean {
                 loLmkBean.setLsIndDescription(lsDescription);
                 loLmkBean.setLsIndEstatus(lsStatusTab);
                 loLmkBean.setLiIdMappingRel(0);
-                loLmkBean.setLsIndEstatus(lsStatusTab);
                 loService.updateMappingModel(loLmkBean); 
-                System.out.println("Update success!!!");
             } catch (Exception loEx) {
                 FacesMessage loMsg;
                 loMsg = new FacesMessage("Error de Comunicacion " + loEx);
@@ -345,24 +329,12 @@ public class MappingBean {
             lsFieldErrorRq += "Relación,";
             lbProcess = false;   
         }
-        if(lsValueRelation.length() < 1){
-            lsFieldErrorRq += "Valor,";
-            lbProcess = false;   
-        }
-        if(lsNomOrigin.length() < 1){
-            lsFieldErrorRq += "Nombre Origen,";
-            lbProcess = false;   
-        }
         if(lsValueOrigin.length() < 1){
             lsFieldErrorRq += "Valor Origen,";
             lbProcess = false;   
         }
         if(lsSystemOriginSel.length() < 1){
             lsFieldErrorRq += "Sistema Origen,";
-            lbProcess = false;   
-        }
-        if(lsNomDestiny.length() < 1){
-            lsFieldErrorRq += "Nombre Destino,";
             lbProcess = false;   
         }
         if(lsValueDestiny.length() < 1){
@@ -397,7 +369,6 @@ public class MappingBean {
                 loLmkBean.setLiIdMappingRel(0);
                 loLmkBean.setLsIndEstatus(lsStatusTab);
                 loService.insertMappingModel(loLmkBean);            
-                System.out.println("Insert OK");
             } catch (Exception loEx) {
                 FacesMessage loMsg;
                 loMsg = new FacesMessage("Error de Comunicacion " + loEx);
@@ -632,12 +603,16 @@ public class MappingBean {
             (FacesCtrlHierNodeBinding) getPoTblMain().getSelectedRowData();
         String                   lsIdParameter = 
             loNode.getAttribute("IdMapping") == null ? "" : 
-            loNode.getAttribute("IdMapping").toString();        
-        String                   lsParameter = 
-            loNode.getAttribute("NomRelation") == null ? "" : 
-            loNode.getAttribute("NomRelation").toString();
+            loNode.getAttribute("IdMapping").toString(); 
+        String                   lsValOrigen = 
+            loNode.getAttribute("ValValueOrigin") == null ? "" : 
+            loNode.getAttribute("ValValueOrigin").toString();
+        String                   lsValDestino = 
+            loNode.getAttribute("ValValueDestiny") == null ? "" : 
+            loNode.getAttribute("ValValueDestiny").toString();
+        
         getPoDeleteIdBinding().setValue(lsIdParameter);
-        getPoDeleteMsgLbl().setLabel("Eliminar a " + lsParameter);
+        getPoDeleteMsgLbl().setLabel("Eliminar a " + lsValOrigen + " <==> " + lsValDestino);
         new UtilFaces().showPopup(getPoPopupDelete());
     }
     

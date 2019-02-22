@@ -24,39 +24,82 @@ public class UserMenuBean {
         super();
     }
     
-    private String lsRolMonitor;
-    private String lsRolServicesConfig;
-    private String lsRolTaskConfig;
-    private String lsRolNotificationsConfig;
-    private String lsRolParametersConfig;
-    private String lsRolGeneralParams;
-    private String lsOprCrud;
-    private String lsRolBitacora;
-    private String lsRolUsrVtaTradicional;
+    private String lsPantallaBitacora;
+    private String lsPantallaGralConfig;
+    private String lsPantallaLoadFile;
+    private String lsPantallaMapping;
+    private String lsPantallaMonitor;
+    private String lsPantallaNotifications;
+    private String lsPantallaProcess;
+    private String lsPantallaStatusFiles;
+    private String lsOprInsertCron;
+    private String lsOprDeleteCron;
+    private String lsOprExecuteCron;
+    private String lsOprInitStopCron;
 
-    public void setLsRolUsrVtaTradicional(String lsRolUsrVtaTradicional) {
-        this.lsRolUsrVtaTradicional = lsRolUsrVtaTradicional;
+
+    public void setLsPantallaBitacora(String lsPantallaBitacora) {
+        this.lsPantallaBitacora = lsPantallaBitacora;
     }
 
-    public String getLsRolUsrVtaTradicional() {
-        return lsRolUsrVtaTradicional;
+    public String getLsPantallaBitacora() {
+        return lsPantallaBitacora;
     }
 
-
-    public void setLsRolBitacora(String lsRolBitacora) {
-        this.lsRolBitacora = lsRolBitacora;
+    public void setLsPantallaGralConfig(String lsPantallaGralConfig) {
+        this.lsPantallaGralConfig = lsPantallaGralConfig;
     }
 
-    public String getLsRolBitacora() {
-        return lsRolBitacora;
+    public String getLsPantallaGralConfig() {
+        return lsPantallaGralConfig;
     }
 
-    public void setLsOprCrud(String lsOprCrud) {
-        this.lsOprCrud = lsOprCrud;
+    public void setLsPantallaLoadFile(String lsPantallaLoadFile) {
+        this.lsPantallaLoadFile = lsPantallaLoadFile;
     }
 
-    public String getLsOprCrud() {
-        return lsOprCrud;
+    public String getLsPantallaLoadFile() {
+        return lsPantallaLoadFile;
+    }
+
+    public void setLsPantallaMapping(String lsPantallaMapping) {
+        this.lsPantallaMapping = lsPantallaMapping;
+    }
+
+    public String getLsPantallaMapping() {
+        return lsPantallaMapping;
+    }
+
+    public void setLsPantallaMonitor(String lsPantallaMonitor) {
+        this.lsPantallaMonitor = lsPantallaMonitor;
+    }
+
+    public String getLsPantallaMonitor() {
+        return lsPantallaMonitor;
+    }
+
+    public void setLsPantallaNotifications(String lsPantallaNotifications) {
+        this.lsPantallaNotifications = lsPantallaNotifications;
+    }
+
+    public String getLsPantallaNotifications() {
+        return lsPantallaNotifications;
+    }
+
+    public void setLsPantallaProcess(String lsPantallaProcess) {
+        this.lsPantallaProcess = lsPantallaProcess;
+    }
+
+    public String getLsPantallaProcess() {
+        return lsPantallaProcess;
+    }
+
+    public void setLsPantallaStatusFiles(String lsPantallaStatusFiles) {
+        this.lsPantallaStatusFiles = lsPantallaStatusFiles;
+    }
+
+    public String getLsPantallaStatusFiles() {
+        return lsPantallaStatusFiles;
     }
 
     public void setLsOprInsertCron(String lsOprInsertCron) {
@@ -90,58 +133,6 @@ public class UserMenuBean {
     public String getLsOprInitStopCron() {
         return lsOprInitStopCron;
     }
-    private String lsOprInsertCron;
-    private String lsOprDeleteCron;
-    private String lsOprExecuteCron;
-    private String lsOprInitStopCron;
-    
-    public void setLsRolMonitor(String lsRolMonitor) {
-        this.lsRolMonitor = lsRolMonitor;
-    }
 
-    public String getLsRolMonitor() {
-        return lsRolMonitor;
-    }
 
-    public void setLsRolServicesConfig(String lsRolServicesConfig) {
-        this.lsRolServicesConfig = lsRolServicesConfig;
-    }
-
-    public String getLsRolServicesConfig() {
-        return lsRolServicesConfig;
-    }
-
-    public void setLsRolTaskConfig(String lsRolTaskConfig) {
-        this.lsRolTaskConfig = lsRolTaskConfig;
-    }
-
-    public String getLsRolTaskConfig() {
-        return lsRolTaskConfig;
-    }
-
-    public void setLsRolNotificationsConfig(String lsRolNotificationsConfig) {
-        this.lsRolNotificationsConfig = lsRolNotificationsConfig;
-    }
-
-    public String getLsRolNotificationsConfig() {
-        return lsRolNotificationsConfig;
-    }
-
-    public void setLsRolParametersConfig(String lsRolParametersConfig) {
-        this.lsRolParametersConfig = lsRolParametersConfig;
-    }
-
-    public String getLsRolParametersConfig() {
-        return lsRolParametersConfig;
-    }
-
-    public void setLsRolGeneralParams(String lsRolGeneralParams) {
-        this.lsRolGeneralParams = lsRolGeneralParams;
-    }
-
-    public String getLsRolGeneralParams() {
-        return lsRolGeneralParams;
-    }
-    
-    
 }

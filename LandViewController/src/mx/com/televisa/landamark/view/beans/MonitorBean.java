@@ -253,7 +253,7 @@ public class MonitorBean {
         }
         if(ltDateFin != null){
             lsQuery += " AND DATE(FEC_REQUEST) <= DATE('" + 
-                       convertDateMask(ltDateFin, "yyyy-MM-dd") + ")'";                
+                       convertDateMask(ltDateFin, "yyyy-MM-dd") + "')";
         }
         
         new UtilFaces().refreshTableWhereIterator(lsQuery, lsEntityIterator, getPoTblLog());
@@ -323,7 +323,10 @@ public class MonitorBean {
             loNode.getAttribute("IdLogServices").toString();                 
         String                   lsIdService = 
             loNode.getAttribute("IdService") == null ? "" : 
-            loNode.getAttribute("IdService").toString();                 
+            loNode.getAttribute("IdService").toString();     
+        String                   lsIdFileXml = 
+            loNode.getAttribute("IdFileXml") == null ? "" : 
+            loNode.getAttribute("IdFileXml").toString();    
         String lsTypeService = "REQUEST";
         
         loExctx = loCtx.getExternalContext();
@@ -336,6 +339,7 @@ public class MonitorBean {
                 LmkIntXmlFilesRowBean loLmkIntXmlFilesRowBean = 
                     loService.getRowXmlFilesModel(Integer.parseInt(lsIdRequest), 
                                                   Integer.parseInt(lsIdService), 
+                Integer.parseInt(lsIdFileXml), 
                                                   lsTypeService
                                                 );
                 if(loLmkIntXmlFilesRowBean != null){
@@ -427,7 +431,10 @@ public class MonitorBean {
             loNode.getAttribute("IdLogServices").toString();                 
         String                   lsIdService = 
             loNode.getAttribute("IdService") == null ? "" : 
-            loNode.getAttribute("IdService").toString();                 
+            loNode.getAttribute("IdService").toString();    
+        String                   lsIdFileXml = 
+            loNode.getAttribute("IdFileXml") == null ? "" : 
+            loNode.getAttribute("IdFileXml").toString();   
         String lsTypeService = "RESPONSE";
         
         loExctx = loCtx.getExternalContext();
@@ -441,6 +448,7 @@ public class MonitorBean {
                 LmkIntXmlFilesRowBean loLmkIntXmlFilesRowBean = 
                     loService.getRowXmlFilesModel(Integer.parseInt(lsIdRequest), 
                                                   Integer.parseInt(lsIdService), 
+                Integer.parseInt(lsIdFileXml), 
                                                   lsTypeService
                                                 );
                 if(loLmkIntXmlFilesRowBean != null){
@@ -477,7 +485,6 @@ public class MonitorBean {
                         
                         toOutputStream.flush();
                         toOutputStream.close();
-                        //new UtilFaces().showPopup(poPopupProgramas);
                         ExternalContext    loEctx = toFacesContext.getExternalContext();
                         String             lsUrl = 
                             loEctx.getRequestContextPath() + "/faces/monitorPage";

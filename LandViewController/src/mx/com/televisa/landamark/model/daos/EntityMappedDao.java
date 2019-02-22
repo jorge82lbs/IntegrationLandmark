@@ -17,8 +17,13 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
+import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 
 /** Clase que conecta de forma tradicional (JDBC) a bd
  *
@@ -31,6 +36,65 @@ import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 public class EntityMappedDao {
     public EntityMappedDao() {
         super();
+    }
+    
+    /**
+     * Obtiene los parametros generales en base al uso
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsUsedBy
+     * @return List
+     */    
+    public List<LmkIntConfigParamRowBean> getParametersByUsed(String tsUsedBy) {
+        List<LmkIntConfigParamRowBean> laList = 
+            new ArrayList<LmkIntConfigParamRowBean>();
+        Connection  loCnn = new ConnectionAs400().getConnection();
+        ResultSet   loRs = null;
+        String      lsQueryParadigm = getQueryParametersByUsed(tsUsedBy);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkIntConfigParamRowBean loItem = new LmkIntConfigParamRowBean();
+                loItem.setLiIdParameter(loRs.getInt("ID_PARAMETER"));
+                loItem.setLsNomParameter(loRs.getString("NOM_PARAMETER"));
+                loItem.setLsDescParameter(loRs.getString("IND_DESC_PARAMETER"));
+                loItem.setLsUsedBy(loRs.getString("IND_USED_BY"));
+                loItem.setLsValueParameter(loRs.getString("IND_VALUE_PARAMETER"));
+                loItem.setLsStatus(loRs.getString("IND_ESTATUS"));
+                laList.add(loItem);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return laList;
+    }
+    
+    /**
+     * Crea intruccion para obtiener los parametros generales en base al uso
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsUsedBy
+     * @return String
+     */    
+    public String getQueryParametersByUsed(String tsUsedBy){
+        String lsQuery = 
+            "SELECT ID_PARAMETER,\n" + 
+            "       NOM_PARAMETER,\n" + 
+            "       IND_DESC_PARAMETER,\n" + 
+            "       IND_USED_BY,\n" + 
+            "       IND_VALUE_PARAMETER,\n" + 
+            "       IND_ESTATUS\n" + 
+            "  FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
+            " WHERE IND_USED_BY = '" + tsUsedBy + "'";
+        
+        return lsQuery;
     }
     
     /**
