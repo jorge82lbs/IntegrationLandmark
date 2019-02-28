@@ -1,4 +1,13 @@
-package mx.com.televisa.landamark.services;
+/**
+* Project: Integraton Paradigm - Landmark
+*
+* File: SftpManagment.java
+*
+* Created on: Febrero 23, 2019 at 11:00
+*
+* Copyright (c) - OMW - 2019
+*/
+package mx.com.televisa.landamark.services.sftp;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -18,6 +27,14 @@ import mx.com.televisa.landamark.model.types.LmkIntSftpCnnBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.util.UtilFaces;
 
+/** Clase que aministra conexion remota por sftp
+ *
+ * @author Jorge Luis Bautista Santiago - OMW
+ *
+ * @version 01.00.01
+ *
+ * @date Febrero 23, 2019, 12:00 pm
+ */
 public class SftpManagment {
     public SftpManagment() {
         super();
@@ -108,7 +125,7 @@ public class SftpManagment {
             loSftpChannel.exit();
             loSession.disconnect();
             loResponse.setLsResponse("OK");
-            loResponse.setLsMessage("Archivo enviado satisfactoriamente");
+            loResponse.setLsMessage("El Archivo "+tsLocalFileName+" se ha enviado satisfactoriamente");
             loResponse.setLiAffected(0);
             System.out.println("TODO OK");
         } catch (JSchException loEx) {
@@ -117,7 +134,7 @@ public class SftpManagment {
             loResponse.setLiAffected(0);
         } catch (SftpException loEx) {
             loResponse.setLsResponse("ERROR");
-            loResponse.setLsMessage(loEx.getMessage());
+            loResponse.setLsMessage("ERROR al enviar["+tsLocalFileName+"]: "+loEx.getMessage());
             loResponse.setLiAffected(0);
         }
         return loResponse;
@@ -182,18 +199,18 @@ public class SftpManagment {
         LmkIntSftpCnnBean              loLmkIntSftpCnnBean = new LmkIntSftpCnnBean();
         EntityMappedDao                loEntityMappedDao = new EntityMappedDao();
         List<LmkIntConfigParamRowBean> loList = 
-            loEntityMappedDao.getParametersByUsed("SFTP_CONNECTION");
+            loEntityMappedDao.getParametersByUsed("SSH_CONNECTION");
         for(LmkIntConfigParamRowBean loBean : loList){
-            if(loBean.getLsNomParameter().equalsIgnoreCase("SFTP_HOST")){
+            if(loBean.getLsNomParameter().equalsIgnoreCase("SSH_HOST")){
                 loLmkIntSftpCnnBean.setLsHost(loBean.getLsValueParameter());
             }
-            if(loBean.getLsNomParameter().equalsIgnoreCase("SFTP_PORT")){
+            if(loBean.getLsNomParameter().equalsIgnoreCase("SSH_PORT")){
                 loLmkIntSftpCnnBean.setLiPort(Integer.parseInt(loBean.getLsValueParameter()));
             }
-            if(loBean.getLsNomParameter().equalsIgnoreCase("SFTP_USER")){
+            if(loBean.getLsNomParameter().equalsIgnoreCase("SSH_USER")){
                 loLmkIntSftpCnnBean.setLsUser(loBean.getLsValueParameter());
             }
-            if(loBean.getLsNomParameter().equalsIgnoreCase("SFTP_PASSWORD")){
+            if(loBean.getLsNomParameter().equalsIgnoreCase("SSH_PASSWORD")){
                 String lsPwd = null;
                 try {
                     //Seguramente estará codificado, entonces decodificar
@@ -210,6 +227,5 @@ public class SftpManagment {
         return loLmkIntSftpCnnBean;
         
     }
-    
     
 }

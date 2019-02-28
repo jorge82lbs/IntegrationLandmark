@@ -113,8 +113,10 @@ public class MailManagement {
      * @param toEmailDestinationAddress
      * @return boolean
      */
-    public ResponseUpdDao sendEmailTest(String tsSubject, 
-                                 List<EmailDestinationAddress> toEmailDestinationAddress
+    public ResponseUpdDao sendSimpleEmail(String tsSubject, 
+                                          String tsMessage,
+                                          String tsProcess,
+                                          List<EmailDestinationAddress> toEmailDestinationAddress
                                  ) {
         ResponseUpdDao loResponse = new ResponseUpdDao();
         try{
@@ -123,7 +125,7 @@ public class MailManagement {
                 "strict.dtd\">\n" + 
                 "       <html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"es-ES\">\n" + 
                 "               <head>\n" + 
-                "            <title>Log Certificado</title>\n" + 
+                "            <title>"+tsProcess+"</title>\n" + 
                 "            <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />\n" + 
                 "            <meta name=\"language\" content=\"es\" />\n" + 
                 "        </head>\n" + 
@@ -135,10 +137,10 @@ public class MailManagement {
                 "            <div style='background-color:#fff'>             \n" + 
                 "            <br/>\n" + 
                 "            <label style='font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:" +
-                "bold '>El Proceso de Integraci&oacute;n para Log Certificado ha Finalizado</label><p/>\n" + 
+                "bold '>El Proceso de Integraci&oacute;n para "+tsProcess+" ha Finalizado</label><p/>\n" + 
                 "                       <label style='font-family:Arial, Helvetica, sans-serif; font-size:12px; " +
-                "font-weight:bold '>A continuaci&oacuten se encuentra el detalle del Resultado</label><p/>\n" + 
-                "            <table cellpadding='0' cellspacing='0'  style='border-bottom-color:#F79646;border-" +
+                "font-weight:bold '>"+tsMessage+"</label><p/>\n" + 
+                /*"            <table cellpadding='0' cellspacing='0'  style='border-bottom-color:#F79646;border-" +
                 "bottom-width:3px;border-bottom-style:solid;border-top-color:#F79646;border-top-style:solid;border-" +
                 "top-width:3px; '>             \n" + 
                 "                               <tr>\n" + 
@@ -170,10 +172,10 @@ public class MailManagement {
                 "font-family:Arial, Helvetica, sans-serif;color:#FFFFFF;padding:3px;'>Spotprice</th>\n" +                "                               </tr>\n";
             
                 lsHtml += "            </table>             \n" + 
-                "            <br/>           \n" + 
+                */"            <br/>           \n" + 
                 "            <br/>\n" + 
                 "            <label style='font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:" +
-                    "bold '>Integraci&oacute;n Paradigm-Neptuno, 2017 Televisa S.A. de C.V</label>            \n" + 
+                    "bold '>Integraci&oacute;n Paradigm-Landmark, 2019 Televisa S.A. de C.V</label>            \n" + 
                 "            <br/>\n" + 
                 "            </div>\n" + 
                 "            <div style='float:left; background-color:#F58220;width:7%;height:25px;background:-moz-" +
@@ -229,7 +231,7 @@ public class MailManagement {
                     loResponse.setLsMessage("Correo enviado satisfactoriamente");
                     System.out.println("Fin enviar correo - ok");
                 } catch (Exception loException) {
-                    System.out.println("Error al enviar correo log certifificado: "+loException.getMessage());
+                    System.out.println("Error al enviar correo: "+loException.getMessage());
                     loResponse.setLsResponse("ERROR");
                     loResponse.setLiAffected(0);
                     loResponse.setLsMessage(loException.getMessage());

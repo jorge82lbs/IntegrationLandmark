@@ -211,7 +211,7 @@ public class GralConfigBean {
                 }
                 if(lbUpdate){
                     LmkIntConfigParamRowBean toLmkBean = new LmkIntConfigParamRowBean();
-                    toLmkBean.setLsIdParameter(Integer.parseInt(lsIdParameter));
+                    toLmkBean.setLiIdParameter(Integer.parseInt(lsIdParameter));
                     toLmkBean.setLsNomParameter(lsNomParameter);
                     toLmkBean.setLsUsedBy(lsUsedBy);
                     toLmkBean.setLsDescParameter(lsDescription);
@@ -346,10 +346,8 @@ public class GralConfigBean {
                 }
                 if(lbInsert){
                     
-                    LmkIntConfigParamRowBean loLmkBean = new LmkIntConfigParamRowBean();
-                    loLmkBean.setLsIdParameter(liIdParameter);
-                    
-                    loLmkBean.setLsIdParameter(liIdParameter);
+                    LmkIntConfigParamRowBean loLmkBean = new LmkIntConfigParamRowBean();                    
+                    loLmkBean.setLiIdParameter(liIdParameter);
                     loLmkBean.setLsNomParameter(lsNomParameter);
                     loLmkBean.setLsDescParameter(lsDescription);
                     loLmkBean.setLsUsedBy(lsUsedBy);

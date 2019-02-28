@@ -10,48 +10,23 @@
 package mx.com.televisa.landamark.services.service;
 
 import java.io.File;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-
-import java.io.IOException;
-
-import java.io.InputStream;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
-import java.util.Date;
-
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
-import mx.com.televisa.landamark.model.daos.ParrillasProgramasDao;
 import mx.com.televisa.landamark.model.daos.ServicesParamsDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
-import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
-import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
-import mx.com.televisa.landamark.model.types.ResponseUpdDao;
-import mx.com.televisa.landamark.model.types.extract.LmkBrkBreakRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkBrkChannelHeaderRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkBrkChannelTrailerRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkBrkFileHeaderRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkBrkFileTrailerRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkProgFileTrailerRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkProgRowBean;
 import mx.com.televisa.landamark.services.jobs.service.ParrillasProgramasImpCron;
 import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
-import mx.com.televisa.landamark.view.types.LmkDynaParameters;
-import mx.com.televisa.landamark.view.types.MapDynaParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
 
 import org.quartz.JobBuilder;
@@ -61,8 +36,6 @@ import org.quartz.Scheduler;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-
-import utils.system;
 
 /** Clase que ejecuta logica o servicio de Parrillas Programas a Landmark
  *
@@ -88,14 +61,8 @@ public class ParrillasProgramasService {
         ResponseService        loResponseService = new ResponseService();
         EntityMappedDao        loEntityMappedDao = new EntityMappedDao();
         ServicesParamsDao      loSpDao = new ServicesParamsDao();
-        ParrillasProgramasDao  loPpDao = new ParrillasProgramasDao();
         boolean                lbProcess = true;
-        
-        String ls2Can = "";
-        String ls5Can = "";
-        String ls9Can = "";
-        String lsCliente = "";                
-        
+       
         String lsReturn = "Parrillas Programas execute";
         loResponseService.setLiIdRequest(loInput.getLiIdRequest());
         loResponseService.setLiIdService(loInput.getLiIdService());
@@ -119,12 +86,11 @@ public class ParrillasProgramasService {
         loSlb.setLsMessage("Execute "+loInput.getLsServiceName());
         loSlb.setLsUserName(loInput.getLsUserName());
         loSlb.setLiIdUser(loInput.getLiIdUser());
-        new UtilFaces().insertLogServiceService(loSlb);   
-        
+        new UtilFaces().insertLogServiceService(loSlb);
         
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         Integer                  liIndProcess = 
-            new UtilFaces().getIdConfigParameterByName("ExeProcedure");//ExtractData
+            new UtilFaces().getIdConfigParameterByName("ExecuteService");//
         loBitBean.setLiIdLogServices(liIdLogService);
         loBitBean.setLiIdService(loInput.getLiIdService());
         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -137,7 +103,7 @@ public class ParrillasProgramasService {
                                            loInput.getLsUserName());                
                                 
         liIndProcess = 
-            new UtilFaces().getIdConfigParameterByName("ExtractData");//
+            new UtilFaces().getIdConfigParameterByName("ExtractParameters");//
         loBitBean.setLiIdLogServices(liIdLogService);
         loBitBean.setLiIdService(loInput.getLiIdService());
         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -154,7 +120,7 @@ public class ParrillasProgramasService {
         if( loParams.size() < 3 ){ //FI, FF y al menos un canal
             lbProcess = false;
             liIndProcess = 
-                        new UtilFaces().getIdConfigParameterByName("GeneralError");//ExtractData
+                        new UtilFaces().getIdConfigParameterByName("ParametersMissing");//
                     loBitBean.setLiIdLogServices(liIdLogService);
                     loBitBean.setLiIdService(loInput.getLiIdService());
                     loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -214,95 +180,8 @@ public class ParrillasProgramasService {
                      
                  } catch (Exception loEx) {
                      System.out.println("Error en invocacion de cron final "+loEx.getMessage());
-                 }         
-                    
-            }                            
-            // - Leer Tablas involucradas
-                
-                // Para el BREAK
-                ////////// FILE HEADER RECORD
-                //loPpDao
-                //List<LmkBrkFileHeaderRowBean> laBfhrb = loPpDao.getBrkFileHeader();
-                
-                ////////// CHANNEL HEADER RECORD
-                //List<LmkBrkChannelHeaderRowBean> laChrb = loPpDao.getBrkChannelHeader();
-                
-                ////////// BREAK RECORD
-                //List<LmkBrkBreakRowBean> laBrb = loPpDao.getBrkBreak();
-                
-                ////////// CHANNEL TRAILER RECORD
-                //List<LmkBrkChannelTrailerRowBean> laCtrb = loPpDao.getBrkChannelTrailer();
-                
-                ////////// FILE TRAILER RECORD
-                //List<LmkBrkFileTrailerRowBean> laFtrb = loPpDao.getBrkFileTrailer();
-                
-                // Para el PROGRAM
-                ////////// Programme 
-                //List<LmkProgRowBean> laProgrb = loPpDao.getProgProgramme();
-                
-                ////////// File Trailer
-                //List<LmkProgFileTrailerRowBean> laPrgTrb = loPpDao.getProgProgrammeTrailer();
-                
-                // - Armar y creear archivo, convertir de acuerdo al mapeo
-                /*File loFile = getPlainFileBreak(loInput.getLsPathFiles());
-                liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("Execute");
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(loInput.getLiIdService());
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Archivo "+loFile.getName()+" Creado para servicio "+loInput.getLsServiceName());
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           loInput.getLiIdUser(), 
-                                                           loInput.getLsUserName());
-                try {
-                    XmlFilesDao loXmlFilesDao = new XmlFilesDao();
-                    LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
-                    FileInputStream loFis = new FileInputStream(loFile);
-                    
-                    loXmlBean.setLiIdFileXml(0);
-                    loXmlBean.setLiIdRequest(loInput.getLiIdRequest());
-                    loXmlBean.setLiIdService(loInput.getLiIdService());
-                    loXmlBean.setLsNomFile(loFile.getName());
-                    loXmlBean.setLsIndFileType("Response");
-                    loXmlBean.setLsIndServiceType(loInput.getLsServiceType());
-                    loXmlBean.setLsIndEstatus("1");
-                    loXmlBean.setLsNomUserName(loInput.getLsUserName());
-                    loXmlBean.setLsNomUserPathFile(loInput.getLsPathFiles());
-                    loXmlBean.setLiIdUser(loInput.getLiIdUser());
-                    loXmlBean.setLoIndFileStream(loFis);
-                    // - Guardar archivo en bd
-                    loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
-                    
-                    liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("InsertCtrlTable");
-                            loBitBean.setLiIdLogServices(liIdLogService);
-                            loBitBean.setLiIdService(loInput.getLiIdService());
-                            loBitBean.setLiIndProcess(liIndProcess);
-                            loBitBean.setLiNumProcessId(0);
-                            loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento("Guardando Archivo "+loFile.getName()+" En base de datos");
-                            loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                               loInput.getLiIdUser(), 
-                                                               loInput.getLsUserName());
-                    
-                    
-                } catch (FileNotFoundException e) {
-                    System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
-                    liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("GeneralError");
-                            loBitBean.setLiIdLogServices(liIdLogService);
-                            loBitBean.setLiIdService(loInput.getLiIdService());
-                            loBitBean.setLiIndProcess(liIndProcess);
-                            loBitBean.setLiNumProcessId(0);
-                            loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento("No es posible guardar el Archivo: "+loFile.getName()+e.getMessage());
-                            loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                               loInput.getLiIdUser(), 
-                                                               loInput.getLsUserName());
-                }*/
-                // - Enviar archivo a ruta FTP
+                 }
+            }
         }
                                 
         return loResponseService;

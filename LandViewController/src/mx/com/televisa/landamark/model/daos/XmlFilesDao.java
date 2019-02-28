@@ -1,3 +1,12 @@
+/**
+* Project: Integraton Paradigm - Landmark
+*
+* File: XmlFilesDao.java
+*
+* Created on: Febrero 23, 2019 at 11:00
+*
+* Copyright (c) - OMW - 2019
+*/
 package mx.com.televisa.landamark.model.daos;
 
 import java.io.InputStream;
@@ -16,6 +25,14 @@ import java.util.Date;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 
+/** Objeto que accede a base de datos para Adminitrar el archivo fisico de las solicitudes
+ *
+ * @author Jorge Luis Bautista Santiago - OMW
+ *
+ * @version 01.00.01
+ *
+ * @date Febrero 23, 2019, 12:00 pm
+ */
 public class XmlFilesDao {
     public XmlFilesDao() {
         super();
@@ -31,7 +48,7 @@ public class XmlFilesDao {
         ResponseUpdDao    loResponse = new ResponseUpdDao();
 
         try {
-            Thread.sleep(30000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {;
         }
 
@@ -43,7 +60,7 @@ public class XmlFilesDao {
             "                                            ID_SERVICE,\n" + 
             "                                            NOM_FILE,\n" + 
             "                                            IND_FILE_TYPE,\n" + 
-            "                                            IND_SERVICE_TYPE,                                           \n" + 
+            "                                            IND_SERVICE_TYPE,\n" + 
             "                                            IND_ESTATUS,\n" + 
             "                                            FEC_CREATION_DATE,\n" + 
             "                                            NOM_USER_NAME,\n" + 
@@ -52,9 +69,10 @@ public class XmlFilesDao {
             "                                            FEC_LAST_UPDATE_DATE,\n" + 
             "                                            NUM_LAST_UPDATED_BY,\n" + 
             "                                            ATTRIBUTE1,\n" + 
+            "                                            ATTRIBUTE2,\n" + 
             "                                            IND_FILE_STREAM\n" + 
             "                                           )\n" + 
-            "                                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "                                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement loStmt = loCnn.prepareStatement(lsSql);
             loStmt.setInt(1, liIdXml);
             loStmt.setInt(2, toXmlFile.getLiIdRequest());
@@ -70,18 +88,13 @@ public class XmlFilesDao {
             loStmt.setTimestamp(12, getCurrentTimestamp());
             loStmt.setInt(13, toXmlFile.getLiIdUser());
             loStmt.setString(14, toXmlFile.getLsAttribute1());
-            loStmt.setBinaryStream(15, toXmlFile.getLoIndFileStream());
-            boolean lbRes = loStmt.execute();
-            if(lbRes){
-                loResponse.setLsResponse("OK");
-                loResponse.setLsMessage("OK");
-                loResponse.setLiAffected(1);
-            }else{
-                loResponse.setLsResponse("ERROR");
-                loResponse.setLsMessage("false");
-                loResponse.setLiAffected(0);
-            }
-            
+            loStmt.setString(15, toXmlFile.getLsAttribute2());
+            loStmt.setBinaryStream(16, toXmlFile.getLoIndFileStream());
+            loStmt.execute();
+            loResponse.setLsResponse("OK");
+            loResponse.setLsMessage("OK");
+            loResponse.setLiAffected(1);
+           
         } catch (SQLException loExSql) {
             System.out.println("ERROR XML_FILE: "+loExSql.getMessage());
             loResponse.setLsResponse("ERROR");

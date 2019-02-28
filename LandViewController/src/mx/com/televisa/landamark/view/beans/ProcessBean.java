@@ -615,7 +615,7 @@ public class ProcessBean {
                                                         null
                                                         );
                 
-                Integer liIndProcess = new UtilFaces().getIdConfigParameterByName("Execute");
+                Integer liIndProcess = new UtilFaces().getIdConfigParameterByName("ExecuteCron"); //
                 Integer liNumPgmProcessID = 0;
                 Integer liNumEvtbProcessId = 0;
                 LmkIntServiceBitacoraRowBean loBean = new LmkIntServiceBitacoraRowBean();

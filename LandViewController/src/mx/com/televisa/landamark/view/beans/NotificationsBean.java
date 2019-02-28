@@ -430,7 +430,7 @@ public class NotificationsBean {
             new ArrayList<SelectItem>();
         ViewObjectDao           loMd = new ViewObjectDao();
         List<SelectOneItemBean> laAllWs = 
-            loMd.getListGeneralParametersModelFilter("PROCESS_EMAIL_PGM");
+            loMd.getListGeneralParametersModelFilter("PROCESS_INTEGRATION");//
         for(SelectOneItemBean loWs: laAllWs){
             SelectItem loItm = new SelectItem();           
             loItm.setValue(loWs.getLsId());

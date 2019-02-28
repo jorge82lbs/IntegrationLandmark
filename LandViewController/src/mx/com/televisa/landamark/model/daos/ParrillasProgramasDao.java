@@ -169,7 +169,7 @@ public class ParrillasProgramasDao {
                 LmkBrkFileHeaderRowBean loItem = new LmkBrkFileHeaderRowBean();
                 loItem.setLiRecordType(loRs.getInt("RECORD_TYPE"));
                 loItem.setLsFileCreationDate(loRs.getString("FILE_CREATION_DATE"));
-                loItem.setLtFileCreationTime(loRs.getTimestamp("FILE_CREATION_TIME"));
+                loItem.setLsFileCreationTime(loRs.getString("FILE_CREATION_TIME"));
                 loItem.setLsStnid(loRs.getString("STNID"));
                 loItem.setLtBcstdt(loRs.getDate("BCSTDT"));
                 loRes.add(loItem);
@@ -323,19 +323,34 @@ public class ParrillasProgramasDao {
      * @return List
      */
     public String getQueryBrkBreak(String lsWhere){
-        String lsQuery = "SELECT RECORD_TYPE,\n" + 
-        "        REGIONAL_SALES_CODE,\n" + 
-        "        SALES_AREA_CODE,\n" + 
-        "        BREAK_SCHEDULE,\n" + 
-        "        BREAK_NOMINAL,\n" + 
-        "        BREAK_DURATION,\n" + 
-        "        BREAK_TYPE_CODE,\n" + 
-        "        POSITION_IN_PROGRAMME,\n" + 
-        "        BREAK_NUMBER,\n" + 
-        "        STNID,\n" + 
-        "        BCSTDT,\n" + 
-        "        FECHA_CREACION\n" + 
-        "   FROM EVENTAS.LMK_BRK_BREAK";
+        String lsQuery = 
+        "SELECT RECORD_TYPE,\n" + 
+        "       REGIONAL_SALES_CODE, \n" + 
+        "       SALES_AREA_CODE, \n" + 
+        "       BREAK_SCHEDULE, \n" + 
+        "       BREAK_NOMINAL,\n" + 
+        "       CASE WHEN LENGTH(CAST(BREAK_DURATION AS VARCHAR(4)))=1 \n" + 
+        "            THEN '00'||CAST(BREAK_DURATION AS VARCHAR(4))\n" + 
+        "             ELSE CASE WHEN LENGTH(CAST(BREAK_DURATION AS VARCHAR(4)))=2 \n" + 
+        "                      THEN '0'||CAST(BREAK_DURATION AS VARCHAR(4))\n" + 
+        "                      ELSE CAST(BREAK_DURATION AS VARCHAR(4))\n" + 
+        "                      END \n" + 
+        "            END as BREAK_DURATION, \n" + 
+        "       BREAK_TYPE_CODE, \n" + 
+        "       'C' POSITION_IN_PROGRAMME,\n" + 
+        "       CASE WHEN LENGTH(CAST(BREAK_NUMBER AS VARCHAR(5)))=1 \n" + 
+        "            THEN '0000'||CAST(BREAK_NUMBER AS VARCHAR(5))\n" + 
+        "            WHEN LENGTH(CAST(BREAK_NUMBER AS VARCHAR(5)))=2 \n" + 
+        "            THEN '000'||CAST(BREAK_NUMBER AS VARCHAR(5))\n" + 
+        "            WHEN LENGTH(CAST(BREAK_NUMBER AS VARCHAR(5)))=3 \n" + 
+        "            THEN '00'||CAST(BREAK_NUMBER AS VARCHAR(5))\n" + 
+        "            WHEN LENGTH(CAST(BREAK_NUMBER AS VARCHAR(5)))=4 THEN '0'||CAST(BREAK_NUMBER AS VARCHAR(5))\n" + 
+        "            ELSE CAST(BREAK_NUMBER AS VARCHAR(5))\n" + 
+        "            END as BREAK_NUMBER,\n" + 
+        "            STNID,\n" + 
+        "            BCSTDT,\n" + 
+        "            FECHA_CREACION\n" + 
+        "  FROM EVENTAS.LMK_BRK_BREAK ";
         lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
@@ -387,12 +402,28 @@ public class ParrillasProgramasDao {
      * @return List
      */
     public String getQueryBrkChannelTrailer(String lsWhere){
-        String lsQuery = " SELECT RECORD_TYPE,\n" + 
-        "        RECORD_COUNT,\n" + 
-        "        STNID,\n" + 
-        "        BCSTDT,\n" + 
-        "        FECHA_CREACION \n" + 
-        "   FROM EVENTAS.LMK_BRK_CHANNEL_TRAILER";
+        String lsQuery = 
+        " SELECT RECORD_TYPE,\n" + 
+        "       CASE WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=1 \n" + 
+        "                 THEN '0000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=2 \n" + 
+        "                 THEN '000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=3 \n" + 
+        "                 THEN '00000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=4 \n" + 
+        "                 THEN '0000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=5 \n" + 
+        "                 THEN '000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=6 \n" + 
+        "                 THEN '00'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=7 \n" + 
+        "                 THEN '0'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            ELSE CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            END as RECORD_COUNT,\n" + 
+        "            STNID,\n" + 
+        "            BCSTDT,\n" + 
+        "            FECHA_CREACION\n" + 
+        "  FROM EVENTAS.LMK_BRK_CHANNEL_TRAILER";
         lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
@@ -420,7 +451,7 @@ public class ParrillasProgramasDao {
                 loItem.setLiRecordType(loRs.getInt("RECORD_TYPE"));
                 loItem.setLiRecordCount(loRs.getInt("RECORD_COUNT"));                
                 loItem.setLsStnid(loRs.getString("STNID"));
-                loItem.setLtBcstdt(loRs.getDate("BCSTDT"));
+                //loItem.setLtBcstdt(loRs.getDate("BCSTDT"));
                 loItem.setLtFechaCreacion(loRs.getTimestamp("FECHA_CREACION"));
                 loRes.add(loItem);
             }
@@ -445,12 +476,27 @@ public class ParrillasProgramasDao {
      * @return List
      */
     public String getQueryBrkFileTrailer(String lsWhere){
-        String lsQuery = " SELECT RECORD_TYPE,\n" + 
-        "        RECORD_COUNT,\n" + 
-        "        STNID,\n" + 
-        "        BCSTDT,\n" + 
-        "        FECHA_CREACION \n" + 
-        "   FROM EVENTAS.LMK_BRK_CHANNEL_TRAILER";
+        String lsQuery = 
+        " SELECT RECORD_TYPE,\n" + 
+        "       CASE WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=1 \n" + 
+        "                 THEN '0000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=2 \n" + 
+        "                 THEN '000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=3 \n" + 
+        "                 THEN '00000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=4 \n" + 
+        "                 THEN '0000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=5 \n" + 
+        "                 THEN '000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=6 \n" + 
+        "                 THEN '00'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=7 \n" + 
+        "                 THEN '0'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            ELSE CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+        "            END RECORD_COUNT,\n" + 
+        "            STNID,\n" + 
+        "            FECHA_CREACION\n" + 
+        "  FROM EVENTAS.LMK_BRK_FILE_TRAILER";
         lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
@@ -641,6 +687,42 @@ public class ParrillasProgramasDao {
             System.out.println(loExSql.getMessage());
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage("ERROR (deleteLmkProgProgramm): "+loExSql.getMessage());
+            loResponseUpdDao.setLsResponse("OK");
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+       
+        return loResponseUpdDao;
+    }
+    
+    /**
+     * Ejecuta llamado a Procedimiento Almacenado en Paradigm
+     * @autor Jorge Luis Bautista Santiago
+     * @return ResponseUpdDao
+     */
+    public ResponseUpdDao deleteLmkBreaksByTable(String tsWhere) {
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQuery = 
+            "DELETE \n" ;
+            lsQuery += "  FROM ";
+        lsQuery += tsWhere;
+        System.out.println(lsQuery);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            Integer liRes = loStmt.executeUpdate(lsQuery);
+            loResponseUpdDao.setLiAffected(liRes);
+            loResponseUpdDao.setLsMessage("Registros eliminados ("+tsWhere+")");
+            loResponseUpdDao.setLsResponse("OK");
+        } catch (SQLException loExSql) {
+            System.out.println("Error 86: "+loExSql.getMessage());
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage("ERROR (deleteLmkBreaksByTable): "+loExSql.getMessage());
             loResponseUpdDao.setLsResponse("OK");
         }
         finally{

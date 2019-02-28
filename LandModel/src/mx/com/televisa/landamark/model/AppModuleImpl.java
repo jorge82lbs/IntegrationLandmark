@@ -1466,7 +1466,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
         LmkIntConfigParamTabViewRowImpl loNewRow = 
             (LmkIntConfigParamTabViewRowImpl)loObj.createRow();        
         try {
-            loNewRow.setIdParameter(toLmkBean.getLsIdParameter());
+            loNewRow.setIdParameter(toLmkBean.getLiIdParameter());
             loNewRow.setNomParameter(toLmkBean.getLsNomParameter());
             loNewRow.setIndDescParameter(toLmkBean.getLsDescParameter());
             loNewRow.setIndUsedBy(toLmkBean.getLsUsedBy());
@@ -1529,7 +1529,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
        try {
             LmkIntConfigParamTabViewImpl    loObj = 
                 getLmkIntConfigParamTabView1();
-            loObj.setWhereClause("ID_PARAMETER = " + toLmkBean.getLsIdParameter());
+            loObj.setWhereClause("ID_PARAMETER = " + toLmkBean.getLiIdParameter());
             loObj.setRangeSize(-1);
             loObj.executeQuery();            
             Row[] laRows = loObj.getAllRowsInRange();     
@@ -1537,7 +1537,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
                 Row loRow = loObj.getAllRowsInRange()[0];
                LmkIntConfigParamTabViewRowImpl loUpdRow = 
                    (LmkIntConfigParamTabViewRowImpl)loRow;
-               loUpdRow.setIdParameter(toLmkBean.getLsIdParameter());
+               loUpdRow.setIdParameter(toLmkBean.getLiIdParameter());
                loUpdRow.setNomParameter(toLmkBean.getLsNomParameter());
                loUpdRow.setIndDescParameter(toLmkBean.getLsDescParameter());
                loUpdRow.setIndUsedBy(toLmkBean.getLsUsedBy());

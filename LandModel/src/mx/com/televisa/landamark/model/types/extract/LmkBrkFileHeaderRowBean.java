@@ -8,9 +8,17 @@ public class LmkBrkFileHeaderRowBean {
 
     private Integer liRecordType;
     private String lsFileCreationDate;
-    private Timestamp ltFileCreationTime;
+    private String lsFileCreationTime;
     private String lsStnid;
     private Date ltBcstdt;
+
+    public void setLsFileCreationTime(String lsFileCreationTime) {
+        this.lsFileCreationTime = lsFileCreationTime;
+    }
+
+    public String getLsFileCreationTime() {
+        return lsFileCreationTime;
+    }
 
     public void setLiRecordType(Integer liRecordType) {
         this.liRecordType = liRecordType;
@@ -26,14 +34,6 @@ public class LmkBrkFileHeaderRowBean {
 
     public String getLsFileCreationDate() {
         return lsFileCreationDate;
-    }
-
-    public void setLtFileCreationTime(Timestamp ltFileCreationTime) {
-        this.ltFileCreationTime = ltFileCreationTime;
-    }
-
-    public Timestamp getLtFileCreationTime() {
-        return ltFileCreationTime;
     }
 
     public void setLsStnid(String lsStnid) {
