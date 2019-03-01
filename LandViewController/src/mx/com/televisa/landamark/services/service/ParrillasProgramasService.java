@@ -189,8 +189,8 @@ public class ParrillasProgramasService {
     
     public File getPlainFileBreak(String tsPath){        
             
-        File loFileResponse = new File(tsPath+"files\\TestBreak.txt");
-        System.out.println("Ruta: "+loFileResponse.getPath());
+        File loFileResponse = new File(tsPath+"TestBreak.txt");
+        //System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
             

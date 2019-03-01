@@ -1093,7 +1093,7 @@
                                 </af:showDetailItem>
                                 <!-- DIARIO -->
                                 <af:showDetailItem text="Diario" id="sdid" binding="#{ProcessBean.poTabDias}" disabled="true"
-                                disclosureListener="#{ProcessBean.disDias}" 
+                                disclosureListener="#{ProcessBean.disDias}" visible="false"
                                 partialTriggers="pt1:tbl:LnkCron">
                                 <af:panelGridLayout id="pgl2d">
                                         <af:gridRow marginTop="5px" height="auto" marginBottom="5px" id="gr1d">
@@ -1152,7 +1152,7 @@
                                 <!-- SEMANAL -->
                                 <af:showDetailItem text="Semanal" id="sdis" 
                                 binding="#{ProcessBean.poTabSemanas}" disabled="true"
-                                disclosureListener="#{ProcessBean.disSemanas}" 
+                                disclosureListener="#{ProcessBean.disSemanas}"  visible="false"
                                 partialTriggers="pt1:tbl:LnkCron">
                                 <af:panelGridLayout id="pgls">
                                         <af:gridRow marginTop="5px" height="auto" marginBottom="5px" 

@@ -58,8 +58,8 @@ public class SftpManagment {
         Session loSession = null;
         try {
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
-            System.out.println("Incio....");
-            loSession = loJsch.getSession(loSftpCnn.getLsPassword(), 
+            //System.out.println("Incio....");
+            loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
             loSession.setConfig("StrictHostKeyChecking", "no");
@@ -77,7 +77,7 @@ public class SftpManagment {
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("Archivo descargado satisfactoriamente");
             loResponse.setLiAffected(0);
-            System.out.println("TODO OK");
+            //System.out.println("TODO OK");
         } catch (JSchException loEx) {
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage(loEx.getMessage());
@@ -108,8 +108,13 @@ public class SftpManagment {
         Session loSession = null;
         try {
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
-            System.out.println("Incio....");
-            loSession = loJsch.getSession(loSftpCnn.getLsPassword(), 
+            System.out.println("Incio....uploadFileSFTP()");
+            //System.out.println("Session ssh:");
+            //System.out.println(">>> loSftpCnn.getLsUser()["+loSftpCnn.getLsUser()+"]:");
+            //System.out.println(">>> loSftpCnn.getLsHost()["+loSftpCnn.getLsHost()+"]:");
+            //System.out.println(">>> loSftpCnn.getLiPort()["+loSftpCnn.getLiPort()+"]:");
+            //System.out.println(">>> loSftpCnn.getLsPassword()["+loSftpCnn.getLsPassword()+"]:");
+            loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
             loSession.setConfig("StrictHostKeyChecking", "no");
@@ -156,7 +161,7 @@ public class SftpManagment {
         try {
             System.out.println("Incio....");
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
-            loSession = loJsch.getSession(loSftpCnn.getLsPassword(), 
+            loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
             loSession.setConfig("StrictHostKeyChecking", "no");
@@ -215,12 +220,12 @@ public class SftpManagment {
                 try {
                     //Seguramente estará codificado, entonces decodificar
                     UtilFaces loUf = new UtilFaces();
-                    String lsKey = loUf.getKeyDecoder();
+                    String lsKey = loEntityMappedDao.getKeyDecoderSimple();
                     lsPwd = loUf.decryptObject(loBean.getLsValueParameter(), lsKey);
                 } catch (Exception e) {
                     ;
                 }
-                loLmkIntSftpCnnBean.setLsUser(lsPwd);
+                loLmkIntSftpCnnBean.setLsPassword(lsPwd);
             }
         }
         

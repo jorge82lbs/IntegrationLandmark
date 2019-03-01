@@ -20,10 +20,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
+
+import oracle.jbo.ApplicationModule;
+import oracle.jbo.client.Configuration;
 
 /** Clase que conecta de forma tradicional (JDBC) a bd
  *
@@ -84,6 +88,7 @@ public class EntityMappedDao {
      * @return String
      */    
     public String getQueryParametersByUsed(String tsUsedBy){
+        //System.out.println("############## query parametros generales (USED_BY) ##############");
         String lsQuery = 
             "SELECT ID_PARAMETER,\n" + 
             "       NOM_PARAMETER,\n" + 
@@ -93,7 +98,7 @@ public class EntityMappedDao {
             "       IND_ESTATUS\n" + 
             "  FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
             " WHERE IND_USED_BY = '" + tsUsedBy + "'";
-        
+        //System.out.println(lsQuery);
         return lsQuery;
     }
     
@@ -137,11 +142,13 @@ public class EntityMappedDao {
      * @return String
      */
     public String getQueryGeneralParameter(String tsName, String tsUsedBy){
+        //System.out.println("############## query parametros generales ##############");
         String lsQuery = 
             "SELECT IND_VALUE_PARAMETER \n" + 
             "   FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
             "  WHERE IND_USED_BY   = '" + tsUsedBy + "'\n" + 
             "    AND NOM_PARAMETER = '" + tsName + "'";
+        //System.out.println(lsQuery);
         return lsQuery;
     }
     
@@ -259,6 +266,39 @@ public class EntityMappedDao {
         lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
         return lsResponse;
     }
-    
+
+    /**
+    * Obtiene la psKey para codificar y decodificar
+    * @autor Jorge Luis Bautista Santiago
+    * @return String
+    */
+    public String getKeyDecoderSimple() {
+        String                    lsKey = "LFXqSn21ptd+rNihAuZeMg==";        
+        Connection  loCnn = new ConnectionAs400().getConnection();
+        ResultSet   loRs = null;
+        String      lsQueryParadigm = 
+        "SELECT IND_VALUE_PARAMETER\n" + 
+        "  FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
+        " WHERE IND_USED_BY = 'WS_Autenticacion'\n" + 
+        "   AND NOM_PARAMETER = 'Key'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                lsKey = loRs.getString(1);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return lsKey;
+    }    
     
 }

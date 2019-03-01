@@ -356,6 +356,25 @@ public class ParrillasProgramasImpCron implements Job{
                                                liIdUser, 
                                                lsUserName);
                     
+                    
+                    try{
+                        System.out.println("Eliminando archivo "+loFileBreaks.getName());
+                        loFileBreaks.delete();
+                        System.out.println("Eliminando archivo ok...");
+                    }catch(Exception loExDel){
+                        liIndProcess = 
+                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Error al eliminar archivo ["+loFileBreaks.getName()+"]");
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                               liIdUser, 
+                                               lsUserName);
+                    }
+                    
                 } catch (FileNotFoundException e) {
                     System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
                     liIndProcess = 
@@ -390,7 +409,10 @@ public class ParrillasProgramasImpCron implements Job{
 
 
             //############################### PROGRAMM #####################################################
-            lsWhere = " AND STNID = '"+lsChannel+"' AND BCSTDT BETWEEN '"+lsFecInicial+"' AND '"+lsFecFinal+"'";
+            //lsWhere = " AND STNID = '"+lsChannel+"' AND BCSTDT BETWEEN '"+lsFecInicial+"' AND '"+lsFecFinal+"'";
+            lsWhere = "AND STRDT = '"+lsFecInicial+"'\n" + 
+            "AND EDT = '"+lsFecFinal+"'\n" + 
+            "AND STNID = '"+lsChannel+"'";
             List<LmkProgRowBean> laProgrb = loPpDao.getProgProgramme(lsWhere);
             System.out.println("laProgrb.size() ["+laProgrb.size()+"]"); 
             
@@ -521,7 +543,23 @@ public class ParrillasProgramasImpCron implements Job{
                                                liIdUser, 
                                                lsUserName);
                     
-                    
+                    try{
+                        System.out.println("Eliminando archivo "+loFileProgramm.getName());
+                        loFileProgramm.delete();
+                        System.out.println("Eliminando archivo ok...");
+                    }catch(Exception loExDel){
+                        liIndProcess = 
+                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Error al eliminar archivo ["+loFileProgramm.getName()+"]");
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                               liIdUser, 
+                                               lsUserName);
+                    }
                 } catch (FileNotFoundException e) {
                     System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
                     liIndProcess = 
@@ -566,6 +604,8 @@ public class ParrillasProgramasImpCron implements Job{
                                            liIdUser, 
                                            lsUserName);
         
+        //TODO.- Eliminar los archivos creados temporalmente en ubicacion de weblogic
+        
         System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
     }
     
@@ -593,12 +633,14 @@ public class ParrillasProgramasImpCron implements Job{
                                 String tsChannel) throws Exception{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+"PLAN.PROG";
-        File loFileResponse = new File(tsPath+"files\\"+lsFileName);
+        File loFileResponse = new File(tsPath+""+lsFileName);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
             for(LmkProgRowBean loProg : taProgrb){
-                String lsRow = loProg.getLiRecordType()+","+ 
+                String lsRow = loProg.getLsFullRow();
+                /*
+                loProg.getLiRecordType()+","+ 
                 loProg.getLsSalesAreaCode()+","+ 
                 loProg.getLsTransmissionRegionCode()+","+ 
                 loProg.getLtProgrammeTransmissionDate()+","+ 
@@ -621,17 +663,20 @@ public class ParrillasProgramasImpCron implements Job{
                 //loProg.getLsStnid()+","+ 
                 //loProg.getLtBcstdt()+","+                                
                 //loProg.getLsPgmid()+",";
+                */
                 loWriter.write(lsRow);
                 loWriter.write("\r\n");
             }      
             
             for(LmkProgFileTrailerRowBean loProgTrailer : laPrgTrb){
-                String lsRow = loProgTrailer.getLiRecordType()+","+ 
+                /*String lsRow = loProgTrailer.getLiRecordType()+","+ 
                 loProgTrailer.getLiRecordCount()+","+ 
                 loProgTrailer.getLiAllowableGap()+",";
                 //loProgTrailer.getLsStnid()+","+ 
                 //loProgTrailer.getLsStrdt()+","+
-                //loProgTrailer.getLsEdt()+",";                              
+                //loProgTrailer.getLsEdt()+",";         
+                */
+                String lsRow = loProgTrailer.getLsFullRowTrailer();
                 loWriter.write(lsRow);
                 loWriter.write("\r\n");
             }  
@@ -676,7 +721,7 @@ public class ParrillasProgramasImpCron implements Job{
                               String tsChannel) throws Exception{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+".brk";
-        File loFileResponse = new File(tsPath+"files\\"+lsFileName);
+        File loFileResponse = new File(tsPath+""+lsFileName);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);

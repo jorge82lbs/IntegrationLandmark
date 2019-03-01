@@ -683,10 +683,13 @@ public class ProcessBean {
                                 lbSimple = true;
                             }
                             if(!lbSimple){
+                                //Aqui inicia mediante la expresion regular de Cron para:
+                                //DIAS, SEMANAS
                                 loTrigger = 
                                     TriggerBuilder.newTrigger().withIdentity(toPrcBean.getLsIdTrigger()).
                                     withSchedule(CronScheduleBuilder.cronSchedule(lsCronExpression)
                                 ).startNow().build();
+                                
                             }else{
                                 Date ltCurrent = new Date();
                                 String lsCurrDate = "";
@@ -720,7 +723,7 @@ public class ProcessBean {
                                         TriggerBuilder.newTrigger().withIdentity(toPrcBean.getLsIdTrigger()).withSchedule(
                                     SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(liEvery).repeatForever()
                                     ).startAt(ltFechaIni).endAt(ltFechaFin).build();
-                                }else{
+                                }else{//Es en HORAS
                                     loTrigger = 
                                         TriggerBuilder.newTrigger().withIdentity(toPrcBean.getLsIdTrigger()).withSchedule(
                                     SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(liEvery).repeatForever()

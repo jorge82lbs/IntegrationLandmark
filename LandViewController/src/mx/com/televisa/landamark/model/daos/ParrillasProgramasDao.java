@@ -502,7 +502,7 @@ public class ParrillasProgramasDao {
         return lsQuery;
     }
     
-    // Para el PROGRAM
+    // ############################# Para el PROGRAM #####################################
     ////////// FILE HEADER RECORD
     ////////// Programme 
     /**
@@ -522,6 +522,7 @@ public class ParrillasProgramasDao {
             loRs = loStmt.executeQuery(lsQueryParadigm);  
             while(loRs.next()){
                 LmkProgRowBean loItem = new LmkProgRowBean();
+                /*
                 loItem.setLiRecordType(loRs.getInt("RECORD_TYPE"));
                 loItem.setLsSalesAreaCode(loRs.getString("SALES_AREA_CODE"));
                 loItem.setLsTransmissionRegionCode(loRs.getString("TRANSMISSION_REGION_CODE"));
@@ -546,6 +547,8 @@ public class ParrillasProgramasDao {
                 loItem.setLtBcstdt(loRs.getDate("BCSTDT"));
                 loItem.setLsPgmid(loRs.getString("PGMID"));
                 loItem.setLtFechaCreacion(loRs.getTimestamp("FECHA_CREACION"));
+                */
+                loItem.setLsFullRow(loRs.getString("FULL_ROW"));
                 loRes.add(loItem);
             }
         } catch (SQLException loExSql) {
@@ -569,31 +572,27 @@ public class ParrillasProgramasDao {
      * @return List
      */
     public String getQueryProgProgramme(String lsWhere){
-        String lsQuery = "SELECT RECORD_TYPE,\n" + 
-        "        SALES_AREA_CODE,\n" + 
-        "        TRANSMISSION_REGION_CODE,\n" + 
-        "        PROGRAMME_TRANSMISSION_DATE,\n" + 
-        "        PROGRAMME_TRANSMISSION_START,\n" + 
-        "        PROGRAMME_TRANSMISSION_END,\n" + 
-        "        REGIONAL_VARIATION,\n" + 
-        "        DOMINANT_REGION_INDICATOR,\n" + 
-        "        PROGRAMME_NAME,\n" + 
-        "        PROGRAMME_ID,\n" + 
-        "        DURATION,\n" + 
-        "        LIVE_BROADCAST,\n" + 
-        "        PROGRAMME_OVERSELLING,\n" + 
-        "        PROGRAMME_SHOWING,\n" + 
-        "        PROGRAMME_DESCRIPTION,\n" + 
-        "        PROGRAMME_COMMENT,\n" + 
-        "        EPISODE_NAME,\n" + 
-        "        EPISODE_ID,\n" + 
-        "        CERTIFICATION,\n" + 
-        "        PROGRAMME_CATEGORY,\n" + 
-        "        STNID,\n" + 
-        "        BCSTDT,\n" + 
-        "        PGMID,\n" + 
-        "        FECHA_CREACION\n" + 
-        "   FROM EVENTAS.LMK_PROG";
+        String lsQuery = "SELECT TRIM(RECORD_TYPE)||','\n" + 
+        "||TRIM(SALES_AREA_CODE)||','\n" + 
+        "||TRIM(TRANSMISSION_REGION_CODE)||','\n" + 
+        "||TRIM(PROGRAMME_TRANSMISSION_DATE)||','\n" + 
+        "||TRIM(PROGRAMME_TRANSMISSION_START)||','\n" + 
+        "||TRIM(PROGRAMME_TRANSMISSION_END)||','\n" + 
+        "||TRIM(REGIONAL_VARIATION)||','\n" + 
+        "||TRIM(DOMINANT_REGION_INDICATOR)||','\n" + 
+        "||TRIM(PROGRAMME_NAME)||','\n" + 
+        "||TRIM(PROGRAMME_ID)||','\n" + 
+        "||TRIM(DURATION)||','\n" + 
+        "||TRIM(LIVE_BROADCAST)||','\n" + 
+        "||TRIM(PROGRAMME_OVERSELLING)||','\n" + 
+        "||TRIM(PROGRAMME_SHOWING)||','\n" + 
+        "||TRIM(PROGRAMME_DESCRIPTION)||','\n" + 
+        "||TRIM(PROGRAMME_COMMENT)||','\n" + 
+        "||TRIM(EPISODE_NAME)||','\n" + 
+        "||IFNULL(TRIM(VARCHAR(EPISODE_ID)),'')||','\n" + 
+        "||TRIM(CERTIFICATION)||','\n" + 
+        "||TRIM(PROGRAMME_CATEGORY) as FULL_ROW\n" + 
+        "FROM EVENTAS.LMK_PROG";
         lsQuery += " WHERE 1 = 1 " + lsWhere;
         
         return lsQuery;
@@ -616,14 +615,16 @@ public class ParrillasProgramasDao {
             loRs = loStmt.executeQuery(lsQueryParadigm);  
             while(loRs.next()){
                 LmkProgFileTrailerRowBean loItem = new LmkProgFileTrailerRowBean();
-                loItem.setLiRecordType(loRs.getInt("RECORD_TYPE"));
+                /*loItem.setLiRecordType(loRs.getInt("RECORD_TYPE"));
                 loItem.setLiRecordCount(loRs.getInt("RECORD_COUNT"));
                 loItem.setLiAllowableGap(loRs.getInt("ALLOWABLE_GAP"));                
                 loItem.setLsStnid(loRs.getString("STNID"));
                 loItem.setLsStrdt(loRs.getString("STRDT"));
                 loItem.setLsEdt(loRs.getString("EDT"));
-                
                 loItem.setLtFechaCreacion(loRs.getTimestamp("FECHA_CREACION"));
+                */
+                loItem.setLsFullRowTrailer(loRs.getString("FULL_ROW_TRAILER"));
+                
                 loRes.add(loItem);
             }
         } catch (SQLException loExSql) {
@@ -647,7 +648,7 @@ public class ParrillasProgramasDao {
      * @return List
      */
     public String getQueryProgProgrammeTrailer(String lsWhere){
-        String lsQuery = "SELECT RECORD_TYPE,\n" + 
+        /*String lsQuery = "SELECT RECORD_TYPE,\n" + 
         "        RECORD_COUNT,\n" + 
         "        ALLOWABLE_GAP,\n" + 
         "        STNID,\n" + 
@@ -656,7 +657,12 @@ public class ParrillasProgramasDao {
         "        FECHA_CREACION\n" + 
         "   FROM EVENTAS.LMK_PROG_FILE_TRAILER\n";
         lsQuery += " WHERE 1 = 1 " + lsWhere;
-        
+        */
+        String lsQuery = "SELECT TRIM(RECORD_TYPE)||','\n" + 
+        "||TRIM(VARCHAR(RECORD_COUNT))||','\n" + 
+        "||TRIM(VARCHAR(ALLOWABLE_GAP)) AS FULL_ROW_TRAILER\n" + 
+        "FROM EVENTAS.LMK_PROG_FILE_TRAILER\n";
+        lsQuery += " WHERE 1 = 1 " + lsWhere;
         return lsQuery;
     }
     

@@ -12,7 +12,15 @@ public class LmkProgFileTrailerRowBean {
     private String lsStrdt;
     private String lsEdt;    
     private Timestamp ltFechaCreacion;
+    private String lsFullRowTrailer;
 
+    public void setLsFullRowTrailer(String lsFullRowTrailer) {
+        this.lsFullRowTrailer = lsFullRowTrailer;
+    }
+
+    public String getLsFullRowTrailer() {
+        return lsFullRowTrailer;
+    }
 
     public void setLsStrdt(String lsStrdt) {
         this.lsStrdt = lsStrdt;

@@ -29,6 +29,15 @@ public class LmkProgRowBean {
     private Date ltBcstdt;
     private String lsPgmid;
     private Timestamp ltFechaCreacion;
+    private String lsFullRow;
+
+    public void setLsFullRow(String lsFullRow) {
+        this.lsFullRow = lsFullRow;
+    }
+
+    public String getLsFullRow() {
+        return lsFullRow;
+    }
 
     public void setLiRecordType(Integer liRecordType) {
         this.liRecordType = liRecordType;
