@@ -96,7 +96,7 @@
                                                   visible="false"
                                                   partialTriggers="soc1 BtnReset"
                                                   binding="#{MonitorBean.poFilterIdService}"/>
-                                            <af:selectOneChoice unselectedLabel="Seleccione"
+                                            <af:selectOneChoice unselectedLabel="-- Seleccione --"
                                                                 label="Proceso"
                                                                 visible="false"
                                                                 shortDesc="Proceso"
@@ -105,7 +105,20 @@
                                                                 id="soc4">
                                                 <f:selectItems value="#{MonitorBean.listProcess}" id="sid1s"/>
                                             </af:selectOneChoice>
-                                         <af:inputDate label="Fecha Incial" 
+                                                
+                                            <af:selectOneChoice label="Estatus" id="soc2" 
+                                                                unselectedLabel="-- Seleccione --"
+                                                                partialTriggers="BtnReset" 
+                                                                binding="#{MonitorBean.poFilterEstatusSel}" 
+                                                                >
+                                                <af:selectItem label="CREADO" value="CREADO" id="si1"/>
+                                                <af:selectItem label="COMPLETO" value="COMPLETO" id="si2"/>
+                                                <af:selectItem label="COMPLETO CON ERROR" value="COMPLETO CON ERROR" id="si3"/>
+                                                <af:selectItem label="EN LANDMARK" value="EN LANDMARK" id="si4"/>
+                                                <af:selectItem label="ERROR AL ENVIAR A LANDMARK" value="ERROR AL ENVIAR A LANDMARK" id="si5"/>                                                
+                                            </af:selectOneChoice>
+                                                
+                                                <af:inputDate label="Fecha Incial" 
                                                        partialTriggers="BtnReset" 
                                                        id="TxtFilterFecIni" 
                                                        columns="9" 
@@ -356,9 +369,27 @@
                                                    sortable="true" align="center"
                                                    headerText="Estatus" width="80"
                                                    id="c12">
-                                            <af:outputText value="#{row.IndCalculateStatus}"
-                                                           shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.IndCalculateStatus.tooltip}"
-                                                           id="ot12"/>
+                                                   
+                                            <af:link icon="/images/Up.gif" id="LnkCalcL"
+                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'EN LANDMARK'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/OK.gif" id="LnkCalcC"
+                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'COMPLETO'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/Alert.gif" id="LnkCalcE"
+                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'COMPLETO CON ERROR'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/Save.gif" id="LnkCalcR"
+                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'CREADO'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/Disaster.gif" id="LnkCalcF"
+                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'ERROR AL ENVIAR A LANDMARK'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.IndEstatus.name}"
                                                    sortable="true" visible="false"

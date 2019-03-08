@@ -115,19 +115,22 @@ public class ResponseBreaksDao {
     }
     
     /**
-     * Inserta en la tabla de bitacora en base de datos
+     * Actualiza estatus de la tabla de Archivos
      * @autor Jorge Luis Bautista Santiago
-     * @param toLmkBitBean
-     * @return Integer
+     * @param liIdFileXml
+     * @param tsEstatus
+     * @return ResponseUpdDao
      */
     public ResponseUpdDao updateEstatusXmlFiles(Integer liIdFileXml, String tsEstatus) {
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        Integer    loValue = 0;
-        Connection loCnn = new ConnectionAs400().getConnection();
-        String     lsQueryParadigm = 
+        Integer        loValue = 0;
+        Connection     loCnn = new ConnectionAs400().getConnection();
+        String         lsQueryParadigm = 
             "UPDATE EVENTAS.LMK_INT_XML_FILES_TAB\n" + 
             "   SET IND_ESTATUS = '" + tsEstatus + "'\n" + 
             " WHERE ID_FILE_XML = " + liIdFileXml;
+        System.out.println("ACTUALIZANDO ESTATUS de XML_FILES");
+        System.out.println(lsQueryParadigm);
         try {
             Statement loStmt = loCnn.createStatement();
             loValue = loStmt.executeUpdate(lsQueryParadigm);

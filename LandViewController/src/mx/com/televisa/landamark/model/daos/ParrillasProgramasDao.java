@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
+import mx.com.televisa.landamark.model.types.LmkBrkGenericRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.model.types.extract.LmkBrkBreakRowBean;
@@ -54,7 +55,7 @@ public class ParrillasProgramasDao {
     public ResponseUpdDao callLmkProgBrkPr(String tsStnid, 
                                            String tsStrdt, 
                                            String tsEdt) {
-        System.out.println("Dentro de callTraditionalSalePr");
+        //System.out.println("Dentro de callTraditionalSalePr");
         System.out.println("**** setteando EVENTAS.LMK_PROG_BRK ******");
         System.out.println("tsStnid["+tsStnid+"]");
         System.out.println("tsStrdt["+tsStrdt+"]");
@@ -65,9 +66,7 @@ public class ParrillasProgramasDao {
         CallableStatement loCallStmt = null;
         String            lsQueryParadigm = "call EVENTAS.LMK_PROG_BRK(?,?,?)";
         try {
-            System.out.println("Dentro de callTraditionalSalePr llamando "+lsQueryParadigm);
-            loCallStmt = loCnn.prepareCall(lsQueryParadigm);            
-            
+            loCallStmt = loCnn.prepareCall(lsQueryParadigm); 
             if(tsStnid != null){
                 if(!tsStnid.trim().equalsIgnoreCase("")){
                     loCallStmt.setString(1, tsStnid);
@@ -112,7 +111,7 @@ public class ParrillasProgramasDao {
             loCallStmt.executeUpdate();
             loResponseUpdDao.setLsResponse("OK");
             loResponseUpdDao.setLsMessage(""+lsResult.substring(0, lsResult.length()-1)+") Execute Success!!!");
-            System.out.println(lsResult.substring(0, lsResult.length()-1)+") Execute Success!!!");
+            //System.out.println(lsResult.substring(0, lsResult.length()-1)+") Execute Success!!!");
         } catch (SQLException loExSql) {
             //System.out.println("ERROR AL EJECUTAR: "+loExSql.getMessage());
             loResponseUpdDao.setLsResponse("ERROR");
@@ -594,7 +593,6 @@ public class ParrillasProgramasDao {
         "||TRIM(PROGRAMME_CATEGORY) as FULL_ROW\n" + 
         "FROM EVENTAS.LMK_PROG";
         lsQuery += " WHERE 1 = 1 " + lsWhere;
-        
         return lsQuery;
     }
     ////////// File Trailer
@@ -606,7 +604,6 @@ public class ParrillasProgramasDao {
     public List<LmkProgFileTrailerRowBean> getProgProgrammeTrailer(String lsWhere){
         List<LmkProgFileTrailerRowBean> loRes = 
             new ArrayList<LmkProgFileTrailerRowBean>();
-        
         Connection              loCnn = new ConnectionAs400().getConnection();
         ResultSet               loRs = null;
         String                  lsQueryParadigm = getQueryProgProgrammeTrailer(lsWhere);        
@@ -624,7 +621,6 @@ public class ParrillasProgramasDao {
                 loItem.setLtFechaCreacion(loRs.getTimestamp("FECHA_CREACION"));
                 */
                 loItem.setLsFullRowTrailer(loRs.getString("FULL_ROW_TRAILER"));
-                
                 loRes.add(loItem);
             }
         } catch (SQLException loExSql) {
@@ -690,7 +686,6 @@ public class ParrillasProgramasDao {
             loResponseUpdDao.setLsMessage("Registros eliminados EVENTAS.LMK_PROG("+lsParameters+")");
             loResponseUpdDao.setLsResponse("OK");
         } catch (SQLException loExSql) {
-            System.out.println(loExSql.getMessage());
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage("ERROR (deleteLmkProgProgramm): "+loExSql.getMessage());
             loResponseUpdDao.setLsResponse("OK");
@@ -718,7 +713,7 @@ public class ParrillasProgramasDao {
             "DELETE \n" ;
             lsQuery += "  FROM ";
         lsQuery += tsWhere;
-        System.out.println(lsQuery);
+        //System.out.println(lsQuery);
         try {
             Statement loStmt = loCnn.createStatement();
             Integer liRes = loStmt.executeUpdate(lsQuery);
@@ -780,6 +775,178 @@ public class ParrillasProgramasDao {
         }
        
         return loResponseUpdDao;
+    }
+    
+    /**
+     * Obtiene registros Extrae nivel 1
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<LmkBrkGenericRowBean> getBrkFullNivel1(String tsStnid, String tsStrdt, String tsEdt){
+        List<LmkBrkGenericRowBean> loRes = 
+            new ArrayList<LmkBrkGenericRowBean>();
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = 
+            getQueryBrkFullNivel1(tsStnid, tsStrdt, tsEdt);        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkBrkGenericRowBean loItem = new LmkBrkGenericRowBean();              
+                loItem.setLsFullRowNivel1(loRs.getString("FULL_RECORD_N1"));
+                loRes.add(loItem);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        
+        return loRes;
+    }
+    
+    String getQueryBrkFullNivel1(String tsStnid, String tsStrdt, String tsEdt){
+        String lsQuery = 
+            "SELECT RECORD_TYPE||\n" + 
+            "       FILE_CREATION_DATE||\n" + 
+            "       FILE_CREATION_TIME \n" + 
+            "       AS FULL_RECORD_N1\n" + 
+            "  FROM EVENTAS.LMK_BRK_FILE_HEADER\n" + 
+            " WHERE STRDT = '"+tsStrdt+"'\n" + 
+            "   AND EDT   = '"+tsEdt+"'\n" + 
+            "   AND STNID = '"+tsStnid+"'";
+        
+        return lsQuery;
+    }
+    
+    /**
+     * Obtiene registros Extrae nivel 2 y 3
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<LmkBrkGenericRowBean> getBrkFullNivel23(String tsStnid, String tsStrdt, String tsEdt){
+        List<LmkBrkGenericRowBean> loRes = 
+            new ArrayList<LmkBrkGenericRowBean>();
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = 
+            getQueryBrkFullNivel23(tsStnid, tsStrdt, tsEdt);        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkBrkGenericRowBean loItem = new LmkBrkGenericRowBean();              
+                loItem.setLsFullRowNivel23(loRs.getString("FULL_RECORD_N23"));
+                loRes.add(loItem);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        
+        return loRes;
+    }
+    
+    String getQueryBrkFullNivel23(String tsStnid, String tsStrdt, String tsEdt){
+        String lsQuery = 
+            "    SELECT A.RECORD_TYPE as FULL_RECORD_N23\n" + 
+            "      FROM EVENTAS.LMK_BRK_ORDER_LEVEL A, \n" + 
+            "           PARADB.STN B\n" + 
+            "     WHERE SUBSTR(A.RECORD_TYPE,2,2) = TRIM(B.IMPSTNID)\n" + 
+            "       AND STRDT BETWEEN '"+tsStrdt+"' AND '"+tsEdt+"'\n" + 
+            "       AND B.STNID = '"+tsStnid+"'\n" + 
+            "  ORDER BY A.STRDT,\n" + 
+            "           A.RECORD_TYPE";
+        
+        return lsQuery;
+    }
+    
+    /**
+     * Obtiene registros Extrae nivel 4 y 5
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<LmkBrkGenericRowBean> getBrkFullNivel45(String tsStnid, String tsStrdt, String tsEdt){
+        List<LmkBrkGenericRowBean> loRes = 
+            new ArrayList<LmkBrkGenericRowBean>();
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = 
+            getQueryBrkFullNivel45(tsStnid, tsStrdt, tsEdt);        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkBrkGenericRowBean loItem = new LmkBrkGenericRowBean();              
+                loItem.setLsFullRowNivel45(loRs.getString("FULL_RECORD_N45"));
+                loRes.add(loItem);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        
+        return loRes;
+    }
+    
+    String getQueryBrkFullNivel45(String tsStnid, String tsStrdt, String tsEdt){
+        String lsQuery = 
+            "SELECT RECORD_TYPE||\n" + 
+            "CASE WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=1 THEN '0000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=2 THEN '000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=3 THEN '00000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=4 THEN '0000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=5 THEN '000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=6 THEN '00'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=7 THEN '0'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "ELSE\n" + 
+            "CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "END\n" + 
+            "as FULL_RECORD_N45\n" + 
+            "FROM EVENTAS.LMK_BRK_CHANNEL_TRAILER\n" + 
+            "WHERE STNID = '"+tsStnid+"' AND STRDT = '"+tsStrdt+"' AND EDT = '"+tsEdt+"'\n" + 
+            "UNION\n" + 
+            "SELECT RECORD_TYPE||\n" + 
+            "CASE WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=1 THEN '0000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=2 THEN '000000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=3 THEN '00000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=4 THEN '0000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=5 THEN '000'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=6 THEN '00'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "WHEN LENGTH(CAST(RECORD_COUNT AS VARCHAR(8)))=7 THEN '0'||CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "ELSE\n" + 
+            "CAST(RECORD_COUNT AS VARCHAR(8))\n" + 
+            "END\n" + 
+            "as FULL_RECORD_N45\n" + 
+            "FROM EVENTAS.LMK_BRK_FILE_TRAILER\n" + 
+            "WHERE STNID = '"+tsStnid+"'\n" + 
+            "AND STRDT ='"+tsStrdt+"' AND EDT = '"+tsEdt+"'\n" + 
+            "ORDER BY 1";
+        
+        System.out.println(lsQuery);
+        
+        return lsQuery;
     }
     
 }

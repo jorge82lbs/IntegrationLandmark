@@ -26,7 +26,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -34,10 +33,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import mx.com.televisa.landamark.model.AppModuleImpl;
-
+import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
+import mx.com.televisa.landamark.util.UtilFaces;
+import mx.com.televisa.landamark.view.types.SelectOneItemBean;
 
-import oracle.adf.view.rich.component.rich.RichPopup;
 import oracle.adf.view.rich.component.rich.data.RichTable;
 import oracle.adf.view.rich.component.rich.input.RichInputDate;
 import oracle.adf.view.rich.component.rich.input.RichInputText;
@@ -50,10 +50,6 @@ import oracle.jbo.ApplicationModule;
 import oracle.jbo.client.Configuration;
 
 import org.apache.poi.util.IOUtils;
-import mx.com.televisa.landamark.util.UtilFaces;
-import mx.com.televisa.landamark.model.daos.ViewObjectDao;
-
-import mx.com.televisa.landamark.view.types.SelectOneItemBean;
 
 /** Esta clase es un bean que enlaza la pantalla de monitoreo de servicios<br/><br/>
  *
@@ -64,6 +60,8 @@ import mx.com.televisa.landamark.view.types.SelectOneItemBean;
  * @date Febrero 14, 2019, 12:00 pm
  */
 public class MonitorBean {
+    private RichSelectOneChoice poFilterEstatusSel;
+
     public MonitorBean() {
     }
     
@@ -86,6 +84,7 @@ public class MonitorBean {
     public void resetFilterValues(ActionEvent toActionEvent) {
         toActionEvent.getSource();
         getPoFilterProcessSel().setValue(null);
+        getPoFilterEstatusSel().setValue(null);
         getPoFilterIdService().setValue(null);
         getPoFilterServiceSel().setValue(null);
         getPoInitialDate().setValue(null);
@@ -237,6 +236,13 @@ public class MonitorBean {
             getPoFilterProcessSel().getValue().toString();  
         if(!lsProcess.equalsIgnoreCase("")){
             lsQuery += " AND IND_PROCESS = '" + lsProcess + "'";
+        }
+        
+        String         lsEstatus = 
+            getPoFilterEstatusSel().getValue() == null ? "" : 
+            getPoFilterEstatusSel().getValue().toString();  
+        if(!lsEstatus.equalsIgnoreCase("")){
+            lsQuery += " AND IND_CALCULATE_STATUS = '" + lsEstatus + "'";
         }
         
         /* Fechas */
@@ -594,5 +600,13 @@ public class MonitorBean {
 
     public void showParrillasDetails(ActionEvent actionEvent) {
         // Add event code here...
+    }
+
+    public void setPoFilterEstatusSel(RichSelectOneChoice poFilterEstatusSel) {
+        this.poFilterEstatusSel = poFilterEstatusSel;
+    }
+
+    public RichSelectOneChoice getPoFilterEstatusSel() {
+        return poFilterEstatusSel;
     }
 }

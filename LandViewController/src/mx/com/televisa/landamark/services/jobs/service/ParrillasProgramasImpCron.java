@@ -25,7 +25,9 @@ import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.MappingCatDao;
 import mx.com.televisa.landamark.model.daos.ParrillasProgramasDao;
 
+import mx.com.televisa.landamark.model.daos.ResponseBreaksDao;
 import mx.com.televisa.landamark.model.daos.XmlFilesDao;
+import mx.com.televisa.landamark.model.types.LmkBrkGenericRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
@@ -100,6 +102,7 @@ public class ParrillasProgramasImpCron implements Job{
                                                    liIdUser, 
                                                    lsUserName);
         if(loRes.getLsResponse().equalsIgnoreCase("ERROR")){
+            System.out.println("Error en Servicio "+lsServiceName+" "+loRes.getLsMessage());
             liIndProcess = 
                         new UtilFaces().getIdConfigParameterByName("ProceduredError");//
                     loBitBean.setLiIdLogServices(liIdLogService);
@@ -111,16 +114,43 @@ public class ParrillasProgramasImpCron implements Job{
                     loEntityMappedDao.insertBitacoraWs(loBitBean,liIdUser, lsUserName);
         }
         else{
+            boolean lbSendFile = true;
+            String lsMessSourceErr = "";
             String lsWhere = 
                 " AND STNID = '"+lsChannel+"' AND BCSTDT BETWEEN DATE('"+lsFecInicial+"') AND DATE('"+lsFecFinal+"')";            
             //############################### BREAKS #####################################################
+            List<LmkBrkGenericRowBean> laNivel1 = loPpDao.getBrkFullNivel1(lsChannel, lsFecInicial, lsFecFinal);
+            System.out.println("laNivel1.size() ["+laNivel1.size()+"]");
+            if(laNivel1.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "NIVEL 1, ";
+            }            
+            
+            List<LmkBrkGenericRowBean> laNivel23 = loPpDao.getBrkFullNivel23(lsChannel, lsFecInicial, lsFecFinal);
+            System.out.println("laNivel23.size() ["+laNivel23.size()+"]");
+            if(laNivel23.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "NIVEL 2 y 3, ";
+            }
+            
+            List<LmkBrkGenericRowBean> laNivel45 = loPpDao.getBrkFullNivel45(lsChannel, lsFecInicial, lsFecFinal);
+            System.out.println("laNivel45.size() ["+laNivel45.size()+"]");
+            if(laNivel45.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "NIVEL 4 y 5, ";
+            }
+            
+            /*
             ////////// FILE HEADER RECORD
             lsWhere = " AND STNID       = '"+lsChannel+"'\n" + 
             "   AND DATE(STRDT) = DATE('"+lsFecInicial+"') \n" + 
             "   AND DATE(EDT)   = DATE('"+lsFecFinal+"') ";
             List<LmkBrkFileHeaderRowBean> laBfhrb = loPpDao.getBrkFileHeader(lsWhere);
-            
             System.out.println("laBfhrb.size() ["+laBfhrb.size()+"]");
+            if(laBfhrb.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "FILE HEADER RECORD, ";
+            }
             
             ////////// CHANNEL HEADER RECORD
             lsWhere = " AND STNID       = '"+lsChannel+"'\n" + 
@@ -128,6 +158,10 @@ public class ParrillasProgramasImpCron implements Job{
             "                        AND DATE('"+lsFecFinal+"')";
             List<LmkBrkChannelHeaderRowBean> laChrb = loPpDao.getBrkChannelHeader(lsWhere);
             System.out.println("laChrb.size() ["+laChrb.size()+"]");
+            if(laChrb.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "CHANNEL HEADER RECORD, ";
+            }
             
             ////////// BREAK RECORD
             lsWhere = " AND STNID       = '"+lsChannel+"'\n" + 
@@ -135,6 +169,10 @@ public class ParrillasProgramasImpCron implements Job{
             "                        AND DATE('"+lsFecFinal+"')";
             List<LmkBrkBreakRowBean> laBrb = loPpDao.getBrkBreak(lsWhere);
             System.out.println("laBrb.size() ["+laBrb.size()+"]");
+            if(laBrb.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "BREAK RECORD, ";
+            }
             
             ////////// CHANNEL TRAILER RECORD
             lsWhere = " AND STNID       = '"+lsChannel+"'\n" + 
@@ -142,272 +180,22 @@ public class ParrillasProgramasImpCron implements Job{
             "                        AND DATE('"+lsFecFinal+"')";
             List<LmkBrkChannelTrailerRowBean> laCtrb = loPpDao.getBrkChannelTrailer(lsWhere);
             System.out.println("laCtrb.size() ["+laCtrb.size()+"]");
+            if(laCtrb.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "CHANNEL TRAILER RECORD, ";
+            }
             
             ////////// FILE TRAILER RECORD
             lsWhere = " AND STNID = '"+lsChannel+"' " +
                 "AND STRDT ='"+lsFecInicial+"' AND EDT = '"+lsFecFinal+"'";
             List<LmkBrkFileTrailerRowBean> laFtrb = loPpDao.getBrkFileTrailer(lsWhere);
             System.out.println("laFtrb.size() ["+laFtrb.size()+"]"); 
-            
-            //##################### Crear Archivo BREAKS en Servidor de Aplicaciones  ######################
-
-            try {
-                File loFileBreaks = getFileBreaks(laBfhrb, laChrb, laBrb, laCtrb, laFtrb, lsPathFiles, lsChannel);
-                liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("CreateFile");//
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(liIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Archivo "+loFileBreaks.getName()+
-                                                 " Creado para servicio "+lsServiceName);
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           liIdUser, 
-                                                           lsUserName);
-                
-                //##################### Insertar Archivo en Base de Datos ############################ 
-                try {
-                    XmlFilesDao loXmlFilesDao = new XmlFilesDao();
-                    LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
-                    FileInputStream loFis = new FileInputStream(loFileBreaks);
-                    
-                    loXmlBean.setLiIdFileXml(0);
-                    loXmlBean.setLiIdRequest(liIdLogService);
-                    loXmlBean.setLiIdService(liIdService);
-                    loXmlBean.setLsNomFile(loFileBreaks.getName());
-                    loXmlBean.setLsIndFileType("Response");
-                    loXmlBean.setLsIndServiceType(lsTypeProcess);
-                    loXmlBean.setLsIndEstatus("1");
-                    loXmlBean.setLsNomUserName(lsUserName);
-                    loXmlBean.setLsNomUserPathFile(lsPathFiles);
-                    loXmlBean.setLiIdUser(liIdUser);
-                    loXmlBean.setLoIndFileStream(loFis);
-                    loXmlBean.setLsAttribute1(""+lsChannel+","+lsFecInicial+","+lsFecFinal);
-                    loXmlBean.setLsAttribute2("BreaksFileType");
-                    // - Guardar archivo en bd
-                    ResponseUpdDao loXmlFile = 
-                        loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
-                    String lsMessInsert = "";
-                    if(loXmlFile.getLsResponse().equalsIgnoreCase("OK")){
-                        lsMessInsert = "El Archivo "+loFileBreaks.getName()+" se ha guardado en base de datos";
-                    }else{
-                        lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
-                                       loFileBreaks.getName()+" size: "+loFileBreaks.getTotalSpace();
-                    }
-                    liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("InsertFile");//
-                            loBitBean.setLiIdLogServices(liIdLogService);
-                            loBitBean.setLiIdService(liIdService);
-                            loBitBean.setLiIndProcess(liIndProcess);
-                            loBitBean.setLiNumProcessId(0);
-                            loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento(lsMessInsert);
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       liIdUser, 
-                                                       lsUserName);
-                    
-                    
-                    //############# Enviar archivo(PROGRAMM) a ubicacion remota ###########
-                    SftpManagment loSftpMgmnt = new SftpManagment();
-                    //Obtener ruta remota de la base de datos
-                    String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_BREAKS", "SSH_CONNECTION");                    
-                    //tsRemotePath,
-                    //tsLocalPath = lsPathFiles,
-                    //tsRemoteFileName = loFileBreaks.getName(),
-                    //tsLocalFileName = loFileBreaks.getName()
-                    ResponseUpdDao loResUpdDao = 
-                        loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
-                                                   lsPathFiles, 
-                                                   loFileBreaks.getName(), 
-                                                   loFileBreaks.getName()
-                                                   );
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("SendFileSSH");//
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(liIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento(loResUpdDao.getLsMessage());
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    
-                    
-                    // FILE HEADER RECORD
-                    String lsWhereDelete = null;
-                    lsWhereDelete = " EVENTAS.LMK_BRK_FILE_HEADER WHERE 1 = 1 ";
-                    lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
-                    "   AND DATE(STRDT) = DATE('"+lsFecInicial+"') \n" + 
-                    "   AND DATE(EDT)   = DATE('"+lsFecFinal+"') ";
-                    ResponseUpdDao loResDelFileHeader = 
-                        loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
-                    if(!loResDelFileHeader.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelFileHeader.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    //CHANNEL HEADER RECORD
-                    lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_HEADER WHERE 1 = 1 ";
-                    lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
-                                "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
-                                "                        AND DATE('"+lsFecFinal+"')";
-                    ResponseUpdDao loResDelChannelHeader = 
-                        loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
-                    if(!loResDelChannelHeader.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelChannelHeader.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    //BREAK RECORD
-                    lsWhereDelete = " EVENTAS.LMK_BRK_BREAK WHERE 1 = 1 ";
-                    lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
-                                "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
-                                "                        AND DATE('"+lsFecFinal+"')";
-                    ResponseUpdDao loResDelBreak = 
-                        loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
-                    if(!loResDelBreak.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelBreak.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    //CHANNEL TRAILER RECORD
-                    lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_TRAILER WHERE 1 = 1 ";
-                    lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
-                                "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
-                                "                        AND DATE('"+lsFecFinal+"')";
-                    ResponseUpdDao loResDelChannelTrailer = 
-                        loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
-                    if(!loResDelChannelTrailer.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelChannelTrailer.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    //FILE TRAILER RECORD
-                    lsWhereDelete = " EVENTAS.LMK_BRK_FILE_TRAILER WHERE 1 = 1 ";
-                    lsWhereDelete += " AND STNID = '"+lsChannel+"' " +
-                                    "AND STRDT ='"+lsFecInicial+"' AND EDT = '"+lsFecFinal+"'";
-                    ResponseUpdDao loResDelFileTrailer = 
-                        loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
-                    if(!loResDelFileTrailer.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelFileTrailer.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    
-                    try{
-                        System.out.println("Eliminando archivo "+loFileBreaks.getName());
-                        loFileBreaks.delete();
-                        System.out.println("Eliminando archivo ok...");
-                    }catch(Exception loExDel){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(liIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Error al eliminar archivo ["+loFileBreaks.getName()+"]");
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    }
-                    
-                } catch (FileNotFoundException e) {
-                    System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
-                    liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("GeneralError");
-                            loBitBean.setLiIdLogServices(liIdLogService);
-                            loBitBean.setLiIdService(liIdService);
-                            loBitBean.setLiIndProcess(liIndProcess);
-                            loBitBean.setLiNumProcessId(0);
-                            loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento("No es posible guardar el Archivo: "+
-                                                     loFileBreaks.getName()+e.getMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       liIdUser, 
-                                                       lsUserName);
-                }
-                
-                
-                
-            } catch (Exception loEx) {
-                liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("ErrorCreateFile");//
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(liIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Error al crear Archivo ["+lsServiceName+"] "+ loEx.getMessage() );
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           liIdUser, 
-                                                           lsUserName);
+            if(laFtrb.size() <= 0){
+                lbSendFile = false;
+                lsMessSourceErr += "FILE TRAILER RECORD, ";
             }
-
-
+            */
+                       
             //############################### PROGRAMM #####################################################
             //lsWhere = " AND STNID = '"+lsChannel+"' AND BCSTDT BETWEEN '"+lsFecInicial+"' AND '"+lsFecFinal+"'";
             lsWhere = "AND STRDT = '"+lsFecInicial+"'\n" + 
@@ -415,83 +203,101 @@ public class ParrillasProgramasImpCron implements Job{
             "AND STNID = '"+lsChannel+"'";
             List<LmkProgRowBean> laProgrb = loPpDao.getProgProgramme(lsWhere);
             System.out.println("laProgrb.size() ["+laProgrb.size()+"]"); 
+            if(laProgrb.size() <= 0){
+                lbSendFile = false;
+            }
             
             ////////// File Trailer
             lsWhere = "AND STNID = '"+lsChannel+"' AND STRDT = '"+lsFecInicial+"' AND EDT ='"+lsFecFinal+"'";
             List<LmkProgFileTrailerRowBean> laPrgTrb = loPpDao.getProgProgrammeTrailer(lsWhere);
             System.out.println("laPrgTrb.size() ["+laPrgTrb.size()+"]"); 
+            if(laPrgTrb.size() <= 0){
+                lbSendFile = false;
+            }
             
-            //##################### Crear Archivo PROGRAMM en Servidor de Aplicaciones  ##########################
+            System.out.println("Valor de bandera enviar SSH ["+lbSendFile+"]");
             
-            File loFileProgramm = null;
-            try {
-                loFileProgramm = getFileProgramm(laProgrb, laPrgTrb, lsPathFiles, lsChannel);
-                liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("CreateFile");//
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(liIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Archivo "+loFileProgramm.getName()+
-                                                 " Creado para servicio "+lsServiceName);
-                        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           liIdUser, 
-                                                           lsUserName);
-                
-                //##################### Insertar Archivo en Base de Datos ############################ 
+            if(lbSendFile){
+                //##################### Crear Archivo BREAKS en Servidor de Aplicaciones  ######################
+
                 try {
-                    XmlFilesDao loXmlFilesDao = new XmlFilesDao();
-                    LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
-                    FileInputStream loFis = new FileInputStream(loFileProgramm);
-                    
-                    loXmlBean.setLiIdFileXml(0);
-                    loXmlBean.setLiIdRequest(liIdLogService);
-                    loXmlBean.setLiIdService(liIdService);
-                    loXmlBean.setLsNomFile(loFileProgramm.getName());
-                    loXmlBean.setLsIndFileType("Response");
-                    loXmlBean.setLsIndServiceType(lsTypeProcess);
-                    loXmlBean.setLsIndEstatus("1");
-                    loXmlBean.setLsNomUserName(lsUserName);
-                    loXmlBean.setLsNomUserPathFile(lsPathFiles);
-                    loXmlBean.setLiIdUser(liIdUser);
-                    loXmlBean.setLoIndFileStream(loFis);
-                    loXmlBean.setLsAttribute1(""+lsChannel+","+lsFecInicial+","+lsFecFinal);
-                    loXmlBean.setLsAttribute2("ProgramFileType");
-                    // - Guardar archivo en bd
-                    ResponseUpdDao loXmlFile = 
-                        loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
-                    String lsMessInsert = "";
-                    if(loXmlFile.getLsResponse().equalsIgnoreCase("OK")){
-                        lsMessInsert = "El Archivo "+loFileProgramm.getName()+" se ha guardado en base de datos";
-                    }else{
-                        lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
-                                       loFileProgramm.getName()+" size: "+loFileProgramm.getTotalSpace();
-                    }
+                    File loFileBreaks = getFileBreaksConcat(laNivel1, laNivel23, laNivel45, lsPathFiles, lsChannel);
                     liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                                new UtilFaces().getIdConfigParameterByName("CreateFile");//
                             loBitBean.setLiIdLogServices(liIdLogService);
                             loBitBean.setLiIdService(liIdService);
                             loBitBean.setLiIndProcess(liIndProcess);
                             loBitBean.setLiNumProcessId(0);
                             loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento(lsMessInsert);
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       liIdUser, 
-                                                       lsUserName);
+                            loBitBean.setLsIndEvento("Archivo "+loFileBreaks.getName()+
+                                                     " Creado para servicio "+lsServiceName);
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               liIdUser, 
+                                                               lsUserName);
                     
-                    SftpManagment loSftpMgmnt = new SftpManagment();
-                    String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_PROGRAMM", "SSH_CONNECTION");                    
-                    //tsRemotePath,
-                    //tsLocalPath = lsPathFiles,
-                    //tsRemoteFileName = loFileBreaks.getName(),
-                    //tsLocalFileName = loFileBreaks.getName()
-                    ResponseUpdDao loResUpdDao = 
-                        loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
-                                                   lsPathFiles, 
-                                                   loFileProgramm.getName(), 
-                                                   loFileProgramm.getName()
-                                                   );
+                    //##################### Insertar Archivo en Base de Datos ############################ 
+                    try {
+                        XmlFilesDao loXmlFilesDao = new XmlFilesDao();
+                        LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
+                        FileInputStream loFis = new FileInputStream(loFileBreaks);
+                        
+                        loXmlBean.setLiIdFileXml(0);
+                        loXmlBean.setLiIdRequest(liIdLogService);
+                        loXmlBean.setLiIdService(liIdService);
+                        loXmlBean.setLsNomFile(loFileBreaks.getName());
+                        loXmlBean.setLsIndFileType("Response");
+                        loXmlBean.setLsIndServiceType(lsTypeProcess);
+                        loXmlBean.setLsIndEstatus("R"); //De Creado
+                        loXmlBean.setLsNomUserName(lsUserName);
+                        loXmlBean.setLsNomUserPathFile(lsPathFiles);
+                        loXmlBean.setLiIdUser(liIdUser);
+                        loXmlBean.setLoIndFileStream(loFis);
+                        loXmlBean.setLsAttribute1(""+lsChannel+","+lsFecInicial+","+lsFecFinal);
+                        loXmlBean.setLsAttribute2("BreaksFileType");
+                        // - Guardar archivo en bd
+                        ResponseUpdDao loXmlFile = 
+                            loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
+                        String lsMessInsert = "";
+                        if(loXmlFile.getLsResponse().equalsIgnoreCase("OK")){
+                            lsMessInsert = "El Archivo "+loFileBreaks.getName()+" se ha guardado en base de datos";
+                        }else{
+                            lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
+                                           loFileBreaks.getName()+" size: "+loFileBreaks.getTotalSpace();
+                        }
+                        liIndProcess = 
+                                    new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(liIdService);
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento(lsMessInsert);
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           liIdUser, 
+                                                           lsUserName);
+                        
+                        
+                        //############# Enviar archivo(PROGRAMM) a ubicacion remota ###########
+                        SftpManagment loSftpMgmnt = new SftpManagment();
+                        //Obtener ruta remota de la base de datos
+                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_BREAKS", "SSH_CONNECTION");                    
+                        //tsRemotePath,
+                        //tsLocalPath = lsPathFiles,
+                        //tsRemoteFileName = loFileBreaks.getName(),
+                        //tsLocalFileName = loFileBreaks.getName()
+                        ResponseUpdDao loResSendFile = 
+                            loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
+                                                       lsPathFiles, 
+                                                       loFileBreaks.getName(), 
+                                                       loFileBreaks.getName()
+                                                       );
+                        String lsMsg = loResSendFile.getLsMessage();
+                        String lsStatEv = "L";
+                        if(!loResSendFile.getLsResponse().equalsIgnoreCase("OK")){
+                            lsMsg = "ERROR "+loResSendFile.getLsMessage();
+                            lsStatEv = "F";
+                        }
+                        
                         liIndProcess = 
                                     new UtilFaces().getIdConfigParameterByName("SendFileSSH");//
                         loBitBean.setLiIdLogServices(liIdLogService);
@@ -499,96 +305,377 @@ public class ParrillasProgramasImpCron implements Job{
                         loBitBean.setLiIndProcess(liIndProcess);
                         loBitBean.setLiNumProcessId(0);
                         loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento(loResUpdDao.getLsMessage());
+                        loBitBean.setLsIndEvento(lsMsg);
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                liIdUser, 
                                                lsUserName);
-                    
-                    //Eliminar registros de las tablas con parametros de CANAL, FECHA_INICIAL y FECHA_FINAL
-                    ResponseUpdDao loResDelProgramm = 
-                        loPpDao.deleteLmkProgProgramm(lsChannel, lsFecInicial, lsFecFinal);
-                    if(!loResDelProgramm.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelProgramm.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    ResponseUpdDao loResDelFileTrailer = 
-                        loPpDao.deleteLmkProgFileTrailer(lsChannel, lsFecInicial, lsFecFinal);
-                    if(!loResDelFileTrailer.getLsResponse().equalsIgnoreCase("OK")){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
-                    }else{
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//DeleteFileExecute
-                    }
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento(loResDelFileTrailer.getLsMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    
-                    try{
-                        System.out.println("Eliminando archivo "+loFileProgramm.getName());
-                        loFileProgramm.delete();
-                        System.out.println("Eliminando archivo ok...");
-                    }catch(Exception loExDel){
-                        liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        //Actualizar estatus de archivo xml
+                        ResponseBreaksDao loResponseBreaksDao = new ResponseBreaksDao();
+                        loResponseBreaksDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), lsStatEv);
+                        //NOTAS: loResUpdDao.getLiAffected() devuelve el numero id asignado, así lo programé
+                        //E es de ENVIADO a Landmark
+                        
+                        // FILE HEADER RECORD
+                        String lsWhereDelete = null;
+                        lsWhereDelete = " EVENTAS.LMK_BRK_FILE_HEADER WHERE 1 = 1 ";
+                        lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
+                        "   AND DATE(STRDT) = DATE('"+lsFecInicial+"') \n" + 
+                        "   AND DATE(EDT)   = DATE('"+lsFecFinal+"') ";
+                        ResponseUpdDao loResDelFileHeader = 
+                            loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
+                        if(!loResDelFileHeader.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
+                        }
                         loBitBean.setLiIdLogServices(liIdLogService);
                         loBitBean.setLiIdService(liIdService);
                         loBitBean.setLiIndProcess(liIndProcess);
                         loBitBean.setLiNumProcessId(0);
                         loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Error al eliminar archivo ["+loFileProgramm.getName()+"]");
+                        loBitBean.setLsIndEvento(loResDelFileHeader.getLsMessage());
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
-                    }
-                } catch (FileNotFoundException e) {
-                    System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
-                    liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("GeneralError");
+                                                   liIdUser, 
+                                                   lsUserName);
+                        
+                        //CHANNEL HEADER RECORD
+                        lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_HEADER WHERE 1 = 1 ";
+                        lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
+                                    "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
+                                    "                        AND DATE('"+lsFecFinal+"')";
+                        ResponseUpdDao loResDelChannelHeader = 
+                            loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
+                        if(!loResDelChannelHeader.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
+                        }
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento(loResDelChannelHeader.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        
+                        //BREAK RECORD
+                        lsWhereDelete = " EVENTAS.LMK_BRK_BREAK WHERE 1 = 1 ";
+                        lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
+                                    "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
+                                    "                        AND DATE('"+lsFecFinal+"')";
+                        ResponseUpdDao loResDelBreak = 
+                            loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
+                        if(!loResDelBreak.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
+                        }
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento(loResDelBreak.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        
+                        //CHANNEL TRAILER RECORD
+                        lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_TRAILER WHERE 1 = 1 ";
+                        lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
+                                    "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
+                                    "                        AND DATE('"+lsFecFinal+"')";
+                        ResponseUpdDao loResDelChannelTrailer = 
+                            loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
+                        if(!loResDelChannelTrailer.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
+                        }
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento(loResDelChannelTrailer.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        
+                        //FILE TRAILER RECORD
+                        lsWhereDelete = " EVENTAS.LMK_BRK_FILE_TRAILER WHERE 1 = 1 ";
+                        lsWhereDelete += " AND STNID = '"+lsChannel+"' " +
+                                        "AND STRDT ='"+lsFecInicial+"' AND EDT = '"+lsFecFinal+"'";
+                        ResponseUpdDao loResDelFileTrailer = 
+                            loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
+                        if(!loResDelFileTrailer.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
+                        }
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento(loResDelFileTrailer.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        
+                        
+                        try{
+                            System.out.println("Eliminando archivo "+loFileBreaks.getName());
+                            loFileBreaks.delete();
+                            System.out.println("Eliminando archivo ok...");
+                        }catch(Exception loExDel){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("GeneralError");
                             loBitBean.setLiIdLogServices(liIdLogService);
                             loBitBean.setLiIdService(liIdService);
                             loBitBean.setLiIndProcess(liIndProcess);
                             loBitBean.setLiNumProcessId(0);
                             loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento("No es posible guardar el Archivo: "+
-                                                     loFileProgramm.getName()+e.getMessage());
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       liIdUser, 
-                                                       lsUserName);
+                            loBitBean.setLsIndEvento("Error al eliminar archivo ["+loFileBreaks.getName()+"]");
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        }
+                        
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
+                        liIndProcess = 
+                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(liIdService);
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("No es posible guardar el Archivo: "+
+                                                         loFileBreaks.getName()+e.getMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           liIdUser, 
+                                                           lsUserName);
+                    }
+                } catch (Exception loEx) {
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("ErrorCreateFile");//
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Error al crear Archivo ["+lsServiceName+"] "+ loEx.getMessage() );
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               liIdUser, 
+                                                               lsUserName);
                 }
                 
-            } catch (Exception loEx) {
-                liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("ErrorCreateFile");//
+                //##################### Crear Archivo PROGRAMM en Servidor de Aplicaciones  ##########################
+                File loFileProgramm = null;
+                try {
+                    loFileProgramm = getFileProgramm(laProgrb, laPrgTrb, lsPathFiles, lsChannel);
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("CreateFile");//
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Archivo "+loFileProgramm.getName()+
+                                                     " Creado para servicio "+lsServiceName);
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               liIdUser, 
+                                                               lsUserName);
+                    
+                    //##################### Insertar Archivo en Base de Datos ############################ 
+                    try {
+                        XmlFilesDao loXmlFilesDao = new XmlFilesDao();
+                        LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
+                        FileInputStream loFis = new FileInputStream(loFileProgramm);
+                        
+                        loXmlBean.setLiIdFileXml(0);
+                        loXmlBean.setLiIdRequest(liIdLogService);
+                        loXmlBean.setLiIdService(liIdService);
+                        loXmlBean.setLsNomFile(loFileProgramm.getName());
+                        loXmlBean.setLsIndFileType("Response");
+                        loXmlBean.setLsIndServiceType(lsTypeProcess);
+                        loXmlBean.setLsIndEstatus("R"); //De Creado
+                        loXmlBean.setLsNomUserName(lsUserName);
+                        loXmlBean.setLsNomUserPathFile(lsPathFiles);
+                        loXmlBean.setLiIdUser(liIdUser);
+                        loXmlBean.setLoIndFileStream(loFis);
+                        loXmlBean.setLsAttribute1(""+lsChannel+","+lsFecInicial+","+lsFecFinal);
+                        loXmlBean.setLsAttribute2("ProgramFileType");
+                        // - Guardar archivo en bd
+                        ResponseUpdDao loXmlFile = 
+                            loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
+                        String lsMessInsert = "";
+                        if(loXmlFile.getLsResponse().equalsIgnoreCase("OK")){
+                            lsMessInsert = "El Archivo "+loFileProgramm.getName()+" se ha guardado en base de datos";
+                        }else{
+                            lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
+                                           loFileProgramm.getName()+" size: "+loFileProgramm.getTotalSpace();
+                        }
+                        liIndProcess = 
+                                    new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(liIdService);
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento(lsMessInsert);
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           liIdUser, 
+                                                           lsUserName);
+                        
+                        SftpManagment loSftpMgmnt = new SftpManagment();
+                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_PROGRAMM", "SSH_CONNECTION");                    
+                        //tsRemotePath,
+                        //tsLocalPath = lsPathFiles,
+                        //tsRemoteFileName = loFileBreaks.getName(),
+                        //tsLocalFileName = loFileBreaks.getName()
+                        ResponseUpdDao loResUpdDao = 
+                            loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
+                                                       lsPathFiles, 
+                                                       loFileProgramm.getName(), 
+                                                       loFileProgramm.getName()
+                                                       );
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("SendFileSSH");//
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento(loResUpdDao.getLsMessage());
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        
+                        //Actualizar estatus de archivo xml
+                        ResponseBreaksDao loResponseBreaksDao = new ResponseBreaksDao();
+                        loResponseBreaksDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "L");
+                        //NOTAS: loResUpdDao.getLiAffected() devuelve el numero id asignado, así lo programé
+                        //E es de ENVIADO a Landmark
+                        
+                        //Eliminar registros de las tablas con parametros de CANAL, FECHA_INICIAL y FECHA_FINAL
+                        
+                        ResponseUpdDao loResDelProgramm = 
+                            loPpDao.deleteLmkProgProgramm(lsChannel, lsFecInicial, lsFecFinal);
+                        if(!loResDelProgramm.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");//
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");//
+                        }
                         loBitBean.setLiIdLogServices(liIdLogService);
                         loBitBean.setLiIdService(liIdService);
                         loBitBean.setLiIndProcess(liIndProcess);
                         loBitBean.setLiNumProcessId(0);
                         loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Error al crear Archivo ["+lsServiceName+"] "+ loEx.getMessage() );
+                        loBitBean.setLsIndEvento(loResDelProgramm.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                       
+                        ResponseUpdDao loResDelFileTrailer = 
+                            loPpDao.deleteLmkProgFileTrailer(lsChannel, lsFecInicial, lsFecFinal);
+                        
+                        if(!loResDelFileTrailer.getLsResponse().equalsIgnoreCase("OK")){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileError");
+                        }else{
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("DeleteFileExecute");
+                        }
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento(loResDelFileTrailer.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                                                
+                        try{
+                            System.out.println("Eliminando archivo "+loFileProgramm.getName());
+                            loFileProgramm.delete();
+                            System.out.println("Eliminando archivo ok...");
+                        }catch(Exception loExDel){
+                            liIndProcess = 
+                                        new UtilFaces().getIdConfigParameterByName("GeneralError");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Error al eliminar archivo ["+loFileProgramm.getName()+"]");
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                        }
+                        
+                        
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
+                        liIndProcess = 
+                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(liIdService);
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("No es posible guardar el Archivo: "+
+                                                         loFileProgramm.getName()+e.getMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           liIdUser, 
+                                                           lsUserName);
+                    }
+                    
+                } catch (Exception loEx) {
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("ErrorCreateFile");//
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Error al crear Archivo ["+lsServiceName+"] "+ loEx.getMessage() );
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               liIdUser, 
+                                                               lsUserName);
+                }                
+            }else{
+                //Insertar en bitacora que no se obtuvieron registros 
+                liIndProcess = 
+                            new UtilFaces().getIdConfigParameterByName("GeneralError");//
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("["+lsServiceName+"] Los archivos no fueron creados " +
+                            "Sin registros para "+lsMessSourceErr);
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                            liIdUser, 
                                                            lsUserName);
             }
+            
             
         }
         
@@ -603,8 +690,6 @@ public class ParrillasProgramasImpCron implements Job{
         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                            liIdUser, 
                                            lsUserName);
-        
-        //TODO.- Eliminar los archivos creados temporalmente en ubicacion de weblogic
         
         System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
     }
@@ -638,36 +723,37 @@ public class ParrillasProgramasImpCron implements Job{
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
             for(LmkProgRowBean loProg : taProgrb){
-                String lsRow = loProg.getLsFullRow();
-                /*
-                loProg.getLiRecordType()+","+ 
-                loProg.getLsSalesAreaCode()+","+ 
-                loProg.getLsTransmissionRegionCode()+","+ 
-                loProg.getLtProgrammeTransmissionDate()+","+ 
-                loProg.getLiProgrammeTransmissionStart()+","+ 
-                loProg.getLiProgrammeTransmissionEnd()+","+ 
-                loProg.getLsRegionalVariation()+","+ 
-                loProg.getLsDominantRegionIndicator()+","+ 
-                loProg.getLsProgrammeName()+","+ 
-                loProg.getLiProgrammeId()+","+ 
-                loProg.getLiDuration()+","+ 
-                loProg.getLsLiveBroadcast()+","+ 
-                loProg.getLsProgrammeOverselling()+","+ 
-                loProg.getLsProgrammeShowing()+","+ 
-                loProg.getLsProgrammeDescription()+","+ 
-                loProg.getLsProgrammeComment()+","+ 
-                loProg.getLsEpisodeName()+","+ 
-                loProg.getLiEpisodeId()+","+ 
-                loProg.getLsCertification()+","+ 
-                loProg.getLsProgrammeCategory()+",";
-                //loProg.getLsStnid()+","+ 
-                //loProg.getLtBcstdt()+","+                                
-                //loProg.getLsPgmid()+",";
-                */
-                loWriter.write(lsRow);
-                loWriter.write("\r\n");
+                if(loProg.getLsFullRow() != null){                                        
+                    String lsRow = loProg.getLsFullRow();
+                    /*
+                    loProg.getLiRecordType()+","+ 
+                    loProg.getLsSalesAreaCode()+","+ 
+                    loProg.getLsTransmissionRegionCode()+","+ 
+                    loProg.getLtProgrammeTransmissionDate()+","+ 
+                    loProg.getLiProgrammeTransmissionStart()+","+ 
+                    loProg.getLiProgrammeTransmissionEnd()+","+ 
+                    loProg.getLsRegionalVariation()+","+ 
+                    loProg.getLsDominantRegionIndicator()+","+ 
+                    loProg.getLsProgrammeName()+","+ 
+                    loProg.getLiProgrammeId()+","+ 
+                    loProg.getLiDuration()+","+ 
+                    loProg.getLsLiveBroadcast()+","+ 
+                    loProg.getLsProgrammeOverselling()+","+ 
+                    loProg.getLsProgrammeShowing()+","+ 
+                    loProg.getLsProgrammeDescription()+","+ 
+                    loProg.getLsProgrammeComment()+","+ 
+                    loProg.getLsEpisodeName()+","+ 
+                    loProg.getLiEpisodeId()+","+ 
+                    loProg.getLsCertification()+","+ 
+                    loProg.getLsProgrammeCategory()+",";
+                    //loProg.getLsStnid()+","+ 
+                    //loProg.getLtBcstdt()+","+                                
+                    //loProg.getLsPgmid()+",";
+                    */
+                    loWriter.write(lsRow);
+                    loWriter.write("\r\n");
+                }
             }      
-            
             for(LmkProgFileTrailerRowBean loProgTrailer : laPrgTrb){
                 /*String lsRow = loProgTrailer.getLiRecordType()+","+ 
                 loProgTrailer.getLiRecordCount()+","+ 
@@ -676,15 +762,16 @@ public class ParrillasProgramasImpCron implements Job{
                 //loProgTrailer.getLsStrdt()+","+
                 //loProgTrailer.getLsEdt()+",";         
                 */
-                String lsRow = loProgTrailer.getLsFullRowTrailer();
-                loWriter.write(lsRow);
-                loWriter.write("\r\n");
+                if(loProgTrailer.getLsFullRowTrailer() != null){
+                    String lsRow = loProgTrailer.getLsFullRowTrailer();
+                    loWriter.write(lsRow);
+                    loWriter.write("\r\n");
+                }
             }  
-            
             loWriter.close();
         }
         catch (Exception e) {
-            System.out.println("Error al escribir "+e.getMessage());
+            System.out.println("PROGRAMAS: Error al escribir en ruta local: "+e.getMessage());
         }
         return loFileResponse;
     }
@@ -775,7 +862,51 @@ public class ParrillasProgramasImpCron implements Job{
             loWriter.close();
         }
         catch (Exception e) {
-            System.out.println("Error al escribir "+e.getMessage());
+            System.out.println("BREAKS: Error al escribir en ruta local: "+e.getMessage());
+        }
+        return loFileResponse;
+    }
+    
+    /**
+     * Crea archivo .brk en base a las tablas de Paradigm
+     * @autor Jorge Luis Bautista Santiago   
+     * @param lsPath
+     * @return File
+     */
+    public File getFileBreaksConcat(List<LmkBrkGenericRowBean> taNivel1,
+                              List<LmkBrkGenericRowBean> taNivel23,
+                              List<LmkBrkGenericRowBean> taNivel45,                             
+                              String tsPath,
+                              String tsChannel) throws Exception{
+        
+        String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+".brk";
+        File loFileResponse = new File(tsPath+""+lsFileName);
+        System.out.println("Ruta: "+loFileResponse.getPath());
+        try {
+            FileWriter loWriter = new FileWriter(loFileResponse, true);
+            //########## NIVEL 1  ##########
+            for(LmkBrkGenericRowBean loBrk : taNivel1){
+                String lsRow = loBrk.getLsFullRowNivel1();
+                loWriter.write(lsRow);
+                loWriter.write("\r\n");
+            }      
+            //########## NIVEL 2 y 3  ##########
+            for(LmkBrkGenericRowBean loBrk : taNivel23){
+                String lsRow = loBrk.getLsFullRowNivel23();
+                loWriter.write(lsRow);
+                loWriter.write("\r\n");
+            }     
+            //########## LMK_BRK_BREAK ##########
+            for(LmkBrkGenericRowBean loBrk : taNivel45){
+                String lsRow = loBrk.getLsFullRowNivel45();
+                loWriter.write(lsRow);
+                loWriter.write("\r\n");
+            }                
+                        
+            loWriter.close();
+        }
+        catch (Exception e) {
+            System.out.println("BREAKS: Error al escribir en ruta local: "+e.getMessage());
         }
         return loFileResponse;
     }

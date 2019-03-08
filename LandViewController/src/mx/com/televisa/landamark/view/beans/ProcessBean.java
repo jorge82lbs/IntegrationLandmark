@@ -43,8 +43,11 @@ import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 
 import mx.com.televisa.landamark.model.types.LmkIntListChannelsAllVwRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
+import mx.com.televisa.landamark.services.jobs.AsRunAsCron;
 import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
+import mx.com.televisa.landamark.services.jobs.OrderSpotsCron;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
+import mx.com.televisa.landamark.services.jobs.ResponseBreaksCron;
 import mx.com.televisa.landamark.users.UserMenuBean;
 import mx.com.televisa.landamark.users.UserOperationList;
 import mx.com.televisa.landamark.view.types.ExecuteServiceResponseBean;
@@ -499,7 +502,7 @@ public class ProcessBean {
             getPoExecuteIdBinding().setValue(lsIdService);
             getPoExecuteNomBinding().setValue(lsNomService);
             getPoExecuteTypeService().setValue(lsDesService);
-            getPoExecuteMsgLbl().setLabel("Desea Ejcutar el servicio " + lsDesService + " de tipo " + lsNomService + "?");
+            getPoExecuteMsgLbl().setLabel("Desea Ejecutar el servicio " + lsDesService + " de tipo " + lsNomService + "?");
             new UtilFaces().showPopup(getPoPopupExecute());
         }else{
             FacesMessage loMsg =
@@ -945,6 +948,36 @@ public class ProcessBean {
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 ParrillasProgramasCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                /*################ BUSCAR ARCHIVO REMOTO DE BREAKS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessResponseBreaks")){
+                    System.out.println(">>>> Ejecutar ProcessResponseBreaks para Respuesta de breaks: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                ResponseBreaksCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                /*################ PROCESO AS RUN AS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessAsRunAs")){
+                    System.out.println(">>>> Ejecutar ProcessAsRunAs: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                AsRunAsCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                /*################ PROCESO LECTURA DE ORDENES/SPOTS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessOrderSpots")){
+                    System.out.println(">>>> Ejecutar ProcessOrderSpots Lectura de Ordenes y/o spots: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                OrderSpotsCron.class,
                                                 loService);
                     lsColorMessage = loRes.getLsColor();
                     lsFinalMessage = loRes.getLsMessage();

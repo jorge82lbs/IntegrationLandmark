@@ -93,7 +93,7 @@ public class XmlFilesDao {
             loStmt.execute();
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("OK");
-            loResponse.setLiAffected(1);
+            loResponse.setLiAffected(liIdXml);
            
         } catch (SQLException loExSql) {
             System.out.println("ERROR XML_FILE: "+loExSql.getMessage());

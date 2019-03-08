@@ -428,6 +428,7 @@
                                             
                                             <af:inputText label="Mensaje"                                                  
                                                   id="TxtSaveIndMessage"
+                                                  contentStyle="height:30px;"
                                                   binding="#{NotificationsBean.poSaveIndMessage}"/>
                                             
                                     <af:selectBooleanCheckbox text="" label="Estatus" id="sbcSta"
