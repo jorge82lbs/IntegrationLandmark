@@ -18,7 +18,6 @@ import com.jcraft.jsch.SftpException;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Vector;
 
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
@@ -192,12 +191,8 @@ public class SftpManagment {
     }
     
     /**
-    * Actualiza registro del log de servicio
+    * Obtiene los datos de conexion ssl
     * @autor Jorge Luis Bautista Santiago
-    * @param tsRemotePath
-    * @param tsLocalPath
-    * @param tsRemoteFileName
-    * @param tsLocalFileName
     * @return LmkIntSftpCnnBean
     */
     public LmkIntSftpCnnBean getSftpDataConnection(){
@@ -228,9 +223,8 @@ public class SftpManagment {
                 loLmkIntSftpCnnBean.setLsPassword(lsPwd);
             }
         }
-        
         return loLmkIntSftpCnnBean;
-        
     }
+        
     
 }

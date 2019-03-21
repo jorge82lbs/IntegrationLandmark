@@ -20,6 +20,12 @@ import mx.com.televisa.landamark.client.auth.SecmanBsAutenticar;
 import mx.com.televisa.landamark.client.auth.SecmanBsAutenticar_Service;
 import mx.com.televisa.landamark.client.auth.types.ProcessResponse;
 import mx.com.televisa.landamark.client.auth.types.UserLogin;
+import mx.com.televisa.landamark.client.email.types.local.EmailDestinationAddress;
+import mx.com.televisa.landamark.client.grupos.SecmanDasUsuariosGrupo;
+import mx.com.televisa.landamark.client.grupos.SecmanDasUsuariosGrupoService;
+import mx.com.televisa.landamark.client.grupos.types.GrupoUsuarios;
+import mx.com.televisa.landamark.client.grupos.types.UsuariosCollection;
+import mx.com.televisa.landamark.client.grupos.types.UsuariosGrupoInputParameters;
 import mx.com.televisa.landamark.client.operations.SecmanDasOperacionesUsuario;
 import mx.com.televisa.landamark.client.operations.SecmanDasOperacionesUsuarioService;
 import mx.com.televisa.landamark.client.userpermission.SecmanDasUsuarioPermisos;
@@ -219,5 +225,35 @@ public class SecurityManagerWs {
         }
         return laOperations;
     } 
+    
+    /**
+    * Obtiene la lista de direcciones de correos electrónicos configurados en secman
+    * respecto al grup de usuarios
+    * @autor Jorge Luis Bautista Santiago
+    * @param tsGroupName
+    * @return List
+    */
+    public List<EmailDestinationAddress> getListEmailAddressByGroup(String tsGroupName){
+        List<EmailDestinationAddress> laEmailList = new ArrayList<EmailDestinationAddress>();
+        SecmanDasUsuariosGrupoService    loSecmanDasUsuariosGrupoService = new SecmanDasUsuariosGrupoService();
+        SecmanDasUsuariosGrupo loSecmanDasUsuariosGrupo = 
+            loSecmanDasUsuariosGrupoService.getSecmanDasUsuariosGrupoPort();
+        UsuariosGrupoInputParameters loUgp = new UsuariosGrupoInputParameters();
+        loUgp.setNomGrupo(tsGroupName);
+        UsuariosCollection loUsrCol = 
+        loSecmanDasUsuariosGrupo.obtenerUsuariosGrupo(loUgp);
+        if(loUsrCol.getUsuarios().size() > 0){
+            for(GrupoUsuarios loGpoUsers : loUsrCol.getUsuarios()){
+                if(loGpoUsers.getMailUsuario() != null){
+                    EmailDestinationAddress loBean = new EmailDestinationAddress();
+                    loBean.setLsAddressTo(loGpoUsers.getMailUsuario());
+                    loBean.setLsNameTo(loGpoUsers.getMailUsuario());
+                    laEmailList.add(loBean);
+                }
+            }
+            
+        }   
+        return laEmailList; 
+    }
    
 }
