@@ -22,7 +22,7 @@ import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 
-/** Clase que
+/** Clase bean para retorno de metodos
  *
  * @author Jorge Luis Bautista Santiago - OMW
  *

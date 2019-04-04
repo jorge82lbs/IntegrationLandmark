@@ -1,3 +1,12 @@
+/**
+* Project: Integraton Paradigm - Landmark
+*
+* File: MappingCatDao.java
+*
+* Created on: Febrero 23, 2019 at 11:00
+*
+* Copyright (c) - OMW - 2019
+*/
 package mx.com.televisa.landamark.model.daos;
 
 import java.sql.Connection;
@@ -11,6 +20,14 @@ import java.util.List;
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 
+/** Clase que accede a base de datos para metodos genericos
+ *
+ * @author Jorge Luis Bautista Santiago - OMW
+ *
+ * @version 01.00.01
+ *
+ * @date Febrero 23, 2019, 12:00 pm
+ */
 public class MappingCatDao {
     /**
      * Obtiene la lista de valores mapeados configurados

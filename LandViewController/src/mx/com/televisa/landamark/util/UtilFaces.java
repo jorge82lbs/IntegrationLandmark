@@ -31,6 +31,8 @@ import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 
+import mx.com.televisa.landamark.model.types.ResponseUpdDao;
+
 import oracle.adf.model.BindingContext;
 import oracle.adf.model.binding.DCBindingContainer;
 import oracle.adf.model.binding.DCIteratorBinding;
@@ -597,6 +599,35 @@ public class UtilFaces {
            Configuration.releaseRootApplicationModule(loAm, true);
            loAm.remove();
        }
+    }
+    
+    /**
+    * Envía mail de acuerdo al proceso - servicio realizado
+    * @autor Jorge Luis Bautista Santiago
+    * @param tiIdProcess
+    * @param tiIdService
+    * @param tiLogService
+    * @return ResponseUpdDao
+    */
+    public ResponseUpdDao sendMailByProcess(Integer tiIdProcess, 
+                                  Integer tiIdService,
+                                  Integer tiLogService
+                                  ){
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        // Obtener Parametros de configuracion de notificaciones para el servicio
+        // Validar que existan
+        // Obtener destintarios
+        // Validar que al menos sea uno
+        // Validar con expresion regular que sea un correo (esto no, ya debe estar validado)
+        // Enviar mail considerando:
+        // * Asunto
+        // * Cuerpo del mensaje (algun resultset para tabla)
+        // * Destinatarios
+        // Enviar correo, invocando secman-controller
+        //5541084579
+        
+        return loResponseUpdDao;
+        
     }
     
 }
