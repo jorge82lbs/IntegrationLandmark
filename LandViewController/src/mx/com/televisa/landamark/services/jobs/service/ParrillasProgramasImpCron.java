@@ -102,12 +102,6 @@ public class ParrillasProgramasImpCron implements Job{
                                                    liIdUser, 
                                                    lsUserName);
 
-        try {
-            new UtilFaces().sendMailByProcess(1, 2, 3);
-        } catch (Exception e) {
-            ;
-        }
-
 
         if(loRes.getLsResponse().equalsIgnoreCase("ERROR")){
             System.out.println("Error en Servicio "+lsServiceName+" "+loRes.getLsMessage());

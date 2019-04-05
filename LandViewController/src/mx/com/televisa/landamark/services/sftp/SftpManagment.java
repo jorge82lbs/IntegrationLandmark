@@ -166,11 +166,12 @@ public class SftpManagment {
             loSession.setConfig("StrictHostKeyChecking", "no");
             loSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
-            
+            System.out.println("Conectado a ssl.");
             Channel loChannel = loSession.openChannel("sftp");
             loChannel.connect();
-            ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
             
+            ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
+            System.out.println("Listando archivos con ext["+tsExt+"]");
             Vector laFilelist = loSftpChannel.ls(tsPath + tsExt);
             for(int liI = 0; liI < laFilelist.size() ; liI++){
                 ChannelSftp.LsEntry loEntry = (ChannelSftp.LsEntry) laFilelist.get(liI);

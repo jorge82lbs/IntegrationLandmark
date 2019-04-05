@@ -35,7 +35,6 @@ import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 
 import mx.com.televisa.landamark.model.AppModuleImpl;
-import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;

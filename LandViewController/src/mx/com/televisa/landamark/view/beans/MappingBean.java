@@ -23,7 +23,6 @@ import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
 import mx.com.televisa.landamark.model.AppModuleImpl;
-import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.view.types.SelectOneItemBean;

@@ -104,7 +104,7 @@ public class ResponseBreaksService {
                 
             SftpManagment loSmg = new SftpManagment();
             List<String> laLis = loSmg.getListFileServerSFTP(lsPath, lsExt);
-            System.out.println("numero de archivos extrados del server ssh ["+laLis.size()+"]");
+            System.out.println("numero de archivos extriados del server ssh ["+laLis.size()+"]");
             
             for(LmkIntXmlFilesRowBean loBean : laList){
                 int liI = 0;

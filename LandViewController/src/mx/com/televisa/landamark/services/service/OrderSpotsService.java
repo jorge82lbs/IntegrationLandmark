@@ -113,11 +113,11 @@ public class OrderSpotsService {
         //- Ir a carpeta de landmark y extraer nombres de archivo *.brk
         String lsPath = 
             loEntityMappedDao.getGeneralParameter("PATH_SPOTS_INPUT", "SSH_CONNECTION");
-        String lsExt = "*.brk";
+        String lsExt = "*.XML";
             
         SftpManagment loSmg = new SftpManagment();
         List<String> laLisSsh = loSmg.getListFileServerSFTP(lsPath, lsExt);
-        System.out.println("Numero de archivos extrados del server ssh ["+laLisSsh.size()+"]");
+        System.out.println("Numero de archivos extraidos del server ssh ["+laLisSsh.size()+"]");
         List<String> laInputList = new ArrayList<String>();
         if(laList.size() > 0){
             for(LmkIntXmlFilesRowBean loBean : laList){
@@ -157,7 +157,7 @@ public class OrderSpotsService {
                      JobDataMap loJobDataMap=  loJob.getJobDataMap();
                      //------------------------------------------
                      loJobDataMap.put("lsIdService", String.valueOf(loInput.getLiIdService())); 
-                     loJobDataMap.put("lsIdUser", String.valueOf(loInput.getLiIdUser())); 
+                     loJobDataMap.put("liIdUser", String.valueOf(loInput.getLiIdUser())); 
                      loJobDataMap.put("lsUserName", loInput.getLsUserName()); 
                      loJobDataMap.put("lsTypeProcess", loInput.getLsServiceType());
                      loJobDataMap.put("lsServiceName", loInput.getLsServiceName());

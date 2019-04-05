@@ -54,7 +54,6 @@ public class NotificationsDao {
                 loItem.setLiIdNotification(loRs.getInt("ID_NOTIFICATION"));
                 loItem.setLiIdService(loRs.getInt("ID_SERVICE"));
                 loItem.setLiIndProcess(loRs.getInt("IND_PROCESS"));
-                
                 loItem.setLsIndUsersGroup(loRs.getString("IND_USERS_GROUP"));
                 loItem.setLsIndSubject(loRs.getString("IND_SUBJECT"));
                 loItem.setLsIndMessage(loRs.getString("IND_MESSAGE"));
@@ -76,8 +75,23 @@ public class NotificationsDao {
         return laReturn;
     }
     
-    public String getQueryLmkIntNotifications(String tsQuery){
-        String lsQuery = "";
+    public String getQueryLmkIntNotifications(String tsWhere){
+        String lsQuery = 
+            "SELECT ID_NOTIFICATION,\n" + 
+            "       ID_SERVICE,\n" + 
+            "       IND_PROCESS,\n" + 
+            "       IND_USERS_GROUP,\n" + 
+            "       IND_SUBJECT,\n" + 
+            "       IND_MESSAGE,\n" + 
+            "       IND_ESTATUS,\n" + 
+            "       ATTRIBUTE_CATEGORY,\n" + 
+            "       ATTRIBUTE1,\n" + 
+            "       ATTRIBUTE2,\n" + 
+            "       ATTRIBUTE3\n" + 
+            "  FROM EVENTAS.LMK_INT_NOTIFICATIONS_TAB\n";
+        if(tsWhere != null){
+            lsQuery += " WHERE 1 = 1 AND " + tsWhere;
+        }
         
         return lsQuery;
         

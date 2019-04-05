@@ -55,6 +55,7 @@ public class OrderSpotsDao {
             loResponseUpdDao.setLsResponse("ERROR");
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage(loExSql.getMessage());
+            System.out.println("ERROR AL INSERTAR SPOT: "+loExSql.getMessage());
         }
         finally{
             try {
@@ -153,9 +154,9 @@ public class OrderSpotsDao {
             //"                       "+toBean.getLiMstlogedtid()+"\n" + 
             "                      )";
         
-        System.out.println("**************************************************");
-        System.out.println(lsQuery);
-        System.out.println("**************************************************");
+        //System.out.println("**************************************************");
+        //System.out.println(lsQuery);
+        //System.out.println("**************************************************");
         
         return lsQuery;
     }
@@ -389,7 +390,7 @@ public class OrderSpotsDao {
         ResultSet  loRs = null;
         String     lsQueryParadigm = 
             "SELECT COUNT(1) \n" + 
-            "  FROM EVENTAS. LOG_COMERCIAL_STATUS \n" + 
+            "  FROM EVENTAS.LOG_COMERCIAL_STATUS \n" + 
             " WHERE STATUS = 'OK'\n" + 
             "   AND STNID = '"+tsStnid+"'\n" + 
             "   AND BCSTDT = '"+tsBcstdt+"'";
