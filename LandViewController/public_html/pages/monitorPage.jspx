@@ -371,23 +371,31 @@
                                                    id="c12">
                                                    
                                             <af:link icon="/images/Up.gif" id="LnkCalcL"
-                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'EN LANDMARK'}"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'L'}"
                                              shortDesc="#{row.IndCalculateStatus}">     
                                             </af:link>
                                             <af:link icon="/images/OK.gif" id="LnkCalcC"
-                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'COMPLETO'}"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'C'}"
                                              shortDesc="#{row.IndCalculateStatus}">     
                                             </af:link>
                                             <af:link icon="/images/Alert.gif" id="LnkCalcE"
-                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'COMPLETO CON ERROR'}"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'E'}"
                                              shortDesc="#{row.IndCalculateStatus}">     
                                             </af:link>
                                             <af:link icon="/images/Save.gif" id="LnkCalcR"
-                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'CREADO'}"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'R'}"
                                              shortDesc="#{row.IndCalculateStatus}">     
                                             </af:link>
                                             <af:link icon="/images/Disaster.gif" id="LnkCalcF"
-                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'ERROR AL ENVIAR A LANDMARK'}"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'F'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/Fall.gif" id="LnkCalcF2"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'M'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/Load.gif" id="LnkCalcFD2"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'W'}"
                                              shortDesc="#{row.IndCalculateStatus}">     
                                             </af:link>
                                         </af:column>

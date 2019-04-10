@@ -3,7 +3,7 @@
 *
 * File: OrderSpotsImpCron.java
 *
-* Created on: Febrero 23, 2019 at 11:00
+* Created on: Abril 23, 2019 at 11:00
 *
 * Copyright (c) - OMW - 2019
 */
@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import javax.xml.bind.Unmarshaller;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.MappingCatDao;
 import mx.com.televisa.landamark.model.daos.OrderSpotsDao;
+import mx.com.televisa.landamark.model.daos.ResponseBreaksDao;
 import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
@@ -50,7 +52,7 @@ import org.quartz.JobExecutionException;
  *
  * @version 01.00.01
  *
- * @date Febrero 23, 2019, 12:00 pm
+ * @date Abril 23, 2019, 12:00 pm
  */
 public class OrderSpotsImpCron implements Job{
     public OrderSpotsImpCron() {
@@ -68,30 +70,37 @@ public class OrderSpotsImpCron implements Job{
         String                    lsIdService = loDataMap.getString("lsIdService");  
         String                    lsUserName = loDataMap.getString("lsUserName");
         String                    lsIdUser = loDataMap.getString("liIdUser");
-        System.out.println("lsIdUser["+lsIdUser+"] DE entrada por parametro de mapeo");
         String                    lsTypeProcess = loDataMap.getString("lsTypeProcess");
         String                    lsServiceName = loDataMap.getString("lsServiceName");
         String                    lsPathFiles = loDataMap.getString("lsPathFiles");
         String                    lsFileName = loDataMap.getString("lsFileName");
         String                    lsRequestMaster = loDataMap.getString("lsRequestMaster");
+        
+        String                    lsIdLogService = loDataMap.getString("lsIdLogService");
+        
         SftpManagment             loSftpManagment = new SftpManagment();
         EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
         Integer                   liIndProcess = 0;
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
-        UtilMails                    loUtilMail = new UtilMails();
+        Integer                   liIdService = Integer.parseInt(lsIdService);
+        Integer                   liIdUser = Integer.parseInt(lsIdUser);
+        Integer                   liIdLogService = Integer.parseInt(lsIdLogService);
+                
+        UtilMails                 loUtilMail = new UtilMails();
         //Ir mediante ssh por el archivo a servidor de lanmdark
         String lsPathRemote = 
             loEntityMappedDao.getGeneralParameter("PATH_SPOTS_INPUT", "SSH_CONNECTION");
         
         ResponseUpdDao loResDn = 
             loSftpManagment.downloadFileSFTP(lsPathRemote, lsPathFiles, lsFileName, lsFileName);
+        
         if(!loResDn.getLsResponse().equalsIgnoreCase("OK")){
             //Archivo no encontrado
             // Si por alguna razon ya lo borraron, es decir que no fue encontrado, mandar error a bitacora
             liIndProcess = 
                 new UtilFaces().getIdConfigParameterByName("NoData");//
-            loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-            loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+            loBitBean.setLiIdLogServices(liIdLogService);
+            loBitBean.setLiIdService(liIdService);
             loBitBean.setLiIndProcess(liIndProcess);
             loBitBean.setLiNumProcessId(0);
             loBitBean.setLiNumPgmProcessId(0);
@@ -99,26 +108,28 @@ public class OrderSpotsImpCron implements Job{
                                      lsServiceName);
             
             loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               Integer.parseInt(lsIdUser), 
+                                               liIdUser, 
                                                lsUserName);   
         }
         else{
             //Validar nombre del archivo
             boolean lbRes = validateNomarch(lsFileName);
-            System.out.println("Validar Archivo:["+lbRes+"]");
+            System.out.println("Validar Nombre del Archivo:["+lbRes+"]");
+            
             lbRes = true;
             System.out.println("Por el momento cambiar a true:["+lbRes+"]");
+            
             if(!lbRes){
                 liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("GeneralError");//
-                        loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                        loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("ERROR Nombre de Archivo incorrecto >> "+lsFileName);
+                            new UtilFaces().getIdConfigParameterByName("ErrorFileName");//
+                loBitBean.setLiIdLogServices(liIdLogService);
+                loBitBean.setLiIdService(liIdService);
+                loBitBean.setLiIndProcess(liIndProcess);
+                loBitBean.setLiNumProcessId(0);
+                loBitBean.setLiNumPgmProcessId(0);
+                loBitBean.setLsIndEvento("ERROR Nombre de Archivo incorrecto >> "+lsFileName);
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                   Integer.parseInt(lsIdUser), 
+                                                   liIdUser, 
                                                    lsUserName);  
             }
             else{
@@ -133,21 +144,20 @@ public class OrderSpotsImpCron implements Job{
                     LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
                     FileInputStream loFis = new FileInputStream(loFileInput);
                     
-                    System.out.println("Insertar para monitoreo de archivos CAST de Integer.parseint");
-                    System.out.println("lsRequestMaster["+lsRequestMaster+"]");
+                    System.out.println("lsRequestMaster["+lsRequestMaster+"] >>> Debe ser el id del LOG");
                     System.out.println("lsIdService["+lsIdService+"]");
                     System.out.println("lsIdUser["+lsIdUser+"]");
                     
                     loXmlBean.setLiIdFileXml(0);
-                    loXmlBean.setLiIdRequest(Integer.parseInt(lsRequestMaster));
-                    loXmlBean.setLiIdService(Integer.parseInt(lsIdService));
+                    loXmlBean.setLiIdRequest(liIdLogService);
+                    loXmlBean.setLiIdService(liIdService);
                     loXmlBean.setLsNomFile(lsFileName);
-                    loXmlBean.setLsIndFileType("Requests");
+                    loXmlBean.setLsIndFileType("REQUEST");
                     loXmlBean.setLsIndServiceType(lsTypeProcess);
                     loXmlBean.setLsIndEstatus("R"); //De Creado
                     loXmlBean.setLsNomUserName(lsUserName);
                     loXmlBean.setLsNomUserPathFile(lsPathFiles);
-                    loXmlBean.setLiIdUser(Integer.parseInt(lsIdUser));
+                    loXmlBean.setLiIdUser(liIdUser);
                     loXmlBean.setLoIndFileStream(loFis);
                     loXmlBean.setLsAttribute1("");
                     loXmlBean.setLsAttribute2("OrdSpotsFileType");
@@ -161,18 +171,18 @@ public class OrderSpotsImpCron implements Job{
                         lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
                                        lsFileName+" size: "+loFileInput.getTotalSpace();
                     }
-                    System.out.println("Insertar en bitacora que se ha inseretado registro para monitoreo");
+                    System.out.println("Insertar en bitacora que se ha insertado registro para monitoreo");
                     liIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("InsertFile");//
                     System.out.println("liIndProcess["+liIndProcess+"]");
-                            loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                            loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                            loBitBean.setLiIndProcess(liIndProcess);
-                            loBitBean.setLiNumProcessId(0);
-                            loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento(lsMessInsert);
+                    loBitBean.setLiIdLogServices(liIdLogService);
+                    loBitBean.setLiIdService(liIdService);
+                    loBitBean.setLiIndProcess(liIndProcess);
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento(lsMessInsert);
                     loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       Integer.parseInt(lsIdUser), 
+                                                       liIdUser, 
                                                        lsUserName);                                                
                     
                     //Leer archivo (estatus=W (leido))
@@ -181,18 +191,28 @@ public class OrderSpotsImpCron implements Job{
                     ResponseUpdDao loRes = insertSpotsParadimg(lsPathFiles, lsFileName);
                     if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
                         liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("GeneralError");//
-                                loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                loBitBean.setLiIndProcess(liIndProcess);
-                                loBitBean.setLiNumProcessId(0);
-                                loBitBean.setLiNumPgmProcessId(0);
-                                loBitBean.setLsIndEvento("ERROR al insertar spots >> "+loRes.getLsMessage());
+                                    new UtilFaces().getIdConfigParameterByName("InsertError");//
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("ERROR al insertar spots >> "+loRes.getLsMessage());
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           Integer.parseInt(lsIdUser), 
+                                                           liIdUser, 
                                                            lsUserName);  
+                        
+                        //Actualizar estatus de archivo xml, Leido con errores
+                        ResponseBreaksDao loResReadFile = new ResponseBreaksDao();
+                        loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "M");
+                        
                     }
                     else{//Continuar como dice el flujo de Jacobo
+                        System.out.println("Spots de xml insertados en tablas temporales de paradigm.... OK");
+                        //Actualizar estatus de archivo xml, leido, en tablas temporales
+                        ResponseBreaksDao loResReadFile = new ResponseBreaksDao();
+                        loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "W");
+                        
                         //Obtener Canal y fecha de acuerdo al nombre del archivo
                         String[] laNomarch = lsFileName.split("\\.");
                         String lsStnidNomarch = laNomarch[1];
@@ -204,34 +224,36 @@ public class OrderSpotsImpCron implements Job{
                         System.out.println("lsStnid["+lsStnid+"]");
                         System.out.println("lsBcstdt["+lsBcstdt+"]");
                         OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
-                         // 2)      Ejecutar el SP…. EVENTAS.LMK_VALIDA_SPOTS(STNID, BCSTDT)
-                         //System.out.println("**************************************************************");
-                         //System.out.println("Fin TEMPORAL del proceso, (Probando solo INSERT en la tabla)");
+                        // 2)      Ejecutar el SP…. EVENTAS.LMK_VALIDA_SPOTS(STNID, BCSTDT)
+                         
                         liIndProcess = 
                                     new UtilFaces().getIdConfigParameterByName("CallProcedure");//
-                                loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                loBitBean.setLiIndProcess(liIndProcess);
-                                loBitBean.setLiNumProcessId(0);
-                                loBitBean.setLiNumPgmProcessId(0);
-                                loBitBean.setLsIndEvento("Ejecucion de LMK_VALIDA_SPOTS("+lsStnid+", "+lsBcstdt+") >> ");
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Ejecucion de LMK_VALIDA_SPOTS("+lsStnid+", "+lsBcstdt+")");
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                           Integer.parseInt(lsIdUser), 
+                                                           liIdUser, 
                                                            lsUserName);  
-                        
-                         ResponseUpdDao loResValida = 
+                        System.out.println("Validando spots con  callLmkValidaSpotsPr");
+                        ResponseUpdDao loResValida = 
                              loOrderSpotsDao.callLmkValidaSpotsPr(lsStnid, lsBcstdt);
+                        
                         if(!loResValida.getLsResponse().equalsIgnoreCase("OK")){
+                            System.out.println("Error callLmkValidaSpotsPr "+loResValida.getLsMessage());
                             liIndProcess = 
-                                        new UtilFaces().getIdConfigParameterByName("GeneralError");//
-                                    loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                    loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                    loBitBean.setLiIndProcess(liIndProcess);
-                                    loBitBean.setLiNumProcessId(0);
-                                    loBitBean.setLiNumPgmProcessId(0);
-                                    loBitBean.setLsIndEvento("ERROR AL VALIDAR SPOTS("+lsStnid+", "+lsBcstdt+") >> "+loRes.getLsMessage());
+                                        new UtilFaces().getIdConfigParameterByName("ValidateError");//
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("ERROR AL VALIDAR SPOTS("+lsStnid+", "+lsBcstdt+") >> " + 
+                                                     loRes.getLsMessage());
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                               Integer.parseInt(lsIdUser), 
+                                                               liIdUser, 
                                                                lsUserName);  
                         }
                         else{
@@ -241,131 +263,154 @@ public class OrderSpotsImpCron implements Job{
                             // la información… Si la tabla tiene un solo registro con el Status Igual a OK, entonces se procede 
                             // al punto 4.. Si hay errores, aquí definiremos por el campo de TIPO .. a quien se los 
                             // enviaremos vía correo.
+                            System.out.println("Validacion OK de LOG_COMERCIAL_STATUS ");
                             liIndProcess = 
                                         new UtilFaces().getIdConfigParameterByName("ExeProcedure");//
-                                    loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                    loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                    loBitBean.setLiIndProcess(liIndProcess);
-                                    loBitBean.setLiNumProcessId(0);
-                                    loBitBean.setLiNumPgmProcessId(0);
-                                    loBitBean.setLsIndEvento("Validacion LOG_COMERCIAL_STATUS("+lsStnid+", "+lsBcstdt+") >> ");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Validacion LOG_COMERCIAL_STATUS("+lsStnid+", "+lsBcstdt+") >> ");
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                               Integer.parseInt(lsIdUser), 
+                                                               liIdUser, 
                                                                lsUserName);  
                             Integer liNumOk = 
                                 loOrderSpotsDao.validateOkStatusSpots(lsStnid, lsBcstdt);
+                            System.out.println("Numero de spots en OK ["+liNumOk+"]");
                             if(liNumOk == 0){//No  existe ningun registro con OK
-                                
+                                System.out.println("Todos los spots contienen incidencias");
                                 liIndProcess = 
-                                            new UtilFaces().getIdConfigParameterByName("ExeProcedure");//
-                                        loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                        loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                        loBitBean.setLiIndProcess(liIndProcess);
-                                        loBitBean.setLiNumProcessId(0);
-                                        loBitBean.setLiNumPgmProcessId(0);
-                                        loBitBean.setLsIndEvento("Todos los Spots continen incidencias("+lsStnid+", "+lsBcstdt+") >> ");
+                                            new UtilFaces().getIdConfigParameterByName("GeneralError");//
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("Todos los Spots continen incidencias("+lsStnid+", "+lsBcstdt+") >> ");
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                   Integer.parseInt(lsIdUser), 
+                                                                   liIdUser, 
                                                                    lsUserName);  
                                 
                                 liIndProcess = 
                                             new UtilFaces().getIdConfigParameterByName("SendEmail");//
-                                        loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                        loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                        loBitBean.setLiIndProcess(liIndProcess);
-                                        loBitBean.setLiNumProcessId(0);
-                                        loBitBean.setLiNumPgmProcessId(0);
-                                        loBitBean.setLsIndEvento("Enviar Correo para informar de Incidencias para incidencias("+lsStnid+", "+lsBcstdt+") ");
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("Enviar Correo para informar de Incidencias para " +
+                                    "incidencias("+lsStnid+", "+lsBcstdt+") ");
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                   Integer.parseInt(lsIdUser), 
+                                                                   liIdUser, 
                                                                    lsUserName);  
-                                System.out.println("Enviar correo");
-                                loUtilMail.buildMailByProcess(Integer.parseInt(lsRequestMaster), 
+                                System.out.println("Enviar correo para informar que todo fue con incidencias");
+                                loUtilMail.buildMailByProcess(liIdLogService, 
                                                               Integer.parseInt(lsIdService), 
                                                               liIndProcess, 
-                                                              Integer.parseInt(lsIdUser), 
+                                                              liIdUser, 
                                                               lsUserName);
+                                //Actualizar estatus de archivo xml, leido, en tablas temporales
+                                loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "E");
+                                System.out.println("Cambiando status al archivo");
                                 
                             }
                             else{//Se procede al punto 4
                                 boolean lbSendMail = true;
                                 //  4)      Ejecutar el SP… EVENTAS.EVETV_GENERA_SPOTS(STNID, BCSTDT)
-                                
+                                System.out.println("Generar spots EVETV_GENERA_SPOTS");
                                 liIndProcess = 
                                             new UtilFaces().getIdConfigParameterByName("CallProcedure");//
-                                        loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                        loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                        loBitBean.setLiIndProcess(liIndProcess);
-                                        loBitBean.setLiNumProcessId(0);
-                                        loBitBean.setLiNumPgmProcessId(0);
-                                        loBitBean.setLsIndEvento("Generar spots EVETV_GENERA_SPOTS("+lsStnid+", "+lsBcstdt+") >> ");
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("Generar spots EVETV_GENERA_SPOTS("+lsStnid+", "+lsBcstdt+")");
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                   Integer.parseInt(lsIdUser), 
+                                                                   liIdUser, 
                                                                    lsUserName);  
                                 
                                 ResponseUpdDao loResGeneraSpots = 
                                     loOrderSpotsDao.callLmkGeneraSpotsPr(lsStnid, lsBcstdt);
                             
                                 if(!loResGeneraSpots.getLsResponse().equalsIgnoreCase("OK")){
+                                    System.out.println("ERROR EVETV_GENERA_SPOTS "+loResGeneraSpots.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
-                                                new UtilFaces().getIdConfigParameterByName("GeneralError");//
-                                            loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                            loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                            loBitBean.setLiIndProcess(liIndProcess);
-                                            loBitBean.setLiNumProcessId(0);
-                                            loBitBean.setLiNumPgmProcessId(0);
-                                            loBitBean.setLsIndEvento("ERROR al GENERAR spots >> "+loRes.getLsMessage());
+                                                new UtilFaces().getIdConfigParameterByName("GeneratelError");//
+                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                    loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                    loBitBean.setLiIndProcess(liIndProcess);
+                                    loBitBean.setLiNumProcessId(0);
+                                    loBitBean.setLiNumPgmProcessId(0);
+                                    loBitBean.setLsIndEvento("ERROR al GENERAR spots >> "+loRes.getLsMessage());
                                     loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                       Integer.parseInt(lsIdUser), 
+                                                                       liIdUser, 
                                                                        lsUserName);  
                                 }                                
                                 
                                 //  5)      Ejecutar el SP… EVENTAS.EVETV_GENERA_LOG(STNID, BCSTDT)
                                 liIndProcess = 
-                                            new UtilFaces().getIdConfigParameterByName("CallProcedure");//
-                                        loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                        loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                        loBitBean.setLiIndProcess(liIndProcess);
-                                        loBitBean.setLiNumProcessId(0);
-                                        loBitBean.setLiNumPgmProcessId(0);
-                                        loBitBean.setLsIndEvento("Generar spots EVETV_GENERA_LOGS("+lsStnid+", "+lsBcstdt+") >> ");
+                                    new UtilFaces().getIdConfigParameterByName("CallProcedure");//
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("Generar spots EVETV_GENERA_LOGS("+lsStnid+", "+lsBcstdt+")");
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                   Integer.parseInt(lsIdUser), 
+                                                                   liIdUser, 
                                                                    lsUserName);  
-                                
+                                System.out.println("Generar spots EVETV_GENERA_LOGS");
                                 ResponseUpdDao loResGeneraLogs = 
                                     loOrderSpotsDao.callLmkGeneraLogsPr(lsStnid, lsBcstdt);
                                 
                                 if(!loResGeneraLogs.getLsResponse().equalsIgnoreCase("OK")){
+                                    System.out.println("ERROR EVETV_GENERA_SPOTS "+loResGeneraLogs.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
-                                                new UtilFaces().getIdConfigParameterByName("GeneralError");//
-                                            loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                            loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                            loBitBean.setLiIndProcess(liIndProcess);
-                                            loBitBean.setLiNumProcessId(0);
-                                            loBitBean.setLiNumPgmProcessId(0);
-                                            loBitBean.setLsIndEvento("ERROR al GENERAR LOGS >> "+loRes.getLsMessage());
+                                                new UtilFaces().getIdConfigParameterByName("GeneratelError");//
+                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                    loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                    loBitBean.setLiIndProcess(liIndProcess);
+                                    loBitBean.setLiNumProcessId(0);
+                                    loBitBean.setLiNumPgmProcessId(0);
+                                    loBitBean.setLsIndEvento("ERROR al GENERAR LOGS >> "+loRes.getLsMessage());
                                     loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                       Integer.parseInt(lsIdUser), 
+                                                                       liIdUser, 
                                                                        lsUserName);  
                                 }                                
                                 //  6)      Al termino de este último SP se enviará un correo de notificación a la gente de Trafico Log que su Log ha sido procesado correctamente desde Landmark ATS.
                                 if(lbSendMail){
                                     //Enviar Correo
-                                    System.out.println("Enviar Correo");
+                                    System.out.println("Enviar Correo informando que todo OK");
                                     liIndProcess = 
                                                 new UtilFaces().getIdConfigParameterByName("SendEmail");//
-                                            loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                                            loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                                            loBitBean.setLiIndProcess(liIndProcess);
-                                            loBitBean.setLiNumProcessId(0);
-                                            loBitBean.setLiNumPgmProcessId(0);
-                                            loBitBean.setLsIndEvento("Enviar Correo para informar proceso satisfactorio("+lsStnid+", "+lsBcstdt+") ");
+                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                    loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                                    loBitBean.setLiIndProcess(liIndProcess);
+                                    loBitBean.setLiNumProcessId(0);
+                                    loBitBean.setLiNumPgmProcessId(0);
+                                    loBitBean.setLsIndEvento("Enviar Correo para informar proceso " +
+                                        "satisfactorio("+lsStnid+", "+lsBcstdt+") ");
                                     loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                                       Integer.parseInt(lsIdUser), 
+                                                                       liIdUser, 
                                                                        lsUserName);  
+                                    
+                                    System.out.println("Enviar correo");
+                                    loUtilMail.buildMailByProcess(liIdLogService, 
+                                                                  Integer.parseInt(lsIdService), 
+                                                                  liIndProcess, 
+                                                                  liIdUser, 
+                                                                  lsUserName);
+                                    //Actualizar estatus de archivo xml                                    
+                                    loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "C");      
+                                    System.out.println("Cambiar estatus al archivo de TODO OK (C)");
+                                }else{
+                                    //Actualizar estatus de archivo xml
+                                    loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "E");   
+                                    System.out.println("Cambiar estatus al archivo a ERROR (E)");
                                 }
                             }
                         }
@@ -375,16 +420,17 @@ public class OrderSpotsImpCron implements Job{
                     //Ejecutar logica que indique jacobo (estatusP (Procesado)) FIN
                     
                 }catch(Exception loEx){
+                    System.out.println("Error 9857: "+loEx.getMessage());
                     liIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("GeneralError");//
-                            loBitBean.setLiIdLogServices(Integer.parseInt(lsRequestMaster));
-                            loBitBean.setLiIdService(Integer.parseInt(lsIdService));
-                            loBitBean.setLiIndProcess(liIndProcess);
-                            loBitBean.setLiNumProcessId(0);
-                            loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento("ERROR. "+loEx.getMessage());
+                    loBitBean.setLiIdLogServices(liIdLogService);
+                    loBitBean.setLiIdService(Integer.parseInt(lsIdService));
+                    loBitBean.setLiIndProcess(liIndProcess);
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento("ERROR. "+loEx.getMessage());
                     loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       Integer.parseInt(lsIdUser), 
+                                                       liIdUser, 
                                                        lsUserName);
                     
                 }
@@ -392,6 +438,12 @@ public class OrderSpotsImpCron implements Job{
         }                
     }
     
+    /**
+     * Valida el nombre del archivo con formato preestablecido
+     * @autor Jorge Luis Bautista Santiago
+     * @param lsFileName
+     * @return boolean
+     */
     public boolean validateNomarch(String lsFileName){
         boolean lbResponse = true;
         String[] laNameArr = lsFileName.split("\\.");
@@ -402,22 +454,35 @@ public class OrderSpotsImpCron implements Job{
         return lbResponse;
     }
     
+    /**
+     * Obtiene el canal paradigm de acuerdo al mapeo
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsChannel
+     * @return String
+     */
     public String getChannelMapped(String tsChannel){
         String lsChannel = "";
         MappingCatDao loMcd = new MappingCatDao();
         String lsWhere = " VAL_VALUE_DESTINY = '"+tsChannel+"'";
         List<LmkIntMappingCatRowBean> laArr = loMcd.getLmkIntServicesParams(lsWhere);
         if(laArr.size() > 0){
-            lsChannel = laArr.get(0).getLsIndSysOrigin();
+            lsChannel = laArr.get(0).getLsValValueOrigin();
         }
         return lsChannel;
     }
     
-   
+    /**
+     * Obtiene la fecha en un formato especifico, a partir de otra mascara
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsBcstdt
+     * @param tsMaskInput
+     * @param tsMaskOutput
+     * @return String
+     */
     public String getBcstdtMapped(String tsBcstdt, 
                                   String tsMaskInput,
                                   String tsMaskOutput){
-        String lsDateAsString = "";
+        String           lsDateAsString = "";
         SimpleDateFormat lsParser = new SimpleDateFormat(tsMaskInput);        
         SimpleDateFormat lsFormatter = new SimpleDateFormat(tsMaskOutput);
 
@@ -430,6 +495,13 @@ public class OrderSpotsImpCron implements Job{
         return lsDateAsString;
     }
     
+    /**
+     * Inserta y valida los spots en paradigm tablas temporales
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsFilePath
+     * @param tsFileName
+     * @return ResponseUpdDao
+     */
     public ResponseUpdDao insertSpotsParadimg(String tsFilePath, String tsFileName){
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
         System.out.println("-------------------- SPOTS -------------------------");    
@@ -444,17 +516,42 @@ public class OrderSpotsImpCron implements Job{
             System.out.println("numero de spots: "+loSpots.getSpot().size());    
             System.out.println("1)  Se insertan los datos en la tabla EVENTAS.LMK_SPOTS \n( los últimos 8 datos de esta tabla se dejan en blanco porque serán usados por el procedimiento para ligar información de Paradigm)");    
             OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
-            for(Spot loSpot : loSpots.getSpot()){
-                //System.out.println("---------------------------------------------");    
+            int liI = 0;
+            boolean lbSpots = true;
+            List<LmkSpotsRowBean> laSpotsIns = new ArrayList<LmkSpotsRowBean>();
+            while(liI < loSpots.getSpot().size() && lbSpots == true ){
+                Spot loSpot = loSpots.getSpot().get(liI);
                 LmkSpotsRowBean loLmkSpotsRowBean = new LmkSpotsRowBean();
                 loLmkSpotsRowBean = getLmkSpotsRowBeanBySpot(loSpot);
                 //Insertar en tabla:
-                loOrderSpotsDao.insertLmkSpot(loLmkSpotsRowBean);
-                //System.out.println("---------------------------------------------");    
-            }             
-            loResponseUpdDao.setLiAffected(loSpots.getSpot().size());
-            loResponseUpdDao.setLsMessage("OK");
-            loResponseUpdDao.setLsResponse("OK");
+                ResponseUpdDao loRes = loOrderSpotsDao.insertLmkSpot(loLmkSpotsRowBean);
+                laSpotsIns.add(loLmkSpotsRowBean);
+                if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
+                    lbSpots = false;
+                }
+            }
+            
+            //for(Spot loSpot : loSpots.getSpot()){
+              //LmkSpotsRowBean loLmkSpotsRowBean = new LmkSpotsRowBean();
+              //loLmkSpotsRowBean = getLmkSpotsRowBeanBySpot(loSpot);
+              //loOrderSpotsDao.insertLmkSpot(loLmkSpotsRowBean);
+            //}
+            if(!lbSpots){
+                loResponseUpdDao.setLiAffected(0);
+                loResponseUpdDao.setLsMessage("ERROR");
+                loResponseUpdDao.setLsResponse("ERROR");
+                
+                //Eliminar spots insertados: laSpotsIns
+                for(LmkSpotsRowBean loLmkSpotsRowBean : laSpotsIns){                  
+                  loOrderSpotsDao.deleteLmkSpotsInserted(loLmkSpotsRowBean);
+                }
+                
+            }else{
+                loResponseUpdDao.setLiAffected(loSpots.getSpot().size());
+                loResponseUpdDao.setLsMessage("OK");
+                loResponseUpdDao.setLsResponse("OK");    
+            }
+            
             
         } catch (JAXBException e) {
             System.out.println(e.getMessage());
@@ -465,6 +562,12 @@ public class OrderSpotsImpCron implements Job{
         return loResponseUpdDao;
     }
     
+    /**
+     * Obtiene el spot en formato de paradigm, a partir del spot del xml
+     * @autor Jorge Luis Bautista Santiago
+     * @param toSpot
+     * @return LmkSpotsRowBean
+     */
     public LmkSpotsRowBean getLmkSpotsRowBeanBySpot(Spot toSpot){
         LmkSpotsRowBean loSpotsRowBean = new LmkSpotsRowBean();
         

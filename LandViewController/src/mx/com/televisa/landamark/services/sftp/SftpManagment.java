@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntSftpCnnBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.util.UtilFaces;
@@ -76,7 +77,6 @@ public class SftpManagment {
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("Archivo descargado satisfactoriamente");
             loResponse.setLiAffected(0);
-            //System.out.println("TODO OK");
         } catch (JSchException loEx) {
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage(loEx.getMessage());
@@ -157,6 +157,8 @@ public class SftpManagment {
         List<String> laList = new ArrayList<String>();
         JSch         loJsch = new JSch();
         Session      loSession = null;
+        boolean      lbCnnScc  = true;
+        String       lsMsgError = "";
         try {
             System.out.println("Incio....");
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
@@ -182,11 +184,31 @@ public class SftpManagment {
             loSession.disconnect();
             System.out.println("TODO OK");
         } catch (JSchException loEx) {
+            lbCnnScc  = false;
+            lsMsgError = loEx.getMessage();
             loEx.printStackTrace();  
         } catch (SftpException loEx) {
+            lbCnnScc  = false;
+            lsMsgError = loEx.getMessage();
             loEx.printStackTrace();
         }
-        
+        if(!lbCnnScc){
+            LmkIntServiceBitacoraRowBean loBitBean = 
+                new LmkIntServiceBitacoraRowBean();
+            EntityMappedDao              loEntityMappedDao = 
+                new EntityMappedDao();
+            Integer liIndProcess = 
+                        new UtilFaces().getIdConfigParameterByName("GeneralError");//
+                    loBitBean.setLiIdLogServices(0);
+                    loBitBean.setLiIdService(0);
+                    loBitBean.setLiIndProcess(liIndProcess);
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento("Landmark Connection: "+lsMsgError);
+            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                               0, 
+                                               "System");  
+        }
         return laList;
     
     }

@@ -688,7 +688,7 @@ public class ParrillasProgramasDao {
         } catch (SQLException loExSql) {
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage("ERROR (deleteLmkProgProgramm): "+loExSql.getMessage());
-            loResponseUpdDao.setLsResponse("OK");
+            loResponseUpdDao.setLsResponse("ERROR");
         }
         finally{
             try {
@@ -724,7 +724,7 @@ public class ParrillasProgramasDao {
             System.out.println("Error 86: "+loExSql.getMessage());
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage("ERROR (deleteLmkBreaksByTable): "+loExSql.getMessage());
-            loResponseUpdDao.setLsResponse("OK");
+            loResponseUpdDao.setLsResponse("ERROR");
         }
         finally{
             try {
@@ -764,7 +764,7 @@ public class ParrillasProgramasDao {
             System.out.println(loExSql.getMessage());
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage("ERROR (deleteLmkFileTrailer): "+loExSql.getMessage());
-            loResponseUpdDao.setLsResponse("OK");
+            loResponseUpdDao.setLsResponse("ERROR");
         }
         finally{
             try {

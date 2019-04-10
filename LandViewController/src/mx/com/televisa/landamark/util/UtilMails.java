@@ -1,3 +1,12 @@
+/**
+* Project: Paradigm - Landmark 
+*
+* File: UtilMails.java
+*
+* Created on:  Enero 09, 2019 at 11:00
+*
+* Copyright (c) - Omw - 2019
+*/
 package mx.com.televisa.landamark.util;
 
 import java.util.List;
@@ -12,6 +21,14 @@ import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.secman.MailManagement;
 import mx.com.televisa.landamark.secman.SecurityManagerWs;
 
+/** Esta clase ejecuta procesos de envío de correo<br/><br/>
+ *
+ * @author Jorge Luis Bautista - Omw
+ *
+ * @version 01.00.01
+ *
+ * @date Enero 09, 2019, 12:00 pm
+ */
 public class UtilMails {
     public UtilMails() {
         super();
@@ -38,6 +55,15 @@ public class UtilMails {
                 List<EmailDestinationAddress> laTo = 
                     loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
                 
+                //-----------------------------------------------------------------------
+                System.out.println("Por lo pronto mandar correo solo a jlbautistas");
+                laTo.clear();
+                EmailDestinationAddress loJL = new EmailDestinationAddress();
+                loJL.setLsAddressTo("jlbautistas@televisa.com.mx");
+                loJL.setLsNameTo("jlbautistas@televisa.com.mx");
+                laTo.add(loJL);
+                //-----------------------------------------------------------------------
+                
                 if(laTo.size() > 0){
                     //Obtener la descripcion del idProcess
                     EntityMappedDao loEntityMappedDao = new EntityMappedDao();
@@ -52,30 +78,30 @@ public class UtilMails {
                                                laTo);
                     if(loResMail.getLsResponse().equalsIgnoreCase("OK") ){
                         liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("sendMail");
+                                    new UtilFaces().getIdConfigParameterByName("SendEmail");
                         lsMessBit = "Correo enviado satisfactoriamente";
                     }else{
                         liIndProcess = 
-                                    new UtilFaces().getIdConfigParameterByName("GeneralError");
+                                    new UtilFaces().getIdConfigParameterByName("FailSendEmail");
                         lsMessBit = "Correo NO enviado "+loResMail.getLsMessage();
                         System.out.println("Insertar en bitacora que el correo no fue enviado");
                     }
                 }else{
                     liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("GeneralError");
+                                new UtilFaces().getIdConfigParameterByName("MissingAddressee");
                     lsMessBit = "Correo NO enviado el grupo no contiene destinatarios";
                     System.out.println("Insertar en bitacora que el grupo no contiene destinatarios");
                 }
             }else{
                 liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("GeneralError");
+                            new UtilFaces().getIdConfigParameterByName("ErrorUserGroup");
                 lsMessBit = "Correo NO enviado el grupo no existe grupo configurado";
                 System.out.println("Insertar en bitacora que no existe grupo configurado");
             }
             
         }else{
             liIndProcess = 
-                        new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        new UtilFaces().getIdConfigParameterByName("ErrorConfig");
             lsMessBit = "Correo NO enviado el grupo no existe Configuracion de Notificaciones";
             System.out.println("Insertar en bitacora que no existe la configuracion");
             //Insertar en bitacora que no existe la configuracion

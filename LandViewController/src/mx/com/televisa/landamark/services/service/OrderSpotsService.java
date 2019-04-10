@@ -13,7 +13,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+
+import java.util.Map;
+
+import javax.faces.model.SelectItem;
 
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.ResponseBreaksDao;
@@ -104,8 +110,8 @@ public class OrderSpotsService {
         
         //- Ir a la bd de archivos fisicos y extrer los archivos tipo request que se
         //descartarán vs extraidos de carpeta remota
-        String lsWhere = " AND NOM_FILE LIKE '%.xml' " + //Solo archivos xml
-            " AND IND_ESTATUS = 'A'";
+        String lsWhere = " AND UPPER(NOM_FILE) LIKE UPPER('%.xml') ";// + //Solo archivos xml
+            //" AND IND_ESTATUS = 'A'";
         
         List<LmkIntXmlFilesRowBean> laList = 
             loResponseBreaksDao.getAllFilesPending(lsWhere);
@@ -120,9 +126,11 @@ public class OrderSpotsService {
         System.out.println("Numero de archivos extraidos del server ssh ["+laLisSsh.size()+"]");
         List<String> laInputList = new ArrayList<String>();
         if(laList.size() > 0){
+            System.out.println("Nombres de archivos extraidos la base de datos["+laList.size()+"]");
             for(LmkIntXmlFilesRowBean loBean : laList){
                 int liI = 0;
                 lbProcess = true;
+                System.out.println("Buscar archivos ssh en lista de la base de datos");
                 while(liI < laLisSsh.size() && lbProcess == true){
                     //- Buscar cada nombre de archivo fisico en el grupo
                     System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
@@ -139,9 +147,12 @@ public class OrderSpotsService {
                 
             }    
         }else{//Een base de datos no hay ninguno en estatus alta
+            System.out.println("No  existen archivos guarddos es la bd");
             laInputList.addAll(laLisSsh);
         }
         
+        //Quitar repetidos de la lista:
+        laInputList = removesRepeated(laInputList);
         if(laInputList.size() > 0){
             //Con un cron por cada archivo encontrado, ejecutar la lectura, guardado y logica de cada archivo
             for(String lsFileName : laInputList){
@@ -203,6 +214,26 @@ public class OrderSpotsService {
         DateFormat loDf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
         return lsResponse;
+    }
+    
+    /**
+     * Quita elementos repetidos de una lista de elementos tipo SelectItem
+     * @autor Jorge Luis Bautista Santiago
+     * @param taInputList
+     * @return List
+     */
+    public List<String> removesRepeated(List<String> taInputList) {
+        List<String> laOutputList = new ArrayList<String>();
+        Map              laMap = new HashMap();
+        for (int liI = 0; liI < taInputList.size(); liI++) {
+            laMap.put(taInputList.get(liI),taInputList.get(liI));
+        }
+        Iterator         loIterator = laMap.entrySet().iterator();
+        while (loIterator.hasNext()) {
+            Map.Entry  loEntry = (Map.Entry)loIterator.next();
+            laOutputList.add(String.valueOf(loEntry.getValue()));
+        }
+        return laOutputList;
     }
     
 }

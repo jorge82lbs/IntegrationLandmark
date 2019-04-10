@@ -46,12 +46,11 @@ public class XmlFilesDao {
      */
     public ResponseUpdDao insertLmkIntXmlFilesTab(LmkIntXmlFilesRowBean toXmlFile) {
         ResponseUpdDao    loResponse = new ResponseUpdDao();
-
-        try {
+       /* try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {;
         }
-
+*/
         Connection loCnn = new ConnectionAs400().getConnection();
         Integer    liIdXml = getMaxIdParadigm("RstXmlFiles") + 1;
         try {

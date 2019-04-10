@@ -417,6 +417,37 @@ public class OrderSpotsDao {
         return loFlag;
     }
     
-    
+    /**
+     * Elimina spot de la tabla de paradigm
+     * @autor Jorge Luis Bautista Santiago
+     * @return ResponseUpdDao
+     */
+    public ResponseUpdDao deleteLmkSpotsInserted(LmkSpotsRowBean loBean) {
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "DELETE FROM EVENTAS.LMK_SPOTS\n" +
+            " WHERE SPOT_NUMBER = "+loBean.getLiSpotNumber();
+        try {
+            Statement loStmt = loCnn.createStatement();
+            Integer liRes = loStmt.executeUpdate(lsQueryParadigm);
+            loResponseUpdDao.setLiAffected(liRes);
+            loResponseUpdDao.setLsMessage("Registro eliminado");
+            loResponseUpdDao.setLsResponse("OK");
+        } catch (SQLException loExSql) {
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage("ERROR (deleteLmkSpotsInserted): "+loExSql.getMessage());
+            loResponseUpdDao.setLsResponse("ERROR");
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+       
+        return loResponseUpdDao;
+    }    
     
 }
