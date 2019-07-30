@@ -86,6 +86,7 @@ public class ParrillasProgramasService {
         loSlb.setLsMessage("Execute "+loInput.getLsServiceName());
         loSlb.setLsUserName(loInput.getLsUserName());
         loSlb.setLiIdUser(loInput.getLiIdUser());
+        
         new UtilFaces().insertLogServiceService(loSlb);
         
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
@@ -151,6 +152,18 @@ public class ParrillasProgramasService {
                 }
                 
             }
+            
+            //Proceso para guardar parametros en la tabla de log services
+            String lsFechasLog = "["+lsFecInicial + ","+lsFecInicial+"]";
+            String lsChannelsLog = "";
+            for(String lsChannel : laChannels){
+                lsChannelsLog += lsChannel+",";
+            }
+            loEntityMappedDao.updateParametersServiceLog(liIdLogService, 
+                                                         loInput.getLiIdService(), 
+                                                         lsFechasLog, 
+                                                         lsChannelsLog);
+            
             
             for(String lsChannel : laChannels){
                 String lsTrigger = lsChannel+getIdBitacora();

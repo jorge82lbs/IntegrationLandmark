@@ -56,12 +56,12 @@ public class UtilMails {
                     loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
                 
                 //-----------------------------------------------------------------------
-                System.out.println("Por lo pronto mandar correo solo a jlbautistas");
+                /*System.out.println("Por lo pronto mandar correo solo a jlbautistas");
                 laTo.clear();
                 EmailDestinationAddress loJL = new EmailDestinationAddress();
                 loJL.setLsAddressTo("jlbautistas@televisa.com.mx");
                 loJL.setLsNameTo("jlbautistas@televisa.com.mx");
-                laTo.add(loJL);
+                laTo.add(loJL);*/
                 //-----------------------------------------------------------------------
                 
                 if(laTo.size() > 0){
@@ -84,39 +84,34 @@ public class UtilMails {
                         liIndProcess = 
                                     new UtilFaces().getIdConfigParameterByName("FailSendEmail");
                         lsMessBit = "Correo NO enviado "+loResMail.getLsMessage();
-                        System.out.println("Insertar en bitacora que el correo no fue enviado");
                     }
                 }else{
                     liIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("MissingAddressee");
                     lsMessBit = "Correo NO enviado el grupo no contiene destinatarios";
-                    System.out.println("Insertar en bitacora que el grupo no contiene destinatarios");
                 }
             }else{
                 liIndProcess = 
                             new UtilFaces().getIdConfigParameterByName("ErrorUserGroup");
                 lsMessBit = "Correo NO enviado el grupo no existe grupo configurado";
-                System.out.println("Insertar en bitacora que no existe grupo configurado");
             }
             
         }else{
             liIndProcess = 
                         new UtilFaces().getIdConfigParameterByName("ErrorConfig");
             lsMessBit = "Correo NO enviado el grupo no existe Configuracion de Notificaciones";
-            System.out.println("Insertar en bitacora que no existe la configuracion");
-            //Insertar en bitacora que no existe la configuracion
         }
         
-        System.out.println("Insertar en bitacora de alta escuela");
+        System.out.println("Insertar en bitacora ERROR al enviar email");
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
         
-                loBitBean.setLiIdLogServices(tiRequest);
-                loBitBean.setLiIdService(tiIdService);
-                loBitBean.setLiIndProcess(liIndProcess);
-                loBitBean.setLiNumProcessId(0);
-                loBitBean.setLiNumPgmProcessId(0);
-                loBitBean.setLsIndEvento(lsMessBit);
+        loBitBean.setLiIdLogServices(tiRequest);
+        loBitBean.setLiIdService(tiIdService);
+        loBitBean.setLiIndProcess(liIndProcess);
+        loBitBean.setLiNumProcessId(0);
+        loBitBean.setLiNumPgmProcessId(0);
+        loBitBean.setLsIndEvento(lsMessBit);
         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                            tiIdUser, 
                                            tsUserName);

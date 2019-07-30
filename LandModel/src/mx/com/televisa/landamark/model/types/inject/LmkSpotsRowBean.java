@@ -43,6 +43,42 @@ public class LmkSpotsRowBean {
     private String  lsPgmid;
     private Integer liBrkdtid;
     private Integer liMstlogedtid;
+    private String  lsHouseNumber;
+    private String  lsIndustryCode;
+    private String  lsCopyComments;
+    private String  lsSalesArea;
+
+    public void setLsSalesArea(String lsSalesArea) {
+        this.lsSalesArea = lsSalesArea;
+    }
+
+    public String getLsSalesArea() {
+        return lsSalesArea;
+    }
+
+    public void setLsHouseNumber(String lsHouseNumber) {
+        this.lsHouseNumber = lsHouseNumber;
+    }
+
+    public String getLsHouseNumber() {
+        return lsHouseNumber;
+    }
+
+    public void setLsIndustryCode(String lsIndustryCode) {
+        this.lsIndustryCode = lsIndustryCode;
+    }
+
+    public String getLsIndustryCode() {
+        return lsIndustryCode;
+    }
+
+    public void setLsCopyComments(String lsCopyComments) {
+        this.lsCopyComments = lsCopyComments;
+    }
+
+    public String getLsCopyComments() {
+        return lsCopyComments;
+    }
 
     public void setLsScheduledDate(String lsScheduledDate) {
         this.lsScheduledDate = lsScheduledDate;

@@ -56,6 +56,7 @@ public class OrderSpotsDao {
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage(loExSql.getMessage());
             System.out.println("ERROR AL INSERTAR SPOT: "+loExSql.getMessage());
+            System.out.println("Query con error: "+lsQueryParadigm);
         }
         finally{
             try {
@@ -99,9 +100,22 @@ public class OrderSpotsDao {
             "                       PROGRAMME_NAME,\n" + 
             "                       ADVERTISER_ID,\n" + 
             "                       ADVERTISER,\n" + 
-            "                       AGENCY_ID,\n" + 
-            "                       AGENCY_NAME,\n" + 
-            "                       MULTI_PART_MEMBER\n" + 
+            "                       AGENCY_ID,\n"; 
+            //"                       AGENCY_NAME,\n"
+        if(toBean.getLsAgencyName() != null ){
+            lsQuery += "                       AGENCY_NAME,\n";
+        }
+        if(toBean.getLsHouseNumber() != null ){
+            lsQuery += "                       HOUSE_NUMBER,\n";
+        }
+        if(toBean.getLsIndustryCode() != null ){
+            lsQuery += "                       INDUSTRY_CODE,\n";
+        }
+        if(toBean.getLsCopyComments() != null ){
+            lsQuery += "                       COPY_COMMENT,\n";
+        }
+            lsQuery +=             
+            "                       MULTI_PART_MEMBER,\n" + 
             //"                       BOOKING_POSITION,\n" + 
             //"                       NATIVE_COMMERCIAL_TITLE,\n" + 
             //"                       COPY_TYPE,\n" + 
@@ -113,6 +127,7 @@ public class OrderSpotsDao {
             //"                       PGMID,\n" + 
             //"                       BRKDTID,\n" + 
             //"                       MSTLOGEDTID\n" + 
+            "                       SALES_AREA\n" + 
             "                      )\n" + 
             "	            VALUES ('"+toBean.getLsScheduledDate()+"',\n" + 
             "                       '"+toBean.getLsBreakNominalTime()+"',\n" + 
@@ -138,9 +153,23 @@ public class OrderSpotsDao {
             "                       '"+toBean.getLsProgrammeName()+"',\n" + 
             "                       '"+toBean.getLsAdvertiserId()+"',\n" + 
             "                       '"+toBean.getLsAdvertiser()+"',\n" + 
-            "                       '"+toBean.getLsAgencyId()+"',\n" + 
-            "                       '"+toBean.getLsAgencyName()+"',\n" + 
-            "                       "+toBean.getLiMultiPartMember()+"\n" + 
+            "                       '"+toBean.getLsAgencyId()+"',\n";
+//            "                       '"+toBean.getLsAgencyName()+"',\n";
+        if(toBean.getLsAgencyName() != null ){
+            lsQuery += "                       '"+toBean.getLsAgencyName()+"',\n";
+        }
+        if(toBean.getLsHouseNumber() != null ){
+            lsQuery += "                       '"+toBean.getLsHouseNumber()+"',\n";
+        }
+        if(toBean.getLsIndustryCode() != null ){
+            lsQuery += "                       '"+toBean.getLsIndustryCode()+"',\n";
+        }
+        if(toBean.getLsCopyComments() != null ){
+            lsQuery += "                       '"+toBean.getLsCopyComments()+"',\n";
+        }
+            lsQuery += 
+            "                       "+toBean.getLiMultiPartMember()+",\n" + 
+            "                       '"+toBean.getLsSalesArea()+"'\n" + 
             //"                       '"+toBean.getLsBookingPosition()+"',\n" + 
             //"                       '"+toBean.getLsNativeCommercialTitle()+"',\n" + 
             //"                       '"+toBean.getLsCopyType()+"',\n" + 
@@ -390,7 +419,7 @@ public class OrderSpotsDao {
         ResultSet  loRs = null;
         String     lsQueryParadigm = 
             "SELECT COUNT(1) \n" + 
-            "  FROM EVENTAS.LOG_COMERCIAL_STATUS \n" + 
+            "  FROM EVENTAS.LMK_LOG_COMERCIAL_STATUS \n" + 
             " WHERE STATUS = 'OK'\n" + 
             "   AND STNID = '"+tsStnid+"'\n" + 
             "   AND BCSTDT = '"+tsBcstdt+"'";

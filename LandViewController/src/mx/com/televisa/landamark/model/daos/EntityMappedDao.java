@@ -361,4 +361,36 @@ public class EntityMappedDao {
         return lsQuery;
     }
     
+    /**
+     * Inserta en la tabla de bitacora en base de datos
+     * @autor Jorge Luis Bautista Santiago
+     * @param toLmkBitBean
+     * @return Integer
+     */
+    public void updateParametersServiceLog(Integer tiIdLogService,
+                                           Integer tiIdService,
+                                           String tsFechas,
+                                           String tsChannels) {
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "UPDATE EVENTAS.LMK_INT_SERVICES_LOG_TAB\n" + 
+            "   SET ATTRIBUTE1 = '"+tsFechas+"',\n" + 
+            "       ATTRIBUTE2 = '"+tsChannels+"'\n" + 
+            " WHERE ID_LOG_SERVICES = "+tiIdLogService+" " +
+            "   AND ID_SERVICE = "+tiIdService;
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+    }
+    
 }

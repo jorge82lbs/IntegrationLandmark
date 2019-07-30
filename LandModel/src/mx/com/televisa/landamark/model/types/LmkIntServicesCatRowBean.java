@@ -13,6 +13,15 @@ public class LmkIntServicesCatRowBean {
     private String lsIndDestiny;
     private String lsIndSystem;
     private String lsIndSynchronous;
+    private String lsIndAttribute1;
+
+    public void setLsIndAttribute1(String lsIndAttribute1) {
+        this.lsIndAttribute1 = lsIndAttribute1;
+    }
+
+    public String getLsIndAttribute1() {
+        return lsIndAttribute1;
+    }
 
     public void setLsIndDestiny(String lsIndDestiny) {
         this.lsIndDestiny = lsIndDestiny;

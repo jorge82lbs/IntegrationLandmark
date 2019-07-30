@@ -63,6 +63,14 @@ public class SftpManagment {
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
             loSession.setConfig("StrictHostKeyChecking", "no");
+            
+            loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
+                                "diffie-hellman-group14-sha1," + 
+                                "diffie-hellman-group-exchange-sha1," + 
+                                "diffie-hellman-group-exchange-sha256");
+            
+            
+            
             loSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             
@@ -117,6 +125,15 @@ public class SftpManagment {
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
             loSession.setConfig("StrictHostKeyChecking", "no");
+            
+            loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
+                                "diffie-hellman-group14-sha1," + 
+                                "diffie-hellman-group-exchange-sha1," + 
+                                "diffie-hellman-group-exchange-sha256");
+            
+            
+            
+            
             loSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             
@@ -160,24 +177,37 @@ public class SftpManagment {
         boolean      lbCnnScc  = true;
         String       lsMsgError = "";
         try {
-            System.out.println("Incio....");
+            //System.out.println("Incio....getListFileServerSFTP");
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
+            /*
+            System.out.println("loSftpCnn.getLsUser(): "+loSftpCnn.getLsUser());
+            System.out.println("loSftpCnn.getLsHost(): "+loSftpCnn.getLsHost());
+            System.out.println("loSftpCnn.getLiPort(): "+loSftpCnn.getLiPort());
+            System.out.println("loSftpCnn.getLsPassword(): "+loSftpCnn.getLsPassword());
+            */
             loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
             loSession.setConfig("StrictHostKeyChecking", "no");
+            
+            loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
+                                "diffie-hellman-group14-sha1," + 
+                                "diffie-hellman-group-exchange-sha1," + 
+                                "diffie-hellman-group-exchange-sha256");
+            
+            
             loSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
-            System.out.println("Conectado a ssl.");
+            System.out.println("Conectado a ssl.OK ");
             Channel loChannel = loSession.openChannel("sftp");
             loChannel.connect();
             
             ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
-            System.out.println("Listando archivos con ext["+tsExt+"]");
+            //System.out.println("Listando archivos con ext["+tsExt+"]");
             Vector laFilelist = loSftpChannel.ls(tsPath + tsExt);
             for(int liI = 0; liI < laFilelist.size() ; liI++){
                 ChannelSftp.LsEntry loEntry = (ChannelSftp.LsEntry) laFilelist.get(liI);
-                System.out.println("Archivo:["+loEntry.getFilename()+"]");
+                //System.out.println("Archivo:["+loEntry.getFilename()+"]");
                 laList.add(loEntry.getFilename());
             }
             loSftpChannel.exit();

@@ -130,14 +130,14 @@ public class OrderSpotsService {
             for(LmkIntXmlFilesRowBean loBean : laList){
                 int liI = 0;
                 lbProcess = true;
-                System.out.println("Buscar archivos ssh en lista de la base de datos");
+                //System.out.println("Buscar archivos ssh en lista de la base de datos");
                 while(liI < laLisSsh.size() && lbProcess == true){
                     //- Buscar cada nombre de archivo fisico en el grupo
-                    System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
-                                       "] VS laLis.get("+liI+")["+laLisSsh.get(liI).indexOf(loBean.getLsNomFile())+"]");
+                    //System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
+                      //                 "] VS laLis.get("+liI+")["+laLisSsh.get(liI).indexOf(loBean.getLsNomFile())+"]");
                     if(laLisSsh.get(liI).indexOf(loBean.getLsNomFile()) >= 0){
                         lbProcess = false;//Para que el ciclo sea cortado
-                        System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
+                        //System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
                         //Discriminar este registro, ya que ya está procesado
                     }else{
                         laInputList.add(laLisSsh.get(liI));

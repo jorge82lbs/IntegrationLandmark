@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVwViewImpl;
 import mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVwViewImpl;
 import mx.com.televisa.landamark.model.list.LmkIntListChannelsAllVwViewRowImpl;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
@@ -189,7 +190,6 @@ public class AppModuleImpl extends ApplicationModuleImpl {
                loRowResponse.setLsNomUserName(loRowView.getNomUserName());
                //loRowResponse.setLoIndFileStream(loRowView.getIndFileStream());
            }else{
-               System.out.println("blob no encontrado!!");
                loRowResponse.setLiIdFileXml(0);
                loRowResponse.setLiIdRequest(0);
                loRowResponse.setLiIdService(0);
@@ -422,7 +422,8 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             System.out.println("toLmkBean.getLiIdService(): "+toLmkBean.getLiIdService());
             System.out.println("toLmkBean.getLsIndParameter(): "+toLmkBean.getLsIndParameter());
             System.out.println("toLmkBean.getLsIndValParameter(): "+toLmkBean.getLsIndValParameter());
-            System.out.println("toLmkBean.getLsIndEstatus(): "+toLmkBean.getLsIndEstatus());*/
+            System.out.println("toLmkBean.getLsIndEstatus(): "+toLmkBean.getLsIndEstatus());
+            System.out.println("#############################################");*/
             loRow.setIdParameterServ(toLmkBean.getLiIdParameterServ());            
             loRow.setIdService(toLmkBean.getLiIdService());            
             loRow.setIndParameter(toLmkBean.getLsIndParameter());         
@@ -548,7 +549,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
         LmkIntServicesLogTabViewRowImpl loRow = 
             (LmkIntServicesLogTabViewRowImpl)loObj.createRow();        
         try {
-            System.out.println("Insertando en LmkIntServicesLogTab");
+            //System.out.println("Insertando en LmkIntServicesLogTab");
             loRow.setIdLogServices(toLmkBean.getLiIdLogServices());
             loRow.setIdService(toLmkBean.getLiIdService());
             loRow.setIndProcess(toLmkBean.getLiIndProcess());
@@ -668,6 +669,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             loRow.setIndEstatus(toLmkBean.getLsIndEstatus());
             loRow.setFecCreationDate(getCurrentTimestamp());
             loRow.setFecLastUpdateDate(getCurrentTimestamp());
+            loRow.setAttribute1(toLmkBean.getLsIndAttribute1());
             loRow.setAttribute15(getValueSessionFromAttribute("loggedPgmIntegrationUser"));
             loRow.setNumCreatedBy(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
             loRow.setNumLastUpdateLogin(Integer.parseInt(getValueSessionFromAttribute("loggedPgmIntegrationIdUser")));
@@ -924,7 +926,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
         LmkIntCronConfigTabViewRowImpl loRow = 
             (LmkIntCronConfigTabViewRowImpl)loObj.createRow();        
         try {
-            System.out.println("getLiIdConfiguration: "+toLmkBean.getLiIdConfiguration());
+            /*System.out.println("getLiIdConfiguration: "+toLmkBean.getLiIdConfiguration());
             System.out.println("getLiIdService: "+toLmkBean.getLiIdService());
             System.out.println("getLsIndPeriodicity: "+toLmkBean.getLsIndPeriodicity());
             System.out.println("getLsIndBeginSchedule: "+toLmkBean.getLsIndBeginSchedule());
@@ -945,7 +947,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             System.out.println("getLiIndFriday: "+toLmkBean.getLiIndFriday());
             System.out.println("getLiIndSaturday: "+toLmkBean.getLiIndSaturday());
             System.out.println("getLiIndSunday: "+toLmkBean.getLiIndSunday());
-            System.out.println("getLsIndEstatus: "+toLmkBean.getLsIndEstatus()); 
+            System.out.println("getLsIndEstatus: "+toLmkBean.getLsIndEstatus()); */
             loRow.setIdConfiguration(toLmkBean.getLiIdConfiguration());
             loRow.setIdService(toLmkBean.getLiIdService());
             loRow.setIndPeriodicity(toLmkBean.getLsIndPeriodicity());
@@ -989,9 +991,8 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      * @return void
      */
     public void updateCronConfigModel(LmkIntCronConfigRowBean toLmkBean) { 
-        System.out.println("en UPDATE!!!!!!! MODEL: ");
         try {
-            System.out.println("getLiIdConfiguration: "+toLmkBean.getLiIdConfiguration());
+            /*System.out.println("getLiIdConfiguration: "+toLmkBean.getLiIdConfiguration());
             System.out.println("getLiIdService: "+toLmkBean.getLiIdService());
             System.out.println("getLsIndPeriodicity: "+toLmkBean.getLsIndPeriodicity());
             System.out.println("getLsIndBeginSchedule: "+toLmkBean.getLsIndBeginSchedule());
@@ -1012,7 +1013,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             System.out.println("getLiIndFriday: "+toLmkBean.getLiIndFriday());
             System.out.println("getLiIndSaturday: "+toLmkBean.getLiIndSaturday());
             System.out.println("getLiIndSunday: "+toLmkBean.getLiIndSunday());
-            System.out.println("getLsIndEstatus: "+toLmkBean.getLsIndEstatus()); 
+            System.out.println("getLsIndEstatus: "+toLmkBean.getLsIndEstatus()); */
             LmkIntCronConfigTabViewImpl    loObj = 
                 getLmkIntCronConfigTabView1();
             loObj.setWhereClause("ID_CONFIGURATION = " + toLmkBean.getLiIdConfiguration());
@@ -1689,6 +1690,38 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      */
     public ViewObjectImpl getLmkIntNotificationsVwView1() {
         return (ViewObjectImpl) findViewObject("LmkIntNotificationsVwView1");
+    }
+
+    /**
+     * Container's getter for LmkIntServicesLogUsrVwView1.
+     * @return LmkIntServicesLogUsrVwView1
+     */
+    public LmkIntServicesLogUsrVwViewImpl getLmkIntServicesLogUsrVwView1() {
+        return (LmkIntServicesLogUsrVwViewImpl) findViewObject("LmkIntServicesLogUsrVwView1");
+    }
+
+    /**
+     * Container's getter for LmkIntServicesLogUsrpVwView1.
+     * @return LmkIntServicesLogUsrpVwView1
+     */
+    public LmkIntServicesLogUsrpVwViewImpl getLmkIntServicesLogUsrpVwView1() {
+        return (LmkIntServicesLogUsrpVwViewImpl) findViewObject("LmkIntServicesLogUsrpVwView1");
+    }
+
+    /**
+     * Container's getter for LmkIntServicesLogUsrpVwView2.
+     * @return LmkIntServicesLogUsrpVwView2
+     */
+    public ViewObjectImpl getLmkIntServicesLogUsrpVwView2() {
+        return (ViewObjectImpl) findViewObject("LmkIntServicesLogUsrpVwView2");
+    }
+
+    /**
+     * Container's getter for LmkIntListChannelpAllVwView1.
+     * @return LmkIntListChannelpAllVwView1
+     */
+    public LmkIntListChannelpAllVwViewImpl getLmkIntListChannelpAllVwView1() {
+        return (LmkIntListChannelpAllVwViewImpl) findViewObject("LmkIntListChannelpAllVwView1");
     }
 }
 

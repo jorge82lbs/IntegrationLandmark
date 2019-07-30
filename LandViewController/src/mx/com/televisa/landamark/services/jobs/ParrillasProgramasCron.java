@@ -9,10 +9,6 @@
 */
 package mx.com.televisa.landamark.services.jobs;
 
-import java.util.Date;
-
-import javax.servlet.ServletContext;
-
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.services.service.ParrillasProgramasService;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;

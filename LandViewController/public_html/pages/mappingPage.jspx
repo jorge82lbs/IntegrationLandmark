@@ -8,7 +8,7 @@
             <af:form id="f1">
             <af:resource type="javascript">
                     function enforcePreventUserInput(evt) {                    
-                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('p1oadLogin');
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('popLoading');
                         if (popup != null) {
                             AdfPage.PAGE.addBusyStateListener(popup, handleBusyState);
                             evt.preventUserInput();
@@ -16,7 +16,7 @@
                     }
                 
                     function handleBusyState(evt) {
-                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('p1oadLogin');
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('popLoading');
                         if (popup != null) {
                             if (evt.isBusy()) {
                                 popup.show();

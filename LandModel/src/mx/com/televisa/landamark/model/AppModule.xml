@@ -77,4 +77,13 @@
    <ViewUsage
       Name="LmkIntNotificationsVwView1"
       ViewObjectName="mx.com.televisa.landamark.model.LmkIntNotificationsVwView"/>
+   <ViewUsage
+      Name="LmkIntServicesLogUsrVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogUsrVwView"/>
+   <ViewUsage
+      Name="LmkIntServicesLogUsrpVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.LmkIntServicesLogUsrpVwView"/>
+   <ViewUsage
+      Name="LmkIntListChannelpAllVwView1"
+      ViewObjectName="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVwView"/>
 </AppModule>

@@ -111,8 +111,8 @@ public class ResponseBreaksService {
                 lbProcess = true;
                 while(liI < laLis.size() && lbProcess == true){
                     //- Buscar cada nombre de archivo fisico en el grupo
-                    System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
-                                       "] VS laLis.get("+liI+")["+laLis.get(liI).indexOf(loBean.getLsNomFile())+"]");
+                    //System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
+                      //                 "] VS laLis.get("+liI+")["+laLis.get(liI).indexOf(loBean.getLsNomFile())+"]");
                     if(laLis.get(liI).indexOf(loBean.getLsNomFile()) >= 0){
                         //Es verdadero
                         System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");

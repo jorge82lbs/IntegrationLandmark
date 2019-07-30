@@ -355,4 +355,204 @@ public class ViewObjectDao implements ViewObjectInterface{
                 "    WHERE IND_USED_BY = '" + tsArgs + "'";
         return lsQuery;
     }
+    
+    public List<String> getServiceCortesByUser(String tsUser) {
+        List<String> laReturn = new ArrayList<String>();
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = //Cambiar query
+            "SELECT coalesce(max(ID_SERVICE),'-1') ID_SERVICE\n" + 
+            "  FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB\n" + 
+            " WHERE ATTRIBUTE1 = '"+tsUser+"'\n" + 
+            "   AND NOM_SERVICE = 'ProcessParrillasProgramas'\n" + 
+            "   AND IND_SYSTEM = 'Usuarios'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                String liIdService = loRs.getString("ID_SERVICE"); 
+                laReturn.add(liIdService);
+                Integer liIdServicio = Integer.parseInt(liIdService);
+                if(liIdServicio > 0){//es una configurcion válida
+                //System.out.println("Si existe configuracion, buscar fi y ff");
+                    ResultSet               loRsPrm = null;
+                    String                  lsQuery = 
+                        "SELECT IND_VAL_PARAMETER\n" + 
+                        "  FROM EVENTAS.LMK_INT_SERVICES_PARAMS_TAB\n" + 
+                        " WHERE ID_SERVICE = "+liIdService+" \n" + 
+                        "   AND IND_PARAMETER = 'FECHA_INICIAL'\n" + 
+                        "UNION ALL\n" + 
+                        "SELECT IND_VAL_PARAMETER\n" + 
+                        "  FROM EVENTAS.LMK_INT_SERVICES_PARAMS_TAB\n" + 
+                        " WHERE ID_SERVICE = "+liIdService+" \n" + 
+                        "   AND IND_PARAMETER = 'FECHA_FINAL'";
+                    try {
+                        Statement loStmtPrm = loCnn.createStatement();
+                        loRsPrm = loStmtPrm.executeQuery(lsQuery);  
+                        while(loRsPrm.next()){
+                            String loFec = loRsPrm.getString("IND_VAL_PARAMETER"); 
+                            //System.out.println("loFec: "+loFec);
+                            laReturn.add(loFec);
+                            
+                        }
+                    } catch (SQLException loExSql) {
+                        loExSql.printStackTrace();
+                    }
+                    finally{
+                        try {
+                            loRsPrm.close();
+                        } catch (SQLException loEx) {
+                            loEx.printStackTrace();
+                        }
+                    }
+                }
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+                
+        return laReturn;
+    }
+    
+    public Integer getServiceCortesProgramasByUser(String tsUser) {
+        Integer liIdServicio    = -1;
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = //Cambiar query
+            "SELECT coalesce(max(ID_SERVICE),'-1') ID_SERVICE\n" + 
+            "  FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB\n" + 
+            " WHERE ATTRIBUTE1 = '"+tsUser+"'\n" + 
+            "   AND NOM_SERVICE = 'ProcessParrillasProgramas'\n" + 
+            "   AND IND_SYSTEM = 'Usuarios'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                String liIdService = loRs.getString("ID_SERVICE"); 
+                System.out.println("liIdService(Sin mover pagina): "+liIdService);
+                liIdServicio = Integer.parseInt(liIdService);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        
+        return liIdServicio;
+    }
+    
+    public List<String> getServicePreciosByUser(String tsUser) {
+        List<String> laReturn = new ArrayList<String>();
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = //Cambiar query
+            "SELECT coalesce(max(ID_SERVICE),'-1') ID_SERVICE\n" + 
+            "  FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB\n" + 
+            " WHERE ATTRIBUTE1 = '"+tsUser+"'\n" + 
+            "   AND NOM_SERVICE = 'ProcessPriceUpdate'\n" + 
+            "   AND IND_SYSTEM = 'Usuarios'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                String liIdService = loRs.getString("ID_SERVICE"); 
+                laReturn.add(liIdService);
+                Integer liIdServicio = Integer.parseInt(liIdService);
+                if(liIdServicio > 0){//es una configurcion válida
+                //System.out.println("Si existe configuracion, buscar fi y ff");
+                    ResultSet               loRsPrm = null;
+                    String                  lsQuery = 
+                        "SELECT IND_VAL_PARAMETER\n" + 
+                        "  FROM EVENTAS.LMK_INT_SERVICES_PARAMS_TAB\n" + 
+                        " WHERE ID_SERVICE = "+liIdService+" \n" + 
+                        "   AND IND_PARAMETER = 'FECHA_INICIAL'\n" + 
+                        "UNION ALL\n" + 
+                        "SELECT IND_VAL_PARAMETER\n" + 
+                        "  FROM EVENTAS.LMK_INT_SERVICES_PARAMS_TAB\n" + 
+                        " WHERE ID_SERVICE = "+liIdService+" \n" + 
+                        "   AND IND_PARAMETER = 'FECHA_FINAL'";
+                    try {
+                        Statement loStmtPrm = loCnn.createStatement();
+                        loRsPrm = loStmtPrm.executeQuery(lsQuery);  
+                        while(loRsPrm.next()){
+                            String loFec = loRsPrm.getString("IND_VAL_PARAMETER"); 
+                            //System.out.println("loFec: "+loFec);
+                            laReturn.add(loFec);
+                            
+                        }
+                    } catch (SQLException loExSql) {
+                        loExSql.printStackTrace();
+                    }
+                    finally{
+                        try {
+                            loRsPrm.close();
+                        } catch (SQLException loEx) {
+                            loEx.printStackTrace();
+                        }
+                    }
+                }
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+                
+        return laReturn;
+    }
+    
+    public Integer getServicePreciosParadigmByUser(String tsUser) {
+        Integer liIdServicio    = -1;
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = //Cambiar query
+            "SELECT coalesce(max(ID_SERVICE),'-1') ID_SERVICE\n" + 
+            "  FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB\n" + 
+            " WHERE ATTRIBUTE1 = '"+tsUser+"'\n" + 
+            "   AND NOM_SERVICE = 'ProcessPriceUpdate'\n" + 
+            "   AND IND_SYSTEM = 'Usuarios'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                String liIdService = loRs.getString("ID_SERVICE"); 
+                System.out.println("liIdService(Sin mover pagina): "+liIdService);
+                liIdServicio = Integer.parseInt(liIdService);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        
+        return liIdServicio;
+    }
+    
+    
 }

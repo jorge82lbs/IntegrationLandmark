@@ -79,6 +79,18 @@ public class Spot {
     private String AgencyID;
     @XmlElement
     private String AgencyName;
+    
+    @XmlElement(name = "Contents")
+    private Contents Contents;
+
+    public void setContents(Contents Contents) {
+        this.Contents = Contents;
+    }
+
+    public Contents getContents() {
+        return Contents;
+    }
+    
 
     public void setSalesArea(String SalesArea) {
         this.SalesArea = SalesArea;

@@ -49,7 +49,7 @@
       <property
          name="fromOutcome">homePage</property>
       <property
-         name="sdm:polyPoints">T43,81.5,17.465315,84.5,-109.9541,B50</property>
+         name="sdm:polyPoints">T50,85.0,17.63693,84.5,-109.9541,B50</property>
    </ControlFlowCase>
    <View
       id="View7">
@@ -74,7 +74,7 @@
       <property
          name="fromOutcome">gralConfigPage</property>
       <property
-         name="sdm:polyPoints">T57,88.5,18.948242,236.36133,-130.00586,B50</property>
+         name="sdm:polyPoints">T64,92.0,18.948242,236.36133,-130.00586,B50</property>
    </ControlFlowCase>
    <View
       id="View9">
@@ -187,9 +187,9 @@
       <property
          name="exceptionHandler">false</property>
       <property
-         name="y">294.09766</property>
+         name="y">290.39648</property>
       <property
-         name="x">76.021484</property>
+         name="x">166.02148</property>
    </View>
    <ControlFlowCase
       islink="true"
@@ -199,7 +199,7 @@
       <property
          name="fromOutcome">processPage</property>
       <property
-         name="sdm:polyPoints">B50,85.0,103.94824,76.021484,239.74707,T50</property>
+         name="sdm:polyPoints">B57,88.5,103.94824,166.02148,236.0459,T50</property>
    </ControlFlowCase>
    <View
       id="View19">
@@ -212,9 +212,9 @@
       <property
          name="exceptionHandler">false</property>
       <property
-         name="y">-105.603516</property>
+         name="y">-134.30469</property>
       <property
-         name="x">-127.975586</property>
+         name="x">-95.975586</property>
    </View>
    <ControlFlowCase
       islink="true"
@@ -224,7 +224,7 @@
       <property
          name="fromOutcome">loadFilePage</property>
       <property
-         name="sdm:polyPoints">L50,49.0,61.448242,-127.975586,-50.551758,B50</property>
+         name="sdm:polyPoints">T36,78.0,18.948242,-54.975586,-134.65527,R50</property>
    </ControlFlowCase>
    <View
       id="View21">
@@ -237,9 +237,9 @@
       <property
          name="exceptionHandler">false</property>
       <property
-         name="y">137.79883</property>
+         name="y">349.6953</property>
       <property
-         name="x">-136.31152</property>
+         name="x">34.688477</property>
    </View>
    <ControlFlowCase
       islink="true"
@@ -249,6 +249,56 @@
       <property
          name="fromOutcome">statusFilesPage</property>
       <property
-         name="sdm:polyPoints">L55,49.0,64.94824,-95.31152,137.44824,R50</property>
+         name="sdm:polyPoints">B43,81.5,103.94824,34.688477,295.34473,T50</property>
+   </ControlFlowCase>
+   <View
+      id="View23">
+      <property
+         name="activityId">creationFilesPage</property>
+      <property
+         name="page">/pages/creationFilesPage.jspx</property>
+      <property
+         name="description">&lt;html>&lt;p>&lt;b>creationFilesPage&lt;/b>&lt;/p>&lt;p>Activity Type:  View&lt;/p></property>
+      <property
+         name="exceptionHandler">false</property>
+      <property
+         name="y">-49.20117</property>
+      <property
+         name="x">-216.97363</property>
+   </View>
+   <ControlFlowCase
+      islink="true"
+      id="ControlFlowCase25"
+      from="WildcardControlFlowRule5"
+      to="View23">
+      <property
+         name="fromOutcome">creationFilesPage</property>
+      <property
+         name="sdm:polyPoints">L50,49.0,61.448242,-175.97363,-49.551758,R50</property>
+   </ControlFlowCase>
+   <View
+      id="View25">
+      <property
+         name="activityId">pricePage</property>
+      <property
+         name="page">/pages/pricePage.jspx</property>
+      <property
+         name="description">&lt;html>&lt;p>&lt;b>pricePage&lt;/b>&lt;/p>&lt;p>Activity Type:  View&lt;/p></property>
+      <property
+         name="exceptionHandler">false</property>
+      <property
+         name="y">119.79883</property>
+      <property
+         name="x">-216.5</property>
+   </View>
+   <ControlFlowCase
+      islink="true"
+      id="ControlFlowCase26"
+      from="WildcardControlFlowRule5"
+      to="View25">
+      <property
+         name="fromOutcome">pricePage</property>
+      <property
+         name="sdm:polyPoints">B36,78.0,103.94824,-216.5,173.44824,B50</property>
    </ControlFlowCase>
 </SDM>

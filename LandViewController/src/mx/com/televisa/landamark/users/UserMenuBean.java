@@ -32,11 +32,122 @@ public class UserMenuBean {
     private String lsPantallaNotifications;
     private String lsPantallaProcess;
     private String lsPantallaStatusFiles;
+    private String lsPantallaPrecios;
+    
+    private String lsUserIdServiceCortes;
+    private String lsUserNomServiceCortes;
+    private String lsUserFecInicialCortes;
+    private String lsUserFecFinalCortes;
+    private String lsUserListChannelsCortes;
+    
+    private String lsUserIdServicePrecios;
+    private String lsUserNomServicePrecios;
+    private String lsUserFecInicialPrecios;
+    private String lsUserFecFinalPrecios;
+    private String lsUserListChannelsPrecios;
+    
     private String lsOprInsertCron;
     private String lsOprDeleteCron;
     private String lsOprExecuteCron;
     private String lsOprInitStopCron;
 
+    private String lsPantallaCreateFile;
+
+    public void setLsPantallaPrecios(String lsPantallaPrecios) {
+        this.lsPantallaPrecios = lsPantallaPrecios;
+    }
+
+    public String getLsPantallaPrecios() {
+        return lsPantallaPrecios;
+    }
+
+    public void setLsUserIdServicePrecios(String lsUserIdServicePrecios) {
+        this.lsUserIdServicePrecios = lsUserIdServicePrecios;
+    }
+
+    public String getLsUserIdServicePrecios() {
+        return lsUserIdServicePrecios;
+    }
+
+    public void setLsUserNomServicePrecios(String lsUserNomServicePrecios) {
+        this.lsUserNomServicePrecios = lsUserNomServicePrecios;
+    }
+
+    public String getLsUserNomServicePrecios() {
+        return lsUserNomServicePrecios;
+    }
+
+    public void setLsUserFecInicialPrecios(String lsUserFecInicialPrecios) {
+        this.lsUserFecInicialPrecios = lsUserFecInicialPrecios;
+    }
+
+    public String getLsUserFecInicialPrecios() {
+        return lsUserFecInicialPrecios;
+    }
+
+    public void setLsUserFecFinalPrecios(String lsUserFecFinalPrecios) {
+        this.lsUserFecFinalPrecios = lsUserFecFinalPrecios;
+    }
+
+    public String getLsUserFecFinalPrecios() {
+        return lsUserFecFinalPrecios;
+    }
+
+    public void setLsUserListChannelsPrecios(String lsUserListChannelsPrecios) {
+        this.lsUserListChannelsPrecios = lsUserListChannelsPrecios;
+    }
+
+    public String getLsUserListChannelsPrecios() {
+        return lsUserListChannelsPrecios;
+    }
+
+    public void setLsUserListChannelsCortes(String lsUserListChannelsCortes) {
+        this.lsUserListChannelsCortes = lsUserListChannelsCortes;
+    }
+
+    public String getLsUserListChannelsCortes() {
+        return lsUserListChannelsCortes;
+    }
+
+    public void setLsUserIdServiceCortes(String lsUserIdServiceCortes) {
+        this.lsUserIdServiceCortes = lsUserIdServiceCortes;
+    }
+
+    public String getLsUserIdServiceCortes() {
+        return lsUserIdServiceCortes;
+    }
+
+    public void setLsUserNomServiceCortes(String lsUserNomServiceCortes) {
+        this.lsUserNomServiceCortes = lsUserNomServiceCortes;
+    }
+
+    public String getLsUserNomServiceCortes() {
+        return lsUserNomServiceCortes;
+    }
+
+    public void setLsUserFecInicialCortes(String lsUserFecInicialCortes) {
+        this.lsUserFecInicialCortes = lsUserFecInicialCortes;
+    }
+
+    public String getLsUserFecInicialCortes() {
+        return lsUserFecInicialCortes;
+    }
+
+    public void setLsUserFecFinalCortes(String lsUserFecFinalCortes) {
+        this.lsUserFecFinalCortes = lsUserFecFinalCortes;
+    }
+
+    public String getLsUserFecFinalCortes() {
+        return lsUserFecFinalCortes;
+    }
+
+    public void setLsPantallaCreateFile(String lsPantallaCreateFile) {
+        this.lsPantallaCreateFile = lsPantallaCreateFile;
+    }
+
+    public String getLsPantallaCreateFile() {
+        return lsPantallaCreateFile;
+    }
 
     public void setLsPantallaBitacora(String lsPantallaBitacora) {
         this.lsPantallaBitacora = lsPantallaBitacora;

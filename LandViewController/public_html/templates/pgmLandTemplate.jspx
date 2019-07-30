@@ -100,14 +100,28 @@
                                         <af:commandMenuItem id="MnuTemp22" text="Cargar Archivos"
                                                             action="loadFilePage"
                                                             shortDesc="Carga de Archivos" 
+                                                            visible="false"
                                                             rendered="#{UserMenuBean.lsPantallaLoadFile}"
                                                             icon="/images/Upload.gif"/>
                                                             
                                         <af:commandMenuItem id="MnuTemp232" text="Estatus de Archivos"
                                                             action="statusFilesPage"
+                                                            visible="false"
                                                             rendered="#{UserMenuBean.lsPantallaStatusFiles}"
                                                             shortDesc="Estatus de Archivos" 
                                                             icon="/images/list_settings.gif"/>
+                                                            
+                                        <af:commandMenuItem id="MnuTemp1232" text="Archivos Cortes y Programas"
+                                                            action="creationFilesPage"
+                                                            rendered="#{UserMenuBean.lsPantallaCreateFile}"
+                                                            shortDesc="Generación de Archivos Cortes y Programas" 
+                                                            icon="/images/Briefcase.gif"/>
+                                                            
+                                        <af:commandMenuItem id="MnuTemp12323" text="Actualización de Precios"
+                                                            action="pricePage"
+                                                            rendered="#{UserMenuBean.lsPantallaPrecios}"
+                                                            shortDesc="Actualización de Precios" 
+                                                            icon="/images/Coin.gif"/>
                                                             
                                         <af:commandMenuItem id="MnuTemp2" text="Monitoreo"
                                                             action="monitorPage"

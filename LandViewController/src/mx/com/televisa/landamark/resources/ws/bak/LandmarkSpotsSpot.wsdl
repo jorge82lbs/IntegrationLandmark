@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://tempuri.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://tempuri.org/" name="LandmarkSpotsSpot">
+
+
+<wsdl:types>
+
+
+<xsd:schema targetNamespace="http://tempuri.org/Imports">
+
+<xsd:import namespace="http://tempuri.org/" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd0"/>
+
+<xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd1"/>
+
+<xsd:import namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd2"/>
+
+<xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd3"/>
+
+<xsd:import namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd4"/>
+
+<xsd:import namespace="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd5"/>
+
+<xsd:import namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams" schemaLocation="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?xsd=xsd6"/>
+
+</xsd:schema>
+
+</wsdl:types>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadForFilter_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadForFilter"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadForFilter_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadForFilterResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadForFilter2_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadForFilter2"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadForFilter2_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadForFilter2Response"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_BatchBookings_InputMessage">
+
+<wsdl:part name="parameters" element="tns:BatchBookings"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_BatchBookings_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:BatchBookingsResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadSpotListReportTypes_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadSpotListReportTypes"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadSpotListReportTypes_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadSpotListReportTypesResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadCopySelection_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadCopySelection"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadCopySelection_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadCopySelectionResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadSpotStatusIncActive_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadSpotStatusIncActive"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadSpotStatusIncActive_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadSpotStatusIncActiveResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadPositionInProgramme_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadPositionInProgramme"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadPositionInProgramme_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadPositionInProgrammeResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadInteractivity_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadInteractivity"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadInteractivity_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadInteractivityResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadBookProcessTypes_InputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadBookProcessTypes"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_LoadBookProcessTypes_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:LoadBookProcessTypesResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_SaveSpotsForBreakSequence_InputMessage">
+
+<wsdl:part name="parameters" element="tns:SaveSpotsForBreakSequence"/>
+
+</wsdl:message>
+
+
+<wsdl:message name="ILandmarkSpotsSpot_SaveSpotsForBreakSequence_OutputMessage">
+
+<wsdl:part name="parameters" element="tns:SaveSpotsForBreakSequenceResponse"/>
+
+</wsdl:message>
+
+
+<wsdl:portType name="ILandmarkSpotsSpot">
+
+
+<wsdl:operation name="LoadForFilter">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadForFilter_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadForFilter"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadForFilter_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadForFilterResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadForFilter2">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadForFilter2_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadForFilter2"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadForFilter2_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadForFilter2Response"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="BatchBookings">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_BatchBookings_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/BatchBookings"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_BatchBookings_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/BatchBookingsResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadSpotListReportTypes">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadSpotListReportTypes_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadSpotListReportTypes"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadSpotListReportTypes_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadSpotListReportTypesResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadCopySelection">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadCopySelection_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadCopySelection"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadCopySelection_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadCopySelectionResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadSpotStatusIncActive">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadSpotStatusIncActive_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadSpotStatusIncActive"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadSpotStatusIncActive_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadSpotStatusIncActiveResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadPositionInProgramme">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadPositionInProgramme_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadPositionInProgramme"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadPositionInProgramme_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadPositionInProgrammeResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadInteractivity">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadInteractivity_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadInteractivity"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadInteractivity_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadInteractivityResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadBookProcessTypes">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_LoadBookProcessTypes_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadBookProcessTypes"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_LoadBookProcessTypes_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/LoadBookProcessTypesResponse"/>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="SaveSpotsForBreakSequence">
+
+<wsdl:input message="tns:ILandmarkSpotsSpot_SaveSpotsForBreakSequence_InputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/SaveSpotsForBreakSequence"/>
+
+<wsdl:output message="tns:ILandmarkSpotsSpot_SaveSpotsForBreakSequence_OutputMessage" wsaw:Action="http://tempuri.org/ILandmarkSpotsSpot/SaveSpotsForBreakSequenceResponse"/>
+
+</wsdl:operation>
+
+</wsdl:portType>
+
+
+<wsdl:binding name="BasicHttpBinding_ILandmarkSpotsSpot" type="tns:ILandmarkSpotsSpot">
+
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+
+
+<wsdl:operation name="LoadForFilter">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadForFilter"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadForFilter2">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadForFilter2"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="BatchBookings">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/BatchBookings"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadSpotListReportTypes">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadSpotListReportTypes"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadCopySelection">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadCopySelection"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadSpotStatusIncActive">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadSpotStatusIncActive"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadPositionInProgramme">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadPositionInProgramme"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadInteractivity">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadInteractivity"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="LoadBookProcessTypes">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/LoadBookProcessTypes"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+
+<wsdl:operation name="SaveSpotsForBreakSequence">
+
+<soap:operation style="document" soapAction="http://tempuri.org/ILandmarkSpotsSpot/SaveSpotsForBreakSequence"/>
+
+
+<wsdl:input>
+
+<soap:body use="literal"/>
+
+</wsdl:input>
+
+
+<wsdl:output>
+
+<soap:body use="literal"/>
+
+</wsdl:output>
+
+</wsdl:operation>
+
+</wsdl:binding>
+
+
+<wsdl:service name="LandmarkSpotsSpot">
+
+
+<wsdl:port name="BasicHttpBinding_ILandmarkSpotsSpot" binding="tns:BasicHttpBinding_ILandmarkSpotsSpot">
+
+<soap:address location="http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc"/>
+
+</wsdl:port>
+
+</wsdl:service>
+
+</wsdl:definitions>

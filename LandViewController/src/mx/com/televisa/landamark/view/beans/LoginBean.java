@@ -31,6 +31,7 @@ import javax.servlet.http.HttpSession;
 
 import mx.com.televisa.landamark.client.userpermission.types.Usuario;
 import mx.com.televisa.landamark.model.AppModuleImpl;
+import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.users.UserInfoBean;
 import mx.com.televisa.landamark.users.UserMenuBean;
 import mx.com.televisa.landamark.secman.SecurityManagerWs;
@@ -83,9 +84,9 @@ public class LoginBean {
                 //lsTokenSecman = validateSecmanUser(lsUserName, lsPassword); 
                 lsTokenSecman = "123456789"; //TEMPORAL
                 if (lsTokenSecman != null) {
-                    //Usuario loUserIntegration = getSecmanUserPermission(lsUserName);
-                    //if(loUserIntegration != null){
-                    if(true){
+                    Usuario loUserIntegration = getSecmanUserPermission(lsUserName);
+                    if(loUserIntegration != null){
+                    //if(true){
                         //Settear Datos--------------------------
                         FacesContext        loContext = FacesContext.getCurrentInstance();
                         ExternalContext     loEctx = loContext.getExternalContext();        
@@ -97,23 +98,31 @@ public class LoginBean {
                         DateFormat          ldDateFormat = 
                             new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                         Date                ldDate = new Date();                    
+                        /*
                         loUserInfo.setPsUserFullName("Bautista Santiago Jorge Luis");//loUserIntegration.getNomMostrar().getNomMostrar());
                         loUserInfo.setPsEmail("jlbautistas@teleevisa.com.mx");//loUserIntegration.getMailUsuario().getMailUsuario());
                         loUserInfo.setPsIdUser("666");//loUserIntegration.getIdUsuario().getIdUsuario());
                         loUserInfo.setPsUserName("jlbautistas");//loUserIntegration.getUserName().getUserName());
-                        /*
+                        */
                         loUserInfo.setPsUserFullName(loUserIntegration.getNomMostrar().getNomMostrar());
                         loUserInfo.setPsEmail(loUserIntegration.getMailUsuario().getMailUsuario());
                         loUserInfo.setPsIdUser(loUserIntegration.getIdUsuario().getIdUsuario());
                         loUserInfo.setPsUserName(loUserIntegration.getUserName().getUserName());
-                        */
+                        
                         loUserInfo.setPsDateTimeLogin(ldDateFormat.format(ldDate));
                         loUserInfo.setPsToken(lsTokenSecman);
                         loSession.setAttribute("loggedPgmIntegrationUser", loUserInfo.getPsUserName());                             
                         loSession.setAttribute("loggedPgmIntegrationIdUser", loUserInfo.getPsIdUser()); 
-                        //### Asignar Operaciones a Usuario Firmado
                         
-                        getUserMenuBean(lsUserName);
+                        UserMenuBean loUserMenuBean = getUserMenuBean(lsUserName);
+                        
+                        //Agregar informacion de Cortes y Programa
+                        loSession.setAttribute("idServiceCortes", loUserMenuBean.getLsUserIdServiceCortes());
+                        loSession.setAttribute("listChannelsCortes", loUserMenuBean.getLsUserListChannelsCortes());                             
+                        
+                        //Agregar informacion de Actualizacion de Precios
+                        loSession.setAttribute("idServicePrecios", loUserMenuBean.getLsUserIdServicePrecios());
+                        loSession.setAttribute("listChannelsPrecios", loUserMenuBean.getLsUserListChannelsPrecios());                             
                         
                         String              lsUrl = 
                             loEctx.getRequestContextPath() + "/faces/homePage";
@@ -150,10 +159,10 @@ public class LoginBean {
     /**
      * Obtiene operaciones de Usuario en Security Manager 
      * @autor Jorge Luis Bautista Santiago
-     * @return List
+     * @return UserMenuBean
      */
     public UserMenuBean getUserMenuBean(String tsUserName) throws Exception {
-        
+        String lsChannels = "";
         UserOperationList        loUserOperationList = 
             (UserOperationList) new UtilFaces().resolveExpression("#{UserOperationList}");
         loUserOperationList.setLsUserName(tsUserName);
@@ -172,12 +181,13 @@ public class LoginBean {
         loMenu.setLsPantallaNotifications(lsFlag);
         loMenu.setLsPantallaProcess(lsFlag);
         loMenu.setLsPantallaStatusFiles(lsFlag);
+        loMenu.setLsPantallaCreateFile(lsFlag);
         
         loMenu.setLsOprDeleteCron("true");
         loMenu.setLsOprExecuteCron("true");
         loMenu.setLsOprInitStopCron("true");
         loMenu.setLsOprInsertCron("true");
-        /*
+        
         List<String>        laOperaciones = 
             getSecmanUserOperations(tsUserName);
         for (int liI = 0; liI < laOperaciones.size(); liI++) {
@@ -207,17 +217,90 @@ public class LoginBean {
             if (laOperaciones.get(liI).equalsIgnoreCase("PantallaStatusFiles")){
                 loMenu.setLsPantallaStatusFiles(lsFlag);    
             }
+        if (laOperaciones.get(liI).equalsIgnoreCase("PantallaCreationFiles")){
+            loMenu.setLsPantallaCreateFile(lsFlag);    
+        }
+        if (laOperaciones.get(liI).equalsIgnoreCase("PantallaPriceFiles")){
+            loMenu.setLsPantallaPrecios(lsFlag);    
+        }
             if(laOperaciones.get(liI).startsWith("Ch-")){
                 String[] laChn = laOperaciones.get(liI).split("-");
                 if(laChn.length > 1){
                     laList.add(laChn[1]);
+                    //System.out.println("Canal: "+laChn[1]);
+                    lsChannels += "'"+laChn[1]+"',";
+                    //System.out.println("Canales: "+laChn[1]);
                     loUserOperationList.setLaOpertations(laList);
                 }
             }
-        }*/
+            if(lsChannels.length() > 0){
+                loMenu.setLsUserListChannelsCortes(lsChannels.substring(0, lsChannels.length()-1));    
+                loMenu.setLsUserListChannelsPrecios(lsChannels.substring(0, lsChannels.length()-1));    
+            }
+                        
+        }
+        
+        //Obtener el idServicio de cortes y programas para el usuario firmado
+        List<String> laListCortes = getCortesyProgramasByUser(tsUserName);
+        
+        if(Integer.parseInt(laListCortes.get(0)) > 0){
+            loMenu.setLsUserIdServiceCortes(laListCortes.get(0));
+            loMenu.setLsUserFecInicialCortes(laListCortes.get(1));
+            loMenu.setLsUserFecFinalCortes(laListCortes.get(2));
+            loMenu.setLsUserNomServiceCortes("Generar Archivo de Cortes y Programas");
+        }else{
+            loMenu.setLsUserIdServiceCortes(laListCortes.get(0));
+            loMenu.setLsUserFecInicialCortes("");
+            loMenu.setLsUserFecFinalCortes("");
+            loMenu.setLsUserNomServiceCortes("Generar Archivo de Cortes y Programas");
+        }
+        
+        //Obtener el idServicio de Actualizacion de Precios para el usuario firmado
+        List<String> laListPrecios = getActualizacionPreciosByUser(tsUserName);
+        
+        if(Integer.parseInt(laListPrecios.get(0)) > 0){
+            loMenu.setLsUserIdServicePrecios(laListPrecios.get(0));
+            loMenu.setLsUserFecInicialPrecios(laListPrecios.get(1));
+            loMenu.setLsUserFecFinalPrecios(laListPrecios.get(2));
+            loMenu.setLsUserNomServicePrecios("Generar Archivo de Cortes y Programas");
+        }else{
+            loMenu.setLsUserIdServicePrecios(laListPrecios.get(0));
+            loMenu.setLsUserFecInicialPrecios("");
+            loMenu.setLsUserFecFinalPrecios("");
+            loMenu.setLsUserNomServicePrecios("Generar Archivo de Cortes y Programas");
+        }
+        
+        
         
         return loMenu;
     }
+    
+    /**
+     * Obtiene el idServicio, fecha inicial y fecha final, si es
+     * que el usuario ha ejecutado al menos una vez el servicio de Cortes y Programas
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<String> getCortesyProgramasByUser(String tsUser){        
+        List<String> laList = new ArrayList<String>();
+        ViewObjectDao loViewObjectDao = new ViewObjectDao();
+        laList = loViewObjectDao.getServiceCortesByUser(tsUser);
+        return laList;
+    }
+    
+    /**
+     * Obtiene el idServicio, fecha inicial y fecha final, si es
+     * que el usuario ha ejecutado al menos una vez el servicio de Cortes y Programas
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<String> getActualizacionPreciosByUser(String tsUser){        
+        List<String> laList = new ArrayList<String>();
+        ViewObjectDao loViewObjectDao = new ViewObjectDao();
+        laList = loViewObjectDao.getServicePreciosByUser(tsUser);
+        return laList;
+    }
+    
     
     /**
      * Obtiene operaciones de Usuario en Security Manager 

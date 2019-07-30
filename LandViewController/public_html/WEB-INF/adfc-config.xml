@@ -30,6 +30,12 @@
   <view id="statusFilesPage">
     <page>/pages/statusFilesPage.jspx</page>
   </view>
+  <view id="creationFilesPage">
+    <page>/pages/creationFilesPage.jspx</page>
+  </view>
+  <view id="pricePage">
+    <page>/pages/pricePage.jspx</page>
+  </view>
   <control-flow-rule id="__2">
     <from-activity-id>*</from-activity-id>
     <control-flow-case id="__3">
@@ -67,6 +73,14 @@
     <control-flow-case id="__19">
       <from-outcome>statusFilesPage</from-outcome>
       <to-activity-id>statusFilesPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__22">
+      <from-outcome>creationFilesPage</from-outcome>
+      <to-activity-id>creationFilesPage</to-activity-id>
+    </control-flow-case>
+    <control-flow-case id="__23">
+      <from-outcome>pricePage</from-outcome>
+      <to-activity-id>pricePage</to-activity-id>
     </control-flow-case>
   </control-flow-rule>
   <managed-bean id="__4">
@@ -118,5 +132,15 @@
     <managed-bean-name>UserOperationList</managed-bean-name>
     <managed-bean-class>mx.com.televisa.landamark.users.UserOperationList</managed-bean-class>
     <managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__21">
+    <managed-bean-name>CreationBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.CreationBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+  </managed-bean>
+  <managed-bean id="__24">
+    <managed-bean-name>PriceBean</managed-bean-name>
+    <managed-bean-class>mx.com.televisa.landamark.view.beans.PriceBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
   </managed-bean>
 </adfc-config>

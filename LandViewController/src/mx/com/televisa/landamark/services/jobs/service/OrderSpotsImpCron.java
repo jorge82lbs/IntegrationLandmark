@@ -33,6 +33,7 @@ import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.model.types.inject.LmkSpotsRowBean;
+import mx.com.televisa.landamark.services.beans.input.spots.Content;
 import mx.com.televisa.landamark.services.beans.input.spots.Spot;
 import mx.com.televisa.landamark.services.beans.input.spots.Spots;
 import mx.com.televisa.landamark.services.sftp.SftpManagment;
@@ -223,6 +224,8 @@ public class OrderSpotsImpCron implements Job{
                                                           "yyyy-mm-dd");
                         System.out.println("lsStnid["+lsStnid+"]");
                         System.out.println("lsBcstdt["+lsBcstdt+"]");
+                        //System.out.println("########## Fin TEMPORAL ###############");
+                        
                         OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
                         // 2)      Ejecutar el SP…. EVENTAS.LMK_VALIDA_SPOTS(STNID, BCSTDT)
                          
@@ -258,12 +261,12 @@ public class OrderSpotsImpCron implements Job{
                         }
                         else{
                             //  3)      Al término de la ejecución de este SP… validar la tabla … EVENTAS.LMK_SPOTS_STATUS … 
-                            // al final esta tabla funciona como la de EVETV de LOG_COMERCIAL_STATUS donde a través del Canal 
+                            // al final esta tabla funciona como la de EVETV de LMK_LOG_COMERCIAL_STATUS donde a través del Canal 
                             // y la Fecha de Transmisión se pondrá el tipo de error que se validó antes de ejecutar el resto de 
                             // la información… Si la tabla tiene un solo registro con el Status Igual a OK, entonces se procede 
                             // al punto 4.. Si hay errores, aquí definiremos por el campo de TIPO .. a quien se los 
                             // enviaremos vía correo.
-                            System.out.println("Validacion OK de LOG_COMERCIAL_STATUS ");
+                            System.out.println("Validacion OK de LMK_LOG_COMERCIAL_STATUS ");
                             liIndProcess = 
                                         new UtilFaces().getIdConfigParameterByName("ExeProcedure");//
                             loBitBean.setLiIdLogServices(liIdLogService);
@@ -271,7 +274,7 @@ public class OrderSpotsImpCron implements Job{
                             loBitBean.setLiIndProcess(liIndProcess);
                             loBitBean.setLiNumProcessId(0);
                             loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento("Validacion LOG_COMERCIAL_STATUS("+lsStnid+", "+lsBcstdt+") >> ");
+                            loBitBean.setLsIndEvento("Validacion LMK_LOG_COMERCIAL_STATUS("+lsStnid+", "+lsBcstdt+") >> ");
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                liIdUser, 
                                                                lsUserName);  
@@ -297,7 +300,7 @@ public class OrderSpotsImpCron implements Job{
                                 loBitBean.setLiIdLogServices(liIdLogService);
                                 loBitBean.setLiIdService(Integer.parseInt(lsIdService));
                                 loBitBean.setLiIndProcess(liIndProcess);
-                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumProcessId(liIndProcess);
                                 loBitBean.setLiNumPgmProcessId(0);
                                 loBitBean.setLsIndEvento("Enviar Correo para informar de Incidencias para " +
                                     "incidencias("+lsStnid+", "+lsBcstdt+") ");
@@ -414,6 +417,7 @@ public class OrderSpotsImpCron implements Job{
                                 }
                             }
                         }
+                        
                     }
                     
                     //mapear de acuerdo a Paradigm
@@ -529,6 +533,7 @@ public class OrderSpotsImpCron implements Job{
                 if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
                     lbSpots = false;
                 }
+                liI++;
             }
             
             //for(Spot loSpot : loSpots.getSpot()){
@@ -605,7 +610,7 @@ public class OrderSpotsImpCron implements Job{
         
         String lsCommercialTitle = 
             toSpot.getProductName() == null ? "null" : 
-            toSpot.getProductName();
+            toSpot.getProductName().replace("'", "''");    
                 
         String lsBreakType =  
             toSpot.getBreakType() == null ? "null" : 
@@ -621,15 +626,15 @@ public class OrderSpotsImpCron implements Job{
         
         String lsRootClassCode =             
             toSpot.getRootClashCode() == null ? "null" : 
-            toSpot.getRootClashCode();
+            toSpot.getRootClashCode().replace("'", "''");
         
         String lsClashCode = 
             toSpot.getClashCode() == null ? "null" : 
-            toSpot.getClashCode();
+            toSpot.getClashCode().replace("'", "''");
         
         String lsClashDescription =             
             toSpot.getClashDescription() == null ? "null" : 
-            toSpot.getClashDescription();
+            toSpot.getClashDescription().replace("'", "''");
         
         String lsNativeCommercialTitle = "null";
         
@@ -653,7 +658,7 @@ public class OrderSpotsImpCron implements Job{
         
         String lsAdvertiser =             
             toSpot.getAdvertiserName() == null ? "null" : 
-            toSpot.getAdvertiserName();    
+            toSpot.getAdvertiserName().replace("'", "''");    
         
         Integer liCampaignNumber =            
             toSpot.getContractNumber() == null ? null : 
@@ -676,32 +681,40 @@ public class OrderSpotsImpCron implements Job{
             toSpot.getAgencyID();
         
         String lsAgencyName = 
-            toSpot.getAgencyName() == null ? "null" : 
-            toSpot.getAgencyName();
+            toSpot.getAgencyName() == null ? null : 
+            toSpot.getAgencyName().replace("'", "''");;
           
         String lsProgrammeName =             
             toSpot.getProgrammeName() == null ? "null" : 
-            toSpot.getProgrammeName();
+            toSpot.getProgrammeName().replace("'", "''");                   
         
-        String lsBookingPosition = null;
+        String lsBookingPosition = "null";
         
-        String lsAdvid = null;        
+        String lsAdvid = "null";        
             
-        String lsAgyid = null;
+        String lsAgyid = "null";
         
         Integer liOrdid = null;
         
         Integer liOrdlnid = null;
         
-        String lsStnid = null;
+        String lsStnid = "null";
         
-        String lsPgmid = null;
+        String lsPgmid = "null";
         
         Integer liBrkdtid = null;
         
         Integer liMstlogedtid = null;
-
         
+        String lsHouseNumber = null;
+        String lsIndustryCode = null;
+        String lsCopyComment = null;
+        
+        String lsSalesArea = 
+            toSpot.getSalesArea() == null ? "null" : 
+            toSpot.getSalesArea();        
+        
+             
         loSpotsRowBean.setLsScheduledDate(lsScheduleDate);
         loSpotsRowBean.setLsBreakNominalTime(lsBreakNominalTime);
         loSpotsRowBean.setLiBreakNumber(liBreakNumber);
@@ -740,6 +753,32 @@ public class OrderSpotsImpCron implements Job{
         loSpotsRowBean.setLsPgmid(lsPgmid);
         loSpotsRowBean.setLiBrkdtid(liBrkdtid);
         loSpotsRowBean.setLiMstlogedtid(liMstlogedtid);
+        
+        loSpotsRowBean.setLsSalesArea(lsSalesArea);
+        
+        
+        if(toSpot.getContents() != null){
+            for(Content loContent : toSpot.getContents().getContent()){
+                /*System.out.println("### "+loContent.getAspectRatio());    
+                System.out.println("### "+loContent.getCopyComment());    
+                System.out.println("### "+loContent.getExpirationDate());    
+                System.out.println("### "+loContent.getFirstAirDate());    
+                System.out.println("### "+loContent.getHouseNumber());    
+                System.out.println("### "+loContent.getIndustryCode());    
+                System.out.println("### "+loContent.getPrimaryCopy());   
+                */
+                lsHouseNumber = loContent.getHouseNumber();
+                lsIndustryCode = loContent.getIndustryCode();
+                lsCopyComment = loContent.getCopyComment() == null ? null : 
+                    loContent.getCopyComment().replace("'", "''");
+                
+                loSpotsRowBean.setLsHouseNumber(lsHouseNumber);
+                loSpotsRowBean.setLsIndustryCode(lsIndustryCode);
+                loSpotsRowBean.setLsCopyComments(lsCopyComment);
+                
+            }
+        }
+        
         return loSpotsRowBean;
     }
     

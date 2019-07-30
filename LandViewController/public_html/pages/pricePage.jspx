@@ -1,0 +1,702 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:f="http://java.sun.com/jsf/core"
+          xmlns:af="http://xmlns.oracle.com/adf/faces/rich">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <f:view>
+        <af:document title="Actualización de Precios" id="d1" smallIconSource="/images/system-monitor-arrow-icon.png">
+            <af:messages id="m1"/>
+            <af:form id="f1">
+            <af:resource type="javascript">
+                    function enforcePreventUserInput(evt) {                    
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('popLoading');
+                        if (popup != null) {
+                            AdfPage.PAGE.addBusyStateListener(popup, handleBusyState);
+                            evt.preventUserInput();
+                        }
+                    }
+                
+                    function handleBusyState(evt) {
+                        var popup = AdfPage.PAGE.findComponentByAbsoluteId('popLoading');
+                        if (popup != null) {
+                            if (evt.isBusy()) {
+                                popup.show();
+                            }
+                            else {
+                                popup.hide();
+                                AdfPage.PAGE.removeBusyStateListener(popup, handleBusyState);
+                            }
+                        }
+                    }        
+                </af:resource>
+                <af:pageTemplate viewId="/templates/pgmLandTemplate.jspx" id="pt1">
+                    <f:facet name="content">
+                     <af:panelGroupLayout layout="scroll" id="PnlCont"
+                                             inlineStyle="border-style:none;">
+                            <af:panelHeader text="Actualización de Precios" id="PnlHead"
+                                type="default"
+                                messageType="none"
+                                shortDesc="Actualización de Precios"
+                                inlineStyle="border-style:none; font-size:small;">
+                            <f:facet name="toolbar">
+                                <af:statusIndicator id="StiIndicator" shortDesc="Status Indicator"/>
+                            </f:facet>
+                            </af:panelHeader>
+                            <af:separator id="sepTitle"/>
+                            <af:panelGroupLayout layout="horizontal" id="PnlGpTbl" styleClass="AFStretchWidth"
+                                                 valign="top" halign="left" 
+                                                 inlineStyle="border-style:none; height:415px;">
+                            <af:panelSplitter id="PnlSpliMain" splitterPosition="460"
+                                      inlineStyle="width:1350px; "
+                                      collapsed="false"
+                                      firstBorder="skin">
+                                <f:facet name="first">
+                                                                                                    
+                                    <af:panelGroupLayout layout="vertical" id="PnlGrpParams" valign="middle" halign="center"
+                                    styleClass="AFStretchWidth" >
+                                    <af:panelGroupLayout layout="horizontal" id="PnlUtil3" halign="right"
+                                                            inlineStyle="border-style:none;">
+                                            <af:spacer id="SpcAx" width="10" height="5"/>  
+                                            <af:spacer id="SpcAxTbl" width="10" height="5"/>
+                                            <af:link text=" " id="BtnResetTbl"
+                                                            icon="/images/restaurar.gif" 
+                                                            shortDesc="Reiniciar tabla"
+                                                     action="#{PriceBean.refreshMainTable}">
+                                            </af:link>
+                                        </af:panelGroupLayout>
+                                
+                            <af:panelFormLayout id="PnlFrmParams" rows="5" maxColumns="1">     
+                                    <af:inputText label="idUsuario"                                                  
+                                                  shortDesc="idUsuario"
+                                                  id="TxtIdUsuario"
+                                                  visible="false"
+                                                  value="#{UserInfoBean.psUserName}"
+                                                  binding="#{PriceBean.poUserName}">
+                                    </af:inputText>
+                                    <af:inputText label="idServicio"                                                  
+                                                  shortDesc="idServicio"
+                                                  id="TxtIdService"
+                                                  visible="false"
+                                                  value="#{UserMenuBean.lsUserIdServicePrecios}"
+                                                  binding="#{PriceBean.poIdService}">
+                                    </af:inputText>
+                                    <af:inputText label=" "
+                                                  shortDesc="Servicio"
+                                                  id="TxtService"
+                                                  readOnly="true"
+                                                  visible="false"
+                                                  value="#{UserMenuBean.lsUserNomServicePrecios}"
+                                                  binding="#{PriceBean.poNomService}"
+                                                  inlineStyle="font-weight:bolder; font-size:large;">
+                                    </af:inputText>
+                            </af:panelFormLayout>
+                            <af:spacer width="10" height="5" id="spa12"/>
+                            
+                        <af:panelGroupLayout layout="horizontal" id="PnlGrpPDat" valign="middle" halign="left"
+                        styleClass="AFStretchWidth">
+                        <af:panelFormLayout id="PnlFrmParamsd" rows="5" maxColumns="1">     
+                            <af:inputDate label="Fecha Incial" 
+                                           id="TxtFilterFecIni" 
+                                           columns="9" 
+                                           value="#{UserMenuBean.lsUserFecInicialPrecios}"
+                                           binding="#{PriceBean.poInitialDate}"                                                       
+                                           >
+                                <af:convertDateTime pattern="yyyy-MM-dd" secondaryPattern="yyyy/MM/dd"/>
+                              </af:inputDate>
+                              <af:inputDate label="Fecha Final"                                                       
+                                           id="TxtFilterFecFin" 
+                                           columns="9" 
+                                           value="#{UserMenuBean.lsUserFecFinalPrecios}"
+                                           binding="#{PriceBean.poFinalDate}"
+                                           >
+                                <af:convertDateTime pattern="yyyy-MM-dd" secondaryPattern="yyyy/MM/dd"/>
+                              </af:inputDate>
+                              </af:panelFormLayout>
+                            </af:panelGroupLayout>
+                            <af:spacer width="10" height="5" id="sp4a12"/>
+                            <af:separator id="s153grt"/>
+                            <!-- ################################### TABLA DE CANALES DE PARAMETROS GENERALES ##################################################### !-->
+                            <af:panelGroupLayout layout="scroll" id="PnlGrpIter" valign="middle" halign="left"
+                            inlineStyle="border-style:none; height:25em;">
+                            <af:table value="#{bindings.LmkIntListChannelpAllVwView1.collectionModel}"
+                                              var="row"
+                                              rows="#{bindings.LmkIntListChannelpAllVwView1.rangeSize}"
+                                              emptyText="#{bindings.LmkIntListChannelpAllVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                              rowBandingInterval="0"
+                                              rowSelection="single"
+                                              fetchSize="#{bindings.LmkIntListChannelpAllVwView1.rangeSize}"
+                                              filterModel="#{bindings.LmkIntListChannelpAllVwView1Query.queryDescriptor}"
+                                              queryListener="#{bindings.LmkIntListChannelpAllVwView1Query.processQuery}"
+                                              filterVisible="true" varStatus="vs" id="t1"
+                                              styleClass="AFStretchWidth"
+                                              binding="#{PriceBean.poTblChannels}"
+                                              columnStretching="column:c13">
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.label}"
+                                                   id="c1">
+                                            <af:inputText value="#{row.bindings.RowId1.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.tooltip}"
+                                                          id="it1">
+                                                <f:validator binding="#{row.bindings.RowId1.validator}"/>
+                                                <af:convertNumber groupingUsed="false"
+                                                                  pattern="#{bindings.LmkIntListChannelpAllVwView1.hints.RowId1.format}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.label}"
+                                                   id="c2">
+                                            <af:inputText value="#{row.bindings.IdService.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.label}"
+
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.tooltip}"
+                                                          id="it2">
+                                                <f:validator binding="#{row.bindings.IdService.validator}"/>
+                                                <af:convertNumber groupingUsed="false"
+                                                                  pattern="#{bindings.LmkIntListChannelpAllVwView1.hints.IdService.format}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.NomService.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.NomService.label}"
+                                                   id="c3">
+                                            <af:inputText value="#{row.bindings.NomService.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.NomService.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.NomService.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.NomService.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.NomService.tooltip}"
+                                                          id="it3">
+                                                <f:validator binding="#{row.bindings.NomService.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescService.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescService.label}"
+                                                   id="c4">
+                                            <af:inputText value="#{row.bindings.IndDescService.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescService.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescService.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescService.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescService.tooltip}"
+                                                          id="it4">
+                                                <f:validator binding="#{row.bindings.IndDescService.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.label}"
+                                                   id="c5">
+                                            <af:inputText value="#{row.bindings.IdParameter.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.tooltip}"
+                                                          id="it5">
+                                                <f:validator binding="#{row.bindings.IdParameter.validator}"/>
+                                                <af:convertNumber groupingUsed="false"
+                                                                  pattern="#{bindings.LmkIntListChannelpAllVwView1.hints.IdParameter.format}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.NomParameter.name}"
+                                                   filterable="true" sortable="true" align="center" 
+                                                   headerText="Canal" width="80"
+                                                   id="c6">
+                                            <af:inputText value="#{row.bindings.NomParameter.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.NomParameter.label}"
+                                                          readOnly="true"
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.NomParameter.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.NomParameter.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.NomParameter.tooltip}"
+                                                          id="it6">
+                                                <f:validator binding="#{row.bindings.NomParameter.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndValueParameter.name}"
+                                                   filterable="true" sortable="true" align="center"
+                                                   headerText="Descripción"  width="130"
+                                                   id="c9">
+                                            <af:inputText value="#{row.bindings.IndValueParameter.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IndValueParameter.label}"
+                                                          readOnly="true"
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IndValueParameter.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IndValueParameter.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IndValueParameter.tooltip}"
+                                                          id="it9">
+                                                <f:validator binding="#{row.bindings.IndValueParameter.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescParameter.name}"
+                                                   filterable="true" sortable="true" align="center"
+                                                   headerText="Grupo" width="130"
+                                                   id="c7">
+                                            <af:inputText value="#{row.bindings.IndDescParameter.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescParameter.label}"
+                                                          readOnly="true"
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescParameter.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescParameter.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescParameter.tooltip}"
+                                                          id="it7">
+                                                <f:validator binding="#{row.bindings.IndDescParameter.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndUsedBy.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.IndUsedBy.label}"
+                                                   id="c8">
+                                            <af:inputText value="#{row.bindings.IndUsedBy.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IndUsedBy.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IndUsedBy.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IndUsedBy.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IndUsedBy.tooltip}"
+                                                          id="it8">
+                                                <f:validator binding="#{row.bindings.IndUsedBy.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndEstatus.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.IndEstatus.label}"
+                                                   id="c10">
+                                            <af:inputText value="#{row.bindings.IndEstatus.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.IndEstatus.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.IndEstatus.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.IndEstatus.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.IndEstatus.tooltip}"
+                                                          id="it10">
+                                                <f:validator binding="#{row.bindings.IndEstatus.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.ValMostrar.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.ValMostrar.label}"
+                                                   id="c11">
+                                            <af:inputText value="#{row.bindings.ValMostrar.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.ValMostrar.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.ValMostrar.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.ValMostrar.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.ValMostrar.tooltip}"
+                                                          id="it11">
+                                                <f:validator binding="#{row.bindings.ValMostrar.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.ValValue.name}"
+                                                   filterable="true" sortable="true" visible="false"
+                                                   headerText="#{bindings.LmkIntListChannelpAllVwView1.hints.ValValue.label}"
+                                                   id="c12">
+                                            <af:inputText value="#{row.bindings.ValValue.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.ValValue.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.ValValue.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.ValValue.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.ValValue.tooltip}"
+                                                          id="it12">
+                                                <f:validator binding="#{row.bindings.ValValue.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.name}"
+                                                   filterable="false" sortable="true" align="center"
+                                                   headerText="Activo" width="50"
+                                                   id="c13">
+                                                   
+                                            <af:selectBooleanCheckbox text=" " 
+                                                                      label=" " 
+                                                                      
+                                                                      value="#{row.bindings.Selected.inputValue}"
+                                                                      id="ChkSelected"/>
+                                                   
+                                                   
+                                            <!--<af:inputText value="#{row.bindings.Selected.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.label}"
+                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.tooltip}"
+                                                          id="it13">
+                                                <f:validator binding="#{row.bindings.Selected.validator}"/>
+                                            </af:inputText>-->
+                                        </af:column>
+                                    </af:table>
+                            
+                            </af:panelGroupLayout> 
+                             <af:separator id="s153g3rt"/>
+                            <af:spacer width="10" height="10" id="spa1"/>
+                            <af:panelGroupLayout id="PnPg" halign="right">
+                                <af:button text="Guardar" id="BtmnAltPm" icon="/images/Save.gif"
+                                            shortDesc="Guardar"
+                                           action="#{PriceBean.saveAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
+                            </af:panelGroupLayout>
+                            
+                            <af:spacer width="10" height="10" id="spa1234"/>
+                            
+                            <af:panelGroupLayout id="PnPgPr" halign="right" >
+                                <af:button text="Guardar y Ejecutar" id="BtmnPrPm" icon="/images/Forward.gif"
+                                            shortDesc="Guardar y Ejecutar"
+                                           action="#{PriceBean.showProcessAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                                  </f:facet>
+                                  <f:facet name="second">
+                                  <af:panelGroupLayout layout="vertical" id="PnlGrpTbl" valign="middle" halign="center"
+                                    styleClass="AFStretchWidth" >
+                                    <af:panelGroupLayout layout="scroll" id="PnlGrpMainTbl" valign="middle" halign="left"
+                            inlineStyle="border-style:none; height:34em;">
+                                  <!-- ################################### TABLA PRINCIPAL ############################### !-->
+                                    <af:table value="#{bindings.LmkIntServicesLogUsrpVwView1.collectionModel}"
+                                                  var="row" rows="#{bindings.LmkIntServicesLogUsrpVwView1.rangeSize}"
+                                                  emptyText="#{bindings.LmkIntServicesLogUsrpVwView1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                                  rowBandingInterval="0"
+                                                  selectedRowKeys="#{bindings.LmkIntServicesLogUsrpVwView1.collectionModel.selectedRow}"
+                                                  selectionListener="#{bindings.LmkIntServicesLogUsrpVwView1.collectionModel.makeCurrent}"
+                                                  rowSelection="single"
+                                                  fetchSize="#{bindings.LmkIntServicesLogUsrpVwView1.rangeSize}" id="t2"
+                                                  columnStretching="column:c22"
+                                                  styleClass="AFStretchWidth"
+                                                  autoHeightRows="25">
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdLogServices.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdLogServices.label}"
+                                                       id="c14">
+                                                <af:outputText value="#{row.IdLogServices}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdLogServices.tooltip}"
+                                                               id="ot1">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdLogServices.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdService.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdService.label}"
+                                                       id="c15">
+                                                <af:outputText value="#{row.IdService}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdService.tooltip}"
+                                                               id="ot2">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdService.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NomService.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NomService.label}"
+                                                       id="c16">
+                                                <af:outputText value="#{row.NomService}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NomService.tooltip}"
+                                                               id="ot3"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdFileXml.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdFileXml.label}"
+                                                       id="c17">
+                                                <af:outputText value="#{row.IdFileXml}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdFileXml.tooltip}"
+                                                               id="ot4">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdFileXml.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdRequest.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdRequest.label}"
+                                                       id="c18">
+                                                <af:outputText value="#{row.IdRequest}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdRequest.tooltip}"
+                                                               id="ot5">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdRequest.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NomFile.name}"
+                                                       sortable="true" align="center" width="150"
+                                                       headerText="Nombre del Archivo"
+                                                       id="c19">
+                                                <af:outputText value="#{row.NomFile}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NomFile.tooltip}"
+                                                               id="ot6"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndParameters.name}"
+                                                       sortable="true" align="center" width="250"
+                                                       headerText="Parámetros"
+                                                       id="c20">
+                                                <af:outputText value="#{row.IndParameters}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndParameters.tooltip}"
+                                                               id="ot7"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.UserName.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.UserName.label}"
+                                                       id="c21">
+                                                <af:outputText value="#{row.UserName}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.UserName.tooltip}"
+                                                               id="ot8"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.FecCreationDate.name}"
+                                                       sortable="true" align="center" width="150"
+                                                       headerText="Fecha Creación"
+                                                       id="c40">
+                                                <af:outputText value="#{row.FecCreationDate}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.FecCreationDate.tooltip}"
+                                                               id="ot27">
+                                                    <af:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+                                                </af:outputText>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndCalculateStatus.name}"
+                                                   sortable="true" align="center"
+                                                   headerText=" " width="80"
+                                                   id="c1233">
+                                                   
+                                            <af:link icon="/images/icon_alert.gif" id="LnkCalcL"
+                                             inlineStyle="text-align:center;" visible="#{row.IndCalculateStatus == 'En Proceso'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/aceptar.gif" id="LnkCalcC"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'C'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/action_stop.gif" id="LnkCalcE"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == 'E'}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                            <af:link icon="/images/flag_red.gif" id="LnkCalcF2"
+                                             inlineStyle="text-align:center;" visible="#{row.IndEstatus == null}"
+                                             shortDesc="#{row.IndCalculateStatus}">     
+                                            </af:link>
+                                        </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndCalculateStatus.name}"
+                                                       sortable="true" align="center"
+                                                       headerText="Estado"
+                                                       id="c22">
+                                                <af:outputText value="#{row.IndCalculateStatus}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndCalculateStatus.tooltip}"
+                                                               id="ot9"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndEstatus.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndEstatus.label}"
+                                                       id="c23">
+                                                <af:outputText value="#{row.IndEstatus}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndEstatus.tooltip}"
+                                                               id="ot10"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.AttributeCategory.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.AttributeCategory.label}"
+                                                       id="c24">
+                                                <af:outputText value="#{row.AttributeCategory}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.AttributeCategory.tooltip}"
+                                                               id="ot11"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute1.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute1.label}"
+                                                       id="c25">
+                                                <af:outputText value="#{row.Attribute1}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute1.tooltip}"
+                                                               id="ot12"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute2.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute2.label}"
+                                                       id="c26">
+                                                <af:outputText value="#{row.Attribute2}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute2.tooltip}"
+                                                               id="ot13"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute3.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute3.label}"
+                                                       id="c27">
+                                                <af:outputText value="#{row.Attribute3}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute3.tooltip}"
+                                                               id="ot14"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute4.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute4.label}"
+                                                       id="c28">
+                                                <af:outputText value="#{row.Attribute4}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute4.tooltip}"
+                                                               id="ot15"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute5.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute5.label}"
+                                                       id="c29">
+                                                <af:outputText value="#{row.Attribute5}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute5.tooltip}"
+                                                               id="ot16"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute6.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute6.label}"
+                                                       id="c30">
+                                                <af:outputText value="#{row.Attribute6}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute6.tooltip}"
+                                                               id="ot17"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute7.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute7.label}"
+                                                       id="c31">
+                                                <af:outputText value="#{row.Attribute7}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute7.tooltip}"
+                                                               id="ot18"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute8.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute8.label}"
+                                                       id="c32">
+                                                <af:outputText value="#{row.Attribute8}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute8.tooltip}"
+                                                               id="ot19"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute9.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute9.label}"
+                                                       id="c33">
+                                                <af:outputText value="#{row.Attribute9}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute9.tooltip}"
+                                                               id="ot20"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute10.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute10.label}"
+                                                       id="c34">
+                                                <af:outputText value="#{row.Attribute10}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute10.tooltip}"
+                                                               id="ot21"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute11.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute11.label}"
+                                                       id="c35">
+                                                <af:outputText value="#{row.Attribute11}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute11.tooltip}"
+                                                               id="ot22"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute12.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute12.label}"
+                                                       id="c36">
+                                                <af:outputText value="#{row.Attribute12}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute12.tooltip}"
+                                                               id="ot23"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute13.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute13.label}"
+                                                       id="c37">
+                                                <af:outputText value="#{row.Attribute13}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute13.tooltip}"
+                                                               id="ot24"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute14.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute14.label}"
+                                                       id="c38">
+                                                <af:outputText value="#{row.Attribute14}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute14.tooltip}"
+                                                               id="ot25"/>
+                                            </af:column>
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute15.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute15.label}"
+                                                       id="c39">
+                                                <af:outputText value="#{row.Attribute15}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.Attribute15.tooltip}"
+                                                               id="ot26"/>
+                                            </af:column>
+                                            
+                                            <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NumCreatedBy.name}"
+                                                       sortable="true" visible="false"
+                                                       headerText="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NumCreatedBy.label}"
+                                                       id="c41">
+                                                <af:outputText value="#{row.NumCreatedBy}"
+                                                               shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NumCreatedBy.tooltip}"
+                                                               id="ot28">
+                                                    <af:convertNumber groupingUsed="false"
+                                                                      pattern="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NumCreatedBy.format}"/>
+                                                </af:outputText>
+                                            </af:column>
+                                        </af:table>
+                                    
+                                            </af:panelGroupLayout>
+                                    </af:panelGroupLayout>
+                                    </f:facet>
+                            </af:panelSplitter>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>     
+                    </f:facet>
+                </af:pageTemplate>
+                
+                <!-- ################################### POPUP EXECUTE SERVICE #################################### !-->
+                <af:popup id="popupExecute" contentDelivery="lazyUncached"                          
+                          binding="#{PriceBean.poPopupExecute}"
+                          >
+                  <af:panelWindow id="PnlExecute" 
+                               inlineStyle="border-style:none;"
+                               modal="true" 
+                               closeIconVisible="false"
+                               title="Confirmar Ejecución de Servicio" 
+                               titleIconSource="/images/Play.gif">
+                    <af:panelGroupLayout layout="vertical" 
+                                      id="PnlExeWsMsg" 
+                                      inlineStyle="border-style:none;" 
+                                      valign="middle" 
+                                      halign="center">
+                      <af:spacer width="10" height="10" id="SpcExeDel"/>
+                      <af:panelLabelAndMessage id="PnlLblMsgExe"
+                                               inlineStyle="border-style:none; color:Olive;"
+                                               binding="#{PriceBean.poExecuteMsgLbl}"/>
+                         <af:spacer width="50" height="25" id="SpcLoExe_10"/>
+                            <af:outputText id="TxtIdBindingsExe" visible="false" 
+                            binding="#{PriceBean.poExecuteIdBinding}" />
+                            <af:outputText id="TxtNomBindingsExe" visible="false" 
+                            binding="#{PriceBean.poExecuteNomBinding}" />  
+                            <af:outputText id="TxtTypeExe" visible="false" 
+                            binding="#{PriceBean.poExecuteTypeService}" />  
+                            <af:panelGroupLayout layout="horizontal" id="PnlExeBtns" inlineStyle="border-style:none;"
+                            valign="middle" halign="center">
+                           <af:button text="Aceptar" id="BtnExeAceptar"
+                                             icon="/images/aceptar.gif"
+                                             action="#{PriceBean.executeExecuteAction}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
+                           <af:spacer width="10" height="25" id="Spcexex_11"/>
+                           <af:button text="Cancelar" id="BtnExeCancelar"
+                                             icon="/images/cancelar.gif"
+                                             action="#{PriceBean.cancelExecuteAction}">
+                                <af:clientListener method="enforcePreventUserInput" type="action"/>
+                            </af:button>
+                       </af:panelGroupLayout> 
+                    </af:panelGroupLayout>
+                  </af:panelWindow>
+                </af:popup>
+               
+                <!-- ################################### POPUP LOADING .... ##################################### !-->
+                <af:popup id="popLoading" contentDelivery="immediate">
+                  <af:dialog id="dlgLoading" type="none" title="Procesando Información" closeIconVisible="false">
+                    <af:panelGroupLayout id="PnlLoading" layout="vertical" halign="center">
+                      <af:image source="/images/loading110.gif" id="ImgIdxLoad" shortDesc="Espere..."/>
+                      <af:outputText value="... por favor espere." id="LblIdxLoad1Login"/>
+                    </af:panelGroupLayout>
+                  </af:dialog>
+                </af:popup>
+            </af:form>
+        </af:document>
+    </f:view>
+</jsp:root>

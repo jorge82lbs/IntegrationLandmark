@@ -272,11 +272,11 @@ public class ProcessBean {
         String lsIdService = 
             getPoIdServiceByTbl().getValue() == null ? "0" : 
             getPoIdServiceByTbl().getValue().toString();           
-        /*
+        
         UserOperationList loUserOperationList = (UserOperationList)resolveExpression("#{UserOperationList}");
         for(String lsOperation : loUserOperationList.getLaOpertations()){
             System.out.println("lsOperation: "+lsOperation);            
-        } */       
+        } 
         
         if(lsIdService.equalsIgnoreCase("0")){
             FacesCtrlHierNodeBinding loNode = 
@@ -2353,6 +2353,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
                 loLmkBean.setLsIndDestiny(lsIndDestiny);
                 loLmkBean.setLsIndEstatus(lsStatusTab);
                 loLmkBean.setLsIndSynchronous(lsAsynTab);
+                loLmkBean.setLsIndAttribute1("System");
                 
                 loService.insertServicesCatModel(loLmkBean);  
             }else{
