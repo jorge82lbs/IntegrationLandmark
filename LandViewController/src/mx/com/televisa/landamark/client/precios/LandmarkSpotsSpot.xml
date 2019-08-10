@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle-webservice-clients xmlns:ns0="http://java.sun.com/xml/ns/javaee">
+   <webservice-client>
+      <service-qname namespaceURI="http://tempuri.org/" localpart="LandmarkSpotsSpot"/>
+      <port-info>
+         <wsdl-port namespaceURI="http://tempuri.org/" localpart="BasicHttpBinding_ILandmarkSpotsSpot"/>
+         <runtime/>
+         <operations>
+            <operation name="loadForFilter"/>
+            <operation name="loadForFilter2"/>
+            <operation name="batchBookings"/>
+            <operation name="loadSpotListReportTypes"/>
+            <operation name="loadCopySelection"/>
+            <operation name="loadSpotStatusIncActive"/>
+            <operation name="loadPositionInProgramme"/>
+            <operation name="loadInteractivity"/>
+            <operation name="loadBookProcessTypes"/>
+            <operation name="saveSpotsForBreakSequence"/>
+         </operations>
+      </port-info>
+   </webservice-client>
+</oracle-webservice-clients>

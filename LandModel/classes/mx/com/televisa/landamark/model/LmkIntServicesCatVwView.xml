@@ -12,7 +12,13 @@
   BindingStyle="JDBC"
   CustomQuery="false"
   SelectAllAttributes="false"
-  PageIterMode="Full">
+  PageIterMode="Full"
+  RowClass="mx.com.televisa.landamark.model.LmkIntServicesCatVwViewRowImpl"
+  ComponentClass="mx.com.televisa.landamark.model.LmkIntServicesCatVwViewImpl">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
   <EntityUsage
     Name="LmkIntServicesCatVw"
     Entity="mx.com.televisa.landamark.model.LmkIntServicesCatVw"/>

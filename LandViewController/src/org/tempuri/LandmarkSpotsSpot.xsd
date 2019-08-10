@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tempuri.org/">
+  <xs:import schemaLocation="LandmarkSpotsSpot_1.xsd" namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots"/>
+  <xs:import schemaLocation="LandmarkSpotsSpot_6.xsd" namespace="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+  <xs:element name="LoadForFilter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="spotListFilter" nillable="true" type="q1:SpotListFilter" xmlns:q1="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots"/>
+        <xs:element minOccurs="0" name="currency" nillable="true" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadForFilterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadForFilterResult" nillable="true" type="q2:ArrayOfSpot" xmlns:q2="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadForFilter2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="spotListFilter" nillable="true" type="q3:SpotListFilter" xmlns:q3="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots"/>
+        <xs:element minOccurs="0" name="currency" nillable="true" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadForFilter2Response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadForFilter2Result" nillable="true" type="q4:ArrayOfSpot" xmlns:q4="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BatchBookings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="batchBookings" nillable="true" type="q5:BatchBookingParams" xmlns:q5="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BatchBookingsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="BatchBookingsResult" nillable="true" type="q6:BookingResults" xmlns:q6="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadSpotListReportTypes">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadSpotListReportTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadSpotListReportTypesResult" nillable="true" type="q7:ArrayOfSpotListReportType" xmlns:q7="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadCopySelection">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadCopySelectionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadCopySelectionResult" nillable="true" type="q8:ArrayOfCopySelectionName" xmlns:q8="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadSpotStatusIncActive">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadSpotStatusIncActiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadSpotStatusIncActiveResult" nillable="true" type="q9:ArrayOfSpotStatusIncludingActive" xmlns:q9="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadPositionInProgramme">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadPositionInProgrammeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadPositionInProgrammeResult" nillable="true" type="q10:ArrayOfPositionInProgrammeName" xmlns:q10="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadInteractivity">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadInteractivityResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadInteractivityResult" nillable="true" type="q11:ArrayOfInteractivite" xmlns:q11="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadBookProcessTypes">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadBookProcessTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoadBookProcessTypesResult" nillable="true" type="q12:ArrayOfBookProcessType" xmlns:q12="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveSpotsForBreakSequence">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="spotSequenceMaintain" nillable="true" type="q13:SpotSequenceMaintain" xmlns:q13="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots"/>
+        <xs:element minOccurs="0" name="organisationCode" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="positionCode" nillable="true" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveSpotsForBreakSequenceResponse">
+    <xs:complexType>
+      <xs:sequence/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

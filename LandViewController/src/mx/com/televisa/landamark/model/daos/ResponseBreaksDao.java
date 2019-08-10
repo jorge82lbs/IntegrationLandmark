@@ -125,9 +125,10 @@ public class ResponseBreaksDao {
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
         Integer        loValue = 0;
         Connection     loCnn = new ConnectionAs400().getConnection();
-        String         lsQueryParadigm = 
+        String         lsQueryParadigm = //FEC_LAST_UPDATE_DATE = CURRENT_TIMESTAMP
             "UPDATE EVENTAS.LMK_INT_XML_FILES_TAB\n" + 
-            "   SET IND_ESTATUS = '" + tsEstatus + "'\n" + 
+            "   SET IND_ESTATUS = '" + tsEstatus + "',\n" +
+            "   FEC_LAST_UPDATE_DATE = CURRENT_TIMESTAMP\n" + 
             " WHERE ID_FILE_XML = " + liIdFileXml;
         System.out.println("ACTUALIZANDO ESTATUS de XML_FILES");
         System.out.println(lsQueryParadigm);

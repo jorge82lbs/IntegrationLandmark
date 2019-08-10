@@ -22,7 +22,7 @@ import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
-import mx.com.televisa.landamark.services.jobs.service.ParrillasProgramasImpCron;
+import mx.com.televisa.landamark.services.jobs.service.PriceImpCron;
 import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
@@ -171,7 +171,7 @@ public class PriceService {
                  try {
                      loScheduler = new StdSchedulerFactory().getScheduler();
                      JobDetail loJob = 
-                         JobBuilder.newJob(ParrillasProgramasImpCron.class).build();
+                         JobBuilder.newJob(PriceImpCron.class).build();
                      Trigger   loTrigger = 
                          TriggerBuilder.newTrigger().withIdentity(lsTrigger).build();
                      JobDataMap loJobDataMap=  loJob.getJobDataMap();

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams">
+  <xs:import schemaLocation="LandmarkSpotsSpot_3.xsd" namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+  <xs:import schemaLocation="LandmarkSpotsSpot_4.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+  <xs:complexType name="ArrayOfDiscount">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Discount" nillable="true" type="tns:Discount"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDiscount" nillable="true" type="tns:ArrayOfDiscount"/>
+  <xs:complexType name="Discount">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DiscountCode" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Discount" nillable="true" type="tns:Discount"/>
+  <xs:complexType name="ArrayOfMultiPart">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MultiPart" nillable="true" type="tns:MultiPart"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMultiPart" nillable="true" type="tns:ArrayOfMultiPart"/>
+  <xs:complexType name="MultiPart">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BreakPositionRequirement" type="q1:Bkpo" xmlns:q1="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="InteractivityTypeNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="IsEnteredPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="Price" nillable="true" type="xs:double"/>
+      <xs:element minOccurs="0" name="SequenceNumber" type="xs:short"/>
+      <xs:element minOccurs="0" name="SpotLength" type="xs:short"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotTypeCode" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MultiPart" nillable="true" type="tns:MultiPart"/>
+  <xs:complexType name="ArrayOfOverrides">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Overrides" nillable="true" type="tns:Overrides"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfOverrides" nillable="true" type="tns:ArrayOfOverrides"/>
+  <xs:complexType name="Overrides">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ExtraInfo" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MsgNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="MsgText" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Override" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Overrides" nillable="true" type="tns:Overrides"/>
+  <xs:simpleType name="BookingProcessType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Default"/>
+      <xs:enumeration value="DontBook"/>
+      <xs:enumeration value="BookFindNext"/>
+      <xs:enumeration value="BookFindPrev">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BookFindNearest">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">8</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BookKeepBooking">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">16</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="RepriceOnly">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="BookingProcessType" nillable="true" type="tns:BookingProcessType"/>
+  <xs:complexType name="ArrayOfRegionalExclusion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RegionalExclusion" nillable="true" type="tns:RegionalExclusion"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRegionalExclusion" nillable="true" type="tns:ArrayOfRegionalExclusion"/>
+  <xs:complexType name="RegionalExclusion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ExclYN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TregNo" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RegionalExclusion" nillable="true" type="tns:RegionalExclusion"/>
+</xs:schema>

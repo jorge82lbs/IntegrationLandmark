@@ -1,0 +1,350 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<jdevws:WebServiceProxy xmlns:jdevws="http://xmlns.oracle.com/jdeveloper/10130/webserviceproxy">
+   <list n="CHILD_NODES">
+      <url path="LandmarkSpotsSpot.xml"/>
+      <url path="LandmarkSpotsSpot.wsdl"/>
+      <url path="LandmarkSpotsSpot_2.xsd"/>
+      <url path="LandmarkSpotsSpot_4.xsd"/>
+      <url path="LandmarkSpotsSpot_1.xsd"/>
+      <url path="LandmarkSpotsSpot_3.xsd"/>
+      <url path="LandmarkSpotsSpot_6.xsd"/>
+      <url path="LandmarkSpotsSpot.xsd"/>
+      <url path="LandmarkSpotsSpot_5.xsd"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/BatchBookingParams.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfInteractivite.java"/>
+      <url path="LoadSpotListReportTypes.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfBookingOverride.java"/>
+      <url path="LoadCopySelectionResponse.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotStatus.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfDiscount.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/Interactivite.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/BookingMasterData.java"/>
+      <url path="LoadForFilter2.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfSpotStatusIncludingActive.java"/>
+      <url path="../../com/microsoft/schemas/_2003/_10/serialization/arrays/ObjectFactory.java"/>
+      <url path="LoadSpotListReportTypesResponse.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfCopySelectionName.java"/>
+      <url path="SaveSpotsForBreakSequence.java"/>
+      <url path="LoadForFilter2Response.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfBookingResult.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfOverrides.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfBookingMessage.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfSpotSequence.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/package-info.java"/>
+      <url path="LandmarkSpotsSpot.java"/>
+      <url path="LoadBookProcessTypesResponse.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotCancelParams.java"/>
+      <url path="SaveSpotsForBreakSequenceResponse.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfSpotListReportType.java"/>
+      <url path="LoadCopySelection.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/BookProcessType.java"/>
+      <url path="LoadBookProcessTypes.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/CopySelectionName.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/package-info.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfSpotMoveParams.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/MultiPart.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfFilterDateTime.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotListFilterCriteria.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfSpotBookParams.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/PositionInProgrammeName.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfBookingMasterData.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ObjectFactory.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/SpotStatusIncludingActive.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/Spot.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/BookingProcessType.java"/>
+      <url path="ILandmarkSpotsSpot.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotListFilter.java"/>
+      <url path="LoadForFilterResponse.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotBookParams.java"/>
+      <url path="package-info.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotMoveParams.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/BookingResults.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/Discount.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfSpotSwapParams.java"/>
+      <url path="LoadInteractivity.java"/>
+      <url path="LoadSpotStatusIncActive.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/SpotListReportType.java"/>
+      <url path="BasicHttpBinding_ILandmarkSpotsSpotClient.java"/>
+      <url path="../../com/microsoft/schemas/_2003/_10/serialization/arrays/package-info.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/BookingOverride.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotAmendParams.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfSpotAmendParams.java"/>
+      <url path="LoadSpotStatusIncActiveResponse.java"/>
+      <url path="ObjectFactory.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/FilterDateTime.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotSequenceMaintain.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/BookingResult.java"/>
+      <url path="LoadPositionInProgramme.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/RegionalExclusion.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfMultiPart.java"/>
+      <url path="LoadPositionInProgrammeResponse.java"/>
+      <url path="BatchBookingsResponse.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/Bkpo.java"/>
+      <url path="../../com/microsoft/schemas/_2003/_10/serialization/arrays/ArrayOfint.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfBookProcessType.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/BookingMessage.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfRegionalExclusion.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ObjectFactory.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/Overrides.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/Interactivity.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotSequence.java"/>
+      <url path="../../com/microsoft/schemas/_2003/_10/serialization/arrays/ArrayOfstring.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/SpotSwapParams.java"/>
+      <url path="../../com/microsoft/schemas/_2003/_10/serialization/ObjectFactory.java"/>
+      <url path="BatchBookings.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/DaysOfWeek.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_parameters/ArrayOfSpotCancelParams.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfSpot.java"/>
+      <url path="../datacontract/schemas/_2004/_07/landmark_classes/ArrayOfPositionInProgrammeName.java"/>
+      <url path="LoadForFilter.java"/>
+      <url path="LoadInteractivityResponse.java"/>
+   </list>
+   <hash n="DATA_MODEL">
+      <value n="ATTACHMENT_ENCODING" v="MIME"/>
+      <list n="LOCAL_FILES"/>
+      <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.WebServiceProxy"/>
+      <url n="ORACLE_WEBSERVICES_XML" path="LandmarkSpotsSpot.xml"/>
+      <hash n="PROPERTY_GROUPS">
+         <hash n="WSDL_TO_JAVA_PROPERTIES">
+            <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.java.WSDLToJavaProperties"/>
+         </hash>
+      </hash>
+      <value n="PROXY_ASYNC_METHODS" v="FOR_ENABLED"/>
+      <list n="PROXY_CLIENTS">
+         <url path="BasicHttpBinding_ILandmarkSpotsSpotClient.java"/>
+      </list>
+      <value n="PROXY_MAPPING_URL"/>
+      <url n="PROXY_ORIGINAL_WSDL_URL" protocol="http" host="corpklhlatap2t.corp.televisa.com.mx" port="91" path="/LandmarkSpotsSpot.svc" query="wsdl"/>
+      <hash n="PROXY_PORTS">
+         <hash n="BasicHttpBinding_ILandmarkSpotsSpot">
+            <value n="ACCESSES_DOC_WRAPPPED" v="true"/>
+            <value n="ACCESSES_RPC_ENCODED" v="false"/>
+            <value n="CLASS_NAME" v="org.tempuri.ILandmarkSpotsSpot"/>
+            <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyPort"/>
+            <value n="NAME" v="BasicHttpBinding_ILandmarkSpotsSpot"/>
+            <hash n="OPERATIONS">
+               <hash n="BatchBookings">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadBookProcessTypes">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadCopySelection">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadForFilter">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadForFilter2">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadInteractivity">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadPositionInProgramme">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadSpotListReportTypes">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="LoadSpotStatusIncActive">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+               <hash n="SaveSpotsForBreakSequence">
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.ProxyOperation"/>
+                  <hash n="PROPERTY_GROUPS"/>
+               </hash>
+            </hash>
+            <hash n="PROPERTY_GROUPS">
+               <hash n="WS_POLICY">
+                  <value n="addressing"/>
+                  <hash n="GLOBAL_CONFIG_PROPERTIES"/>
+                  <list n="management"/>
+                  <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.policy.PolicyClientModel"/>
+                  <value n="mtom"/>
+                  <hash n="POLICY_OVERRIDE_PROPERTIES"/>
+                  <list n="security"/>
+                  <list n="wsconfig"/>
+                  <value n="wsrm"/>
+               </hash>
+            </hash>
+            <url n="PROXY_ORIGINAL_PORT_ENDPOINT" protocol="http" host="corpklhlatap2t.corp.televisa.com.mx" port="91" path="/LandmarkSpotsSpot.svc"/>
+         </hash>
+      </hash>
+      <value n="PROXY_SERVICE_NAME" v="LandmarkSpotsSpot"/>
+      <value n="PROXY_SERVICE_NAMESPACE" v="http://tempuri.org/"/>
+      <url n="PROXY_TARGET_PROJECT" path="../../../Client.jpr"/>
+      <list n="PROXY_WSDL_IMPORT_LIST">
+         <url path="LandmarkSpotsSpot_2.xsd"/>
+         <url path="LandmarkSpotsSpot_4.xsd"/>
+         <url path="LandmarkSpotsSpot_1.xsd"/>
+         <url path="LandmarkSpotsSpot_3.xsd"/>
+         <url path="LandmarkSpotsSpot_6.xsd"/>
+         <url path="LandmarkSpotsSpot.xsd"/>
+         <url path="LandmarkSpotsSpot_5.xsd"/>
+      </list>
+      <url n="PROXY_WSDL_URL" path="LandmarkSpotsSpot.wsdl"/>
+      <hash n="REFERENCED_WEBSERVICE">
+         <list n="BD_">
+            <hash>
+               <value n="BOUND_PORT_TYPE" v="{http://tempuri.org/}ILandmarkSpotsSpot"/>
+               <value n="DEFAULT_NAME" v="false"/>
+               <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPBinding"/>
+               <value n="NAME" v="{http://tempuri.org/}BasicHttpBinding_ILandmarkSpotsSpot"/>
+               <list n="OP_BINDINGS">
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot.LoadForFilter.org.datacontract.schemas._2004._07.landmark_parameters.SpotListFilter.java.lang.String"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot.LoadForFilter2.org.datacontract.schemas._2004._07.landmark_parameters.SpotListFilter.java.lang.String"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.BookingResults.BatchBookings.org.datacontract.schemas._2004._07.landmark_parameters.BatchBookingParams"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpotListReportType.LoadSpotListReportTypes"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfCopySelectionName.LoadCopySelection"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpotStatusIncludingActive.LoadSpotStatusIncActive"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfPositionInProgrammeName.LoadPositionInProgramme"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfInteractivite.LoadInteractivity"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfBookProcessType.LoadBookProcessTypes"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="BOUND_OPERATION" v="void.SaveSpotsForBreakSequence.org.datacontract.schemas._2004._07.landmark_parameters.SpotSequenceMaintain.java.lang.String.java.lang.String"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPOperationBinding"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+               </list>
+               <hash n="PROPERTY_GROUPS"/>
+            </hash>
+         </list>
+         <list n="BINDING_FILES"/>
+         <value n="GUID" v="55386211-016c-1000-8001-c0a88401d322"/>
+         <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.proxy.WebServiceProxy$ProxyJavaWebService"/>
+         <list n="PO_">
+            <hash>
+               <value n="DEFAULT_NAME" v="false"/>
+               <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.SOAPPort"/>
+               <value n="NAME" v="BasicHttpBinding_ILandmarkSpotsSpot"/>
+               <value n="PORT_BINDING_NAME" v="{http://tempuri.org/}BasicHttpBinding_ILandmarkSpotsSpot"/>
+               <list n="PORT_OPS">
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot.loadForFilter.org.datacontract.schemas._2004._07.landmark_parameters.SpotListFilter.java.lang.String"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot.loadForFilter2.org.datacontract.schemas._2004._07.landmark_parameters.SpotListFilter.java.lang.String"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.BookingResults.batchBookings.org.datacontract.schemas._2004._07.landmark_parameters.BatchBookingParams"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpotListReportType.loadSpotListReportTypes"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfCopySelectionName.loadCopySelection"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpotStatusIncludingActive.loadSpotStatusIncActive"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfPositionInProgrammeName.loadPositionInProgramme"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfInteractivite.loadInteractivity"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="org.datacontract.schemas._2004._07.landmark_classes.ArrayOfBookProcessType.loadBookProcessTypes"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+                  <hash>
+                     <value n="EXPOSED_BD_OPERATION" v="void.saveSpotsForBreakSequence.org.datacontract.schemas._2004._07.landmark_parameters.SpotSequenceMaintain.java.lang.String.java.lang.String"/>
+                     <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.PortOperation"/>
+                     <hash n="PROPERTY_GROUPS"/>
+                  </hash>
+               </list>
+               <hash n="PROPERTY_GROUPS"/>
+               <url n="URL" protocol="http" host="corpklhlatap2t.corp.televisa.com.mx" port="91" path="/LandmarkSpotsSpot.svc"/>
+            </hash>
+         </list>
+         <hash n="PROPERTY_GROUPS">
+            <hash n="WSDL_TO_JAVA_PROPERTIES">
+               <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.java.WSDLToJavaProperties"/>
+            </hash>
+         </hash>
+         <list n="PT_">
+            <hash>
+               <value n="AUTO_SERVICE_INTERFACE"/>
+               <value n="DEFAULT_NAME" v="false"/>
+               <value n="MODEL_CLASS" v="oracle.jdeveloper.webservices.model.java.JavaPortType"/>
+               <value n="NAME" v="{http://tempuri.org/}ILandmarkSpotsSpot"/>
+               <hash n="PROPERTY_GROUPS"/>
+               <value n="PT_CLASS" v="org.tempuri.ILandmarkSpotsSpotImpl"/>
+               <value n="PT_SERVICE_INTERFACE" v="org.tempuri.ILandmarkSpotsSpot"/>
+               <value n="PT_TOP_DOWN_GENERATED_SEI_NAME" v="org.tempuri.ILandmarkSpotsSpot"/>
+            </hash>
+         </list>
+         <url n="TARGET_PROJECT" path="../../../Client.jpr"/>
+         <value n="WS_CREATE_ONEWAY_OPERATIONS" v="true"/>
+         <value n="WS_ORIG_GEN_DIRECTION" v="TOP_DOWN"/>
+         <value n="WS_TARGET_NAMESPACE" v="http://tempuri.org/"/>
+         <value n="WS_URI" v="LandmarkSpotsSpot"/>
+         <url n="WS_WSDL_FILE" path="LandmarkSpotsSpot.wsdl"/>
+      </hash>
+      <value n="SERVICE_ASYNC" v="false"/>
+      <value n="USE_WSDL_LOCATION" v="true"/>
+   </hash>
+</jdevws:WebServiceProxy>

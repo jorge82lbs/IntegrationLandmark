@@ -1,0 +1,395 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Landmark.Classes.Spots">
+  <xs:complexType name="ArrayOfSpot">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Spot" nillable="true" type="tns:Spot"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpot" nillable="true" type="tns:ArrayOfSpot"/>
+  <xs:complexType name="Spot">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AccountItem" type="xs:int"/>
+      <xs:element minOccurs="0" name="ActPSDPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="AdvertiserCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="AgencyCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="AltEndTime1" type="xs:int"/>
+      <xs:element minOccurs="0" name="AltEndTime2" type="xs:int"/>
+      <xs:element minOccurs="0" name="AltStartTime1" type="xs:int"/>
+      <xs:element minOccurs="0" name="AltStartTime2" type="xs:int"/>
+      <xs:element minOccurs="0" name="AlternateSchedule" type="xs:int"/>
+      <xs:element minOccurs="0" name="AlternateScheduleType" type="xs:int"/>
+      <xs:element minOccurs="0" name="ApprovedStatus" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="AspectRatioCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="AudienceValue" type="xs:double"/>
+      <xs:element minOccurs="0" name="AutoAllocYn" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="AutoAllocate" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Availability" type="xs:int"/>
+      <xs:element minOccurs="0" name="BacktoBackMultiPart" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="BaseBreakPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="BaseClientBreakPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="BasePSDPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="BaseStartingPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="Bonus" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="BookedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="BookedOrganisation" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BookedPersCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="BookedPosition" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BreakCategory" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BreakNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakPosition" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakSalesAreaNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BroadcasterNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="BusinessArea" type="xs:int"/>
+      <xs:element minOccurs="0" name="BusinessType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CBACCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CPP" type="xs:double"/>
+      <xs:element minOccurs="0" name="CPPL" type="xs:double"/>
+      <xs:element minOccurs="0" name="CPT" type="xs:double"/>
+      <xs:element minOccurs="0" name="CPTL" type="xs:double"/>
+      <xs:element minOccurs="0" name="Campaign" type="xs:int"/>
+      <xs:element minOccurs="0" name="CampaignEndDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="CampaignStartDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="CampaignStatus" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CampaignStopBooking" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CancellationCharge" type="xs:double"/>
+      <xs:element minOccurs="0" name="CancellationReasonCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ClashCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ClientBreakPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="ClientPicked" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CloneSpot" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ContentText" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ContentTextCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CopyClearanceNumber" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CopyCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="CopyComment" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CopyFormat" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CopyNarrative" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CopyNativeComment" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CopyReceivedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="CopyViewed" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CreditApp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="DCRequired" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="DCTakeUp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="DaypartDaysofWeek" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DaypartEndTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="DaypartName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DaypartStartTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="Deal" type="xs:int"/>
+      <xs:element minOccurs="0" name="DemographicNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="Efficiency" type="xs:double"/>
+      <xs:element minOccurs="0" name="EndDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="EndTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="Enhanced" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="EpisNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="Episode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="EpisodeNativeName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ExternalBreakId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ExternalReference" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FalseABIDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="FeaturesinHintSchedule" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GrossLength" type="xs:int"/>
+      <xs:element minOccurs="0" name="HouseNumber" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IACopyCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="IACopyComment" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IACopyEndDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="IACopyNarrative" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IACopyRestrictionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IACopyStartDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="IACopyType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IAHouseNumber" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IAIndustryCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IAProtected" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IaCpfuNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="Impacts" type="xs:double"/>
+      <xs:element minOccurs="0" name="ImpactsL" type="xs:double"/>
+      <xs:element minOccurs="0" name="IndustryCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="InteractiveCopy" type="xs:int"/>
+      <xs:element minOccurs="0" name="InteractiveDescriptor" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="InteractiveSpot" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="InteractiveType" type="xs:int"/>
+      <xs:element minOccurs="0" name="InvoiceAction" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LastChangeDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="LastChangedOrganisation" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LastChangedPosition" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LastChangedTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="Length" type="xs:int"/>
+      <xs:element minOccurs="0" name="LimboRetryPending" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="LineDescription" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LineNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="LinePrgcNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="LineProgName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LocationNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="LongForm" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="MadeGood" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="MakeGoodRequired" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="MakeGoodSpotNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="MakeGoodTakeUp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="MasterSpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="MinSpotType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Mobility" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MultiPartSpot" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NWRatings" type="xs:double"/>
+      <xs:element minOccurs="0" name="NomianlPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="NonPreemptible" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="OptIndex" type="xs:int"/>
+      <xs:element minOccurs="0" name="OptLimit" type="xs:int"/>
+      <xs:element minOccurs="0" name="Organisation" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OriginalProgrammeCategory" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OriginalProgrammeDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="OrigionalScheduledTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="PSDPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="Peak" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="PersonCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="Position" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PositionClash" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="PositionInBreak" type="xs:int"/>
+      <xs:element minOccurs="0" name="Preemptee" type="xs:int"/>
+      <xs:element minOccurs="0" name="Preemptor" type="xs:int"/>
+      <xs:element minOccurs="0" name="PremiumCategory" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PremiumDemoNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="PremiumImpacts" type="xs:double"/>
+      <xs:element minOccurs="0" name="PremiumRatings" type="xs:double"/>
+      <xs:element minOccurs="0" name="PreviousStatus" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PrgcNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="PriceFactor" type="xs:double"/>
+      <xs:element minOccurs="0" name="ProductClash" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ProductCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProgName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProgNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProgramBuy" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ProgrammeLock" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ProgrammeNativeName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProgrammePosition" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PromoSpot" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProposedCampaign" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProposedCampaignVersion" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProtectedCopy" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="Ratecard" type="xs:int"/>
+      <xs:element minOccurs="0" name="RatingType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Ratings" type="xs:double"/>
+      <xs:element minOccurs="0" name="RatingsL" type="xs:double"/>
+      <xs:element minOccurs="0" name="RatingsP" type="xs:double"/>
+      <xs:element minOccurs="0" name="RegExcl" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RegionNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="ReptPrgcNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="SalesSplitId" type="xs:int"/>
+      <xs:element minOccurs="0" name="ScheduledDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="ScheduledTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="SecStatus" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="SecUniverse" type="xs:double"/>
+      <xs:element minOccurs="0" name="SlottingDays" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SlottingEndDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="SlottingEndTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="SlottingStartDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="SlottingStartTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="Solus" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotSalesAreaNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="StartDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="StartTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="StartingPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="Status" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SubstitutionalAdvertisingSpot" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="SuspendedCopy" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="TEP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TargetSalesAreaNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="TotalNominalPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="TransmissionRegionNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="TransmittedProgramme" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TransmittedTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="Universe" type="xs:int"/>
+      <xs:element minOccurs="0" name="ViewPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="tba" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Spot" nillable="true" type="tns:Spot"/>
+  <xs:complexType name="BookingResults">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MasterData" nillable="true" type="tns:ArrayOfBookingMasterData"/>
+      <xs:element minOccurs="0" name="Messages" nillable="true" type="tns:ArrayOfBookingMessage"/>
+      <xs:element minOccurs="0" name="Overrides" nillable="true" type="tns:ArrayOfBookingOverride"/>
+      <xs:element minOccurs="0" name="Results" nillable="true" type="tns:ArrayOfBookingResult"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BookingResults" nillable="true" type="tns:BookingResults"/>
+  <xs:complexType name="ArrayOfBookingMasterData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BookingMasterData" nillable="true" type="tns:BookingMasterData"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBookingMasterData" nillable="true" type="tns:ArrayOfBookingMasterData"/>
+  <xs:complexType name="BookingMasterData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BcatCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BkpoPosnReqm" type="xs:int"/>
+      <xs:element minOccurs="0" name="BrekNomTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="BrekSchedDate" type="xs:int"/>
+      <xs:element minOccurs="0" name="BsarNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="BstpNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="BtypCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CampNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="ClientPicked" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CrcyCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DealType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DiscountDate" type="xs:int"/>
+      <xs:element minOccurs="0" name="Duration" type="xs:int"/>
+      <xs:element minOccurs="0" name="Efficiency" type="xs:double"/>
+      <xs:element minOccurs="0" name="EnhancedYN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="EnteredPriceYN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="EpisName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FloorRate" type="xs:double"/>
+      <xs:element minOccurs="0" name="ItypNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="LineNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="LiveBroadcast" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MbruCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NoOfRtgs" type="xs:double"/>
+      <xs:element minOccurs="0" name="NonPreemptibleYN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OpenAvail" type="xs:int"/>
+      <xs:element minOccurs="0" name="OptIndex" type="xs:int"/>
+      <xs:element minOccurs="0" name="OptLimit" type="xs:int"/>
+      <xs:element minOccurs="0" name="OptionExpiryDate" type="xs:int"/>
+      <xs:element minOccurs="0" name="PreeStatus" type="xs:int"/>
+      <xs:element minOccurs="0" name="PreeTorStatus" type="xs:int"/>
+      <xs:element minOccurs="0" name="PrgcNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProgClassCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProgComment" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProgName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProgNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="PsdPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+      <xs:element minOccurs="0" name="SareNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotSareNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotStatusName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SpttCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SslgLength" type="xs:int"/>
+      <xs:element minOccurs="0" name="SttPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="UseReserveYN" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BookingMasterData" nillable="true" type="tns:BookingMasterData"/>
+  <xs:complexType name="ArrayOfBookingMessage">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BookingMessage" nillable="true" type="tns:BookingMessage"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBookingMessage" nillable="true" type="tns:ArrayOfBookingMessage"/>
+  <xs:complexType name="BookingMessage">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MsgNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="MsgText" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Override" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BookingMessage" nillable="true" type="tns:BookingMessage"/>
+  <xs:complexType name="ArrayOfBookingOverride">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BookingOverride" nillable="true" type="tns:BookingOverride"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBookingOverride" nillable="true" type="tns:ArrayOfBookingOverride"/>
+  <xs:complexType name="BookingOverride">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MsgNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="MsgText" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Override" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BookingOverride" nillable="true" type="tns:BookingOverride"/>
+  <xs:complexType name="ArrayOfBookingResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BookingResult" nillable="true" type="tns:BookingResult"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBookingResult" nillable="true" type="tns:ArrayOfBookingResult"/>
+  <xs:complexType name="BookingResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Result" type="xs:int"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BookingResult" nillable="true" type="tns:BookingResult"/>
+  <xs:complexType name="ArrayOfSpotListReportType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotListReportType" nillable="true" type="tns:SpotListReportType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotListReportType" nillable="true" type="tns:ArrayOfSpotListReportType"/>
+  <xs:complexType name="SpotListReportType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Selection" type="xs:int"/>
+      <xs:element minOccurs="0" name="SelectionText" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotListReportType" nillable="true" type="tns:SpotListReportType"/>
+  <xs:complexType name="ArrayOfCopySelectionName">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CopySelectionName" nillable="true" type="tns:CopySelectionName"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCopySelectionName" nillable="true" type="tns:ArrayOfCopySelectionName"/>
+  <xs:complexType name="CopySelectionName">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Selection" type="xs:int"/>
+      <xs:element minOccurs="0" name="SelectionName" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CopySelectionName" nillable="true" type="tns:CopySelectionName"/>
+  <xs:complexType name="ArrayOfSpotStatusIncludingActive">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotStatusIncludingActive" nillable="true" type="tns:SpotStatusIncludingActive"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotStatusIncludingActive" nillable="true" type="tns:ArrayOfSpotStatusIncludingActive"/>
+  <xs:complexType name="SpotStatusIncludingActive">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Status" type="xs:int"/>
+      <xs:element minOccurs="0" name="StatusText" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotStatusIncludingActive" nillable="true" type="tns:SpotStatusIncludingActive"/>
+  <xs:complexType name="ArrayOfPositionInProgrammeName">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PositionInProgrammeName" nillable="true" type="tns:PositionInProgrammeName"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPositionInProgrammeName" nillable="true" type="tns:ArrayOfPositionInProgrammeName"/>
+  <xs:complexType name="PositionInProgrammeName">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Position" type="xs:int"/>
+      <xs:element minOccurs="0" name="PositionName" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PositionInProgrammeName" nillable="true" type="tns:PositionInProgrammeName"/>
+  <xs:complexType name="ArrayOfInteractivite">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Interactivite" nillable="true" type="tns:Interactivite"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfInteractivite" nillable="true" type="tns:ArrayOfInteractivite"/>
+  <xs:complexType name="Interactivite">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Selection" type="xs:int"/>
+      <xs:element minOccurs="0" name="SelectionName" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Interactivite" nillable="true" type="tns:Interactivite"/>
+  <xs:complexType name="ArrayOfBookProcessType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BookProcessType" nillable="true" type="tns:BookProcessType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBookProcessType" nillable="true" type="tns:ArrayOfBookProcessType"/>
+  <xs:complexType name="BookProcessType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BookProcessTypeDescription" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BookProcessTypeID" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BookProcessType" nillable="true" type="tns:BookProcessType"/>
+</xs:schema>

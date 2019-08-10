@@ -944,7 +944,7 @@ public class ParrillasProgramasDao {
             "AND STRDT ='"+tsStrdt+"' AND EDT = '"+tsEdt+"'\n" + 
             "ORDER BY 1";
         
-        System.out.println(lsQuery);
+        //System.out.println(lsQuery);
         
         return lsQuery;
     }

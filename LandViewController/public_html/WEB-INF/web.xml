@@ -59,6 +59,10 @@
     <filter-name>adfBindings</filter-name>
     <filter-class>oracle.adf.model.servlet.ADFBindingFilter</filter-class>
   </filter>
+  <filter>
+      <filter-name>ApplicationSessionExpiryFilter</filter-name>
+      <filter-class>mx.com.televisa.landamark.filters.SessionFilter</filter-class>
+   </filter>   
   <filter-mapping>
     <filter-name>trinidad</filter-name>
     <servlet-name>Faces Servlet</servlet-name>

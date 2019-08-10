@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Landmark.Parameters.Spots">
+  <xs:import schemaLocation="LandmarkSpotsSpot_2.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+  <xs:import schemaLocation="LandmarkSpotsSpot_3.xsd" namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+  <xs:import schemaLocation="LandmarkSpotsSpot_5.xsd" namespace="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+  <xs:complexType name="SpotListFilter">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AlternateSchedule" type="xs:int"/>
+      <xs:element minOccurs="0" name="AlternateSchedules" nillable="true" type="q1:ArrayOfint" xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="BonusSpot" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="BreakType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BusinessAreas" nillable="true" type="q2:ArrayOfint" xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="BusinessTypes" nillable="true" type="q3:ArrayOfint" xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="CallerOrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CallerPositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Campaigns" nillable="true" type="q4:ArrayOfint" xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="CbacCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CbacDescription" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ClashCodes" nillable="true" type="q5:ArrayOfstring" xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="Clients" nillable="true" type="q6:ArrayOfstring" xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="ConvDemographicNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="CopyCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="CopyProcess" type="xs:int"/>
+      <xs:element minOccurs="0" name="Currency" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Deals" nillable="true" type="q7:ArrayOfint" xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="DemographicNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="DiscountCodes" nillable="true" type="q8:ArrayOfstring" xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="DiscountRangeEnd" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DiscountRangeStart" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="EfficiencyHigh" type="xs:float"/>
+      <xs:element minOccurs="0" name="EfficiencyLow" type="xs:float"/>
+      <xs:element minOccurs="0" name="ExcludeRatingsData" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="FilterCriteria" type="q9:SpotListFilterCriteria" xmlns:q9="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="FilterDateTimes" nillable="true" type="q10:ArrayOfFilterDateTime" xmlns:q10="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="IncludeCopyDetails" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludeInvoiceInfo" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludePackages" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludePremiumCategoryData" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludePrimary" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludeProgrammeOrCategory" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludeSchedulePayments" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IncludeSubAreas" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="InclusiveDiscountRange" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="InclusivePreemptionRange" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="Interactivity" type="q11:Interactivity" xmlns:q11="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="OrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ParpName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ParpNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="PositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PositionInBreak" type="xs:int"/>
+      <xs:element minOccurs="0" name="PositionInProgramme" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PreemptionCodes" nillable="true" type="q12:ArrayOfint" xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="PreemptionRangeEnd" type="xs:int"/>
+      <xs:element minOccurs="0" name="PreemptionRangeStart" type="xs:int"/>
+      <xs:element minOccurs="0" name="PriceHigh" type="xs:float"/>
+      <xs:element minOccurs="0" name="PriceLow" type="xs:float"/>
+      <xs:element minOccurs="0" name="ProductCode" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProductReportingCategory" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProductSource" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProgrammeCategoryNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProgrammeNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="RatingsHigh" type="xs:float"/>
+      <xs:element minOccurs="0" name="RatingsLow" type="xs:float"/>
+      <xs:element minOccurs="0" name="RegnBreakout" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ReportingPositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RetrieveCopy" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="SalesAreas" nillable="true" type="q13:ArrayOfint" xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="SecondaryDemographicNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SecondaryRatingsSupplier" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="SpotLengths" nillable="true" type="q14:ArrayOfint" xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotStatuses" nillable="true" type="q15:ArrayOfint" xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element minOccurs="0" name="SpotTypeCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TxmnFailData" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="UntxmdSpotData" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotListFilter" nillable="true" type="tns:SpotListFilter"/>
+  <xs:complexType name="BatchBookingParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="OrgrCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PosnCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SpotAmendParams" nillable="true" type="tns:ArrayOfSpotAmendParams"/>
+      <xs:element minOccurs="0" name="SpotBookParams" nillable="true" type="tns:ArrayOfSpotBookParams"/>
+      <xs:element minOccurs="0" name="SpotCancelParams" nillable="true" type="tns:ArrayOfSpotCancelParams"/>
+      <xs:element minOccurs="0" name="SpotMoveParams" nillable="true" type="tns:ArrayOfSpotMoveParams"/>
+      <xs:element minOccurs="0" name="SpotSwapParams" nillable="true" type="tns:ArrayOfSpotSwapParams"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BatchBookingParams" nillable="true" type="tns:BatchBookingParams"/>
+  <xs:complexType name="ArrayOfSpotAmendParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotAmendParams" nillable="true" type="tns:SpotAmendParams"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotAmendParams" nillable="true" type="tns:ArrayOfSpotAmendParams"/>
+  <xs:complexType name="SpotAmendParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AddedValue" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="BreakCategoryCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BreakNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakNominalTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakPositionRequirement" type="q16:Bkpo" xmlns:q16="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="BreakSalesAreaNumber" type="xs:short"/>
+      <xs:element minOccurs="0" name="BreakScheduledDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="BreakTypeCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BusinessAreaNumber" type="xs:byte"/>
+      <xs:element minOccurs="0" name="BusinessTypeNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="CampaignNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="CheckClash" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CheckRepetition" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CheckRestrictions" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ClientPicked" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CurrencyCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DaypartNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="DealType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DeleteChargeTakeUp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="DiscountDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Discounts" nillable="true" type="q17:ArrayOfDiscount" xmlns:q17="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="Enhanced" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="EnteredPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="FunctionalityType" type="xs:int"/>
+      <xs:element minOccurs="0" name="InteractivityTypeNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="IsEnteredPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IsMakeGoodRequired" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IsMakePrimary" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IsProgrammeLocked" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="LineNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="LockSessionID" type="xs:int"/>
+      <xs:element minOccurs="0" name="MakeGood" type="xs:int"/>
+      <xs:element minOccurs="0" name="MakeGoodTakeUp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="MobilityRuleCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MultiParts" nillable="true" type="q18:ArrayOfMultiPart" xmlns:q18="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="NonPreemptible" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="OptionExpiryDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="OrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Overrides" nillable="true" type="q19:ArrayOfOverrides" xmlns:q19="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PostDiscountPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="PreemptionStatus" type="xs:int"/>
+      <xs:element minOccurs="0" name="PreemptorStatus" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProcessType" type="q20:BookingProcessType" xmlns:q20="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PromoSpotLink" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ReasonCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RegionalExclusions" nillable="true" type="q21:ArrayOfRegionalExclusion" xmlns:q21="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="ResetPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+      <xs:element minOccurs="0" name="SAPNumber" nillable="true" type="xs:double"/>
+      <xs:element minOccurs="0" name="ScheduleNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotBitFlags" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotLength" type="xs:short"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotSalesAreaNumber" type="xs:short"/>
+      <xs:element minOccurs="0" name="SpotStatus" type="q22:SpotStatus" xmlns:q22="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="SpotTypeCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SwapSpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="UseReserve" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotAmendParams" nillable="true" type="tns:SpotAmendParams"/>
+  <xs:complexType name="ArrayOfSpotBookParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotBookParams" nillable="true" type="tns:SpotBookParams"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotBookParams" nillable="true" type="tns:ArrayOfSpotBookParams"/>
+  <xs:complexType name="SpotBookParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AddedValue" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="BreakCategoryCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BreakNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakNominalTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakPositionRequirement" type="q23:Bkpo" xmlns:q23="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="BreakSalesAreaNumber" type="xs:short"/>
+      <xs:element minOccurs="0" name="BreakScheduledDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="BreakTypeCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BusinessAreaNumber" type="xs:byte"/>
+      <xs:element minOccurs="0" name="BusinessTypeNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="CampaignNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="CheckClash" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CheckRepetition" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CheckRestrictions" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ClientPicked" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CopySpotNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="CurrencyCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DaypartNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="DealType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DeleteChargeTakeUp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="DiscountDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Discounts" nillable="true" type="q24:ArrayOfDiscount" xmlns:q24="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="Enhanced" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="FunctionalityType" type="xs:int"/>
+      <xs:element minOccurs="0" name="InteractivityTypeNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="IsEnteredPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IsMakeGoodRequired" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IsMakePrimary" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="IsProgrammeLocked" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="LineNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="LinkSpots" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="LockSessionID" type="xs:int"/>
+      <xs:element minOccurs="0" name="MakeGood" type="xs:int"/>
+      <xs:element minOccurs="0" name="MakeGoodTakeUp" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="MasterSpotNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="MobilityRuleCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MultiParts" nillable="true" type="q25:ArrayOfMultiPart" xmlns:q25="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="NonPreemptible" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="OptionExpiryDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="OrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Overrides" nillable="true" type="q26:ArrayOfOverrides" xmlns:q26="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PostDiscountPrice" type="xs:double"/>
+      <xs:element minOccurs="0" name="PreemptionStatus" type="xs:int"/>
+      <xs:element minOccurs="0" name="PreemptorStatus" type="xs:int"/>
+      <xs:element minOccurs="0" name="ProcessType" type="q27:BookingProcessType" xmlns:q27="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PromoSpotLink" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ReasonCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RegionalExclusions" nillable="true" type="q28:ArrayOfRegionalExclusion" xmlns:q28="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="ResetPrice" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+      <xs:element minOccurs="0" name="ScheduleNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SequenceNo" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotBitFlags" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotLength" type="xs:short"/>
+      <xs:element minOccurs="0" name="SpotSalesAreaNumber" type="xs:short"/>
+      <xs:element minOccurs="0" name="SpotStatus" type="q29:SpotStatus" xmlns:q29="http://schemas.datacontract.org/2004/07/Landmark.Parameters.CoreTypes"/>
+      <xs:element minOccurs="0" name="SpotTypeCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Tolerance" type="xs:int"/>
+      <xs:element minOccurs="0" name="UseReserve" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotBookParams" nillable="true" type="tns:SpotBookParams"/>
+  <xs:complexType name="ArrayOfSpotCancelParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotCancelParams" nillable="true" type="tns:SpotCancelParams"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotCancelParams" nillable="true" type="tns:ArrayOfSpotCancelParams"/>
+  <xs:complexType name="SpotCancelParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IsMakeGoodRequired" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="OrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Overrides" nillable="true" type="q30:ArrayOfOverrides" xmlns:q30="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProcessType" type="q31:BookingProcessType" xmlns:q31="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="ReasonCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotCancelParams" nillable="true" type="tns:SpotCancelParams"/>
+  <xs:complexType name="ArrayOfSpotMoveParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotMoveParams" nillable="true" type="tns:SpotMoveParams"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotMoveParams" nillable="true" type="tns:ArrayOfSpotMoveParams"/>
+  <xs:complexType name="SpotMoveParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BreakNominalTime" nillable="true" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakNumber" nillable="true" type="xs:int"/>
+      <xs:element minOccurs="0" name="BreakSalesAreaCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BreakScheduledDate" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="MultiParts" nillable="true" type="q32:ArrayOfMultiPart" xmlns:q32="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="OrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Overrides" nillable="true" type="q33:ArrayOfOverrides" xmlns:q33="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProcessType" type="q34:BookingProcessType" xmlns:q34="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotDuration" nillable="true" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotSalesAreaCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SpotStatus" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotMoveParams" nillable="true" type="tns:SpotMoveParams"/>
+  <xs:complexType name="ArrayOfSpotSwapParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotSwapParams" nillable="true" type="tns:SpotSwapParams"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotSwapParams" nillable="true" type="tns:ArrayOfSpotSwapParams"/>
+  <xs:complexType name="SpotSwapParams">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="OrganisationCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Overrides" nillable="true" type="q35:ArrayOfOverrides" xmlns:q35="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="PositionCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ProcessType" type="q36:BookingProcessType" xmlns:q36="http://schemas.datacontract.org/2004/07/Landmark.Parameters.APIParams"/>
+      <xs:element minOccurs="0" name="RowId" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="SwapSpotNumber" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotSwapParams" nillable="true" type="tns:SpotSwapParams"/>
+  <xs:complexType name="SpotSequenceMaintain">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BreakSpotCount" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotSequence" nillable="true" type="tns:ArrayOfSpotSequence"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotSequenceMaintain" nillable="true" type="tns:SpotSequenceMaintain"/>
+  <xs:complexType name="ArrayOfSpotSequence">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SpotSequence" nillable="true" type="tns:SpotSequence"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSpotSequence" nillable="true" type="tns:ArrayOfSpotSequence"/>
+  <xs:complexType name="SpotSequence">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BreakPositionReqm" type="xs:int"/>
+      <xs:element minOccurs="0" name="EstimatedTxmnTime" type="xs:int"/>
+      <xs:element minOccurs="0" name="SequenceInBreak" type="xs:int"/>
+      <xs:element minOccurs="0" name="SpotNumber" type="xs:int"/>
+      <xs:element minOccurs="0" name="TransmissionRegion" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SpotSequence" nillable="true" type="tns:SpotSequence"/>
+</xs:schema>

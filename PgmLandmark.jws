@@ -45,8 +45,8 @@
                   </hash>
                </list>
             </hash>
-            <url n="earURL" path="deploy/PgmLandmark_Project1_PgmLandmark.ear"/>
-            <value n="enterpriseAppName" v="PgmLandmark_Project1_PgmLandmark"/>
+            <url n="earURL" path="deploy/PgmLandmark.ear"/>
+            <value n="enterpriseAppName" v="PgmLandmark"/>
             <hash n="fileGroups">
                <list n="groups">
                   <hash>
@@ -89,6 +89,21 @@
       </hash>
       <list n="profileList">
          <string v="PgmLandmark_Project1_PgmLandmark"/>
+      </list>
+   </hash>
+   <hash n="oracle.jdeveloper.model.PathsConfiguration">
+      <hash n="ApplicationSrcContentSet">
+         <list n="pattern-filters">
+            <string v="+**"/>
+         </list>
+         <list n="url-path">
+            <url path="src/"/>
+         </list>
+      </hash>
+   </hash>
+   <hash n="oracle.mds.internal.dt.ide.CustOptions">
+      <list n="customizationLibraries">
+         <hash/>
       </list>
    </hash>
 </jws:workspace>

@@ -12,7 +12,10 @@ package mx.com.televisa.landamark.services.jobs.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+
+import java.io.ObjectOutputStream;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -282,7 +285,8 @@ public class ParrillasProgramasImpCron implements Job{
                         //############# Enviar archivo(PROGRAMM) a ubicacion remota ###########
                         SftpManagment loSftpMgmnt = new SftpManagment();
                         //Obtener ruta remota de la base de datos
-                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_BREAKS", "SSH_CONNECTION");                    
+                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_BREAKS", "SSH_CONNECTION");  
+                        System.out.println("Ruta remota PATH_BREAKS: "+lsRemotePath);
                         //tsRemotePath,
                         //tsLocalPath = lsPathFiles,
                         //tsRemoteFileName = loFileBreaks.getName(),
@@ -440,6 +444,7 @@ public class ParrillasProgramasImpCron implements Job{
                         
                         try{
                             System.out.println("Eliminando archivo "+loFileBreaks.getName());
+                            //loFileBreaks.deleteOnExit();
                             loFileBreaks.delete();
                             System.out.println("Eliminando archivo ok...");
                         }catch(Exception loExDel){
@@ -544,7 +549,8 @@ public class ParrillasProgramasImpCron implements Job{
                                                            lsUserName);
                         
                         SftpManagment loSftpMgmnt = new SftpManagment();
-                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_PROGRAMM", "SSH_CONNECTION");                    
+                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_PROGRAMM", "SSH_CONNECTION");  
+                        System.out.println("Ruta remota PATH_PROGRAMM: "+lsRemotePath);
                         //tsRemotePath,
                         //tsLocalPath = lsPathFiles,
                         //tsRemoteFileName = loFileBreaks.getName(),
@@ -616,6 +622,7 @@ public class ParrillasProgramasImpCron implements Job{
                                                 
                         try{
                             System.out.println("Eliminando archivo "+loFileProgramm.getName());
+                            //loFileProgramm.deleteOnExit();
                             loFileProgramm.delete();
                             System.out.println("Eliminando archivo ok...");
                         }catch(Exception loExDel){
@@ -721,6 +728,7 @@ public class ParrillasProgramasImpCron implements Job{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+"PLAN.PROG";
         File loFileResponse = new File(tsPath+""+lsFileName);
+        //File loFileResponse = File.createTempFile(lsFileName,null);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
@@ -811,6 +819,7 @@ public class ParrillasProgramasImpCron implements Job{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+".brk";
         File loFileResponse = new File(tsPath+""+lsFileName);
+        //File loFileResponse = File.createTempFile(lsFileName,null);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
@@ -882,7 +891,13 @@ public class ParrillasProgramasImpCron implements Job{
                               String tsChannel) throws Exception{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+".brk";
+        
+        //ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(lsFileName));
         File loFileResponse = new File(tsPath+""+lsFileName);
+        
+        //File loFileResponse = File.createTempFile(lsFileName,null);
+        
+        
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
@@ -891,7 +906,8 @@ public class ParrillasProgramasImpCron implements Job{
                 String lsRow = loBrk.getLsFullRowNivel1();
                 loWriter.write(lsRow);
                 loWriter.write("\r\n");
-            }      
+                //escribiendoFichero.writeUTF(lsRow);
+            }
             //########## NIVEL 2 y 3  ##########
             for(LmkBrkGenericRowBean loBrk : taNivel23){
                 String lsRow = loBrk.getLsFullRowNivel23();
@@ -909,8 +925,13 @@ public class ParrillasProgramasImpCron implements Job{
         }
         catch (Exception e) {
             System.out.println("BREAKS: Error al escribir en ruta local: "+e.getMessage());
-        }
+        }/*finally{
+            escribiendoFichero.close();
+        }*/
         return loFileResponse;
+        
+        //Mover archivo ya procecsado en el ssh
+        
     }
     
 }

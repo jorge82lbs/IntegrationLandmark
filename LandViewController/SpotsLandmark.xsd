@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:ns0="http://mx/com/televisa/beans/spots2" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://mx/com/televisa/beans/spots2" attributeFormDefault="qualified"
+            elementFormDefault="qualified">
+   <xsd:element name="Spots">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Spot" maxOccurs="unbounded" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element type="xsd:string" name="SalesArea"/>
+              <xsd:element type="xsd:string" name="TxRegion"/>
+              <xsd:element type="xsd:date" name="ScheduleDate"/>
+              <xsd:element type="xsd:time" name="StartTime"/>
+              <xsd:element type="xsd:byte" name="BreakNumber"/>
+              <xsd:element type="xsd:string" name="BreakType"/>
+              <xsd:element type="xsd:string" name="Secondary"/>
+              <xsd:element type="xsd:short" name="SpotNumber"/>
+              <xsd:element type="xsd:short" name="ContractNumber"/>
+              <xsd:element type="xsd:time" name="SpotDuration"/>
+              <xsd:element type="xsd:string" name="SpotSalesClassification"/>
+              <xsd:element type="xsd:byte" name="SequenceNumber"/>
+              <xsd:element type="xsd:short" name="ProductKey"/>
+              <xsd:element type="xsd:string" name="ProductName"/>
+              <xsd:element type="xsd:string" name="BonusSpot"/>
+              <xsd:element type="xsd:string" name="BusinessTypeCode"/>
+              <xsd:element type="xsd:string" name="RootClashCode"/>
+              <xsd:element type="xsd:string" name="ClashCode"/>
+              <xsd:element type="xsd:string" name="ClashDescription"/>
+              <xsd:element type="xsd:string" name="CloseCaption"/>
+              <xsd:element type="xsd:string" name="MobilityCode"/>
+              <xsd:element type="xsd:byte" name="StartPrice"/>
+              <xsd:element type="xsd:byte" name="PSDPrice"/>
+              <xsd:element type="xsd:string" name="ProgrammeName"/>
+              <xsd:element type="xsd:string" name="AdvertiserID"/>
+              <xsd:element type="xsd:string" name="AdvertiserName"/>
+              <xsd:element type="xsd:string" name="AgencyID"/>
+              <xsd:element type="xsd:string" name="AgencyName" minOccurs="0"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+    
+</xsd:schema>

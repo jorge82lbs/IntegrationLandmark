@@ -104,9 +104,9 @@ public class SecurityManagerWs {
             String lsKey= loUf.getKeyDecoder();            
             lsUser = loUf.encryptObject(tsUser,lsKey);
             lsPassword = loUf.encryptObject(tsPassword, lsKey);
-            System.out.println("lsKey: "+lsKey);
-            System.out.println("lsUser(encrypt): "+lsUser);
-            System.out.println("lsPassword(encrypt): "+lsPassword);
+            //System.out.println("lsKey: "+lsKey);
+            //System.out.println("lsUser(encrypt): "+lsUser);
+            //System.out.println("lsPassword(encrypt): "+lsPassword);
         } catch (Exception loEx) {
             lsToken = null;
         }

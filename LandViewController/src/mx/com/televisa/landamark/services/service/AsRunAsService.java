@@ -9,6 +9,9 @@
 */
 package mx.com.televisa.landamark.services.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +21,18 @@ import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
+import mx.com.televisa.landamark.services.jobs.service.AsRunAsImpCron;
 import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
+
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
 
 /** Clase que ejecuta logica o servicio de As Run As a Landmark
  *
@@ -47,7 +59,6 @@ public class AsRunAsService {
         EntityMappedDao        loEntityMappedDao = new EntityMappedDao();
         ServicesParamsDao      loSpDao = new ServicesParamsDao();
         boolean                lbProcess = true;
-       
         String lsReturn = "As Run As execute";
         loResponseService.setLiIdRequest(loInput.getLiIdRequest());
         loResponseService.setLiIdService(loInput.getLiIdService());
@@ -134,12 +145,70 @@ public class AsRunAsService {
                          laChannels.add(loBean.getLsIndParameter());
                      }
                 }
-                
             }
+            
+            
+            //Proceso para guardar parametros en la tabla de log services
+            String lsFechasLog = "["+lsFecInicial + ","+lsFecInicial+"]";
+            String lsChannelsLog = "";
+            for(String lsChannel : laChannels){
+                lsChannelsLog += lsChannel+",";
+            }
+            loEntityMappedDao.updateParametersServiceLog(liIdLogService, 
+                                                         loInput.getLiIdService(), 
+                                                         lsFechasLog, 
+                                                         lsChannelsLog);
+            
+            
+            for(String lsChannel : laChannels){
+                String lsTrigger = lsChannel+getIdBitacora();
+                 //Invocar job asincrono simple
+                 Scheduler loScheduler;
+                 try {
+                     loScheduler = new StdSchedulerFactory().getScheduler();
+                     JobDetail loJob = 
+                         JobBuilder.newJob(AsRunAsImpCron.class).build();
+                     Trigger   loTrigger = 
+                         TriggerBuilder.newTrigger().withIdentity(lsTrigger).build();
+                     JobDataMap loJobDataMap=  loJob.getJobDataMap();
+                     //------------------------------------------
+                     loJobDataMap.put("lsIdService", String.valueOf(loInput.getLiIdService())); 
+                     loJobDataMap.put("lsIdUser", String.valueOf(loInput.getLiIdUser())); 
+                     loJobDataMap.put("lsUserName", loInput.getLsUserName()); 
+                     loJobDataMap.put("lsTypeProcess", loInput.getLsServiceType());
+                     loJobDataMap.put("lsServiceName", loInput.getLsServiceName());
+                     loJobDataMap.put("lsPathFiles", loInput.getLsPathFiles());                           
+                     loJobDataMap.put("lsIdLogService", String.valueOf(liIdLogService)); 
+                     //------------------------------------------
+                     loJobDataMap.put("lsFecInicial", lsFecInicial); 
+                     loJobDataMap.put("lsFecFinal", lsFecFinal); 
+                     loJobDataMap.put("lsIdChannel", lsChannel); 
+                     loScheduler.scheduleJob(loJob, loTrigger);
+                     loScheduler.start();
+                     
+                 } catch (Exception loEx) {
+                     System.out.println("Error en invocacion de cron final "+loEx.getMessage());
+                 }
+            }
+            
             
             
         }
                                 
         return loResponseService;
     }
+    
+    /**
+     * Obtiene, en base a la fecha, el id_paradigm a manejar en intergracion
+     * @autor Jorge Luis Bautista Santiago     
+     * @return String
+     */
+    public String getIdBitacora(){
+        String lsResponse = null;
+        DateFormat loDf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
+        return lsResponse;
+    }
+
+    
 }

@@ -142,6 +142,7 @@ public class SftpManagment {
             ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
             String lsRemote = tsRemotePath + "/" + tsRemoteFileName;
             String lsLocal = tsLocalPath + "/" + tsLocalFileName;
+            System.out.println("File to send: "+lsLocal);
             loSftpChannel.put(lsLocal,lsRemote);  
             loSftpChannel.exit();
             loSession.disconnect();
@@ -278,6 +279,67 @@ public class SftpManagment {
         }
         return loLmkIntSftpCnnBean;
     }
+    
+    /**
+    * Envia un archivo respuesta leido a ubicacion remota con protocolo sftp
+    * @autor Jorge Luis Bautista Santiago
+    * @param tsDestinyPathFile
+    * @param tsOriginPathFile
+    * @param tsDestinyFileName
+    * @param tsOriginFileName
+    * @return ResponseUpdDao
+    */
+    public ResponseUpdDao moveFileSFTP(String tsDestinyPathFile,
+                                       String tsOriginPathFile,
+                                       String tsDestinyFileName,
+                                       String tsOriginFileName) {
+        ResponseUpdDao loResponse = new ResponseUpdDao();
+        JSch loJsch = new JSch();
+        Session loSession = null;
+        try {
+            LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
+            System.out.println("Incio....moveFileSFTP()");
+            loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
+                                          loSftpCnn.getLsHost(), 
+                                          loSftpCnn.getLiPort());
+            loSession.setConfig("StrictHostKeyChecking", "no");
+            
+            loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
+                                "diffie-hellman-group14-sha1," + 
+                                "diffie-hellman-group-exchange-sha1," + 
+                                "diffie-hellman-group-exchange-sha256");                        
+            
+            
+            loSession.setPassword(loSftpCnn.getLsPassword());
+            loSession.connect();
+            
+            Channel loChannel = loSession.openChannel("sftp");
+            loChannel.connect();
+            ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
+            String lsDestinySsh = tsDestinyPathFile + "/" + tsDestinyFileName;
+            String lsOriginSsh = tsOriginPathFile + "/" + tsOriginFileName;
+            System.out.println("Mover DE (Origen) " + lsOriginSsh);
+            System.out.println("A (Destino): " + lsDestinySsh);
+            loSftpChannel.rename(lsOriginSsh, lsDestinySsh);  
+            //sftpChannel.rename("/export/home/teleapp//intputSpots.xsd","/export/home/teleapp/PROCESADO//intputSpots.xsd");  
+            loSftpChannel.exit();
+            loSession.disconnect();
+            loResponse.setLsResponse("OK");
+            loResponse.setLsMessage("El Archivo "+tsOriginFileName+" se ha enviado satisfactoriamente");
+            loResponse.setLiAffected(0);
+            System.out.println("TODO OK");
+        } catch (JSchException loEx) {
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLsMessage(loEx.getMessage());
+            loResponse.setLiAffected(0);
+        } catch (SftpException loEx) {
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLsMessage("ERROR al enviar["+tsOriginFileName+"]: "+loEx.getMessage());
+            loResponse.setLiAffected(0);
+        }
+        return loResponse;
+    }
+    
         
     
 }

@@ -1656,8 +1656,8 @@ public class AppModuleImpl extends ApplicationModuleImpl {
      * Container's getter for LmkIntServicesCatVwView1.
      * @return LmkIntServicesCatVwView1
      */
-    public ViewObjectImpl getLmkIntServicesCatVwView1() {
-        return (ViewObjectImpl) findViewObject("LmkIntServicesCatVwView1");
+    public LmkIntServicesCatVwViewImpl getLmkIntServicesCatVwView1() {
+        return (LmkIntServicesCatVwViewImpl) findViewObject("LmkIntServicesCatVwView1");
     }
     
     /**

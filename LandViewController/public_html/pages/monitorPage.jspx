@@ -159,7 +159,7 @@
                                               fetchSize="#{bindings.LmkIntServicesLogVwView1.rangeSize}"
                                               id="tbl"
                                       binding="#{MonitorBean.poTblLog}"
-                                      columnStretching="column:c30"
+                                      columnStretching="column:ot32"
                                       styleClass="AFStretchWidth"
                                       autoHeightRows="20">
                                       <af:column align="center" id="colCrudNot" frozen="true" sortable="false"
@@ -557,13 +557,13 @@
                                             </af:outputText>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.FecLastUpdateDate.name}"
-                                                   sortable="true" visible="false"
-                                                   headerText="#{bindings.LmkIntServicesLogVwView1.hints.FecLastUpdateDate.label}"
+                                                   sortable="true" align="center" width="170"
+                                                   headerText="Fecha Actualización"
                                                    id="c32">
                                             <af:outputText value="#{row.FecLastUpdateDate}"
                                                            shortDesc="#{bindings.LmkIntServicesLogVwView1.hints.FecLastUpdateDate.tooltip}"
                                                            id="ot32">
-                                                <af:convertDateTime pattern="#{bindings.LmkIntServicesLogVwView1.hints.FecLastUpdateDate.format}"/>
+                                                <af:convertDateTime pattern="yyyy-MM-dd hh:mm:ss"/>
                                             </af:outputText>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesLogVwView1.hints.NumLastUpdatedBy.name}"

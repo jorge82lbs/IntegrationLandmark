@@ -9,6 +9,7 @@
 */
 package mx.com.televisa.landamark.view.beans;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.text.ParseException;
@@ -3719,8 +3720,21 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
    }
     
     public String getRealPath(){
-        ServletContext        loContext = getContext();
-        return loContext.getRealPath("/");
+        String lsPath = "";
+        try {
+            File loFileResponse = File.createTempFile("azt|", null);
+            lsPath = loFileResponse.getAbsolutePath().split("azt|")[0];
+            System.out.println("AbsolutePath: "+loFileResponse.getAbsolutePath());
+            System.out.println("getCanonicalPath: "+loFileResponse.getCanonicalPath());
+            System.out.println("Path: "+loFileResponse.getPath());
+            System.out.println("RETURN: "+lsPath);
+            loFileResponse.deleteOnExit();
+        } catch (IOException e) {
+            System.out.println("Eerror al crear archivo temporal: "+e.getMessage());;
+        }
+        //ServletContext        loContext = getContext();
+        //return loContext.getRealPath("/");
+        return lsPath;
     }
     
     public String getContextPath(){

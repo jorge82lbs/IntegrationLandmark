@@ -111,6 +111,13 @@ public class OrderSpotsImpCron implements Job{
             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                liIdUser, 
                                                lsUserName);   
+            
+            loUtilMail.buildMailByProcess(liIdLogService, 
+                                          Integer.parseInt(lsIdService), 
+                                          liIndProcess, 
+                                          liIdUser, 
+                                          lsUserName);
+            
         }
         else{
             //Validar nombre del archivo
@@ -132,6 +139,11 @@ public class OrderSpotsImpCron implements Job{
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);  
+                loUtilMail.buildMailByProcess(liIdLogService, 
+                                              Integer.parseInt(lsIdService), 
+                                              liIndProcess, 
+                                              liIdUser, 
+                                              lsUserName);
             }
             else{
                 //Si el archivo si fue encontrado, entonces guardar copia en carpeta de WL  
