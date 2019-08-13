@@ -19,6 +19,7 @@ import javax.faces.event.ActionEvent;
 import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
+import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.util.UtilFaces;
 
 import oracle.adf.view.rich.component.rich.RichPopup;
@@ -201,13 +202,33 @@ public class GralConfigBean {
                 if(lsKeySave.equalsIgnoreCase("true")){
                     if(lsKeyString == null){
                         lsKeyString = loService.getKeyDecoderUserFromDb();
+                        try{
+                            lsValueParameter = 
+                                new UtilFaces().encryptObject(lsValueParameter, lsKeyString);
+                        }catch(Exception loExEnc){
+                            lbUpdate = false;
+                        }
                     }
-                    try{
-                        lsValueParameter = 
-                            new UtilFaces().encryptObject(lsValueParameter, lsKeyString);
-                    }catch(Exception loExEnc){
-                        lbUpdate = false;
+                    if(lsKeyString != null){
+                        if(lsKeyString.equalsIgnoreCase("BASE64-SHA256")){
+                            ResponseUpdDao loResponseUpdDao = 
+                                new UtilFaces().encryptBase64Sha256(lsValueParameter);
+                            if(loResponseUpdDao.getLsResponse().equalsIgnoreCase("OK")){
+                                lsValueParameter = loResponseUpdDao.getLsMessage();        
+                            }else{
+                                lsKeyString += loResponseUpdDao.getLsMessage();
+                                lbUpdate = false;
+                            }
+                        }else{
+                            try{
+                                lsValueParameter = 
+                                    new UtilFaces().encryptObject(lsValueParameter, lsKeyString);
+                            }catch(Exception loExEnc){
+                                lbUpdate = false;
+                            }
+                        }
                     }
+                    
                 }
                 if(lbUpdate){
                     LmkIntConfigParamRowBean toLmkBean = new LmkIntConfigParamRowBean();
@@ -336,13 +357,33 @@ public class GralConfigBean {
                 if(lsKeySave.equalsIgnoreCase("true")){
                     if(lsKeyString == null){
                         lsKeyString = loService.getKeyDecoderUserFromDb();
+                        try{
+                            lsValueParameter = 
+                                new UtilFaces().encryptObject(lsValueParameter, lsKeyString);
+                        }catch(Exception loExEnc){
+                            lbInsert = false;
+                        }
                     }
-                    try{
-                        lsValueParameter = 
-                            new UtilFaces().encryptObject(lsValueParameter, lsKeyString);
-                    }catch(Exception loExEnc){
-                        lbInsert = false;
+                    if(lsKeyString != null){
+                        if(lsKeyString.equalsIgnoreCase("BASE64-SHA256")){
+                            ResponseUpdDao loResponseUpdDao = 
+                                new UtilFaces().encryptBase64Sha256(lsValueParameter);
+                            if(loResponseUpdDao.getLsResponse().equalsIgnoreCase("OK")){
+                                lsValueParameter = loResponseUpdDao.getLsMessage();        
+                            }else{
+                                lsKeyString += loResponseUpdDao.getLsMessage();
+                                lbInsert = false;
+                            }
+                        }else{
+                            try{
+                                lsValueParameter = 
+                                    new UtilFaces().encryptObject(lsValueParameter, lsKeyString);
+                            }catch(Exception loExEnc){
+                                lbInsert = false;
+                            }
+                        }
                     }
+                    
                 }
                 if(lbInsert){
                     

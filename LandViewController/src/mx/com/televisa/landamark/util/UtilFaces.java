@@ -9,6 +9,11 @@
 */
 package mx.com.televisa.landamark.util;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -628,6 +633,61 @@ public class UtilFaces {
         
         return loResponseUpdDao;
         
+    }
+    
+    /**
+    * Encripta cadena para consumir servicio web de landmark
+    * @autor Jorge Luis Bautista Santiago
+    * @param tsCadena
+    * @return ResponseUpdDao
+    */
+    public ResponseUpdDao encryptBase64Sha256(String tsCadena){
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        //String compareString = tsCadena;
+            //"VHJhaW5lZTA3OjJjZWQ2ZTcxNjBhOWUyY2I0YmUyOWMyMDA4NTJiZmM0ZmUyOWQ3NTMxZmYzZmZjNTFmYzE0MDczOTlkOGQ4Yjg=";
+        //String lsOriginal = "Trainee07:Password7";
+        String lsOriginal = tsCadena;//"Trainee07:Password8";
+        System.out.println("Cadena Original["+lsOriginal+"]");
+        String[] laArray = lsOriginal.split(":");
+        if(laArray.length > 0){
+            System.out.println("Cadena Separada:");
+            System.out.println("\tUserName["+laArray[0]+"]");
+            System.out.println("\tPassword["+laArray[1]+"]");
+            MessageDigest loDigest;
+            try {
+                loDigest = MessageDigest.getInstance("SHA-256");
+                byte[] loEncodedhash = loDigest.digest(
+                  laArray[1].getBytes(StandardCharsets.UTF_8));
+                String lsPwdString = bytesToHex(loEncodedhash);
+                System.out.println("Password Encriptado en SHA-256["+lsPwdString+"]");
+                BASE64Encoder   loEncoder = new BASE64Encoder();                
+                System.out.println("##########################################");
+                String lsStringFull = laArray[0]+":"+lsPwdString;
+                System.out.println("Cadena a Encriptar para Base64["+lsStringFull+"]");
+                String lsFullEncodeString = loEncoder.encode(lsStringFull.getBytes());                           
+                System.out.println("Encriptado Completo en base64:\n["+lsFullEncodeString.replaceAll("(\n|\r)", "")+"]");
+                loResponseUpdDao.setLsResponse("OK");
+                loResponseUpdDao.setLsMessage(lsFullEncodeString.replaceAll("(\n|\r)", ""));
+            } catch (NoSuchAlgorithmException e) {
+                System.out.println("Error al encriptar: "+e.getMessage());
+                loResponseUpdDao.setLsResponse("ERROR");
+                loResponseUpdDao.setLsMessage("No es posible encriptar "+e.getMessage());
+            }        
+        }else{
+            loResponseUpdDao.setLsResponse("ERROR");
+            loResponseUpdDao.setLsMessage("La cadena no contiene dos puntos (:)");
+        }
+        return loResponseUpdDao;
+    }
+    
+    private static String bytesToHex(byte[] hash) {
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < hash.length; i++) {
+        String hex = Integer.toHexString(0xff & hash[i]);
+        if(hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
     
 }

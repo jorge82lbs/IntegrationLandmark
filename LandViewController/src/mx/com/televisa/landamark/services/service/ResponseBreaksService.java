@@ -91,10 +91,10 @@ public class ResponseBreaksService {
         //- Ir a la bd de archivos fisicos y extrer los pendientes de respuesta
         String lsWhere = " AND NOM_FILE LIKE '%.brk' " +
             " AND IND_ESTATUS = 'L'"; //enviado a landmak
-        List<LmkIntXmlFilesRowBean> laList = 
+        List<LmkIntXmlFilesRowBean> laListPgm = 
             loResponseBreaksDao.getAllFilesPending(lsWhere);
         
-        if(laList.size() > 0){
+        if(laListPgm.size() > 0){
             //- Ir a carpeta de landmark y extraer nombres de archivo *.brk
             String lsPath = 
                 loEntityMappedDao.getGeneralParameter("PATH_BREAKS_OUT", "SSH_CONNECTION");
@@ -103,25 +103,24 @@ public class ResponseBreaksService {
             String lsPathReaded = 
                 loEntityMappedDao.getGeneralParameter("PATH_BREAKS_OUT_RDD", "SSH_CONNECTION");
             
-                
             SftpManagment loSmg = new SftpManagment();
-            List<String> laLis = loSmg.getListFileServerSFTP(lsPath, lsExt);
-            System.out.println("numero de archivos extriados del server ssh ["+laLis.size()+"]");
-            for(LmkIntXmlFilesRowBean loBean : laList){
+            List<String> laLisSsh = loSmg.getListFileServerSFTP(lsPath, lsExt);
+            System.out.println("numero de archivos extraídos del server ssh ["+laLisSsh.size()+"]");
+            for(LmkIntXmlFilesRowBean loBean : laListPgm){
                 int liI = 0;
                 lbProcess = true;
-                while(liI < laLis.size() && lbProcess == true){
+                while(liI < laLisSsh.size() && lbProcess == true){
                     //- Buscar cada nombre de archivo fisico en el grupo                    
-                    if(laLis.get(liI).indexOf(loBean.getLsNomFile()) >= 0){
+                    if(laLisSsh.get(liI).indexOf(loBean.getLsNomFile()) >= 0){
                         System.out.println("indexOf: [ADF]loBean.getLsNomFile()["+loBean.getLsNomFile()+
-                                           "] VS [FTP]laLis.get("+liI+")["+laLis.get(liI).indexOf(loBean.getLsNomFile())+"]");
+                                           "] VS [FTP]laLis.get("+liI+")["+laLisSsh.get(liI).indexOf(loBean.getLsNomFile())+"]");
                         //Es verdadero
                         System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
                         lbProcess = false;
                         String lsStatus = "C";
                         //Verificar si contiene la cadena de error
-                        System.out.println(""+laLis.get(liI)+".indexOf(\"FAIL\"): "+laLis.get(liI).indexOf("FAIL"));
-                        if(laLis.get(liI).indexOf("FAIL") >= 0){
+                        System.out.println(""+laLisSsh.get(liI)+".indexOf(\"FAIL\"): "+laLisSsh.get(liI).indexOf("FAIL"));
+                        if(laLisSsh.get(liI).indexOf("FAIL") >= 0){
                             lsStatus = "E";
                         }                    
                         //- Actualizar estatus si fue encontrado
@@ -129,10 +128,10 @@ public class ResponseBreaksService {
                         
                         //Mover archivo a carpeta de revisados
                         try{
-                        loSmg.moveFileSFTP(lsPathReaded, 
-                                           lsPath, 
-                                           laLis.get(liI), 
-                                           laLis.get(liI));
+                            loSmg.moveFileSFTP(lsPathReaded, 
+                                               lsPath, 
+                                               laLisSsh.get(liI), 
+                                               laLisSsh.get(liI));
                         }catch(Exception loEx){
                             System.out.println("Error al mover archivo "+loEx.getMessage());
                         }
