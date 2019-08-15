@@ -145,21 +145,21 @@ public class PriceImpCron  implements Job{
             //1.2.- Almacenar en bd elemento-valor de: Password7 (encriptado)
             //1.3.- Almacenar en bd elemento valor de: LMK-Environment
             //1.4.- Almacenar en bd elemento valor de: 1:tlvtrain
-            ArrayOfSpot loArrayOfSpot = getRequestLandmarkPrices(lsChannel, 
-                                                 lsFecInicial, 
-                                                 lsFecFinal,
-                                                 liIdLogService,
-                                                 liIdService,
-                                                 liIdUser,
-                                                 lsUserName,
-                                                 lsTypeProcess);
+            ArrayOfSpot loArrayOfSpot = 
+                getRequestLandmarkPrices(lsChannel, 
+                                         lsFecInicial, 
+                                         lsFecFinal,
+                                         liIdLogService,
+                                         liIdService,
+                                         liIdUser,
+                                         lsUserName,
+                                         lsTypeProcess);
             //2.- Leer el response XML
             if(loArrayOfSpot != null){
                 //2.1.- Por ahora cada dato pasa sin validacion
-                
+                System.out.println("Pendiente");
                 //3.- Insertar en tablas de Alex Morel
                 //3.1.- Preguntar a Jacobo, por el mapeo de campos de las tablas
-                    
             }
             
             liIndProcess = 

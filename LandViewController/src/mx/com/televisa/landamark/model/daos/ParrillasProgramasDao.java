@@ -713,7 +713,9 @@ public class ParrillasProgramasDao {
             "DELETE \n" ;
             lsQuery += "  FROM ";
         lsQuery += tsWhere;
-        //System.out.println(lsQuery);
+        System.out.println("################################################");
+        System.out.println(lsQuery);
+        System.out.println("################################################");
         try {
             Statement loStmt = loCnn.createStatement();
             Integer liRes = loStmt.executeUpdate(lsQuery);

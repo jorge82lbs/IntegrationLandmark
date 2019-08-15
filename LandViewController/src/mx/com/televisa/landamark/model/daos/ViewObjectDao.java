@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
@@ -553,6 +552,32 @@ public class ViewObjectDao implements ViewObjectInterface{
         
         return liIdServicio;
     }
-    
+
+    public String getValueByNomParameter(String tsNomParameter) {
+        String     liReturn = "0"; 
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = "SELECT IND_VALUE_PARAMETER\n" + 
+        "     FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
+        "    WHERE NOM_PARAMETER  = '" + tsNomParameter + "'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                liReturn = loRs.getString(1);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
+    }    
     
 }

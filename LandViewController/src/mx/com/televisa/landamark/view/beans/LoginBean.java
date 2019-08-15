@@ -57,6 +57,15 @@ public class LoginBean {
     private RichInputText poUserName;
     private RichInputText poPassword;
     private RichPopup poPopupExitConfirm;
+    private RichPopup poLoginPopup;
+
+    public void setPoLoginPopup(RichPopup poLoginPopup) {
+        this.poLoginPopup = poLoginPopup;
+    }
+
+    public RichPopup getPoLoginPopup() {
+        return poLoginPopup;
+    }
 
     public LoginBean() {
     }
@@ -449,4 +458,21 @@ public class LoginBean {
     public RichPopup getPoPopupExitConfirm() {
         return poPopupExitConfirm;
     }
+
+    public String closeLoginPopup() {
+        poLoginPopup.hide();
+        return null;
+    }
+    
+    public String redirectToHome() {        
+        ExternalContext     loEctx = 
+            FacesContext.getCurrentInstance().getExternalContext();
+        HttpServletRequest loReq = (HttpServletRequest) loEctx.getRequest();
+        HttpSession         loSession = loReq.getSession();
+        loReq.setAttribute("loginUserReq", true);
+        loSession.setAttribute("loginUserSes", true);
+        
+        return "homePage";
+    }
+    
 }

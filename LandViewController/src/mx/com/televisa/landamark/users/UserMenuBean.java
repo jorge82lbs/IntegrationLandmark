@@ -21,7 +21,9 @@ package mx.com.televisa.landamark.users;
   */
 public class UserMenuBean {
     public UserMenuBean() {
-        super();
+        setLsPantallaBitacora("true");
+        setLsPantallaCreateFile("true");
+        //super();
     }
     
     private String lsPantallaBitacora;

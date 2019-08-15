@@ -105,8 +105,8 @@ public class OrderSpotsImpCron implements Job{
             loBitBean.setLiIndProcess(liIndProcess);
             loBitBean.setLiNumProcessId(0);
             loBitBean.setLiNumPgmProcessId(0);
-            loBitBean.setLsIndEvento("Archivo no encontrado en ubicacion remota "+
-                                     lsServiceName);
+            loBitBean.setLsIndEvento("Archivo no encontrado "+
+                                     loResDn.getLsMessage());
             
             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                liIdUser, 
@@ -353,7 +353,7 @@ public class OrderSpotsImpCron implements Job{
                                     System.out.println("ERROR EVETV_GENERA_SPOTS "+loResGeneraSpots.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
-                                                new UtilFaces().getIdConfigParameterByName("GeneratelError");//
+                                                new UtilFaces().getIdConfigParameterByName("GeneralError");//
                                     loBitBean.setLiIdLogServices(liIdLogService);
                                     loBitBean.setLiIdService(Integer.parseInt(lsIdService));
                                     loBitBean.setLiIndProcess(liIndProcess);
@@ -385,7 +385,7 @@ public class OrderSpotsImpCron implements Job{
                                     System.out.println("ERROR EVETV_GENERA_SPOTS "+loResGeneraLogs.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
-                                                new UtilFaces().getIdConfigParameterByName("GeneratelError");//
+                                                new UtilFaces().getIdConfigParameterByName("GeneralError");//
                                     loBitBean.setLiIdLogServices(liIdLogService);
                                     loBitBean.setLiIdService(Integer.parseInt(lsIdService));
                                     loBitBean.setLiIndProcess(liIndProcess);
@@ -427,6 +427,20 @@ public class OrderSpotsImpCron implements Job{
                                     loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "E");   
                                     System.out.println("Cambiar estatus al archivo a ERROR (E)");
                                 }
+                                
+                                String lsPathReaded = 
+                                    loEntityMappedDao.getGeneralParameter("PATH_SPOTS_INPUT_RDD", "SSH_CONNECTION");
+                                //Mover archivo a carpeta de revisados
+                                try{
+                                    loSftpManagment.moveFileSFTP(lsPathReaded, 
+                                                       lsPathRemote, 
+                                                       lsFileName, 
+                                                       lsFileName);
+                                }catch(Exception loEx){
+                                    System.out.println("Error al mover archivo "+loEx.getMessage());
+                                }
+                                
+                                
                             }
                         }
                         

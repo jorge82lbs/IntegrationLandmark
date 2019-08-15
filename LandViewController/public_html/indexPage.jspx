@@ -58,7 +58,8 @@
                         <af:panelGroupLayout id="PnlUsrPwd" valign="middle"
                                          halign="center"
                                          layout="vertical"
-                                         inlineStyle="border-style:none;">
+                                         inlineStyle="border-style:none;"
+                                         visible="false">
                             <af:spacer width="10" height="28" id="SpcLogin1"/>
                             <af:panelFormLayout id="PnlFrmLoginMsg" visible="true">
                                 <af:panelGroupLayout id="PnlLoginInfo" valign="top" layout="horizontal">
@@ -98,6 +99,7 @@
                         </af:panelGroupLayout>
                     </f:facet>                    
                 </af:panelStretchLayout>
+                <af:showPopupBehavior popupId="pSaml2" triggerType="click"/>
                 <!-- ################################### POPUP LOADING VALIDADNDO. ############################### !-->
                 <af:popup id="p1oadLogin" contentDelivery="immediate">
                   <af:dialog id="dLogin" type="none" title="Validando Información de Usuario" closeIconVisible="false">
@@ -107,7 +109,33 @@
                     </af:panelGroupLayout>
                   </af:dialog>
                 </af:popup>
+            
+                <af:popup childCreation="deferred" autoCancel="disabled"
+                  id="pSaml2" binding="#{LoginBean.poLoginPopup}">
+                <af:panelWindow id="pw1" title="Iniciar Sesi&#243;n"
+                            titleIconSource="/images/icon_security.gif"
+                            modal="true">
+                <af:panelGroupLayout id="pgl1" layout="vertical"
+                                     halign="center">
+                    <af:image source="/images/logo-televisa_80x62.jpeg" shortDesc="Televisa-logo"
+                              id="i1"/>
+                    <af:spacer width="10" height="10" id="s2"/>
+                    <af:outputLabel value="Se iniciar&#225; sesi&#243;n con Active Directory Televisa"
+                                    id="ol1"/>
+                    <af:spacer width="10" height="10" id="s1"/>
+                    <af:panelGroupLayout id="pgl2" layout="horizontal">
+                        <af:button text="Aceptar" id="b1"
+                                   action="#{LoginBean.redirectToHome}"/>
+                        <af:spacer width="10" height="10" id="s3"/>
+                        <af:button text="Cancelar" id="b2"
+                                   action="#{LoginBean.closeLoginPopup}"/>
+                    </af:panelGroupLayout>
+                </af:panelGroupLayout>
+                </af:panelWindow>
+                </af:popup>
+
             </af:form>
+            <af:showPopupBehavior popupId="pSaml2" triggerType="load"/>
         </af:document>
     </f:view>
 

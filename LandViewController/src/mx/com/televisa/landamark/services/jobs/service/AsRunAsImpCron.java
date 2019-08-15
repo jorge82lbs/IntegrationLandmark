@@ -185,7 +185,8 @@ public class AsRunAsImpCron implements Job{
                             loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
                                                        lsPathFiles, 
                                                        loFileAsRunAs.getName(), 
-                                                       loFileAsRunAs.getName()
+                                                       loFileAsRunAs.getName(),
+                                                       loFileAsRunAs
                                                        );
                             liIndProcess = 
                                         new UtilFaces().getIdConfigParameterByName("SendFileSSH");//
@@ -203,7 +204,7 @@ public class AsRunAsImpCron implements Job{
                         loAsRunAsDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "L");
                         
                         //Eliminar archivo fisico del servidor
-                        try{
+                        /*try{
                             System.out.println("Eliminando archivo "+loFileAsRunAs.getName());
                             loFileAsRunAs.delete();
                             System.out.println("Eliminando archivo ok...");
@@ -219,10 +220,7 @@ public class AsRunAsImpCron implements Job{
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
-                        }
-                        
-                            
-                            
+                        }*/
                             
                     } catch (FileNotFoundException e) {
                         System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());

@@ -16,6 +16,15 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+import java.io.File;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
+import java.io.OutputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -78,20 +87,30 @@ public class SftpManagment {
             loChannel.connect();
             ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
             String lsRemote = tsRemotePath + "/" + tsRemoteFileName;
+            System.out.println("Buscando archivo: "+lsRemote);
             String lsLocal = tsLocalPath + "/" + tsLocalFileName;
-            loSftpChannel.get(lsRemote, lsLocal);  
+            OutputStream loOutFile = new FileOutputStream(tsLocalFileName);
+            System.out.println("Copiando a "+lsLocal);
+            loSftpChannel.get(lsRemote, loOutFile);  
             loSftpChannel.exit();
             loSession.disconnect();
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("Archivo descargado satisfactoriamente");
             loResponse.setLiAffected(0);
         } catch (JSchException loEx) {
+            System.out.println("ERR88: "+loEx.getMessage());
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage(loEx.getMessage());
             loResponse.setLiAffected(0);
         } catch (SftpException loEx) {
+            System.out.println("ERR89: "+loEx.getMessage());
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage(loEx.getMessage());
+            loResponse.setLiAffected(0);
+        } catch (FileNotFoundException loEx) {
+            System.out.println("ERR8898: "+loEx.getMessage());
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLsMessage("OutputStream: "+loEx.getMessage());
             loResponse.setLiAffected(0);
         }
         return loResponse;
@@ -107,15 +126,17 @@ public class SftpManagment {
     * @return ResponseUpdDao
     */
     public ResponseUpdDao uploadFileSFTP(String tsRemotePath,
-                                           String tsLocalPath,
-                                           String tsRemoteFileName,
-                                           String tsLocalFileName) {
+                                         String tsLocalPath,
+                                         String tsRemoteFileName,
+                                         String tsLocalFileName,
+                                         File loFile) {
         ResponseUpdDao loResponse = new ResponseUpdDao();
         JSch loJsch = new JSch();
         Session loSession = null;
         try {
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
             System.out.println("Incio....uploadFileSFTP()");
+            InputStream loFileStream = new FileInputStream(loFile);
             //System.out.println("Session ssh:");
             //System.out.println(">>> loSftpCnn.getLsUser()["+loSftpCnn.getLsUser()+"]:");
             //System.out.println(">>> loSftpCnn.getLsHost()["+loSftpCnn.getLsHost()+"]:");
@@ -131,9 +152,6 @@ public class SftpManagment {
                                 "diffie-hellman-group-exchange-sha1," + 
                                 "diffie-hellman-group-exchange-sha256");
             
-            
-            
-            
             loSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             
@@ -143,13 +161,25 @@ public class SftpManagment {
             String lsRemote = tsRemotePath + "/" + tsRemoteFileName;
             String lsLocal = tsLocalPath + "/" + tsLocalFileName;
             System.out.println("File to send: "+lsLocal);
-            loSftpChannel.put(lsLocal,lsRemote);  
+            loSftpChannel.put(loFileStream,lsRemote);  
             loSftpChannel.exit();
             loSession.disconnect();
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("El Archivo "+tsLocalFileName+" se ha enviado satisfactoriamente");
             loResponse.setLiAffected(0);
             System.out.println("TODO OK");
+            
+            try{
+                System.out.println("Cerrano InputStream");
+                loFileStream.close();
+                System.out.println("Eliminando archivo: "+loFile.getAbsolutePath());
+                loFile.delete();
+                System.out.println("Eliminando archivo>>>>> OK");
+            }catch(Exception loEx){
+                System.out.println("Error al eliminar archivo fisico "+loEx.getMessage());
+            }
+            
+            
         } catch (JSchException loEx) {
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage(loEx.getMessage());
@@ -157,6 +187,10 @@ public class SftpManagment {
         } catch (SftpException loEx) {
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage("ERROR al enviar["+tsLocalFileName+"]: "+loEx.getMessage());
+            loResponse.setLiAffected(0);
+        } catch (FileNotFoundException loEx) {
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLsMessage("Fail cast InputStream: "+loEx.getMessage());
             loResponse.setLiAffected(0);
         }
         return loResponse;
@@ -204,12 +238,24 @@ public class SftpManagment {
             loChannel.connect();
             
             ChannelSftp loSftpChannel = (ChannelSftp) loChannel;
-            //System.out.println("Listando archivos con ext["+tsExt+"]");
-            Vector laFilelist = loSftpChannel.ls(tsPath + tsExt);
-            for(int liI = 0; liI < laFilelist.size() ; liI++){
+            System.out.println("Listando archivos con ext["+tsExt+"]");
+            System.out.println("De la ruta["+tsPath+"]");
+            Vector laFilelist = loSftpChannel.ls(tsPath + ".");//Todos, ya que los nombres tienen multiples . entonces 
+            for(int liI = 0; liI < laFilelist.size() ; liI++){// Se confunde el proceso
                 ChannelSftp.LsEntry loEntry = (ChannelSftp.LsEntry) laFilelist.get(liI);
-                //System.out.println("Archivo:["+loEntry.getFilename()+"]");
-                laList.add(loEntry.getFilename());
+                System.out.println("Archivo:["+loEntry.getFilename()+"]");
+                if(loEntry.getFilename().length() > 3){
+                    System.out.println("Archivo con longitud mayor a 3. split");
+                    String[] laNomarchs = loEntry.getFilename().split("\\.");
+                    if(laNomarchs.length > 1){
+                        System.out.println("Arreglo con mas de un elemento");
+                        String lsCompareExt = "*."+laNomarchs[laNomarchs.length-1];
+                        System.out.println("Comparando, sin importar mayusculas ["+tsExt+"] con ["+lsCompareExt+"]");
+                        if(tsExt.equalsIgnoreCase(lsCompareExt) ){
+                            laList.add(loEntry.getFilename());    
+                        }
+                    }
+                }
             }
             loSftpChannel.exit();
             loSession.disconnect();

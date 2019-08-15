@@ -295,7 +295,8 @@ public class ParrillasProgramasImpCron implements Job{
                             loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
                                                        lsPathFiles, 
                                                        loFileBreaks.getName(), 
-                                                       loFileBreaks.getName()
+                                                       loFileBreaks.getName(),
+                                                       loFileBreaks
                                                        );
                         String lsMsg = loResSendFile.getLsMessage();
                         String lsStatEv = "L";
@@ -396,9 +397,9 @@ public class ParrillasProgramasImpCron implements Job{
                         
                         //CHANNEL TRAILER RECORD
                         lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_TRAILER WHERE 1 = 1 ";
-                        lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
-                                    "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
-                                    "                        AND DATE('"+lsFecFinal+"')";
+                        lsWhereDelete += " AND STNID        = '"+lsChannel+"'\n" + 
+                                    "   AND DATE(STRDT)     = DATE('"+lsFecInicial+"') \n" + 
+                                    "   AND AND DATE(EDT)   = DATE('"+lsFecFinal+"')";
                         ResponseUpdDao loResDelChannelTrailer = 
                             loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
                         if(!loResDelChannelTrailer.getLsResponse().equalsIgnoreCase("OK")){
@@ -441,11 +442,11 @@ public class ParrillasProgramasImpCron implements Job{
                                                    liIdUser, 
                                                    lsUserName);
                         
-                        
+                        /*
                         try{
                             System.out.println("Eliminando archivo "+loFileBreaks.getName());
                             //loFileBreaks.deleteOnExit();
-                            loFileBreaks.delete();
+                            //loFileBreaks.delete();
                             System.out.println("Eliminando archivo ok...");
                         }catch(Exception loExDel){
                             liIndProcess = 
@@ -459,7 +460,7 @@ public class ParrillasProgramasImpCron implements Job{
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
-                        }
+                        }*/
                         
                     } catch (FileNotFoundException e) {
                         System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
@@ -559,7 +560,8 @@ public class ParrillasProgramasImpCron implements Job{
                             loSftpMgmnt.uploadFileSFTP(lsRemotePath, 
                                                        lsPathFiles, 
                                                        loFileProgramm.getName(), 
-                                                       loFileProgramm.getName()
+                                                       loFileProgramm.getName(),
+                                                       loFileProgramm
                                                        );
                             liIndProcess = 
                                         new UtilFaces().getIdConfigParameterByName("SendFileSSH");//
@@ -620,7 +622,7 @@ public class ParrillasProgramasImpCron implements Job{
                                                    liIdUser, 
                                                    lsUserName);
                                                 
-                        try{
+                        /*try{
                             System.out.println("Eliminando archivo "+loFileProgramm.getName());
                             //loFileProgramm.deleteOnExit();
                             loFileProgramm.delete();
@@ -637,7 +639,7 @@ public class ParrillasProgramasImpCron implements Job{
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
-                        }
+                        }*/
                         
                         
                     } catch (FileNotFoundException e) {
