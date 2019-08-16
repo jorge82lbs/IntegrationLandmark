@@ -45,8 +45,8 @@
                   </hash>
                </list>
             </hash>
-            <url n="earURL" path="deploy/PgmLandmark.ear"/>
-            <value n="enterpriseAppName" v="PgmLandmark"/>
+            <url n="earURL" path="deploy/IntegracionesLMK.ear"/>
+            <value n="enterpriseAppName" v="IntegracionesLMK"/>
             <hash n="fileGroups">
                <list n="groups">
                   <hash>

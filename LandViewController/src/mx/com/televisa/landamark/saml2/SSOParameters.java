@@ -3,7 +3,7 @@ package mx.com.televisa.landamark.saml2;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 
 public class SSOParameters {
-    public static final String psSP_ENTITY_ID = "pgmLandmark";
+    public static final String psSP_ENTITY_ID = "IntegracionesLMK";
     public static final String psAUTHENTICATED_SESSION_ATTRIBUTE = "authenticated";
     public static final String psGOTO_URL_SESSION_ATTRIBUTE = "gotoURL";
     public static final String psARTIFACT_RESOLUTION_SERVICE = "http://localhost:8080/webprofile-ref-project/idp/artifactResolutionService";
@@ -13,16 +13,18 @@ public class SSOParameters {
 
     public static String getAssertionConsumerServiceURL() throws Exception {
         //return getParameterVal(Constants.psACS_PARAM);
-        return "https://192.168.132.1:7102/PgmLandmarkApp/pgmlandmarkacs";
+        //return "https://192.168.132.1:7102/PgmLandmarkApp/pgmlandmarkacs";
+        return "https://192.168.132.1:7102/IntegracionesLMK/integracioneslmkacs";
     }
     
     public static String getIDPEntityId() throws Exception {
         //return getParameterVal(Constants.psIDP_ENTITY_ID_PARAM);
-        return "pgmlandmark";
+        return "IntegracionesLMK";
     }
     
     public static String getIDPSAMLSSOServiceURL() throws Exception {
         //return getParameterVal(Constants.psIDP_SSO_SAML2_URL_PARAM);
+        //url de login
         return "https://login.microsoftonline.com/87e71bd2-2a6d-4deb-8dca-d9b3fd7481b9/saml2";
     }
     

@@ -392,14 +392,26 @@ public class LoginBean {
             System.out.println("No es posible conectar con la base de datos "+loEx.getMessage());
         }
         loSession.invalidate();
-        try {
+        /*try {
             loResponse.sendRedirect(lsUrl);
             FacesContext.getCurrentInstance().responseComplete();
         }
         catch (Exception loEx) {
             System.out.println("Error al salir "+loEx.getMessage());
             loEx.printStackTrace();
+        }*/
+        
+        try {
+            String lsUrlLogout = "https://login.windows.net/87e71bd2-2a6d-4deb-8dca-d9b3fd7481b9/oauth2/logout";
+            loResponse.sendRedirect(lsUrlLogout);
+            FacesContext.getCurrentInstance().responseComplete();
         }
+        catch (Exception loEx) {
+            System.out.println("Error al salir "+loEx.getMessage());
+            loEx.printStackTrace();
+        }
+        
+        
         return null;
     }
 

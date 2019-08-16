@@ -106,8 +106,6 @@ public class SSOFilter implements Filter {
             }
         } else { // Other page requested
             // Is authenticated
-            
-            
             if (loHttpServletRequest.getSession().getAttribute(SSOParameters.psAUTHENTICATED_SESSION_ATTRIBUTE) != null) {
                 // Verify page requested
                 // Page restricted
@@ -123,7 +121,7 @@ public class SSOFilter implements Filter {
             } else {
                 //Verify login app attribute
                 Boolean lbSes =
-                    (Boolean) loHttpServletRequest.getSession().getAttribute("session.pgmIntegration");
+                    (Boolean) loHttpServletRequest.getSession().getAttribute("loginUserSes");
                 System.out.println("loginUserSes: " + lbSes);
                 // Login app attribute not present
                 if(lbSes == null || lbSes == false) {
@@ -140,7 +138,7 @@ public class SSOFilter implements Filter {
                     }
                 }
                 //loHttpServletRequest.getSession().removeAttribute("loginUserSes");
-                loHttpServletRequest.getSession().removeAttribute("session.pgmIntegration");
+                loHttpServletRequest.getSession().removeAttribute("loginUserSes");
             }
         }
     }

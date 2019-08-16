@@ -74,7 +74,7 @@ import org.w3c.dom.Element;
 
 import org.xml.sax.SAXException;
 
-@WebServlet(name = "ACSServlet", urlPatterns = { "/pgmlandmarkacs" })
+@WebServlet(name = "ACSServlet", urlPatterns = { "/integracioneslmkacs" })
 public class ACSServlet extends HttpServlet {
     private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
 
@@ -139,16 +139,17 @@ public class ACSServlet extends HttpServlet {
             
             String lsUser = "";
             String lsObjId = "";
-            List<String> laUserVals = laAtts.get(SSOParameters.psEMAIL_ATT_NAME);
+            List<String> laUserVals = laAtts.get(SSOParameters.psEMAIL_ATT_NAME);            
             List<String> laObjIdVals = laAtts.get(SSOParameters.psOBJECT_ID_ATT_NAME);
             if(laUserVals != null && laUserVals.size() > 0) {
                 String lsEmail = laUserVals.get(0);
+                System.out.println("Email: "+lsEmail);
                 try {
                     lsUser = getEmailPrefix(lsEmail);
                 } catch (Exception loEx) {
                     loEx.printStackTrace();
                 }
-                System.out.println("email: " + lsUser);
+                System.out.println("username: " + lsUser);
             }
             if(laObjIdVals != null && laObjIdVals.size() > 0) {
                 lsObjId = laObjIdVals.get(0);
@@ -303,10 +304,14 @@ public class ACSServlet extends HttpServlet {
     }
 
     private void redirectToGotoURL(HttpServletRequest toReq, HttpServletResponse toResp) {
-        String lsGoToURL = (String)toReq.getSession().getAttribute(SSOParameters.psGOTO_URL_SESSION_ATTRIBUTE);
-        System.out.println("Redirecting to requested URL: " + lsGoToURL);
+        //String lsGoToURL = (String)toReq.getSession().getAttribute(SSOParameters.psGOTO_URL_SESSION_ATTRIBUTE);
+        //String lsGoToURL = "faces/homePage";
+        //System.out.println("Redirecting to requested URL: " + lsGoToURL);
         try {
-            toResp.sendRedirect(lsGoToURL);
+            String lsCPath = toReq.getContextPath();
+            System.out.println("CPath redirect>>>: " + lsCPath);
+            toResp.sendRedirect(lsCPath + "/faces/homePage");
+//            toResp.sendRedirect(lsGoToURL);
         } catch (IOException loIOEx) {
             throw new RuntimeException(loIOEx);
         }
