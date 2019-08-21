@@ -3,7 +3,7 @@
 *
 * File: PriceImpCron.java
 *
-* Created on: Julio 29, 2019 at 11:00
+* Created on: Agosto 29, 2019 at 11:00
 *
 * Copyright (c) - OMW - 2019
 */
@@ -45,6 +45,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
 
+import mx.com.televisa.landamark.client.pricest.SpotConciliacionWS;
+import mx.com.televisa.landamark.client.pricest.SpotConciliacionWSService;
+import mx.com.televisa.landamark.client.pricest.types.ComercialListRequest;
+import mx.com.televisa.landamark.client.pricest.types.SpotModulo;
+import mx.com.televisa.landamark.client.pricest.types.User;
 import mx.com.televisa.landamark.model.daos.AsRunAsDao;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.PriceDao;
@@ -52,6 +57,7 @@ import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.LandmarkSecurityWsBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
+import mx.com.televisa.landamark.model.types.LmkSpotsBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.util.UtilFaces;
 
@@ -157,9 +163,22 @@ public class PriceImpCron  implements Job{
             //2.- Leer el response XML
             if(loArrayOfSpot != null){
                 //2.1.- Por ahora cada dato pasa sin validacion
-                System.out.println("Pendiente");
-                //3.- Insertar en tablas de Alex Morel
-                //3.1.- Preguntar a Jacobo, por el mapeo de campos de las tablas
+                System.out.println("insertar en tablas de control");
+                //3.- Insertar en tablas de Alex Morel, con servicio de rafa
+                ResponseUpdDao loSetSpot = setArrayOfSpotParadigm(loArrayOfSpot);                
+                
+                liIndProcess = 
+                            new UtilFaces().getIdConfigParameterByName("InsertCtrlTable");//
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento(loSetSpot.getLsMessage());
+                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
+                
             }
             
             liIndProcess = 
@@ -188,14 +207,14 @@ public class PriceImpCron  implements Job{
                                                  Integer tiIdUser,
                                                  String tsUserName,
                                                  String lsTypeProcess){
-        ArrayOfSpot loArrOf = new ArrayOfSpot();
-        PriceDao loPriceDao = new PriceDao();
-        Integer                   liIndProcess = 0;
-        EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
+        ArrayOfSpot                  loArrOf = new ArrayOfSpot();
+        PriceDao                     loPriceDao = new PriceDao();
+        Integer                      liIndProcess = 0;
+        EntityMappedDao              loEntityMappedDao = new EntityMappedDao();
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         try{
             String lsQNameXML = "";
-            LandmarkSpotsSpot loLandmarkSpotsSpot = new LandmarkSpotsSpot();
+            LandmarkSpotsSpot  loLandmarkSpotsSpot = new LandmarkSpotsSpot();
             ILandmarkSpotsSpot loInstanceLandmarkSpotsSpot = 
                 loLandmarkSpotsSpot.getBasicHttpBindingILandmarkSpotsSpot();
             // Add your code to call the desired methods.
@@ -414,21 +433,21 @@ public class PriceImpCron  implements Job{
             loReqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, loHeaders);
             System.out.println("SETT SECURITY.....OK");
             System.out.println("Guardar archivo fisico REQUEST");
-            /*
+            
             try{                        
                 StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Alex"+getId()+".xml"));
                 //transformer.transform(source, result);
-                JAXB.marshal(spotListFilter, result);
+                JAXB.marshal(loSpotListFilter, result);
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
-            }*/
+            }
             //##################### Insertar Archivo en Base de Datos ############################ 
             String lsNomFile = "";
             try{
                 /*
                 StreamResult result =
-                new StreamResult(new File("C:\\Users\\JorgeOWM\\Desktop\\ParrillasOnDemandXml"+getId()+".xml"));
+                new StreamResult(new File("C:\\Users\\JorgeOWM\\Desktop\\PriceXml"+getId()+".xml"));
                 //transformer.transform(source, result);
                 JAXB.marshal(loXmlentrada, result);
                 */
@@ -626,6 +645,112 @@ public class PriceImpCron  implements Job{
         DateFormat loDf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
         return lsResponse;
+    }
+    
+    public ResponseUpdDao setArrayOfSpotParadigm(ArrayOfSpot toArrayOfSpot){
+        /*
+         *  ns3:SpotNumber
+            ns3:CPP
+            ns3:CPPL
+            ns3:CPT
+            ns3:CPTL
+            ns3:Length
+            ns3:NomianlPrice
+            ns3:TotalNominalPrice
+            ns3:PriceFactor
+            ns3:Ratings
+         */
+        boolean lbResult = true;
+        String lsMessage = "Proceso de Inserción y Actualización Satisfactorio";
+        
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        PriceDao loPriceDao = new PriceDao();
+        SpotConciliacionWSService loSpotConciliacionWSService = 
+            new SpotConciliacionWSService();        
+        
+        //Invocar servicio de Software and tech
+        SpotConciliacionWS loSpotConciliacionWS = 
+            loSpotConciliacionWSService.getSpotConciliacionWSPort();                
+        ComercialListRequest loClr = new ComercialListRequest();
+        User loUser = new User();
+        
+        List<Spot> loListSpot = toArrayOfSpot.getSpot();
+        for(Spot loSpot : loListSpot){
+            
+            Integer liSpotNumber = loSpot.getSpotNumber();
+            Double ldCpp = loSpot.getCPP();
+            Double ldCppl = loSpot.getCPPL();
+            Double ldCpt = loSpot.getCPT();
+            Double ldCptl = loSpot.getCPTL();
+            Integer liLength = loSpot.getLength();
+            Double ldNominalPrice = loSpot.getNomianlPrice();
+            Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
+            Double ldPriceFactor = loSpot.getPriceFactor();
+            Double ldRatings = loSpot.getRatings();
+            
+            //Se necesitan los valores de 
+            // piOrderID
+            // piSpotID
+            List<LmkSpotsBean> loSpotsList = 
+                loPriceDao.getSpotInfo(liSpotNumber);
+            
+            if(loSpotsList.size() > 0){
+                
+                SpotModulo loSpotModulo = new SpotModulo();
+                
+                loSpotModulo.setPiOrderID(loSpotsList.get(0).getLiOrdId());
+                loSpotModulo.setPiSpotID(loSpotsList.get(0).getLiSptmstid());
+                loSpotModulo.setPdSpotPrice(ldNominalPrice);
+                loSpotModulo.setPdSpotRating(ldRatings);
+                loSpotModulo.setPdCPR(ldCpp);
+                loSpotModulo.setPdPorcentRecDuration(1);
+                loSpotModulo.setPdPorcentRecPosition(1);
+                loSpotModulo.setPdPorcentRecPiggyBack(1);
+                loSpotModulo.setPdPorcentRecDigital(1);
+                loSpotModulo.setPdPorcentRecManual(ldPriceFactor);
+                loSpotModulo.setPdPorcentFactDuracion(liLength);
+                loClr.getPaSpots().add(loSpotModulo);
+                
+                try{
+                    loPriceDao.updateLmkSptRev(loSpotsList.get(0).getLiSptmstid(), ldNominalPrice*100);                    
+                    
+                }catch(Exception loEx){
+                    lbResult = false;
+                    lsMessage = "Error en la actualizacion de spots "+loEx.getMessage();
+                    System.out.println("Error al actualizar spot "+loSpotsList.get(0).getLiSptmstid()+": "+loEx.getMessage());
+                }
+                
+            } 
+        }
+        
+        //Buscar en parametros generales los parametros de loUser
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        String lsUserNameConciliacion = 
+            loEntityMappedDao.getGeneralParameter("CONC_USERNAME", "CONCILIACION_WS");
+        
+        String lsPasswordConciliacion = 
+            loEntityMappedDao.getGeneralParameter("CONC_PASSWORD", "CONCILIACION_WS");
+        loUser.setPsUserName(lsUserNameConciliacion);
+        loUser.setPsPassword(lsPasswordConciliacion);
+        try{
+            
+            try{
+                StreamResult result =
+                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml"+getId()+".xml"));
+                //transformer.transform(loClr, result);
+                JAXB.marshal(loClr, result);
+            }catch(Exception loExp){
+                System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
+            }
+            
+            
+            loSpotConciliacionWS.spotConciliaion(loClr, loUser);
+        }catch(Exception loEx){
+            lbResult = false;
+            lsMessage = "Error al conciliar "+loEx.getMessage();
+            System.out.println("Error al conciliar "+loEx.getMessage());
+        }
+        return loResponseUpdDao;
     }
     
 }

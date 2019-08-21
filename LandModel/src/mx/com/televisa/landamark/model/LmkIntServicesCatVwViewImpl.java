@@ -19,7 +19,7 @@ public class LmkIntServicesCatVwViewImpl extends ViewObjectImpl {
                                              int tiNumUserParams) {
         
         String lsWhere = " 1 = 1 ";
-        lsWhere += " AND ATTRIBUTE1 IS NULL";
+        lsWhere += " AND ATTRIBUTE1 = 'System'";
         //System.out.println(getQuery());
         setWhereClause(lsWhere);
         super.executeQueryForCollection(toQc, taParams, tiNumUserParams);

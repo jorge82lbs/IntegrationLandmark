@@ -19,6 +19,7 @@ import java.util.List;
 
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LandmarkSecurityWsBean;
+import mx.com.televisa.landamark.model.types.LmkSpotsBean;
 
 /** Clase que accede a base de datos para metodos genericos de
  * Actualizacion de Precios
@@ -136,6 +137,78 @@ public class PriceDao {
         }
         
         return loLandmarkSecurityWsBean;
+    }
+    
+    public List<LmkSpotsBean> getSpotInfo(Integer tiSpotNumber){
+        List<LmkSpotsBean> laListSpots = new ArrayList<LmkSpotsBean>();
+        
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = 
+            "SELECT ORDID,\n" + 
+            "       SPOT_NUMBER,\n" + 
+            "       SPTMSTID\n" + 
+            "  FROM EVENTAS.LMK_SPOTS\n" + 
+            " WHERE SPOT_NUMBER = " + tiSpotNumber;
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkSpotsBean loSpot = new LmkSpotsBean();
+                loSpot.setLiOrdId(loRs.getInt("ORDID"));
+                loSpot.setLiSpotNumber(loRs.getInt("SPOT_NUMBER"));
+                loSpot.setLiSptmstid(loRs.getInt("SPTMSTID"));
+                laListSpots.add(loSpot);
+            }
+        } catch (SQLException loExSql) {
+            System.out.println("ERROR AL EJECUTAR: ");
+            System.out.println(lsQueryParadigm);
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        
+        
+        return laListSpots;
+    }
+    
+    
+    /**
+     * Obtiene bandera para procesamiento en log certificado
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsDate
+     * @param tsChannels
+     * @return List
+     */  
+    public Integer updateLmkSptRev(Integer tiSptmstid,
+                                   Double tdPrecio) {
+        Integer    liReturn = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "UPDATE PARADB.SPTREV\n" + 
+            "   SET SPTRT = "+tdPrecio+"\n" + 
+            " WHERE SPTMSTID = "+tiSptmstid;
+        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            liReturn = loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
     }
     
 }

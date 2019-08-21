@@ -154,8 +154,7 @@ public class UtilFaces {
      * @param tsUrl
      * @return String
      */
-    public String getCronExpression(String tsUrl){
-        System.out.println("Obtener expression mediante rest["+tsUrl+"]");
+    public String getCronExpression(String tsUrl){        
         String lsCronExpr = null;
         /*try {
             ClientConfig loConfig = new DefaultClientConfig(); 

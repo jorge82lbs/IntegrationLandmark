@@ -103,7 +103,7 @@ public class AsRunAsImpCron implements Job{
         
         if(liFlag > 0){
             //2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENREA_ASRUN(‘2CAN’,’2018-11-01’)    los parámetros de entrada son los mismos de siempre: Canal y Fecha
-            System.out.println("2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENREA_ASRUN(‘2CAN’,’2018-11-01’)    los parámetros de entrada son los mismos de siempre: Canal y Fecha");
+            System.out.println("2)      Ejecutar el SP :  CALL EVENTAS.c("+lsChannel+","+lsFecInicial+")    los parámetros de entrada son los mismos de siempre: Canal y Fecha");
             try {
                 ResponseUpdDao loCll = loAsRunAsDao.callProcedureGeneraAsRun(lsChannel, lsFecInicial);
                 if(loCll.getLsResponse().equalsIgnoreCase("OK")){
@@ -202,6 +202,9 @@ public class AsRunAsImpCron implements Job{
                         
                         //Actualizar estatus de archivo xml
                         loAsRunAsDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "L");
+                        System.out.println("Actualizar log certificado (mandar a bitacora)");
+                        loAsRunAsDao.getUpdateLogCertificado(lsChannel, lsFecInicial);
+                        System.out.println("Actualizar log certificado (mandar a bitacora)....OK");
                         
                         //Eliminar archivo fisico del servidor
                         /*try{
@@ -251,6 +254,9 @@ public class AsRunAsImpCron implements Job{
                                                                liIdUser, 
                                                                lsUserName);
                     }
+                }
+                else{
+                    System.out.println("Agregar a bitacora el fallo");
                 }
             } catch (SQLException e) {
                 System.out.println("Error al llamar proceure genera as run ");
@@ -315,7 +321,7 @@ public class AsRunAsImpCron implements Job{
      */
     public String getCurrentDate(){
         String lsResponse = null;
-        DateFormat loDf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        DateFormat loDf = new SimpleDateFormat("yyyyMMdd");
         lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
         return lsResponse;
     }

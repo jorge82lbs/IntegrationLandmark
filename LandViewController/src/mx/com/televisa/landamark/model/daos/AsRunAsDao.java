@@ -106,12 +106,12 @@ public class AsRunAsDao {
         ResponseUpdDao    loResponseUpdDao = new ResponseUpdDao();
         Connection        loCnn = new ConnectionAs400().getConnection();
         CallableStatement loCallStmt = null;
-        //System.out.println("Parametros(callProcedureGeneraAsRun).........");
-        //System.out.println("tsStnid: ["+tsStnid+"]");
-        //System.out.println("tsBcstdt: ["+tsBcstdt+"]");
+        System.out.println("Parametros(callProcedureGeneraAsRun).........");
+        System.out.println("tsStnid: ["+tsStnid+"]");
+        System.out.println("tsBcstdt: ["+tsBcstdt+"]");
         java.sql.Date     ltDate = getDateYYYYMMDD(tsBcstdt);
         //System.out.println("ltDate: ["+ltDate+"]");
-        String            lsQueryParadigm = "call EVENTAS.LMK_GENREA_ASRUN(?,?)";
+        String            lsQueryParadigm = "call EVENTAS.LMK_GENERA_ASRUN(?,?)";
         try {
             loCallStmt = loCnn.prepareCall(lsQueryParadigm);
             loCallStmt.setString(1, tsStnid);
@@ -126,6 +126,7 @@ public class AsRunAsDao {
             loResponseUpdDao.setLsResponse("ERROR");
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage(loExSql.getMessage());
+            System.out.println(loExSql.getMessage());
             throw loExSql;
         }
         finally{
@@ -280,6 +281,35 @@ public class AsRunAsDao {
     }
     
 
-    
+    /**
+     * Actualiza en base a la respuesta de netuno las tablas de control de log certificado
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsDate
+     * @param tsChannels
+     * @return Integer
+     */  
+    public Integer getUpdateLogCertificado(String tsDate, String tsChannels) {
+        Integer    liReturn = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+        "UPDATE EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO\n" + 
+                "   SET STATUS = '0'\n" + 
+                " WHERE STNID = '" + tsChannels + "'\n" + 
+                "   AND BCSTDT = '" + tsDate + "'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            liReturn = loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {            
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
+    }    
     
 }

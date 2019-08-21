@@ -75,7 +75,7 @@ public class SecurityManagerWs {
                 loSmsUserPermission.obtenerRolTareaPermisos(loUserInput);
             loSecmanUser = loUserOutput.getUsuario();
         }catch(Exception loEx){
-            System.out.println("ERROR " + loEx.getMessage());
+            System.out.println("ERROR secman 9083 " + loEx.getMessage());
             loSecmanUser = null;
         }
         

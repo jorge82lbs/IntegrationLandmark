@@ -553,6 +553,7 @@ public class ViewObjectDao implements ViewObjectInterface{
         return liIdServicio;
     }
 
+    //"    AND IND_USED_BY = '" + tsArgs + "'";
     public String getValueByNomParameter(String tsNomParameter) {
         String     liReturn = "0"; 
         Connection loCnn = new ConnectionAs400().getConnection();
@@ -579,5 +580,34 @@ public class ViewObjectDao implements ViewObjectInterface{
         }
         return liReturn;
     }    
+    
+    public String getValueGeneralParameter(String tsNomParameter, String tsUsedBy) {
+        String     liReturn = "0"; 
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = "SELECT IND_VALUE_PARAMETER\n" + 
+        "     FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
+        "    WHERE NOM_PARAMETER  = '" + tsNomParameter + "'\n"+
+        "    AND IND_USED_BY = '" + tsUsedBy + "'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                liReturn = loRs.getString(1);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
+    }
+    
     
 }

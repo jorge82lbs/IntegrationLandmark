@@ -3,7 +3,11 @@ package mx.com.televisa.landamark.saml2;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +18,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import mx.com.televisa.landamark.client.userpermission.types.Usuario;
+import mx.com.televisa.landamark.model.daos.ViewObjectDao;
+import mx.com.televisa.landamark.secman.SecurityManagerWs;
+import mx.com.televisa.landamark.users.UserInfoBean;
+import mx.com.televisa.landamark.users.UserMenuBean;
+import mx.com.televisa.landamark.users.UserOperationList;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
@@ -86,7 +98,6 @@ public class ACSServlet extends HttpServlet {
                       HttpServletResponse toResp) throws ServletException,
                                                            IOException {
         String lsCPath = toReq.getContextPath();
-        System.out.println("CPath>>>: " + lsCPath);
         toResp.sendRedirect(lsCPath + "/faces/indexPage");
         
         //doPost(toReq,toResp);
@@ -97,10 +108,9 @@ public class ACSServlet extends HttpServlet {
     protected void doPost(HttpServletRequest toReq,
                           HttpServletResponse toResp) throws ServletException,
                                                                           IOException {
-        System.out.println("doPost>>>>> saml2");
         try {
             String loResponseMessage = toReq.getParameter("SAMLResponse");
-            System.out.println("SAMLResponse: " + loResponseMessage);
+            //System.out.println("SAMLResponse: " + loResponseMessage);
             byte[] laBase64DecodedResponse = new Base64().decode(loResponseMessage);
 
             ByteArrayInputStream loIS =
@@ -124,13 +134,13 @@ public class ACSServlet extends HttpServlet {
             Response loResponse = (Response) loResponseXmlObj;
             //System.out.println("Response: ");
             //OpenSAMLUtils.logSAMLObject(loResponse);
-            System.out.println();
+            //System.out.println();
             //EncryptedAssertion loEncryptedAssertion = loResponse.getEncryptedAssertions().get(0);
             
             //Assertion loAssertion = decryptAssertion(loEncryptedAssertion);
             Assertion loAssertion = loResponse.getAssertions().get(0);
             verifyAssertionSignature(loAssertion);
-            System.out.println("Decrypted Assertion: ");
+            //System.out.println("Decrypted Assertion: ");
             OpenSAMLUtils.logSAMLObject(loAssertion);
 
             Map<String, List<String>> laAtts = logAssertionAttributes(loAssertion);
@@ -143,13 +153,66 @@ public class ACSServlet extends HttpServlet {
             List<String> laObjIdVals = laAtts.get(SSOParameters.psOBJECT_ID_ATT_NAME);
             if(laUserVals != null && laUserVals.size() > 0) {
                 String lsEmail = laUserVals.get(0);
-                System.out.println("Email: "+lsEmail);
+                //System.out.println("Email: "+lsEmail);
                 try {
                     lsUser = getEmailPrefix(lsEmail);
                 } catch (Exception loEx) {
                     loEx.printStackTrace();
                 }
-                System.out.println("username: " + lsUser);
+                //System.out.println("username: " + lsUser);
+                
+                //========Cargar en session los valores necesarios para el uso de la aplicacion=====
+                System.out.println("========Cargar en session los valores necesarios para el uso de la aplicacion=====");
+                try{
+                    Usuario loUserIntegration = getSecmanUserPermission(lsUser);
+                    if(loUserIntegration != null){
+                    //if(true){
+                        //Settear Datos--------------------------
+                        //FacesContext        loContext = FacesContext.getCurrentInstance();
+                        //ExternalContext     loEctx = loContext.getExternalContext();        
+                        //HttpServletRequest  loRequest = toReq;//(HttpServletRequest)loEctx.getRequest();
+                        //HttpSession         loSession = loRequest.getSession(true);
+                        HttpSession         loSession = toReq.getSession(true);
+                        loSession.setAttribute("session.pgmIntegration", "true");
+                        //UserInfoBean        loUserInfo = 
+                          //  (UserInfoBean) new UtilFaces().resolveExpression("#{UserInfoBean}");  
+                        UserInfoBean        loUserInfo = new UserInfoBean();
+                        DateFormat          ldDateFormat = 
+                            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date                ldDate = new Date();                    
+                        /*
+                        loUserInfo.setPsUserFullName("Bautista Santiago Jorge Luis");//loUserIntegration.getNomMostrar().getNomMostrar());
+                        loUserInfo.setPsEmail("jlbautistas@teleevisa.com.mx");//loUserIntegration.getMailUsuario().getMailUsuario());
+                        loUserInfo.setPsIdUser("666");//loUserIntegration.getIdUsuario().getIdUsuario());
+                        loUserInfo.setPsUserName("jlbautistas");//loUserIntegration.getUserName().getUserName());
+                        */
+                        loUserInfo.setPsUserFullName(loUserIntegration.getNomMostrar().getNomMostrar());
+                        loUserInfo.setPsEmail(loUserIntegration.getMailUsuario().getMailUsuario());
+                        loUserInfo.setPsIdUser(loUserIntegration.getIdUsuario().getIdUsuario());
+                        loUserInfo.setPsUserName(loUserIntegration.getUserName().getUserName());
+                        loUserInfo.setPsDateTimeLogin(ldDateFormat.format(ldDate));
+                        loUserInfo.setPsToken("SAML2_AUTHENTICATED");
+                        loSession.setAttribute("loggedPgmIntegrationUser", loUserInfo.getPsUserName());                             
+                        loSession.setAttribute("loggedPgmIntegrationIdUser", loUserInfo.getPsIdUser()); 
+                        
+                        loSession.setAttribute("UserInfoBean", loUserInfo);
+                        
+                        UserMenuBean loUserMenuBean = getUserMenuBean(lsUser, loSession);
+                        System.out.println("=================================================================");
+                        //Agregar informacion de Cortes y Programa
+                        loSession.setAttribute("idServiceCortes", loUserMenuBean.getLsUserIdServiceCortes());
+                        loSession.setAttribute("listChannelsCortes", loUserMenuBean.getLsUserListChannelsCortes());                             
+                        
+                        //Agregar informacion de Actualizacion de Precios
+                        loSession.setAttribute("idServicePrecios", loUserMenuBean.getLsUserIdServicePrecios());
+                        loSession.setAttribute("listChannelsPrecios", loUserMenuBean.getLsUserListChannelsPrecios());                             
+                    }
+                } catch (IOException loEx) {
+                    System.out.println("Erro al validar en secman 33 "+loEx.getMessage());
+                } catch (Exception loExp) {
+                    System.out.println("Erro al validar en secman 323 "+loExp.getMessage());
+                }
+                //==================================================================================
             }
             if(laObjIdVals != null && laObjIdVals.size() > 0) {
                 lsObjId = laObjIdVals.get(0);
@@ -180,20 +243,19 @@ public class ACSServlet extends HttpServlet {
             loUEx.printStackTrace();
         }
 
-
-        System.out.println("Artifact received");
+        //System.out.println("Artifact received");
         
         Artifact loArtifact = buildArtifactFromRequest(toReq);
-        System.out.println("Artifact: " + loArtifact.getArtifact());
+        //System.out.println("Artifact: " + loArtifact.getArtifact());
 
         ArtifactResolve loArtifactResolve = buildArtifactResolve(loArtifact);
-        System.out.println("Sending ArtifactResolve");
-        System.out.println("ArtifactResolve: ");
+        //System.out.println("Sending ArtifactResolve");
+        //System.out.println("ArtifactResolve: ");
         OpenSAMLUtils.logSAMLObject(loArtifactResolve);
 
         ArtifactResponse loArtifactResponse = sendAndReceiveArtifactResolve(loArtifactResolve, toResp);
-        System.out.println("ArtifactResponse received");
-        System.out.println("ArtifactResponse: ");
+        //System.out.println("ArtifactResponse received");
+        //System.out.println("ArtifactResponse: ");
         OpenSAMLUtils.logSAMLObject(loArtifactResponse);
 
         validateDestinationAndLifetime(loArtifactResponse, toReq);
@@ -203,7 +265,7 @@ public class ACSServlet extends HttpServlet {
         
         Assertion loAssertion = decryptAssertion(loEncryptedAssertion);
         verifyAssertionSignature(loAssertion);
-        System.out.println("Decrypted Assertion: ");
+        //System.out.println("Decrypted Assertion: ");
         OpenSAMLUtils.logSAMLObject(loAssertion);
 
         logAssertionAttributes(loAssertion);
@@ -432,4 +494,193 @@ public class ACSServlet extends HttpServlet {
        }
        return tsEmail.substring(0, liAtIdx);
    }
+    
+    
+    /**
+     * Obtiene permisos de Usuario en Security Manager 
+     * @autor Jorge Luis Bautista Santiago
+     * @return Usuario
+     */
+    public Usuario getSecmanUserPermission(String tsUserName) 
+    throws Exception {
+        Usuario          lsResponse = null;        
+        SecurityManagerWs loSecMan = new SecurityManagerWs();
+        try {
+            System.out.println("Instanciando secman para permisos");
+            lsResponse = 
+                loSecMan.getSecmanUserDataSession(tsUserName,
+                                              "IntegrationLandmark");
+        } catch (Exception loEx) {
+            System.out.println("error secman 567");
+            throw new Exception(loEx.getMessage());
+        }
+        return lsResponse;
+    }
+    
+    /**
+     * Obtiene operaciones de Usuario en Security Manager 
+     * @autor Jorge Luis Bautista Santiago
+     * @return UserMenuBean
+     */
+    public UserMenuBean getUserMenuBean(String tsUserName, HttpSession toSess) throws Exception {                
+        System.out.println("Dentro de getUserMenuBean");
+        String lsChannels = "";
+        UserOperationList        loUserOperationList = new UserOperationList();        
+            //(UserOperationList) new UtilFaces().resolveExpression("#{UserOperationList}");
+        loUserOperationList.setLsUserName(tsUserName);
+        List<String> laList = new ArrayList<String>();
+        
+        UserMenuBean        loMenu = new UserMenuBean();        
+            //(UserMenuBean) new UtilFaces().resolveExpression("#{UserMenuBean}");
+        String              lsFlag = "false";
+        lsFlag = "true";
+        
+        loMenu.setLsPantallaBitacora(lsFlag);
+        loMenu.setLsPantallaGralConfig(lsFlag);
+        loMenu.setLsPantallaLoadFile(lsFlag);
+        loMenu.setLsPantallaMapping(lsFlag);
+        loMenu.setLsPantallaMonitor(lsFlag);
+        loMenu.setLsPantallaNotifications(lsFlag);
+        loMenu.setLsPantallaProcess(lsFlag);
+        loMenu.setLsPantallaStatusFiles(lsFlag);
+        loMenu.setLsPantallaCreateFile(lsFlag);
+        
+        loMenu.setLsOprDeleteCron("true");
+        loMenu.setLsOprExecuteCron("true");
+        loMenu.setLsOprInitStopCron("true");
+        loMenu.setLsOprInsertCron("true");
+        
+        List<String>        laOperaciones = 
+            getSecmanUserOperations(tsUserName);
+        for (int liI = 0; liI < laOperaciones.size(); liI++) {
+            //System.out.println("####### Operation["+laOperaciones.get(liI)+"] ######");
+            lsFlag = "true";
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaBitacora"))
+                loMenu.setLsPantallaBitacora(lsFlag);
+            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaGralConfig"))
+                loMenu.setLsPantallaGralConfig(lsFlag);                            
+                                        
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaLoadFile"))
+                loMenu.setLsPantallaLoadFile(lsFlag);
+            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaMapping"))
+                loMenu.setLsPantallaMapping(lsFlag);
+            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaMonitor"))
+                loMenu.setLsPantallaMonitor(lsFlag);
+            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaNotifications"))
+                loMenu.setLsPantallaNotifications(lsFlag);
+            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaProcess"))
+                loMenu.setLsPantallaProcess(lsFlag);                        
+            
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaStatusFiles")){
+                loMenu.setLsPantallaStatusFiles(lsFlag);    
+            }
+        if (laOperaciones.get(liI).equalsIgnoreCase("PantallaCreationFiles")){
+            loMenu.setLsPantallaCreateFile(lsFlag);    
+        }
+        if (laOperaciones.get(liI).equalsIgnoreCase("PantallaPriceFiles")){
+            loMenu.setLsPantallaPrecios(lsFlag);    
+        }
+            if(laOperaciones.get(liI).startsWith("Ch-")){
+                String[] laChn = laOperaciones.get(liI).split("-");
+                if(laChn.length > 1){
+                    laList.add(laChn[1]);
+                    //System.out.println("Canal: "+laChn[1]);
+                    lsChannels += "'"+laChn[1]+"',";
+                    //System.out.println("Canales: "+laChn[1]);
+                    loUserOperationList.setLaOpertations(laList);
+                }
+            }
+            if(lsChannels.length() > 0){
+                loMenu.setLsUserListChannelsCortes(lsChannels.substring(0, lsChannels.length()-1));    
+                loMenu.setLsUserListChannelsPrecios(lsChannels.substring(0, lsChannels.length()-1));    
+            }
+                        
+        }
+        
+        //Obtener el idServicio de cortes y programas para el usuario firmado
+        List<String> laListCortes = getCortesyProgramasByUser(tsUserName);
+        
+        if(Integer.parseInt(laListCortes.get(0)) > 0){
+            loMenu.setLsUserIdServiceCortes(laListCortes.get(0));
+            loMenu.setLsUserFecInicialCortes(laListCortes.get(1));
+            loMenu.setLsUserFecFinalCortes(laListCortes.get(2));
+            loMenu.setLsUserNomServiceCortes("Generar Archivo de Cortes y Programas");
+        }else{
+            loMenu.setLsUserIdServiceCortes(laListCortes.get(0));
+            loMenu.setLsUserFecInicialCortes("");
+            loMenu.setLsUserFecFinalCortes("");
+            loMenu.setLsUserNomServiceCortes("Generar Archivo de Cortes y Programas");
+        }
+        
+        //Obtener el idServicio de Actualizacion de Precios para el usuario firmado
+        List<String> laListPrecios = getActualizacionPreciosByUser(tsUserName);
+        
+        if(Integer.parseInt(laListPrecios.get(0)) > 0){
+            loMenu.setLsUserIdServicePrecios(laListPrecios.get(0));
+            loMenu.setLsUserFecInicialPrecios(laListPrecios.get(1));
+            loMenu.setLsUserFecFinalPrecios(laListPrecios.get(2));
+            loMenu.setLsUserNomServicePrecios("Generar Archivo de Cortes y Programas");
+        }else{
+            loMenu.setLsUserIdServicePrecios(laListPrecios.get(0));
+            loMenu.setLsUserFecInicialPrecios("");
+            loMenu.setLsUserFecFinalPrecios("");
+            loMenu.setLsUserNomServicePrecios("Generar Archivo de Cortes y Programas");
+        }
+                
+        toSess.setAttribute("UserOperationList", loUserOperationList);
+        toSess.setAttribute("UserMenuBean", loMenu);
+        
+        return loMenu;
+    }
+    
+    /**
+     * Obtiene el idServicio, fecha inicial y fecha final, si es
+     * que el usuario ha ejecutado al menos una vez el servicio de Cortes y Programas
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<String> getActualizacionPreciosByUser(String tsUser){        
+        List<String> laList = new ArrayList<String>();
+        ViewObjectDao loViewObjectDao = new ViewObjectDao();
+        laList = loViewObjectDao.getServicePreciosByUser(tsUser);
+        return laList;
+    }
+    
+    /**
+     * Obtiene el idServicio, fecha inicial y fecha final, si es
+     * que el usuario ha ejecutado al menos una vez el servicio de Cortes y Programas
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<String> getCortesyProgramasByUser(String tsUser){        
+        List<String> laList = new ArrayList<String>();
+        ViewObjectDao loViewObjectDao = new ViewObjectDao();
+        laList = loViewObjectDao.getServiceCortesByUser(tsUser);
+        return laList;
+    }
+    
+    /**
+     * Obtiene operaciones de Usuario en Security Manager 
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<String> getSecmanUserOperations(String tsUserName) throws Exception {
+        List<String>  lsResponse = new ArrayList<String>();        
+        SecurityManagerWs loSecMan = new SecurityManagerWs();
+        try {
+            lsResponse = 
+                loSecMan.getUserOperations(tsUserName,
+                                          "IntegrationLandmark");
+        } catch (Exception loEx) {
+            throw new Exception(loEx.getMessage());
+        }
+        return lsResponse;
+    }
+
+    
 }

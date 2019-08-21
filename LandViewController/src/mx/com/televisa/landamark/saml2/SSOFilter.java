@@ -90,7 +90,7 @@ public class SSOFilter implements Filter {
     public void doFilter(ServletRequest toRequest, ServletResponse toResponse,
                          FilterChain toChain) throws IOException,
                                                    ServletException {
-        System.out.println("SSO Filter");
+        //System.out.println("SSO Filter");
         HttpServletRequest loHttpServletRequest = (HttpServletRequest)toRequest;
         HttpServletResponse loHttpServletResponse = (HttpServletResponse)toResponse;
         
@@ -122,7 +122,7 @@ public class SSOFilter implements Filter {
                 //Verify login app attribute
                 Boolean lbSes =
                     (Boolean) loHttpServletRequest.getSession().getAttribute("loginUserSes");
-                System.out.println("loginUserSes: " + lbSes);
+                //System.out.println("loginUserSes: " + lbSes);
                 // Login app attribute not present
                 if(lbSes == null || lbSes == false) {
                     // Forward to login page
@@ -213,7 +213,6 @@ public class SSOFilter implements Filter {
         SignatureSigningParameters signatureSigningParameters = new SignatureSigningParameters();
         signatureSigningParameters.setSigningCredential(SPCredentials.getPoCredential());
         signatureSigningParameters.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);
-
 
         loContext.getSubcontext(SecurityParametersContext.class, true).setSignatureSigningParameters(signatureSigningParameters);
 
@@ -307,13 +306,21 @@ public class SSOFilter implements Filter {
         
         HttpSession loSes = toReq.getSession();
         String lsPg = getPage(toReq.getPathInfo());
-        System.out.println("Pagina: " + lsPg);
+        //System.out.println("Pagina: " + lsPg);
         
         UserMenuBean loMnu = (UserMenuBean)loSes.getAttribute("UserMenuBean");
-        System.out.println("BEAN: " + loMnu);
+        //System.out.println("BEAN: " + loMnu);
         // No está el usuario en sesión
         if(loMnu == null) {
             return false;
+        }else{
+            
+            //System.out.println("idCortes-para validar la session: ("+loMnu.getLsUserIdServiceCortes()+")");
+            //if(loMnu.getLsPantallaBitacora().equalsIgnoreCase("true")){
+                
+            //}
+            
+            lbValidated = true;
         }
         /*
         String lsPrm = Constants.poPgsPrms.get(lsPg);

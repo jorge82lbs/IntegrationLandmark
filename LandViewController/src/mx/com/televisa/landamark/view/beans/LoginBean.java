@@ -31,6 +31,7 @@ import javax.servlet.http.HttpSession;
 
 import mx.com.televisa.landamark.client.userpermission.types.Usuario;
 import mx.com.televisa.landamark.model.AppModuleImpl;
+import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.users.UserInfoBean;
 import mx.com.televisa.landamark.users.UserMenuBean;
@@ -364,7 +365,7 @@ public class LoginBean {
      * @return String
      */
     public String exitAppIntegraion() {
-        String              lsAmDef =
+        /*String              lsAmDef =
             "mx.com.televisa.landamark.model.AppModuleImpl";
         String              lsConfig = "AppModuleLocal";
         ExternalContext     loEctx = 
@@ -392,17 +393,24 @@ public class LoginBean {
             System.out.println("No es posible conectar con la base de datos "+loEx.getMessage());
         }
         loSession.invalidate();
-        /*try {
+        try {
             loResponse.sendRedirect(lsUrl);
             FacesContext.getCurrentInstance().responseComplete();
         }
         catch (Exception loEx) {
             System.out.println("Error al salir "+loEx.getMessage());
             loEx.printStackTrace();
-        }*/
+        }
+        */
         
         try {
-            String lsUrlLogout = "https://login.windows.net/87e71bd2-2a6d-4deb-8dca-d9b3fd7481b9/oauth2/logout";
+            ExternalContext     loEctx = 
+                FacesContext.getCurrentInstance().getExternalContext();
+            HttpServletResponse loResponse = (HttpServletResponse) loEctx.getResponse();
+            EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+            String lsUrlLogout = 
+                loEntityMappedDao.getGeneralParameter("URL_LOGOUT", "SAML2_AUTHENTICATION");
+            //String lsUrlLogout = "https://login.windows.net/87e71bd2-2a6d-4deb-8dca-d9b3fd7481b9/oauth2/logout";
             loResponse.sendRedirect(lsUrlLogout);
             FacesContext.getCurrentInstance().responseComplete();
         }

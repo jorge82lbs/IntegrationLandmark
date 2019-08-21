@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://impl.webservice.rtcrd.televisa.com.mx/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://impl.webservice.rtcrd.televisa.com.mx/" name="SpotConciliacionWSService">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://impl.webservice.rtcrd.televisa.com.mx/" schemaLocation="SpotConciliacionWSService1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="spotConciliaion">
+    <part name="parameters" element="tns:spotConciliaion"/>
+  </message>
+  <message name="spotConciliaionResponse">
+    <part name="parameters" element="tns:spotConciliaionResponse"/>
+  </message>
+  <portType name="SpotConciliacionWS">
+    <operation name="spotConciliaion">
+      <input wsam:Action="http://impl.webservice.rtcrd.televisa.com.mx/SpotConciliacionWS/spotConciliaionRequest" message="tns:spotConciliaion"/>
+      <output wsam:Action="http://impl.webservice.rtcrd.televisa.com.mx/SpotConciliacionWS/spotConciliaionResponse" message="tns:spotConciliaionResponse"/>
+    </operation>
+  </portType>
+  <binding name="SpotConciliacionWSPortBinding" type="tns:SpotConciliacionWS">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="spotConciliaion">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="SpotConciliacionWSService">
+    <port name="SpotConciliacionWSPort" binding="tns:SpotConciliacionWSPortBinding">
+      <soap:address location="http://tvel01cn03.televisa.net:19401/RTCRDApp/SpotConciliacionWSService"/>
+    </port>
+  </service>
+</definitions>

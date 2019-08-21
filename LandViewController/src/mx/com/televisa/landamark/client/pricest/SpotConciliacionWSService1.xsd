@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:ns0="http://impl.webservice.rtcrd.televisa.com.mx/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://impl.webservice.rtcrd.televisa.com.mx/">
+  <xsd:complexType name="responseAbstract" abstract="true">
+    <xsd:sequence>
+      <xsd:element name="paError" type="ns0:error" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+      <xsd:element name="psMessage" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="response">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:responseAbstract">
+        <xsd:sequence/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="spotConciliaion">
+    <xsd:sequence>
+      <xsd:element name="Request" type="ns0:comercialListRequest"/>
+      <xsd:element name="User" type="ns0:user"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="error">
+    <xsd:sequence>
+      <xsd:element name="psDescription" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="psSourceError" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="spotModulo">
+    <xsd:sequence>
+      <xsd:element name="piOrderID" type="xsd:int"/>
+      <xsd:element name="piSpotID" type="xsd:int"/>
+      <xsd:element name="pdSpotPrice" type="xsd:double"/>
+      <xsd:element name="pdSpotRating" type="xsd:double"/>
+      <xsd:element name="pdCPR" type="xsd:double"/>
+      <xsd:element name="pdPorcentRecDuration" type="xsd:double"/>
+      <xsd:element name="pdPorcentRecPosition" type="xsd:double"/>
+      <xsd:element name="pdPorcentRecPiggyBack" type="xsd:double"/>
+      <xsd:element name="pdPorcentRecDigital" type="xsd:double"/>
+      <xsd:element name="pdPorcentRecManual" type="xsd:double"/>
+      <xsd:element name="pdPorcentFactDuracion" type="xsd:double"/>
+      <xsd:element name="psSpotFijo" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="spotConciliacionResponse">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:response">
+        <xsd:sequence>
+          <xsd:element name="paSpotResult" type="ns0:spotConciliacionResult" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="comercialListRequest">
+    <xsd:sequence>
+      <xsd:element name="paSpots" type="ns0:spotModulo" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="spotConciliacionResult">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:response">
+        <xsd:sequence>
+          <xsd:element name="piSpotID" type="xsd:int" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="user">
+    <xsd:sequence>
+      <xsd:element name="psUserName" type="xsd:string"/>
+      <xsd:element name="psPassword" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="spotConciliaionResponse">
+    <xsd:sequence>
+      <xsd:element name="SpotConciliacionResult" type="ns0:spotConciliacionResponse" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="spotConciliaion" type="ns0:spotConciliaion"/>
+  <xsd:element name="spotConciliaionResponse" type="ns0:spotConciliaionResponse"/>
+</xsd:schema>

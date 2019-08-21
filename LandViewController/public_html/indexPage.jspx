@@ -58,8 +58,8 @@
                         <af:panelGroupLayout id="PnlUsrPwd" valign="middle"
                                          halign="center"
                                          layout="vertical"
-                                         inlineStyle="border-style:none;"
-                                         visible="false">
+                                         inlineStyle="border-style:none;"                                         
+                                         visible="false"><!--SAML2-->
                             <af:spacer width="10" height="28" id="SpcLogin1"/>
                             <af:panelFormLayout id="PnlFrmLoginMsg" visible="true">
                                 <af:panelGroupLayout id="PnlLoginInfo" valign="top" layout="horizontal">
