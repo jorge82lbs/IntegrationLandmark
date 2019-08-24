@@ -495,4 +495,86 @@ public class LoginBean {
         return "homePage";
     }
     
+    public String redirectToHome2() {
+        String  lsUserName = "jserranod";            
+        //String  lsPassword = "Arisbeth31.25";
+        boolean lbFlagError = false;
+        String  lsErrorMessage = null;
+        String  lsTokenSecman;
+        //if (lsUserName != null && lsPassword != null) {                        
+            try {                
+                
+                //lsTokenSecman = validateSecmanUser(lsUserName, lsPassword); 
+                lsTokenSecman = "123456789"; //TEMPORAL
+                if (lsTokenSecman != null) {
+                    Usuario loUserIntegration = getSecmanUserPermission(lsUserName);
+                    if(loUserIntegration != null){
+                    //if(true){
+                        //Settear Datos--------------------------
+                        FacesContext        loContext = FacesContext.getCurrentInstance();
+                        ExternalContext     loEctx = loContext.getExternalContext();        
+                        HttpServletRequest  loRequest = (HttpServletRequest)loEctx.getRequest();
+                        HttpSession         loSession = loRequest.getSession(true);
+                        loSession.setAttribute("session.pgmIntegration", "true");
+                        UserInfoBean        loUserInfo = 
+                            (UserInfoBean) new UtilFaces().resolveExpression("#{UserInfoBean}");            
+                        DateFormat          ldDateFormat = 
+                            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date                ldDate = new Date();                    
+                        /*
+                        loUserInfo.setPsUserFullName("Bautista Santiago Jorge Luis");//loUserIntegration.getNomMostrar().getNomMostrar());
+                        loUserInfo.setPsEmail("jlbautistas@televisa.com.mx");//loUserIntegration.getMailUsuario().getMailUsuario());
+                        loUserInfo.setPsIdUser("666");//loUserIntegration.getIdUsuario().getIdUsuario());
+                        loUserInfo.setPsUserName("jlbautistas");//loUserIntegration.getUserName().getUserName());
+                        */
+                        loUserInfo.setPsUserFullName(loUserIntegration.getNomMostrar().getNomMostrar());
+                        loUserInfo.setPsEmail(loUserIntegration.getMailUsuario().getMailUsuario());
+                        loUserInfo.setPsIdUser(loUserIntegration.getIdUsuario().getIdUsuario());
+                        loUserInfo.setPsUserName(loUserIntegration.getUserName().getUserName());
+                        
+                        loUserInfo.setPsDateTimeLogin(ldDateFormat.format(ldDate));
+                        loUserInfo.setPsToken(lsTokenSecman);
+                        loSession.setAttribute("loggedPgmIntegrationUser", loUserInfo.getPsUserName());                             
+                        loSession.setAttribute("loggedPgmIntegrationIdUser", loUserInfo.getPsIdUser()); 
+                        
+                        UserMenuBean loUserMenuBean = getUserMenuBean(lsUserName);
+                        
+                        //Agregar informacion de Cortes y Programa
+                        loSession.setAttribute("idServiceCortes", loUserMenuBean.getLsUserIdServiceCortes());
+                        loSession.setAttribute("listChannelsCortes", loUserMenuBean.getLsUserListChannelsCortes());                             
+                        
+                        //Agregar informacion de Actualizacion de Precios
+                        loSession.setAttribute("idServicePrecios", loUserMenuBean.getLsUserIdServicePrecios());
+                        loSession.setAttribute("listChannelsPrecios", loUserMenuBean.getLsUserListChannelsPrecios());                             
+                        
+                        String              lsUrl = 
+                            loEctx.getRequestContextPath() + "/faces/homePage";
+                        loEctx.redirect(lsUrl);
+                    }
+                    else{
+                        lbFlagError = true;
+                        lsErrorMessage = "No es Posible Obtener Permisos";
+                    }
+                }
+            } catch (IOException loEx) {
+                lbFlagError = true;
+                lsErrorMessage = loEx.getMessage();
+            } catch (Exception loExp) {
+                lbFlagError = true;
+                lsErrorMessage = loExp.getMessage();
+            }
+        /*}
+        else{
+            lbFlagError = true;
+            lsErrorMessage = "Los Campos Son Requeridos";
+        }*/
+        if(lbFlagError){
+            FacesMessage loMsg = 
+                new FacesMessage(lsErrorMessage);
+            loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }
+        return null;
+    }
+    
 }

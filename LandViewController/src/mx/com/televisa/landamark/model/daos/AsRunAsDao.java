@@ -288,18 +288,25 @@ public class AsRunAsDao {
      * @param tsChannels
      * @return Integer
      */  
-    public Integer getUpdateLogCertificado(String tsDate, String tsChannels) {
-        Integer    liReturn = 0;
+    public ResponseUpdDao getUpdateLogCertificado(String tsChannels, String tsDate) {
+        ResponseUpdDao    loResponse = new ResponseUpdDao();
         Connection loCnn = new ConnectionAs400().getConnection();
         String     lsQueryParadigm = 
         "UPDATE EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO\n" + 
                 "   SET STATUS = '0'\n" + 
                 " WHERE STNID = '" + tsChannels + "'\n" + 
                 "   AND BCSTDT = '" + tsDate + "'";
+        System.out.println(lsQueryParadigm);
         try {
             Statement loStmt = loCnn.createStatement();
-            liReturn = loStmt.executeUpdate(lsQueryParadigm);
-        } catch (SQLException loExSql) {            
+            Integer liRes = loStmt.executeUpdate(lsQueryParadigm);
+            loResponse.setLiAffected(liRes);
+            loResponse.setLsResponse("OK");
+            loResponse.setLsMessage("Actualizacion de Tabla realizado");
+        } catch (SQLException loExSql) {
+            loResponse.setLiAffected(0);
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLsMessage("Error al actualizar "+loExSql.getErrorCode());
             loExSql.printStackTrace();
         }
         finally{
@@ -309,7 +316,7 @@ public class AsRunAsDao {
                 loEx.printStackTrace();
             }
         }
-        return liReturn;
+        return loResponse;
     }    
     
 }

@@ -154,5 +154,45 @@ public class ResponseBreaksDao {
         return loResponseUpdDao;
     }
     
+    /**
+     * Actualiza estatus de la tabla de Archivos
+     * @autor Jorge Luis Bautista Santiago
+     * @param liIdFileXml
+     * @param tsEstatus
+     * @return ResponseUpdDao
+     */
+    public ResponseUpdDao updateParametersXmlFiles(Integer liIdFileXml, String tsParameters) {
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        Integer        loValue = 0;
+        Connection     loCnn = new ConnectionAs400().getConnection();
+        String         lsQueryParadigm = //FEC_LAST_UPDATE_DATE = CURRENT_TIMESTAMP
+            "UPDATE EVENTAS.LMK_INT_XML_FILES_TAB\n" + 
+            "   SET ATTRIBUTE1 = '" + tsParameters + "'\n" +
+            " WHERE ID_FILE_XML = " + liIdFileXml;
+        System.out.println("ACTUALIZANDO tsParameters de XML_FILES");
+        System.out.println(lsQueryParadigm);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loValue = loStmt.executeUpdate(lsQueryParadigm);
+            loResponseUpdDao.setLiAffected(loValue);
+            loResponseUpdDao.setLsMessage("SUCCESS");
+            loResponseUpdDao.setLsResponse("OK");
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage(loExSql.getMessage());
+            loResponseUpdDao.setLsResponse("ERROR");
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loResponseUpdDao;
+    }
+    
+    
     
 }

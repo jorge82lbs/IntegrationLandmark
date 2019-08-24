@@ -227,16 +227,27 @@ public class OrderSpotsImpCron implements Job{
                         loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "W");
                         
                         //Obtener Canal y fecha de acuerdo al nombre del archivo
+                        //20190822.- La fecha se obtiene del primer spot, ya devuelto en ResponseUpdDao
+                        //            de insertSpotsParadimg
                         String[] laNomarch = lsFileName.split("\\.");
                         String lsStnidNomarch = laNomarch[1];
-                        String lsBcstdtNomarch = laNomarch[2];
+                        //String lsBcstdtNomarch = laNomarch[2];
                         String lsStnid = getChannelMapped(lsStnidNomarch);
-                        String lsBcstdt = getBcstdtMapped(lsBcstdtNomarch,
+                        String lsBcstdt = loRes.getLsMessage();
+                        try{
+                        loResReadFile.updateParametersXmlFiles(loXmlFile.getLiAffected(), 
+                                                               "["+lsStnid+","+lsBcstdt+"]"
+                                                               );
+                        }catch(Exception loEx){
+                            System.out.println("Error al actualizar parametros "+loEx.getMessage());
+                        }
+                        /*String lsBcstdt = getBcstdtMapped(lsBcstdtNomarch,
                                                           "yyyymmdd",
-                                                          "yyyy-mm-dd");
+                                                          "yyyy-mm-dd");*/
+                        System.out.println("####################################");
                         System.out.println("lsStnid["+lsStnid+"]");
                         System.out.println("lsBcstdt["+lsBcstdt+"]");
-                        //System.out.println("########## Fin TEMPORAL ###############");
+                        System.out.println("####################################");
                         
                         OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
                         // 2)      Ejecutar el SP…. EVENTAS.LMK_VALIDA_SPOTS(STNID, BCSTDT)
@@ -320,11 +331,15 @@ public class OrderSpotsImpCron implements Job{
                                                                    liIdUser, 
                                                                    lsUserName);  
                                 System.out.println("Enviar correo para informar que todo fue con incidencias");
+                                try{
                                 loUtilMail.buildMailByProcess(liIdLogService, 
                                                               Integer.parseInt(lsIdService), 
                                                               liIndProcess, 
                                                               liIdUser, 
                                                               lsUserName);
+                                }catch(Exception loEx){
+                                    System.out.println("Error al intentar enviar correo "+loEx.getMessage());
+                                }
                                 //Actualizar estatus de archivo xml, leido, en tablas temporales
                                 loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "E");
                                 System.out.println("Cambiando status al archivo");
@@ -332,8 +347,8 @@ public class OrderSpotsImpCron implements Job{
                             }
                             else{//Se procede al punto 4
                                 boolean lbSendMail = true;
-                                //  4)      Ejecutar el SP… EVENTAS.EVETV_GENERA_SPOTS(STNID, BCSTDT)
-                                System.out.println("Generar spots EVETV_GENERA_SPOTS");
+                                //  4)      Ejecutar el SP… EVENTAS.LMK_GENERA_SPOTS(STNID, BCSTDT)
+                                System.out.println("Generar spots LMK_GENERA_SPOTS");
                                 liIndProcess = 
                                             new UtilFaces().getIdConfigParameterByName("CallProcedure");//
                                 loBitBean.setLiIdLogServices(liIdLogService);
@@ -341,16 +356,16 @@ public class OrderSpotsImpCron implements Job{
                                 loBitBean.setLiIndProcess(liIndProcess);
                                 loBitBean.setLiNumProcessId(0);
                                 loBitBean.setLiNumPgmProcessId(0);
-                                loBitBean.setLsIndEvento("Generar spots EVETV_GENERA_SPOTS("+lsStnid+", "+lsBcstdt+")");
+                                loBitBean.setLsIndEvento("Generar spots LMK_GENERA_SPOTS("+lsStnid+", "+lsBcstdt+")");
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                    liIdUser, 
                                                                    lsUserName);  
                                 
                                 ResponseUpdDao loResGeneraSpots = 
                                     loOrderSpotsDao.callLmkGeneraSpotsPr(lsStnid, lsBcstdt);
-                            
+                                System.out.println("Resultado de: LMK_GENERA_LOGS "+loResGeneraSpots.getLsResponse());
                                 if(!loResGeneraSpots.getLsResponse().equalsIgnoreCase("OK")){
-                                    System.out.println("ERROR EVETV_GENERA_SPOTS "+loResGeneraSpots.getLsMessage());
+                                    System.out.println("ERROR LMK_GENERA_SPOTS "+loResGeneraSpots.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
                                                 new UtilFaces().getIdConfigParameterByName("GeneralError");//
@@ -359,13 +374,13 @@ public class OrderSpotsImpCron implements Job{
                                     loBitBean.setLiIndProcess(liIndProcess);
                                     loBitBean.setLiNumProcessId(0);
                                     loBitBean.setLiNumPgmProcessId(0);
-                                    loBitBean.setLsIndEvento("ERROR al GENERAR spots >> "+loRes.getLsMessage());
+                                    loBitBean.setLsIndEvento("ERROR al GENERAR spots >> "+loResGeneraSpots.getLsMessage());
                                     loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                        liIdUser, 
                                                                        lsUserName);  
                                 }                                
                                 
-                                //  5)      Ejecutar el SP… EVENTAS.EVETV_GENERA_LOG(STNID, BCSTDT)
+                                //  5)      Ejecutar el SP… EVENTAS.LMK_GENERA_LOG(STNID, BCSTDT)
                                 liIndProcess = 
                                     new UtilFaces().getIdConfigParameterByName("CallProcedure");//
                                 loBitBean.setLiIdLogServices(liIdLogService);
@@ -373,16 +388,16 @@ public class OrderSpotsImpCron implements Job{
                                 loBitBean.setLiIndProcess(liIndProcess);
                                 loBitBean.setLiNumProcessId(0);
                                 loBitBean.setLiNumPgmProcessId(0);
-                                loBitBean.setLsIndEvento("Generar spots EVETV_GENERA_LOGS("+lsStnid+", "+lsBcstdt+")");
+                                loBitBean.setLsIndEvento("Generar LMK_GENERA_LOGS("+lsStnid+", "+lsBcstdt+")");
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                    liIdUser, 
                                                                    lsUserName);  
-                                System.out.println("Generar spots EVETV_GENERA_LOGS");
+                                System.out.println("Generar LMK_GENERA_LOGS");
                                 ResponseUpdDao loResGeneraLogs = 
                                     loOrderSpotsDao.callLmkGeneraLogsPr(lsStnid, lsBcstdt);
-                                
+                                System.out.println("Resultado de: LMK_GENERA_LOGS "+loResGeneraLogs.getLsResponse());
                                 if(!loResGeneraLogs.getLsResponse().equalsIgnoreCase("OK")){
-                                    System.out.println("ERROR EVETV_GENERA_SPOTS "+loResGeneraLogs.getLsMessage());
+                                    System.out.println("ERROR LMK_GENERA_LOGS "+loResGeneraLogs.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
                                                 new UtilFaces().getIdConfigParameterByName("GeneralError");//
@@ -391,7 +406,7 @@ public class OrderSpotsImpCron implements Job{
                                     loBitBean.setLiIndProcess(liIndProcess);
                                     loBitBean.setLiNumProcessId(0);
                                     loBitBean.setLiNumPgmProcessId(0);
-                                    loBitBean.setLsIndEvento("ERROR al GENERAR LOGS >> "+loRes.getLsMessage());
+                                    loBitBean.setLsIndEvento("ERROR al GENERAR LOGS >> "+loResGeneraLogs.getLsMessage());
                                     loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                        liIdUser, 
                                                                        lsUserName);  
@@ -548,9 +563,14 @@ public class OrderSpotsImpCron implements Job{
             OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
             int liI = 0;
             boolean lbSpots = true;
+            String lsFecha = "";
             List<LmkSpotsRowBean> laSpotsIns = new ArrayList<LmkSpotsRowBean>();
             while(liI < loSpots.getSpot().size() && lbSpots == true ){
                 Spot loSpot = loSpots.getSpot().get(liI);
+                if(liI == 0){
+                    lsFecha = loSpot.getScheduleDate();
+                    System.out.println("Fecha para procesar: ["+lsFecha+"]");
+                }
                 LmkSpotsRowBean loLmkSpotsRowBean = new LmkSpotsRowBean();
                 loLmkSpotsRowBean = getLmkSpotsRowBeanBySpot(loSpot);
                 //Insertar en tabla:
@@ -579,8 +599,8 @@ public class OrderSpotsImpCron implements Job{
                 
             }else{
                 loResponseUpdDao.setLiAffected(loSpots.getSpot().size());
-                loResponseUpdDao.setLsMessage("OK");
-                loResponseUpdDao.setLsResponse("OK");    
+                loResponseUpdDao.setLsResponse("OK");
+                loResponseUpdDao.setLsMessage(lsFecha); //Fecha para procesar
             }
             
             

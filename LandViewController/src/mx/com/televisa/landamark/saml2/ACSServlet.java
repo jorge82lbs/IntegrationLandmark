@@ -103,7 +103,6 @@ public class ACSServlet extends HttpServlet {
         //doPost(toReq,toResp);
     }
 
-
     @Override
     protected void doPost(HttpServletRequest toReq,
                           HttpServletResponse toResp) throws ServletException,
@@ -425,8 +424,6 @@ public class ACSServlet extends HttpServlet {
             InOutOperationContext<ArtifactResponse, ArtifactResolve> loContext = new ProfileRequestContext<ArtifactResponse, ArtifactResolve>();
             loContext.setOutboundMessageContext(loContextout);
 
-
-
             AbstractPipelineHttpSOAPClient<SAMLObject, SAMLObject> loSoapClient = new AbstractPipelineHttpSOAPClient() {
                 protected HttpClientMessagePipeline newPipeline() throws SOAPException {
                     HttpClientRequestSOAP11Encoder loEncoder = new HttpClientRequestSOAP11Encoder();
@@ -444,6 +441,7 @@ public class ACSServlet extends HttpServlet {
             HttpClientBuilder loClientBuilder = new HttpClientBuilder();
 
             loSoapClient.setHttpClient(loClientBuilder.buildClient());
+            System.out.println("01: SSOParameters.psARTIFACT_RESOLUTION_SERVICE{"+SSOParameters.psARTIFACT_RESOLUTION_SERVICE+"}");
             loSoapClient.send(SSOParameters.psARTIFACT_RESOLUTION_SERVICE, loContext);
 
             return loContext.getInboundMessageContext().getMessage();
@@ -479,7 +477,7 @@ public class ACSServlet extends HttpServlet {
         loArtifactResolve.setIssueInstant(new DateTime());
 
         loArtifactResolve.setID(OpenSAMLUtils.generateSecureRandomId());
-
+        System.out.println("(02) SSOParameters.psARTIFACT_RESOLUTION_SERVICE{"+SSOParameters.psARTIFACT_RESOLUTION_SERVICE+"}");
         loArtifactResolve.setDestination(SSOParameters.psARTIFACT_RESOLUTION_SERVICE);
 
         loArtifactResolve.setArtifact(toArtifact);

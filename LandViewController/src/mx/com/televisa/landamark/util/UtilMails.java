@@ -65,6 +65,7 @@ public class UtilMails {
                 //-----------------------------------------------------------------------
                 
                 if(laTo.size() > 0){
+                    System.out.println("Si existen destinatarios");
                     //Obtener la descripcion del idProcess
                     EntityMappedDao loEntityMappedDao = new EntityMappedDao();
                     List<LmkIntConfigParamRowBean> loPrcss = 

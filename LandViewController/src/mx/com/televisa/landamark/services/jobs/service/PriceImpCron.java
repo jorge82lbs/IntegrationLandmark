@@ -14,12 +14,6 @@ import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-
-import java.io.FileInputStream;
-
-import java.io.FileNotFoundException;
-
 import java.io.InputStream;
 
 import java.text.DateFormat;
@@ -29,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +55,6 @@ import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.util.UtilFaces;
 
 import org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot;
-
 import org.datacontract.schemas._2004._07.landmark_classes.Spot;
 import org.datacontract.schemas._2004._07.landmark_parameters.ArrayOfFilterDateTime;
 import org.datacontract.schemas._2004._07.landmark_parameters.DaysOfWeek;
@@ -102,17 +94,16 @@ public class PriceImpCron  implements Job{
         String                    lsIdUser = loDataMap.getString("lsIdUser");
         String                    lsUserName = loDataMap.getString("lsUserName");
         String                    lsTypeProcess = loDataMap.getString("lsTypeProcess");
-        String                    lsServiceName = loDataMap.getString("lsServiceName");
-        String                    lsPathFiles = loDataMap.getString("lsPathFiles");
+        //String                    lsServiceName = loDataMap.getString("lsServiceName");
+        //String                    lsPathFiles = loDataMap.getString("lsPathFiles");
         String                    lsIdLogService = loDataMap.getString("lsIdLogService");
         AsRunAsDao                loAsRunAsDao = new AsRunAsDao();      
-        PriceDao                  loPriceDao = new PriceDao();
+        //PriceDao                  loPriceDao = new PriceDao();
         String                    lsFecInicial = loDataMap.getString("lsFecInicial");
         String                    lsFecFinal = loDataMap.getString("lsFecFinal");
         String                    lsChannel = loDataMap.getString("lsIdChannel");
         Integer                   liIndProcess = 0;
         EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
-        
         Integer                   liIdLogService = Integer.parseInt(lsIdLogService);
         Integer                   liIdService = Integer.parseInt(lsIdService);
         Integer                   liIdUser = Integer.parseInt(lsIdUser);
@@ -145,7 +136,6 @@ public class PriceImpCron  implements Job{
                                            lsUserName);
         
         if(liFlag > 0){
-            
             //1.- Consumir servicio de jacobo 
             //1.1.- Almacenar en bd elemento-valor de: Authorization: Basic
             //1.2.- Almacenar en bd elemento-valor de: Password7 (encriptado)
@@ -433,7 +423,7 @@ public class PriceImpCron  implements Job{
             loReqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, loHeaders);
             System.out.println("SETT SECURITY.....OK");
             System.out.println("Guardar archivo fisico REQUEST");
-            
+            /*
             try{                        
                 StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Alex"+getId()+".xml"));
@@ -441,7 +431,7 @@ public class PriceImpCron  implements Job{
                 JAXB.marshal(loSpotListFilter, result);
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
-            }
+            }*/
             //##################### Insertar Archivo en Base de Datos ############################ 
             String lsNomFile = "";
             try{
@@ -679,12 +669,12 @@ public class PriceImpCron  implements Job{
             
             Integer liSpotNumber = loSpot.getSpotNumber();
             Double ldCpp = loSpot.getCPP();
-            Double ldCppl = loSpot.getCPPL();
-            Double ldCpt = loSpot.getCPT();
-            Double ldCptl = loSpot.getCPTL();
+            //Double ldCppl = loSpot.getCPPL();
+            //Double ldCpt = loSpot.getCPT();
+            //Double ldCptl = loSpot.getCPTL();
             Integer liLength = loSpot.getLength();
             Double ldNominalPrice = loSpot.getNomianlPrice();
-            Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
+            //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
             Double ldPriceFactor = loSpot.getPriceFactor();
             Double ldRatings = loSpot.getRatings();
             
@@ -712,14 +702,12 @@ public class PriceImpCron  implements Job{
                 loClr.getPaSpots().add(loSpotModulo);
                 
                 try{
-                    loPriceDao.updateLmkSptRev(loSpotsList.get(0).getLiSptmstid(), ldNominalPrice*100);                    
-                    
+                    loPriceDao.updateLmkSptRev(loSpotsList.get(0).getLiSptmstid(), ldNominalPrice*100);
                 }catch(Exception loEx){
                     lbResult = false;
                     lsMessage = "Error en la actualizacion de spots "+loEx.getMessage();
                     System.out.println("Error al actualizar spot "+loSpotsList.get(0).getLiSptmstid()+": "+loEx.getMessage());
                 }
-                
             } 
         }
         
@@ -733,23 +721,27 @@ public class PriceImpCron  implements Job{
         loUser.setPsUserName(lsUserNameConciliacion);
         loUser.setPsPassword(lsPasswordConciliacion);
         try{
-            
-            try{
+            /*try{
                 StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml"+getId()+".xml"));
                 //transformer.transform(loClr, result);
                 JAXB.marshal(loClr, result);
             }catch(Exception loExp){
                 System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
-            }
-            
-            
+            }*/
             loSpotConciliacionWS.spotConciliaion(loClr, loUser);
         }catch(Exception loEx){
             lbResult = false;
             lsMessage = "Error al conciliar "+loEx.getMessage();
             System.out.println("Error al conciliar "+loEx.getMessage());
         }
+        if(lbResult){
+            loResponseUpdDao.setLsResponse("OK");
+        }else{
+            loResponseUpdDao.setLsResponse("ERROR");
+        }
+        loResponseUpdDao.setLsMessage(lsMessage);
+        
         return loResponseUpdDao;
     }
     

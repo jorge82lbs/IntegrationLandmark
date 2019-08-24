@@ -280,24 +280,24 @@ public class BasicHttpBinding_ILandmarkSpotsSpotClient {
         System.out.println("SETT SECURITY.....OK");
         
         System.out.println("Guardar archivo fisico REQUEST");
-        try{                        
+        /*try{                        
             StreamResult result =
             new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Alex"+getId()+".xml"));
             //transformer.transform(source, result);
             JAXB.marshal(spotListFilter, result);
         }catch(Exception loExo){
             System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
-        }
+        }*/
         System.out.println("Llamada a servicio, deshabilitada temporalmente");
         
         try{
             ArrayOfSpot loArrof = iLandmarkSpotsSpot.loadForFilter2(spotListFilter, "MXN");
             System.out.println("Guardar archivo fisico RESPONSE");
             try{                        
-                StreamResult result =
+                /*StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Response-Alex"+getId()+".xml"));
                 //transformer.transform(source, result);
-                JAXB.marshal(loArrof, result);
+                JAXB.marshal(loArrof, result);*/
                 System.out.println("Descomponer el RESPONSE");
                 List<Spot> laSpots = loArrof.getSpot();
                 

@@ -68,10 +68,11 @@ public class SftpManagment {
         try {
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
             //System.out.println("Incio....");
+            loJsch.addIdentity("~/.ssh/id_rsa", ""); 
             loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
-            loSession.setConfig("StrictHostKeyChecking", "no");
+            //JLBSloSession.setConfig("StrictHostKeyChecking", "no");
             
             loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
                                 "diffie-hellman-group14-sha1," + 
@@ -80,7 +81,7 @@ public class SftpManagment {
             
             
             
-            loSession.setPassword(loSftpCnn.getLsPassword());
+            //JLBSloSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             
             Channel loChannel = loSession.openChannel("sftp");
@@ -142,17 +143,19 @@ public class SftpManagment {
             //System.out.println(">>> loSftpCnn.getLsHost()["+loSftpCnn.getLsHost()+"]:");
             //System.out.println(">>> loSftpCnn.getLiPort()["+loSftpCnn.getLiPort()+"]:");
             //System.out.println(">>> loSftpCnn.getLsPassword()["+loSftpCnn.getLsPassword()+"]:");
+            loJsch.addIdentity("~/.ssh/id_rsa", ""); 
+            
             loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
-            loSession.setConfig("StrictHostKeyChecking", "no");
+            //JLBSloSession.setConfig("StrictHostKeyChecking", "no");
             
             loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
                                 "diffie-hellman-group14-sha1," + 
                                 "diffie-hellman-group-exchange-sha1," + 
                                 "diffie-hellman-group-exchange-sha256");
             
-            loSession.setPassword(loSftpCnn.getLsPassword());
+            //JLBSloSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             
             Channel loChannel = loSession.openChannel("sftp");
@@ -220,10 +223,11 @@ public class SftpManagment {
             System.out.println("loSftpCnn.getLiPort(): "+loSftpCnn.getLiPort());
             System.out.println("loSftpCnn.getLsPassword(): "+loSftpCnn.getLsPassword());
             */
+            loJsch.addIdentity("~/.ssh/id_rsa", ""); 
             loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
-            loSession.setConfig("StrictHostKeyChecking", "no");
+            //JLBSloSession.setConfig("StrictHostKeyChecking", "no");
             
             loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
                                 "diffie-hellman-group14-sha1," + 
@@ -231,7 +235,7 @@ public class SftpManagment {
                                 "diffie-hellman-group-exchange-sha256");
             
             
-            loSession.setPassword(loSftpCnn.getLsPassword());
+            //JLBSloSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             System.out.println("Conectado a ssl.OK ");
             Channel loChannel = loSession.openChannel("sftp");
@@ -345,10 +349,11 @@ public class SftpManagment {
         try {
             LmkIntSftpCnnBean loSftpCnn = getSftpDataConnection();
             System.out.println("Incio....moveFileSFTP()");
+            loJsch.addIdentity("~/.ssh/id_rsa", ""); 
             loSession = loJsch.getSession(loSftpCnn.getLsUser(), 
                                           loSftpCnn.getLsHost(), 
                                           loSftpCnn.getLiPort());
-            loSession.setConfig("StrictHostKeyChecking", "no");
+            //JLBSloSession.setConfig("StrictHostKeyChecking", "no");
             
             loSession.setConfig("kex", "diffie-hellman-group1-sha1," + 
                                 "diffie-hellman-group14-sha1," + 
@@ -356,7 +361,7 @@ public class SftpManagment {
                                 "diffie-hellman-group-exchange-sha256");                        
             
             
-            loSession.setPassword(loSftpCnn.getLsPassword());
+            //JLBSloSession.setPassword(loSftpCnn.getLsPassword());
             loSession.connect();
             
             Channel loChannel = loSession.openChannel("sftp");

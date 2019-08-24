@@ -234,6 +234,7 @@ public class SecurityManagerWs {
     * @return List
     */
     public List<EmailDestinationAddress> getListEmailAddressByGroup(String tsGroupName){
+        System.out.println("Dentro de getListEmailAddressByGroup");
         List<EmailDestinationAddress> laEmailList = new ArrayList<EmailDestinationAddress>();
         SecmanDasUsuariosGrupoService    loSecmanDasUsuariosGrupoService = new SecmanDasUsuariosGrupoService();
         SecmanDasUsuariosGrupo loSecmanDasUsuariosGrupo = 

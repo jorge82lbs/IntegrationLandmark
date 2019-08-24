@@ -12,7 +12,9 @@ public class SSOParameters {
     public static final String psOBJECT_ID_ATT_NAME = "http://schemas.microsoft.com/identity/claims/objectidentifier";
 
     public static String getAssertionConsumerServiceURL() throws Exception {
-        return getParameterVal("ASSERTION_CONSUMER");
+        String lsAssertionConsumer = getParameterVal("ASSERTION_CONSUMER");
+        System.out.println("lsAssertionConsumer("+lsAssertionConsumer+")");
+        return lsAssertionConsumer;//getParameterVal("ASSERTION_CONSUMER");
         //return getParameterVal(Constants.psACS_PARAM);
         //return "https://192.168.132.1:7102/PgmLandmarkApp/pgmlandmarkacs";
         //return "https://192.168.132.1:7102/IntegracionesLMK/integracioneslmkacs";

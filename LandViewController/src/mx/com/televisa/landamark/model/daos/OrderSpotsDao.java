@@ -264,14 +264,14 @@ public class OrderSpotsDao {
     public ResponseUpdDao callLmkGeneraSpotsPr(String tsStnid, 
                                            String tsBcstdt) {
         //System.out.println("Dentro de callTraditionalSalePr");
-        System.out.println("**** setteando EVENTAS.EVETV_GENERA_SPOTS ******");
+        System.out.println("**** setteando EVENTAS.LMK_GENERA_SPOTS ******");
         System.out.println("tsStnid["+tsStnid+"]");
         System.out.println("tsStrdt["+tsBcstdt+"]");
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        String lsResult = "EVENTAS.EVETV_GENERA_SPOTS(";
+        String lsResult = "EVENTAS.LMK_GENERA_SPOTS(";
         Connection        loCnn = new mx.com.televisa.landamark.model.cnn.ConnectionAs400().getConnection();
         CallableStatement loCallStmt = null;
-        String            lsQueryParadigm = "call EVENTAS.EVETV_GENERA_SPOTS(?,?)";
+        String            lsQueryParadigm = "call EVENTAS.LMK_GENERA_SPOTS(?,?)";
         try {
             loCallStmt = loCnn.prepareCall(lsQueryParadigm); 
             if(tsStnid != null){
@@ -307,7 +307,7 @@ public class OrderSpotsDao {
             loResponseUpdDao.setLsMessage(""+lsResult.substring(0, lsResult.length()-1)+") Execute Success!!!");
             //System.out.println(lsResult.substring(0, lsResult.length()-1)+") Execute Success!!!");
         } catch (SQLException loExSql) {
-            //System.out.println("ERROR AL EJECUTAR: "+loExSql.getMessage());
+            System.out.println("ERROR AL EJECUTAR(EVENTAS.LMK_GENERA_SPOTS): "+loExSql.getMessage());
             loResponseUpdDao.setLsResponse("ERROR");
             loResponseUpdDao.setLsMessage(loExSql.getMessage());
         }
@@ -329,14 +329,14 @@ public class OrderSpotsDao {
     public ResponseUpdDao callLmkGeneraLogsPr(String tsStnid, 
                                            String tsBcstdt) {
         //System.out.println("Dentro de callTraditionalSalePr");
-        System.out.println("**** setteando EVENTAS.EVETV_GENERA_LOG ******");
+        System.out.println("**** setteando EVENTAS.LMK_GENERA_LOG ******");
         System.out.println("tsStnid["+tsStnid+"]");
         System.out.println("tsStrdt["+tsBcstdt+"]");
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        String lsResult = "EVENTAS.EVETV_GENERA_LOG(";
+        String lsResult = "EVENTAS.LMK_GENERA_LOG(";
         Connection        loCnn = new mx.com.televisa.landamark.model.cnn.ConnectionAs400().getConnection();
         CallableStatement loCallStmt = null;
-        String            lsQueryParadigm = "call EVENTAS.EVETV_GENERA_LOG(?,?)";
+        String            lsQueryParadigm = "call EVENTAS.LMK_GENERA_LOG(?,?)";
         try {
             loCallStmt = loCnn.prepareCall(lsQueryParadigm); 
             if(tsStnid != null){

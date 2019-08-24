@@ -285,7 +285,8 @@ public class ParrillasProgramasImpCron implements Job{
                         //############# Enviar archivo(PROGRAMM) a ubicacion remota ###########
                         SftpManagment loSftpMgmnt = new SftpManagment();
                         //Obtener ruta remota de la base de datos
-                        String lsRemotePath = loEntityMappedDao.getGeneralParameter("PATH_BREAKS", "SSH_CONNECTION");  
+                        String lsRemotePath = 
+                            loEntityMappedDao.getGeneralParameter("PATH_BREAKS", "SSH_CONNECTION");  
                         System.out.println("Ruta remota PATH_BREAKS: "+lsRemotePath);
                         //tsRemotePath,
                         //tsLocalPath = lsPathFiles,
@@ -328,7 +329,7 @@ public class ParrillasProgramasImpCron implements Job{
                         lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
                         "   AND DATE(STRDT) = DATE('"+lsFecInicial+"') \n" + 
                         "   AND DATE(EDT)   = DATE('"+lsFecFinal+"') ";
-                        ResponseUpdDao loResDelFileHeader = 
+                        /*ResponseUpdDao loResDelFileHeader = 
                             loPpDao.deleteLmkBreaksByTable(lsWhereDelete);
                         if(!loResDelFileHeader.getLsResponse().equalsIgnoreCase("OK")){
                             liIndProcess = 
@@ -346,9 +347,9 @@ public class ParrillasProgramasImpCron implements Job{
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
-                        
+                        */
                         //CHANNEL HEADER RECORD
-                        lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_HEADER WHERE 1 = 1 ";
+                        /*lsWhereDelete = " EVENTAS.LMK_BRK_CHANNEL_HEADER WHERE 1 = 1 ";
                         lsWhereDelete += " AND STNID       = '"+lsChannel+"'\n" + 
                                     "   AND DATE(BCSTDT) BETWEEN DATE('"+lsFecInicial+"') \n" + 
                                     "                        AND DATE('"+lsFecFinal+"')";
@@ -441,7 +442,7 @@ public class ParrillasProgramasImpCron implements Job{
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
-                        
+                        */
                         /*
                         try{
                             System.out.println("Eliminando archivo "+loFileBreaks.getName());
@@ -582,7 +583,7 @@ public class ParrillasProgramasImpCron implements Job{
                         //E es de ENVIADO a Landmark
                         
                         //Eliminar registros de las tablas con parametros de CANAL, FECHA_INICIAL y FECHA_FINAL
-                        
+                        /*jlbs
                         ResponseUpdDao loResDelProgramm = 
                             loPpDao.deleteLmkProgProgramm(lsChannel, lsFecInicial, lsFecFinal);
                         if(!loResDelProgramm.getLsResponse().equalsIgnoreCase("OK")){
@@ -621,6 +622,7 @@ public class ParrillasProgramasImpCron implements Job{
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
+                        */
                                                 
                         /*try{
                             System.out.println("Eliminando archivo "+loFileProgramm.getName());

@@ -20,18 +20,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
-
 import java.util.List;
 
 import mx.com.televisa.landamark.model.daos.AsRunAsDao;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
-import mx.com.televisa.landamark.model.daos.ResponseBreaksDao;
 import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
-import mx.com.televisa.landamark.model.types.extract.LmkProgFileTrailerRowBean;
-import mx.com.televisa.landamark.model.types.extract.LmkProgRowBean;
 import mx.com.televisa.landamark.services.sftp.SftpManagment;
 import mx.com.televisa.landamark.util.UtilFaces;
 
@@ -103,7 +99,7 @@ public class AsRunAsImpCron implements Job{
         
         if(liFlag > 0){
             //2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENREA_ASRUN(‘2CAN’,’2018-11-01’)    los parámetros de entrada son los mismos de siempre: Canal y Fecha
-            System.out.println("2)      Ejecutar el SP :  CALL EVENTAS.c("+lsChannel+","+lsFecInicial+")    los parámetros de entrada son los mismos de siempre: Canal y Fecha");
+            System.out.println("2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENERA_ASRUN("+lsChannel+","+lsFecInicial+")    los parámetros de entrada son los mismos de siempre: Canal y Fecha");
             try {
                 ResponseUpdDao loCll = loAsRunAsDao.callProcedureGeneraAsRun(lsChannel, lsFecInicial);
                 if(loCll.getLsResponse().equalsIgnoreCase("OK")){
@@ -199,12 +195,48 @@ public class AsRunAsImpCron implements Job{
                             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
+                                                    
+                            try{
+                                //Actualizar estatus de archivo xml
+                                ResponseUpdDao loResponseUpdDao = 
+                                    loAsRunAsDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "L");        
+                                liIndProcess = 
+                                            new UtilFaces().getIdConfigParameterByName("CallProcedure");//
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(liIdService);
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("Actualizar Estatus de Archivo: "+loResponseUpdDao.getLsMessage());
+                                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       liIdUser, 
+                                                       lsUserName);
+                                                        
+                            }catch(Exception loEx){
+                                System.out.println("Err 879"+loEx.getMessage());
+                            }
                         
-                        //Actualizar estatus de archivo xml
-                        loAsRunAsDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "L");
-                        System.out.println("Actualizar log certificado (mandar a bitacora)");
-                        loAsRunAsDao.getUpdateLogCertificado(lsChannel, lsFecInicial);
-                        System.out.println("Actualizar log certificado (mandar a bitacora)....OK");
+                            try{
+                                System.out.println("Actualizar log certificado (mandar a bitacora)");
+                                ResponseUpdDao loResponseUpdDao = 
+                                    loAsRunAsDao.getUpdateLogCertificado(lsChannel, lsFecInicial);
+                                System.out.println("Actualizar log certificado (mandar a bitacora)....OK");    
+                                liIndProcess = 
+                                            new UtilFaces().getIdConfigParameterByName("CallProcedure");//
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(liIdService);
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento("Actualizar Log Certificado: " + 
+                                                         loResponseUpdDao.getLsMessage());
+                                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       liIdUser, 
+                                                       lsUserName);
+                            }catch(Exception loEx){
+                                    System.out.println("Err 87998"+loEx.getMessage());
+                            }
+                        
                         
                         //Eliminar archivo fisico del servidor
                         /*try{
@@ -257,20 +289,52 @@ public class AsRunAsImpCron implements Job{
                 }
                 else{
                     System.out.println("Agregar a bitacora el fallo");
+                    liIndProcess = 
+                                new UtilFaces().getIdConfigParameterByName("GeneralError");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Fallo en llamada a EVENTAS.LMK_GENERA_ASRUN: "+
+                                                     loCll.getLsMessage());
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       liIdUser, 
+                                                       lsUserName);
                 }
             } catch (SQLException e) {
                 System.out.println("Error al llamar proceure genera as run ");
+                liIndProcess = 
+                            new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        loBitBean.setLiIdLogServices(liIdLogService);
+                        loBitBean.setLiIdService(liIdService);
+                        loBitBean.setLiIndProcess(liIndProcess);
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Fallo en llamada a EVENTAS.LMK_GENERA_ASRUN: "+
+                                                 e.getMessage());
+                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                   liIdUser, 
+                                                   lsUserName);
             }
             
         
         }
         else{
             System.out.println("Bandera Recon complete");
+            liIndProcess = 
+                        new UtilFaces().getIdConfigParameterByName("GeneralError");
+                    loBitBean.setLiIdLogServices(liIdLogService);
+                    loBitBean.setLiIdService(liIdService);
+                    loBitBean.setLiIndProcess(liIndProcess);
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento("Validacion reconComplete no satisfactoria: ");
+            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                               liIdUser, 
+                                               lsUserName);
         }
         //###########################################################################
-        
-        
-        
         liIndProcess = 
                     new UtilFaces().getIdConfigParameterByName("ProcessFinish");//
                 loBitBean.setLiIdLogServices(liIdLogService);
