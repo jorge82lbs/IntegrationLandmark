@@ -25,7 +25,7 @@ import javax.sql.DataSource;
  * @date Febrero 14, 2019, 12:00 pm
  */
 public class ConnectionAs400 {
-    private String gsDataSource = "java:comp/env/jdbc/MOR_DS_PG1";
+    private String gsDataSource = "java:comp/env/jdbc/LANDM_DS_ATS";
     public ConnectionAs400() {
         super();
     }

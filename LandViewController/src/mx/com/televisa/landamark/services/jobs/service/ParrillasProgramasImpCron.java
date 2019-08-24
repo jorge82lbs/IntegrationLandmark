@@ -731,7 +731,8 @@ public class ParrillasProgramasImpCron implements Job{
                                 String tsChannel) throws Exception{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+"PLAN.PROG";
-        File loFileResponse = new File(tsPath+""+lsFileName);
+        //File loFileResponse = new File(tsPath+""+lsFileName);
+        File loFileResponse = new File(lsFileName);
         //File loFileResponse = File.createTempFile(lsFileName,null);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
@@ -822,7 +823,8 @@ public class ParrillasProgramasImpCron implements Job{
                               String tsChannel) throws Exception{
         
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+".brk";
-        File loFileResponse = new File(tsPath+""+lsFileName);
+        File loFileResponse = new File(lsFileName);
+        //File loFileResponse = new File(tsPath+""+lsFileName);
         //File loFileResponse = File.createTempFile(lsFileName,null);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
@@ -897,8 +899,8 @@ public class ParrillasProgramasImpCron implements Job{
         String lsFileName = getMappingChannelName(tsChannel)+this.getPrefixFileName()+".brk";
         
         //ObjectOutputStream escribiendoFichero = new ObjectOutputStream(new FileOutputStream(lsFileName));
-        File loFileResponse = new File(tsPath+""+lsFileName);
-        
+        File loFileResponse = new File(lsFileName);
+        //File loFileResponse = new File(tsPath+""+lsFileName);
         //File loFileResponse = File.createTempFile(lsFileName,null);
         
         
