@@ -319,7 +319,7 @@ public class OrderSpotsImpCron implements Job{
                                                                    lsUserName);  
                                 
                                 liIndProcess = 
-                                            new UtilFaces().getIdConfigParameterByName("SendEmail");//
+                                            new UtilFaces().getIdConfigParameterByName("ErrorConfig");//
                                 loBitBean.setLiIdLogServices(liIdLogService);
                                 loBitBean.setLiIdService(Integer.parseInt(lsIdService));
                                 loBitBean.setLiIndProcess(liIndProcess);
