@@ -349,6 +349,7 @@ public class CreationBean{
         //String              lsGeneralAction = lsAction;
         Integer             liIdUser = null;
         String              lsUserName = null;
+        System.out.println("dentro de eexecuteProcessAction");
         ApplicationModule   loAm =
             Configuration.createRootApplicationModule(gsAmDef, gsConfig);
         AppModuleImpl loService = (AppModuleImpl)loAm;
@@ -356,11 +357,11 @@ public class CreationBean{
             liIdUser = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser") == null ? null :
                 Integer.parseInt(loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser"));
-            //System.out.println(">>>> liIdUser: "+liIdUser);
+            System.out.println(">>>> liIdUser: "+liIdUser);
             lsUserName = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser") == null ? null :
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser").toString();
-            //System.out.println(">>>> lsUserName: "+lsUserName);
+            System.out.println(">>>> lsUserName: "+lsUserName);
             /*String lsIdService = 
                 loIdService.getValue() == null ? null : 
                 loIdService.getValue().toString();  */  
@@ -562,6 +563,7 @@ public class CreationBean{
                 String lsIdService = getPoIdService().getValue().toString();   
                 String lsUserName = getPoUserName().getValue().toString();
                 //Ejecutar los procesos, 
+                System.out.println("Ejecutar prrogramas por usuario");
                 executeProcessAction(lsIdService, 
                                      "ProcessParrillasProgramas",
                                      "Parrillas Cortes y Programas por "+ lsUserName

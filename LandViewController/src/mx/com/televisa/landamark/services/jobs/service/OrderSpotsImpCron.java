@@ -37,9 +37,7 @@ import mx.com.televisa.landamark.services.beans.input.spots.Content;
 import mx.com.televisa.landamark.services.beans.input.spots.Spot;
 import mx.com.televisa.landamark.services.beans.input.spots.Spots;
 import mx.com.televisa.landamark.services.sftp.SftpManagment;
-
 import mx.com.televisa.landamark.util.UtilFaces;
-
 import mx.com.televisa.landamark.util.UtilMails;
 
 import org.quartz.Job;
@@ -116,7 +114,8 @@ public class OrderSpotsImpCron implements Job{
                                           Integer.parseInt(lsIdService), 
                                           liIndProcess, 
                                           liIdUser, 
-                                          lsUserName);
+                                          lsUserName,
+                                          lsServiceName);
             
         }
         else{
@@ -143,7 +142,8 @@ public class OrderSpotsImpCron implements Job{
                                               Integer.parseInt(lsIdService), 
                                               liIndProcess, 
                                               liIdUser, 
-                                              lsUserName);
+                                              lsUserName,
+                                              lsServiceName);
             }
             else{
                 //Si el archivo si fue encontrado, entonces guardar copia en carpeta de WL  
@@ -336,7 +336,8 @@ public class OrderSpotsImpCron implements Job{
                                                               Integer.parseInt(lsIdService), 
                                                               liIndProcess, 
                                                               liIdUser, 
-                                                              lsUserName);
+                                                              lsUserName,
+                                                              lsServiceName);
                                 }catch(Exception loEx){
                                     System.out.println("Error al intentar enviar correo "+loEx.getMessage());
                                 }
@@ -433,7 +434,8 @@ public class OrderSpotsImpCron implements Job{
                                                                   Integer.parseInt(lsIdService), 
                                                                   liIndProcess, 
                                                                   liIdUser, 
-                                                                  lsUserName);
+                                                                  lsUserName,
+                                                                  lsServiceName);
                                     //Actualizar estatus de archivo xml                                    
                                     loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "C");      
                                     System.out.println("Cambiar estatus al archivo de TODO OK (C)");
@@ -454,8 +456,6 @@ public class OrderSpotsImpCron implements Job{
                                 }catch(Exception loEx){
                                     System.out.println("Error al mover archivo "+loEx.getMessage());
                                 }
-                                
-                                
                             }
                         }
                         

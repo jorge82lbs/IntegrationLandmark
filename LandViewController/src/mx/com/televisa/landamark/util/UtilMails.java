@@ -38,7 +38,8 @@ public class UtilMails {
                                    Integer tiIdService, 
                                    Integer tiIdProcess,
                                    Integer tiIdUser,
-                                   String tsUserName
+                                   String tsUserName,
+                                   String tsNomService
                                   ){
         // Obtener Parametros de configuracion de notificaciones para el servicio
         NotificationsDao loNotificationsDao = new NotificationsDao();
@@ -48,7 +49,7 @@ public class UtilMails {
         tsWhere += " AND IND_PROCESS = " + tiIdProcess;
         List<LmkIntNotificationsRowBean> laConfig = 
             loNotificationsDao.getLmkIntServicesParams(tsWhere);
-        if(laConfig.size()>0){// Validar que existan
+        if(laConfig.size() > 0){// Validar que existan
             // Obtener destintarios ene base al grupo de usuarios    
             if(laConfig.get(0).getLsIndUsersGroup() != null){
                 SecurityManagerWs loSecman = new SecurityManagerWs();
@@ -75,7 +76,7 @@ public class UtilMails {
                     ResponseUpdDao loResMail = 
                         loMail.sendSimpleEmail(laConfig.get(0).getLsIndSubject(), 
                                                laConfig.get(0).getLsIndMessage(), 
-                                               loPrcss.get(0).getLsDescParameter(), 
+                                               tsNomService,//loPrcss.get(0).getLsDescParameter(), 
                                                laTo);
                     if(loResMail.getLsResponse().equalsIgnoreCase("OK") ){
                         liIndProcess = 

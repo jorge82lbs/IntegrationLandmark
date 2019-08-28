@@ -20,14 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
-import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
-
-import oracle.jbo.ApplicationModule;
-import oracle.jbo.client.Configuration;
 
 /** Clase que conecta de forma tradicional (JDBC) a bd
  *

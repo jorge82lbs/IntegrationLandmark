@@ -101,8 +101,9 @@ public class PriceDao {
             "SELECT IND_VALUE_PARAMETER \n" + 
             "  FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
             " WHERE IND_USED_BY   = 'LANDMARK_SECURITY_WS'\n" + 
-            "   AND NOM_PARAMETER = 'PASSWORD_VALUE';";
+            "   AND NOM_PARAMETER = 'PASSWORD_VALUE'";
         try {
+            System.out.println(lsQueryParadigm);
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
             while(loRs.next()){
@@ -173,8 +174,6 @@ public class PriceDao {
                 loEx.printStackTrace();
             }
         }
-        
-        
         return laListSpots;
     }
     

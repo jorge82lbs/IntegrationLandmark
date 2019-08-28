@@ -153,10 +153,14 @@ public class PriceImpCron  implements Job{
             //2.- Leer el response XML
             if(loArrayOfSpot != null){
                 //2.1.- Por ahora cada dato pasa sin validacion
-                System.out.println("insertar en tablas de control");
+                System.out.println("insertar en tablas de control.... DESHABILITAR");
                 //3.- Insertar en tablas de Alex Morel, con servicio de rafa
-                ResponseUpdDao loSetSpot = setArrayOfSpotParadigm(loArrayOfSpot);                
+                //DESHABILITAR... por ahora solo lectura
                 
+                ResponseUpdDao loSetSpot = setArrayOfSpotParadigmRead(loArrayOfSpot);   
+                System.out.println(">>>> getLsResponse: "+loSetSpot.getLsResponse());
+                System.out.println(">>>> getLsMessage: "+loSetSpot.getLsMessage());
+                /*
                 liIndProcess = 
                             new UtilFaces().getIdConfigParameterByName("InsertCtrlTable");//
                         loBitBean.setLiIdLogServices(liIdLogService);
@@ -167,7 +171,8 @@ public class PriceImpCron  implements Job{
                         loBitBean.setLsIndEvento(loSetSpot.getLsMessage());
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
-                                                   lsUserName);
+                                                   lsUserName);*/
+                
                 
             }
             
@@ -515,7 +520,7 @@ public class PriceImpCron  implements Job{
                 try{
                     loArrOf = loInstanceLandmarkSpotsSpot.loadForFilter2(loSpotListFilter, "MXN");
                 }catch(Exception loEx){
-                    System.out.println("Error al guardar archivo "+loEx.getMessage());
+                    System.out.println("Error al consumir servicio loadForFilter2 "+loEx.getMessage());
                     liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
                     loBitBean.setLiIdLogServices(tiIdLogService);
                     loBitBean.setLiIdService(tiIdService);
@@ -734,6 +739,57 @@ public class PriceImpCron  implements Job{
             lbResult = false;
             lsMessage = "Error al conciliar "+loEx.getMessage();
             System.out.println("Error al conciliar "+loEx.getMessage());
+        }
+        if(lbResult){
+            loResponseUpdDao.setLsResponse("OK");
+        }else{
+            loResponseUpdDao.setLsResponse("ERROR");
+        }
+        loResponseUpdDao.setLsMessage(lsMessage);
+        
+        return loResponseUpdDao;
+    }
+    
+    public ResponseUpdDao setArrayOfSpotParadigmRead(ArrayOfSpot toArrayOfSpot){
+        boolean lbResult = true;
+        String lsMessage = "Proceso de Inserción y Actualización Satisfactorio";
+        
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        PriceDao loPriceDao = new PriceDao();
+        
+        
+        List<Spot> loListSpot = toArrayOfSpot.getSpot();
+        for(Spot loSpot : loListSpot){
+            
+            Integer liSpotNumber = loSpot.getSpotNumber();
+            Double ldCpp = loSpot.getCPP();
+            System.out.println("ldCpp["+ldCpp+"]");
+            //Double ldCppl = loSpot.getCPPL();
+            //Double ldCpt = loSpot.getCPT();
+            //Double ldCptl = loSpot.getCPTL();
+            Integer liLength = loSpot.getLength();
+            System.out.println("liLength["+liLength+"]");
+            Double ldNominalPrice = loSpot.getNomianlPrice();
+            System.out.println("ldNominalPrice["+ldNominalPrice+"]");
+            //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
+            Double ldPriceFactor = loSpot.getPriceFactor();
+            System.out.println("ldPriceFactor["+ldPriceFactor+"]");
+            Double ldRatings = loSpot.getRatings();
+            System.out.println("ldRatings["+ldRatings+"]");
+            
+            //Se necesitan los valores de 
+            // piOrderID
+            // piSpotID
+            List<LmkSpotsBean> loSpotsList = 
+                loPriceDao.getSpotInfo(liSpotNumber);
+            
+            if(loSpotsList.size() > 0){
+                for(LmkSpotsBean loBean : loSpotsList){
+                    System.out.println("getLiOrdId: "+loBean.getLiOrdId());
+                    System.out.println("getLiSpotNumber: "+loBean.getLiSpotNumber());
+                    System.out.println("getLiSptmstid: "+loBean.getLiSptmstid());
+                }
+            } 
         }
         if(lbResult){
             loResponseUpdDao.setLsResponse("OK");

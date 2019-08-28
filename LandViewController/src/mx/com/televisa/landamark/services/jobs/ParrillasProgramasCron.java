@@ -39,7 +39,8 @@ public class ParrillasProgramasCron implements Job{
      * @return void
      */
     @Override
-    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {        
+    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {  
+        System.out.println("Dentro de cron 1er nivel ParrillasProgramasCron");
         JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
         String                    lsIdService = loDataMap.getString("lsIdService");  
         String                    lsUserName = loDataMap.getString("lsUserName");
@@ -60,7 +61,7 @@ public class ParrillasProgramasCron implements Job{
         loInput.setLsServiceType(lsTypeProcess);
         loInput.setLsServiceName(lsServiceName);
         loInput.setLsPathFiles(lsPathFiles);
-        
+        System.out.println("Ejecutar servicio..............");
         ParrillasProgramasService loService = new ParrillasProgramasService();
         ResponseService loPits = loService.executeService(loInput);
         
