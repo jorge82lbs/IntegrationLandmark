@@ -23,6 +23,7 @@ import java.util.List;
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 
 /** Clase que conecta de forma tradicional (JDBC) a bd
  *
@@ -386,6 +387,134 @@ public class EntityMappedDao {
                 loEx.printStackTrace();
             }
         }
+    }
+        
+    /**
+     * Inserta en la tabla de LMK_INT_SERVICES_LOG_TAB en base de datos
+     * @autor Jorge Luis Bautista Santiago
+     * @param toLmkBitBean
+     * @return Integer
+     */
+    public Integer insertSimpleServicesLog(LmkIntServicesLogRowBean toLmkBean, 
+                                    Integer tiIdUser,
+                                    String tsUserName) {
+        Integer    loValue = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQuery = 
+            getQueryInsertServicesLog(toLmkBean, tiIdUser, tsUserName);
+        //System.out.println(lsQuery);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loValue = loStmt.executeUpdate(lsQuery);
+            System.out.println("*********** ok ************");
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loValue;
+    }
+    
+    /**
+     * Genera instruccion para Insertar en la tabla de bitacora en base de datos
+     * @autor Jorge Luis Bautista Santiago
+     * @param toBitBean
+     * @return Integer
+     */
+    public String getQueryInsertServicesLog(LmkIntServicesLogRowBean toLmkBean, 
+                                         Integer tiIdUser,
+                                         String tsUserName){
+        String lsQuery = 
+            "INSERT INTO EVENTAS.LMK_INT_SERVICES_LOG_TAB (ID_LOG_SERVICES,\n" + 
+            "                                              ID_SERVICE,\n" + 
+            "                                              IND_PROCESS,\n" + 
+            "                                              IND_RESPONSE,\n" + 
+            "                                              NUM_USER,\n" + 
+            "                                              NUM_PROCESS_ID,\n" + 
+            "                                              NUM_PGM_PROCESS_ID,\n" + 
+            "                                              FEC_REQUEST,                                              \n" + 
+            "                                              IND_SERVICE_TYPE,\n" + 
+            "                                              IND_ESTATUS,\n" + 
+            "                                              FEC_CREATION_DATE,\n" + 
+            "                                              FEC_LAST_UPDATE_DATE,\n" + 
+            "                                              ATTRIBUTE15,                                              \n" + 
+            "                                              NUM_CREATED_BY,\n" + 
+            "                                              NUM_LAST_UPDATED_BY,\n" + 
+            "                                              NUM_LAST_UPDATE_LOGIN\n" + 
+            "                                              )\n" + 
+            "                                      VALUES ("+toLmkBean.getLiIdLogServices()+",\n" + 
+            "                                              "+toLmkBean.getLiIdService()+",\n" + 
+            "                                              "+toLmkBean.getLiIndProcess()+",\n" + 
+            "                                              '"+toLmkBean.getLsIndResponse()+"',\n" + 
+            "                                              "+tiIdUser+",\n" + 
+            "                                              "+toLmkBean.getLiNumProcessId()+",\n" + 
+            "                                              "+toLmkBean.getLiNumPgmProcessId()+",\n" + 
+            "                                              CURRENT_TIMESTAMP,\n" + 
+            "                                              '"+toLmkBean.getLsIndServiceType()+"',\n" + 
+            "                                              'A',\n" + 
+            "                                              CURRENT_TIMESTAMP,\n" + 
+            "                                              CURRENT_TIMESTAMP,\n" + 
+            "                                              '"+tsUserName+"',\n" + 
+            "                                              "+tiIdUser+",\n" + 
+            "                                              "+tiIdUser+",\n" + 
+            "                                              "+tiIdUser+"\n" + 
+            "                                              )";
+        return lsQuery;
+    }
+    
+    /**
+     * Obtiene Valor de Parametro General
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsName
+     * @param tsUsedBy
+     * @return String
+     */    
+    public Integer getGeneralParameterID(String tsName, String tsUsedBy) {
+        Integer     loValue = 0;
+        Connection  loCnn = new ConnectionAs400().getConnection();
+        ResultSet   loRs = null;
+        String      lsQueryParadigm = getQueryGeneralParameterID(tsName, tsUsedBy);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                loValue = loRs.getInt(1);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loValue;
+    }
+    
+    /**
+     * Obtiene Consulta para Valor de Parametro General
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsName
+     * @param tsUsedBy
+     * @return String
+     */
+    public String getQueryGeneralParameterID(String tsName, String tsUsedBy){
+        //System.out.println("############## query parametros generales ##############");
+        String lsQuery = 
+            "SELECT ID_PARAMETER \n" + 
+            "   FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB\n" + 
+            "  WHERE IND_USED_BY   = '" + tsUsedBy + "'\n" + 
+            "    AND NOM_PARAMETER = '" + tsName + "'";
+        //System.out.println(lsQuery);
+        return lsQuery;
     }
     
 }

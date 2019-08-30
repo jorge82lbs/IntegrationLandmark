@@ -554,13 +554,13 @@ public class PriceBean {
      * @return String
      */
     public String executeExecuteAction() {
-        System.out.println("Acciones deshabilitadas temporalmente");
+        /*System.out.println("Acciones deshabilitadas temporalmente");
         FacesMessage loMsg;
         loMsg = new FacesMessage("Acciones deshabilitadas temporalmente");
         loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
         FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        */
         
-        /*
         ResponseUpdDao loResponse = saveParameters();
         new UtilFaces().hidePopup(getPoPopupExecute());
         if(loResponse != null){
@@ -585,7 +585,7 @@ public class PriceBean {
             loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
             FacesContext.getCurrentInstance().addMessage(null, loMsg);
         }
-*/
+
         return null;
     }
 

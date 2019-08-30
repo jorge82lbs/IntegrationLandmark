@@ -736,8 +736,9 @@ public class ParrillasProgramasImpCron implements Job{
         //File loFileResponse = File.createTempFile(lsFileName,null);
         System.out.println("Ruta: "+loFileResponse.getPath());
         try {
-            FileWriter loWriter = new FileWriter(loFileResponse, true);
-            for(LmkProgRowBean loProg : taProgrb){
+            FileWriter loWriter = new FileWriter(loFileResponse, true);            
+            for(int liI = 0; liI < taProgrb.size(); liI ++){// LmkProgRowBean loProg : taProgrb){
+                LmkProgRowBean loProg = taProgrb.get(liI);
                 if(loProg.getLsFullRow() != null){                                        
                     String lsRow = loProg.getLsFullRow();
                     /*
@@ -766,10 +767,13 @@ public class ParrillasProgramasImpCron implements Job{
                     //loProg.getLsPgmid()+",";
                     */
                     loWriter.write(lsRow);
-                    loWriter.write("\r\n");
+                    if(laPrgTrb.size() > 0 && liI < taProgrb.size()){
+                        loWriter.write("\r\n");    
+                    }
+                    
                 }
             }      
-            for(LmkProgFileTrailerRowBean loProgTrailer : laPrgTrb){
+            for(int liI = 0; liI < laPrgTrb.size(); liI++){// LmkProgFileTrailerRowBean loProgTrailer : laPrgTrb){
                 /*String lsRow = loProgTrailer.getLiRecordType()+","+ 
                 loProgTrailer.getLiRecordCount()+","+ 
                 loProgTrailer.getLiAllowableGap()+",";
@@ -777,10 +781,14 @@ public class ParrillasProgramasImpCron implements Job{
                 //loProgTrailer.getLsStrdt()+","+
                 //loProgTrailer.getLsEdt()+",";         
                 */
+                LmkProgFileTrailerRowBean loProgTrailer = laPrgTrb.get(liI);
+                
                 if(loProgTrailer.getLsFullRowTrailer() != null){
                     String lsRow = loProgTrailer.getLsFullRowTrailer();
                     loWriter.write(lsRow);
-                    loWriter.write("\r\n");
+                    if(liI < laPrgTrb.size()){
+                        loWriter.write("\r\n");    
+                    }
                 }
             }  
             loWriter.close();
@@ -869,11 +877,15 @@ public class ParrillasProgramasImpCron implements Job{
                 loWriter.write("\r\n");
             }   
             //########## LMK_BRK_FILE_TRAILER ##########
-            for(LmkBrkFileTrailerRowBean loBrk : taFtrb){
+            for(int liI = 0; liI < taFtrb.size(); liI++){//  LmkBrkFileTrailerRowBean loBrk : taFtrb){
+                LmkBrkFileTrailerRowBean loBrk = taFtrb.get(liI);
                 String lsRow = loBrk.getLiRecordType()+"," +
                 loBrk.getLiRecordCount()+",";
                 loWriter.write(lsRow);
-                loWriter.write("\r\n");
+                
+                if(liI < taFtrb.size()){
+                    loWriter.write("\r\n");    
+                }
             }   
                         
             loWriter.close();
@@ -921,19 +933,20 @@ public class ParrillasProgramasImpCron implements Job{
                 loWriter.write("\r\n");
             }     
             //########## LMK_BRK_BREAK ##########
-            for(LmkBrkGenericRowBean loBrk : taNivel45){
+            for(int liI = 0; liI < taNivel45.size(); liI++){//LmkBrkGenericRowBean loBrk : taNivel45){
+                LmkBrkGenericRowBean loBrk = taNivel45.get(liI);
                 String lsRow = loBrk.getLsFullRowNivel45();
                 loWriter.write(lsRow);
-                loWriter.write("\r\n");
+                if(liI < taNivel45.size()){
+                    loWriter.write("\r\n");    
+                }
             }                
                         
             loWriter.close();
         }
         catch (Exception e) {
             System.out.println("BREAKS: Error al escribir en ruta local: "+e.getMessage());
-        }/*finally{
-            escribiendoFichero.close();
-        }*/
+        }
         return loFileResponse;
         
         //Mover archivo ya procecsado en el ssh

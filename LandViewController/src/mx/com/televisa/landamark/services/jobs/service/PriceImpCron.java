@@ -14,6 +14,7 @@ import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 
 import java.text.DateFormat;
@@ -41,6 +42,8 @@ import javax.xml.ws.handler.MessageContext;
 import mx.com.televisa.landamark.client.pricest.SpotConciliacionWS;
 import mx.com.televisa.landamark.client.pricest.SpotConciliacionWSService;
 import mx.com.televisa.landamark.client.pricest.types.ComercialListRequest;
+import mx.com.televisa.landamark.client.pricest.types.SpotConciliacionResponse;
+import mx.com.televisa.landamark.client.pricest.types.SpotConciliacionResult;
 import mx.com.televisa.landamark.client.pricest.types.SpotModulo;
 import mx.com.televisa.landamark.client.pricest.types.User;
 import mx.com.televisa.landamark.model.daos.AsRunAsDao;
@@ -52,7 +55,6 @@ import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.LmkSpotsBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
-import mx.com.televisa.landamark.util.UtilFaces;
 
 import org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot;
 import org.datacontract.schemas._2004._07.landmark_classes.Spot;
@@ -88,7 +90,8 @@ public class PriceImpCron  implements Job{
     
 
     @Override
-    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {        
+    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {  
+        System.out.println("################ Dentro de PriceImpCron #############");
         JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
         String                    lsIdService = loDataMap.getString("lsIdService");
         String                    lsIdUser = loDataMap.getString("lsIdUser");
@@ -122,7 +125,9 @@ public class PriceImpCron  implements Job{
             loAsRunAsDao.getFlagInsertLogCertificado(lsFecInicial, 
                                                      lsChannel
                                                     );  
-        liIndProcess = new UtilFaces().getIdConfigParameterByName("FlagReconComplete");
+        liIndProcess = //new UtilFaces().getIdConfigParameterByName("FlagReconComplete");        
+        loEntityMappedDao.getGeneralParameterID("FlagReconComplete", 
+                                                "PROCESS_INTEGRATION");
         
         loBitBean.setLiIdLogServices(liIdLogService);
         loBitBean.setLiIdService(liIdService);
@@ -157,12 +162,15 @@ public class PriceImpCron  implements Job{
                 //3.- Insertar en tablas de Alex Morel, con servicio de rafa
                 //DESHABILITAR... por ahora solo lectura
                 
-                ResponseUpdDao loSetSpot = setArrayOfSpotParadigmRead(loArrayOfSpot);   
+                //ResponseUpdDao loSetSpot = setArrayOfSpotParadigmRead(loArrayOfSpot);   
+                ResponseUpdDao loSetSpot = setArrayOfSpotParadigm(loArrayOfSpot);   
                 System.out.println(">>>> getLsResponse: "+loSetSpot.getLsResponse());
                 System.out.println(">>>> getLsMessage: "+loSetSpot.getLsMessage());
-                /*
+                
                 liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("InsertCtrlTable");//
+                            //new UtilFaces().getIdConfigParameterByName("InsertCtrlTable");//
+                            loEntityMappedDao.getGeneralParameterID("InsertCtrlTable", 
+                                                                    "PROCESS_INTEGRATION");
                         loBitBean.setLiIdLogServices(liIdLogService);
                         loBitBean.setLiIdService(liIdService);
                         loBitBean.setLiIndProcess(liIndProcess);
@@ -171,13 +179,15 @@ public class PriceImpCron  implements Job{
                         loBitBean.setLsIndEvento(loSetSpot.getLsMessage());
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
-                                                   lsUserName);*/
+                                                   lsUserName);
                 
                 
             }
             
             liIndProcess = 
-                        new UtilFaces().getIdConfigParameterByName("ProcessFinish");//
+                        //new UtilFaces().getIdConfigParameterByName("ProcessFinish");//
+                        loEntityMappedDao.getGeneralParameterID("ProcessFinish", 
+                                                                "PROCESS_INTEGRATION");
                     loBitBean.setLiIdLogServices(liIdLogService);
                     loBitBean.setLiIdService(liIdService);
                     loBitBean.setLiIndProcess(liIndProcess);
@@ -223,9 +233,11 @@ public class PriceImpCron  implements Job{
                 new JAXBElement<ArrayOfint>(new QName(lsQNameXML, "AlternateSchedules"),ArrayOfint.class,loObjAs);
             loSpotListFilter.setAlternateSchedules(laAs);        
             loSpotListFilter.setBonusSpot(false);        
+            
             JAXBElement<String> loBreakType = 
-                new JAXBElement<String>(new QName(lsQNameXML, "BreakType"),String.class, "CO");
-            loSpotListFilter.setBreakType(loBreakType);        
+                new JAXBElement<String>(new QName(lsQNameXML, "BreakType"),String.class, "");
+            loSpotListFilter.setBreakType(loBreakType);   
+            
             ArrayOfint loObjBa = new ArrayOfint();
             List<Integer> laObjsBa = new ArrayList<Integer>();
             //laObjsBa.add(1);
@@ -247,9 +259,9 @@ public class PriceImpCron  implements Job{
                 new JAXBElement<String>(new QName(lsQNameXML, "CallerOrganisationCode"),String.class, "TL");
             loSpotListFilter.setCallerOrganisationCode(loCallerOrganisationCode);
             
-            JAXBElement<String> loCallerPositionCode = 
-                new JAXBElement<String>(new QName(lsQNameXML, "CallerPositionCode"),String.class, "TRN07");
-            loSpotListFilter.setCallerPositionCode(loCallerPositionCode);
+            //JAXBElement<String> loCallerPositionCode = 
+              //  new JAXBElement<String>(new QName(lsQNameXML, "CallerPositionCode"),String.class, "TRN07");
+            //loSpotListFilter.setCallerPositionCode(loCallerPositionCode);
             
             ArrayOfint loObjCa = new ArrayOfint();
             List<Integer> laObjsCa = new ArrayList<Integer>();
@@ -301,6 +313,7 @@ public class PriceImpCron  implements Job{
             List<FilterDateTime> loFilterDateTime = new ArrayList<FilterDateTime>();
             FilterDateTime loFilterTime = new FilterDateTime();
             loFilterTime.setDaysOfWeek(DaysOfWeek.ALL_DAYS);
+            //String tsFinalDate2 = tsFinalDate+"";
             SimpleDateFormat loSdf = new SimpleDateFormat("yyyy-MM-dd");
             Date loDateTmp;
             try {
@@ -309,6 +322,7 @@ public class PriceImpCron  implements Job{
                 loGregorCalendar.setTime(loDateTmp);
                 XMLGregorianCalendar loFecFinXml = 
                     DatatypeFactory.newInstance().newXMLGregorianCalendar(loGregorCalendar);
+                loFecFinXml.setTimezone(0);
                 loFilterTime.setEndDate(loFecFinXml);
             } catch (ParseException e) {
                 System.out.println("Error al parsear: "+e.getMessage());
@@ -323,6 +337,7 @@ public class PriceImpCron  implements Job{
                 loGregorCalendar.setTime(loDateStart);
                 XMLGregorianCalendar loFecInicialXml = 
                     DatatypeFactory.newInstance().newXMLGregorianCalendar(loGregorCalendar);
+                loFecInicialXml.setTimezone(0);
                 loFilterTime.setStartDate(loFecInicialXml);
             } catch (ParseException e) {
                 System.out.println("Error al parsear: "+e.getMessage());
@@ -376,7 +391,9 @@ public class PriceImpCron  implements Job{
                 laObjsSales.add(Integer.parseInt(loListChannels.get(0)));
                 System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
             }else{
-                liIndProcess = new UtilFaces().getIdConfigParameterByName("ErrorConfig");
+                //liIndProcess = new UtilFaces().getIdConfigParameterByName("ErrorConfig");
+                loEntityMappedDao.getGeneralParameterID("ErrorConfig", 
+                                                        "PROCESS_INTEGRATION");
                 loBitBean.setLiIdLogServices(tiIdLogService);
                 loBitBean.setLiIdService(tiIdService);
                 loBitBean.setLiIndProcess(liIndProcess);
@@ -428,7 +445,7 @@ public class PriceImpCron  implements Job{
             loReqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, loHeaders);
             System.out.println("SETT SECURITY.....OK");
             System.out.println("Guardar archivo fisico REQUEST");
-            /*
+            
             try{                        
                 StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Alex"+getId()+".xml"));
@@ -436,16 +453,11 @@ public class PriceImpCron  implements Job{
                 JAXB.marshal(loSpotListFilter, result);
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
-            }*/
+            }
+            
             //##################### Insertar Archivo en Base de Datos ############################ 
             String lsNomFile = "";
             try{
-                /*
-                StreamResult result =
-                new StreamResult(new File("C:\\Users\\JorgeOWM\\Desktop\\PriceXml"+getId()+".xml"));
-                //transformer.transform(source, result);
-                JAXB.marshal(loXmlentrada, result);
-                */
                 XmlFilesDao loXmlFilesDao = new XmlFilesDao();
                 System.out.println("Guardando archivo xml en bd");
                 ByteArrayOutputStream loBaos = new ByteArrayOutputStream();                     
@@ -477,7 +489,9 @@ public class PriceImpCron  implements Job{
                                    lsNomFile+"";
                 }
                 liIndProcess = 
-                            new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                            //new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                            loEntityMappedDao.getGeneralParameterID("InsertFile", 
+                                                                    "PROCESS_INTEGRATION");
                         loBitBean.setLiIdLogServices(tiIdLogService);
                         loBitBean.setLiIdService(tiIdService);
                         loBitBean.setLiIndProcess(liIndProcess);
@@ -491,7 +505,9 @@ public class PriceImpCron  implements Job{
                 
             }catch(Exception loEx){
                 System.out.println("Error al guardar archivo "+loEx.getMessage());
-                liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                //liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                        "PROCESS_INTEGRATION");
                 loBitBean.setLiIdLogServices(tiIdLogService);
                 loBitBean.setLiIdService(tiIdService);
                 loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -506,7 +522,9 @@ public class PriceImpCron  implements Job{
             }        
             try{
                 System.out.println("Invocar Servicio................");
-                liIndProcess = new UtilFaces().getIdConfigParameterByName("InvokingService");
+                //liIndProcess = new UtilFaces().getIdConfigParameterByName("InvokingService");
+                loEntityMappedDao.getGeneralParameterID("InvokingService", 
+                                                        "PROCESS_INTEGRATION");
                 loBitBean.setLiIdLogServices(tiIdLogService);
                 loBitBean.setLiIdService(tiIdService);
                 loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -521,7 +539,9 @@ public class PriceImpCron  implements Job{
                     loArrOf = loInstanceLandmarkSpotsSpot.loadForFilter2(loSpotListFilter, "MXN");
                 }catch(Exception loEx){
                     System.out.println("Error al consumir servicio loadForFilter2 "+loEx.getMessage());
-                    liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                    //liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                    loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                            "PROCESS_INTEGRATION");
                     loBitBean.setLiIdLogServices(tiIdLogService);
                     loBitBean.setLiIdService(tiIdService);
                     loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -534,12 +554,11 @@ public class PriceImpCron  implements Job{
                 }
                 //########################################################################################
                 System.out.println("Guardar archivo fisico RESPONSE");
-                try{  
-                    /*
+                try{                      
                     StreamResult result =
                     new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Response-Alex"+getId()+".xml"));
                     //transformer.transform(source, result);
-                    JAXB.marshal(loArrof, result);*/
+                    JAXB.marshal(loArrOf, result);
                     
                     System.out.println("Guardando archivo response xml en bd");
                     ByteArrayOutputStream loBaosRes = new ByteArrayOutputStream();
@@ -573,7 +592,9 @@ public class PriceImpCron  implements Job{
                                        lsNomFile+"";
                     }
                     liIndProcess = 
-                                new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                                //new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                                loEntityMappedDao.getGeneralParameterID("InsertFile", 
+                                                                        "PROCESS_INTEGRATION");
                             loBitBean.setLiIdLogServices(tiIdLogService);
                             loBitBean.setLiIdService(tiIdService);
                             loBitBean.setLiIndProcess(liIndProcess);
@@ -587,7 +608,9 @@ public class PriceImpCron  implements Job{
                     
                     }catch(Exception loEx){
                         System.out.println("Error al guardar archivo "+loEx.getMessage());
-                        liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        //liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                        loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                                "PROCESS_INTEGRATION");
                         loBitBean.setLiIdLogServices(tiIdLogService);
                         loBitBean.setLiIdService(tiIdService);
                         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -602,7 +625,9 @@ public class PriceImpCron  implements Job{
                     }
             }catch(Exception loEx){
                 loArrOf = null;
-                liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                //liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+                loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                        "PROCESS_INTEGRATION");
                 loBitBean.setLiIdLogServices(tiIdLogService);
                 loBitBean.setLiIdService(tiIdService);
                 loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -616,7 +641,9 @@ public class PriceImpCron  implements Job{
         }catch(Exception loExGral){
             loArrOf = null;
             System.out.println("Error general al consumir servicio");
-            liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+            //liIndProcess = new UtilFaces().getIdConfigParameterByName("GeneralError");
+            loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                    "PROCESS_INTEGRATION");
             loBitBean.setLiIdLogServices(tiIdLogService);
             loBitBean.setLiIdService(tiIdService);
             loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -670,6 +697,7 @@ public class PriceImpCron  implements Job{
         User loUser = new User();
         
         List<Spot> loListSpot = toArrayOfSpot.getSpot();
+        System.out.println("Num spots: "+loListSpot.size());
         for(Spot loSpot : loListSpot){
             
             Integer liSpotNumber = loSpot.getSpotNumber();
@@ -697,7 +725,8 @@ public class PriceImpCron  implements Job{
                 loSpotModulo.setPiSpotID(loSpotsList.get(0).getLiSptmstid());
                 loSpotModulo.setPdSpotPrice(ldNominalPrice);
                 loSpotModulo.setPdSpotRating(ldRatings);
-                loSpotModulo.setPdCPR(ldCpp);
+                //TODO loSpotModulo.setPdCPR(ldCpp);ESTO debe tener VALOR, la linea de abajo es temporal
+                loSpotModulo.setPdCPR(1);
                 loSpotModulo.setPdPorcentRecDuration(1);
                 loSpotModulo.setPdPorcentRecPosition(1);
                 loSpotModulo.setPdPorcentRecPiggyBack(1);
@@ -705,14 +734,14 @@ public class PriceImpCron  implements Job{
                 loSpotModulo.setPdPorcentRecManual(ldPriceFactor);
                 loSpotModulo.setPdPorcentFactDuracion(liLength);
                 loClr.getPaSpots().add(loSpotModulo);
-                
+                /*
                 try{
                     loPriceDao.updateLmkSptRev(loSpotsList.get(0).getLiSptmstid(), ldNominalPrice*100);
                 }catch(Exception loEx){
                     lbResult = false;
                     lsMessage = "Error en la actualizacion de spots "+loEx.getMessage();
                     System.out.println("Error al actualizar spot "+loSpotsList.get(0).getLiSptmstid()+": "+loEx.getMessage());
-                }
+                }*/
             } 
         }
         
@@ -726,18 +755,46 @@ public class PriceImpCron  implements Job{
         loUser.setPsUserName(lsUserNameConciliacion);
         loUser.setPsPassword(lsPasswordConciliacion);
         try{
-            /*try{
+            try{
                 StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml"+getId()+".xml"));
                 //transformer.transform(loClr, result);
                 JAXB.marshal(loClr, result);
             }catch(Exception loExp){
                 System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
-            }*/
-            loSpotConciliacionWS.spotConciliaion(loClr, loUser);
+            }
+            SpotConciliacionResponse loRes = 
+                loSpotConciliacionWS.spotConciliaion(loClr, loUser);
+            
+            try{
+                StreamResult result =
+                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml-RESPONSE"+getId()+".xml"));
+                //transformer.transform(loClr, result);
+                JAXB.marshal(loRes, result);
+            }catch(Exception loExp){
+                System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
+            }
+            
+            
+            List<SpotConciliacionResult> laListRes = loRes.getPaSpotResult();
+            boolean lbFlag = true;
+            int liI = 0;
+            while(lbFlag && liI < laListRes.size()){
+                SpotConciliacionResult loConc = laListRes.get(liI);
+                if(loConc.getPaError()!= null){
+                    lbResult = false;
+                    lbFlag = false;
+                    System.out.println("ERROR ["+loConc.getPaError().get(0)+"]");    
+                    lsMessage = loConc.getPaError().get(0).getPsDescription()+
+                                " >> "+loConc.getPaError().get(0).getPsSourceError();
+                }
+                liI++;
+                //System.out.println("SpotID ["+loConc.getPiSpotID()+"]");
+                //System.out.println("Message ["+loConc.getPsMessage()+"]");
+            }           
         }catch(Exception loEx){
             lbResult = false;
-            lsMessage = "Error al conciliar "+loEx.getMessage();
+            lsMessage = "Error en WS conciliacion "+loEx.getMessage();
             System.out.println("Error al conciliar "+loEx.getMessage());
         }
         if(lbResult){
@@ -759,38 +816,40 @@ public class PriceImpCron  implements Job{
         
         
         List<Spot> loListSpot = toArrayOfSpot.getSpot();
+        System.out.println("loListSpot.size()= "+loListSpot.size());
         for(Spot loSpot : loListSpot){
             
             Integer liSpotNumber = loSpot.getSpotNumber();
+            System.out.println("SpotNumber["+loSpot.getSpotNumber()+"]");
             Double ldCpp = loSpot.getCPP();
-            System.out.println("ldCpp["+ldCpp+"]");
+            //System.out.println("ldCpp["+ldCpp+"]");
             //Double ldCppl = loSpot.getCPPL();
             //Double ldCpt = loSpot.getCPT();
             //Double ldCptl = loSpot.getCPTL();
             Integer liLength = loSpot.getLength();
-            System.out.println("liLength["+liLength+"]");
+            //System.out.println("liLength["+liLength+"]");
             Double ldNominalPrice = loSpot.getNomianlPrice();
-            System.out.println("ldNominalPrice["+ldNominalPrice+"]");
+            //System.out.println("ldNominalPrice["+ldNominalPrice+"]");
             //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
             Double ldPriceFactor = loSpot.getPriceFactor();
-            System.out.println("ldPriceFactor["+ldPriceFactor+"]");
+            //System.out.println("ldPriceFactor["+ldPriceFactor+"]");
             Double ldRatings = loSpot.getRatings();
-            System.out.println("ldRatings["+ldRatings+"]");
+            //System.out.println("ldRatings["+ldRatings+"]");
             
             //Se necesitan los valores de 
             // piOrderID
             // piSpotID
-            List<LmkSpotsBean> loSpotsList = 
-                loPriceDao.getSpotInfo(liSpotNumber);
-            
+            /*List<LmkSpotsBean> loSpotsList = 
+                loPriceDao.getSpotInfo(liSpotNumber);            
             if(loSpotsList.size() > 0){
                 for(LmkSpotsBean loBean : loSpotsList){
-                    System.out.println("getLiOrdId: "+loBean.getLiOrdId());
-                    System.out.println("getLiSpotNumber: "+loBean.getLiSpotNumber());
-                    System.out.println("getLiSptmstid: "+loBean.getLiSptmstid());
+                    System.out.println(">> getLiOrdId: "+loBean.getLiOrdId());
+                    System.out.println(">> getLiSpotNumber: "+loBean.getLiSpotNumber());
+                    System.out.println(">> getLiSptmstid: "+loBean.getLiSptmstid());
                 }
-            } 
+            } */
         }
+        
         if(lbResult){
             loResponseUpdDao.setLsResponse("OK");
         }else{

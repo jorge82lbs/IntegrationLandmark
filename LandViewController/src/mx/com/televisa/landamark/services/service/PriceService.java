@@ -23,7 +23,6 @@ import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 import mx.com.televisa.landamark.services.jobs.service.PriceImpCron;
-import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
 
@@ -85,11 +84,17 @@ public class PriceService {
         loSlb.setLsUserName(loInput.getLsUserName());
         loSlb.setLiIdUser(loInput.getLiIdUser());
         
-        new UtilFaces().insertLogServiceService(loSlb);
+        //new UtilFaces().insertLogServiceService(loSlb);
+        loEntityMappedDao.insertSimpleServicesLog(loSlb, 
+                                                  loInput.getLiIdUser(), 
+                                                  loInput.getLsUserName()
+                                                  );
         
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         Integer                  liIndProcess = 
-            new UtilFaces().getIdConfigParameterByName("ExecuteService");//
+            loEntityMappedDao.getGeneralParameterID("ExecuteService", 
+                                                    "PROCESS_INTEGRATION");
+            //new UtilFaces().getIdConfigParameterByName("ExecuteService");//
         loBitBean.setLiIdLogServices(liIdLogService);
         loBitBean.setLiIdService(loInput.getLiIdService());
         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -101,8 +106,9 @@ public class PriceService {
                                            loInput.getLiIdUser(), 
                                            loInput.getLsUserName());                
                                 
-        liIndProcess = 
-            new UtilFaces().getIdConfigParameterByName("ExtractParameters");//
+        liIndProcess = loEntityMappedDao.getGeneralParameterID("ExtractParameters", 
+                                                    "PROCESS_INTEGRATION");
+            //new UtilFaces().getIdConfigParameterByName("ExtractParameters");//
         loBitBean.setLiIdLogServices(liIdLogService);
         loBitBean.setLiIdService(loInput.getLiIdService());
         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
@@ -118,8 +124,9 @@ public class PriceService {
         
         if( loParams.size() < 3 ){ //FI, FF y al menos un canal
             lbProcess = false;
-            liIndProcess = 
-                        new UtilFaces().getIdConfigParameterByName("ParametersMissing");//
+            liIndProcess = loEntityMappedDao.getGeneralParameterID("ParametersMissing", 
+                                                    "PROCESS_INTEGRATION");
+                        //new UtilFaces().getIdConfigParameterByName("ParametersMissing");//
                     loBitBean.setLiIdLogServices(liIdLogService);
                     loBitBean.setLiIdService(loInput.getLiIdService());
                     loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso

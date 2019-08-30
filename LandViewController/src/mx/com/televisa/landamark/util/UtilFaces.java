@@ -588,6 +588,28 @@ public class UtilFaces {
     }
     
     /**
+     * Agrega registro del log de servicio
+     * @autor Jorge Luis Bautista Santiago
+     * @param toLmkBean
+     * @return void
+     */
+    public void insertSimpleLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
+        System.out.println("Se puede instanciar appmodule");
+       ApplicationModule         loAm =
+           Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+       AppModuleImpl loService = (AppModuleImpl)loAm;
+        System.out.println("Se puede instanciar appmodule.... OK");
+       try {
+           loService.insertServicesLogModel(toLmkBean);
+       } catch (Exception loEx) {
+           System.out.println("Util-ERROR(insertLogServiceService): " + loEx.getMessage());
+       } finally {
+           Configuration.releaseRootApplicationModule(loAm, true);
+           //loAm.remove();
+       }
+    }
+    
+    /**
     * Actualiza registro del log de servicio
     * @autor Jorge Luis Bautista Santiago
     * @param toLmkBean

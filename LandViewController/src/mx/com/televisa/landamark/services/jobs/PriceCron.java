@@ -10,7 +10,7 @@
 package mx.com.televisa.landamark.services.jobs;
 
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
-import mx.com.televisa.landamark.services.service.ParrillasProgramasService;
+import mx.com.televisa.landamark.services.service.PriceService;
 import mx.com.televisa.landamark.view.types.BasicInputParameters;
 import mx.com.televisa.landamark.view.types.ResponseService;
 
@@ -61,7 +61,7 @@ public class PriceCron implements Job{
         loInput.setLsServiceName(lsServiceName);
         loInput.setLsPathFiles(lsPathFiles);
         
-        ParrillasProgramasService loService = new ParrillasProgramasService();
+        PriceService loService = new PriceService();
         ResponseService loPits = loService.executeService(loInput);
         
         System.out.println("ID["+liIdRequest+"]Finish de Cron(Actualizacion de precios) >> "+
