@@ -300,7 +300,8 @@ public class ParrillasProgramasImpCron implements Job{
                                                        loFileBreaks
                                                        );
                         String lsMsg = loResSendFile.getLsMessage();
-                        String lsStatEv = "L";
+                        //String lsStatEv = "L";
+                        String lsStatEv = "C"; // Por el momento se deja asi, ya que la C era cuando respondia lanmark
                         if(!loResSendFile.getLsResponse().equalsIgnoreCase("OK")){
                             lsMsg = "ERROR "+loResSendFile.getLsMessage();
                             lsStatEv = "F";
@@ -578,7 +579,7 @@ public class ParrillasProgramasImpCron implements Job{
                         
                         //Actualizar estatus de archivo xml
                         ResponseBreaksDao loResponseBreaksDao = new ResponseBreaksDao();
-                        loResponseBreaksDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "L");
+                        loResponseBreaksDao.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "C");
                         //NOTAS: loResUpdDao.getLiAffected() devuelve el numero id asignado, así lo programé
                         //E es de ENVIADO a Landmark
                         
@@ -740,7 +741,7 @@ public class ParrillasProgramasImpCron implements Job{
             for(int liI = 0; liI < taProgrb.size(); liI ++){// LmkProgRowBean loProg : taProgrb){
                 LmkProgRowBean loProg = taProgrb.get(liI);
                 if(loProg.getLsFullRow() != null){                                        
-                    String lsRow = loProg.getLsFullRow();
+                    String lsRow = loProg.getLsFullRow().trim();
                     /*
                     loProg.getLiRecordType()+","+ 
                     loProg.getLsSalesAreaCode()+","+ 
@@ -766,10 +767,10 @@ public class ParrillasProgramasImpCron implements Job{
                     //loProg.getLtBcstdt()+","+                                
                     //loProg.getLsPgmid()+",";
                     */
-                    loWriter.write(lsRow);
-                    if(laPrgTrb.size() > 0 && liI < taProgrb.size()){
+                    loWriter.write(lsRow.trim());
+                    //if(laPrgTrb.size() > 0 && liI < taProgrb.size()){
                         loWriter.write("\r\n");    
-                    }
+                    //}
                     
                 }
             }      
@@ -780,13 +781,14 @@ public class ParrillasProgramasImpCron implements Job{
                 //loProgTrailer.getLsStnid()+","+ 
                 //loProgTrailer.getLsStrdt()+","+
                 //loProgTrailer.getLsEdt()+",";         
-                */
+                */                
                 LmkProgFileTrailerRowBean loProgTrailer = laPrgTrb.get(liI);
                 
                 if(loProgTrailer.getLsFullRowTrailer() != null){
-                    String lsRow = loProgTrailer.getLsFullRowTrailer();
-                    loWriter.write(lsRow);
-                    if(liI < laPrgTrb.size()){
+                    String lsRow = loProgTrailer.getLsFullRowTrailer().trim();
+                    System.out.println("Linea["+liI+"] "+lsRow);
+                    loWriter.write(lsRow.trim());
+                    if(liI < laPrgTrb.size()-1){                        
                         loWriter.write("\r\n");    
                     }
                 }
@@ -842,7 +844,7 @@ public class ParrillasProgramasImpCron implements Job{
                 String lsRow = loBrk.getLiRecordType()+"," +
                 loBrk.getLsFileCreationDate()+","+ 
                 loBrk.getLsFileCreationTime()+",";
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 loWriter.write("\r\n");
             }      
             //########## LMK_BRK_CHANNEL_HEADER  ##########
@@ -852,7 +854,7 @@ public class ParrillasProgramasImpCron implements Job{
                 loBrk.getLsSalesAreaCode()+","+
                 loBrk.getLiId()+","+
                 loBrk.getLsBreakSchedule()+",";
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 loWriter.write("\r\n");
             }     
             //########## LMK_BRK_BREAK ##########
@@ -866,14 +868,14 @@ public class ParrillasProgramasImpCron implements Job{
                 loBrk.getLsBreakTypeCode()+","+
                 loBrk.getLsPositionInProgramme()+","+
                 loBrk.getLiBreakNumber()+",";
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 loWriter.write("\r\n");
             }    
             //########## LMK_BRK_CHANNEL_TRAILER ##########
             for(LmkBrkChannelTrailerRowBean loBrk : taCtrb){
                 String lsRow = loBrk.getLiRecordType()+"," +
                 loBrk.getLiRecordCount()+",";
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 loWriter.write("\r\n");
             }   
             //########## LMK_BRK_FILE_TRAILER ##########
@@ -881,9 +883,9 @@ public class ParrillasProgramasImpCron implements Job{
                 LmkBrkFileTrailerRowBean loBrk = taFtrb.get(liI);
                 String lsRow = loBrk.getLiRecordType()+"," +
                 loBrk.getLiRecordCount()+",";
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 
-                if(liI < taFtrb.size()){
+                if(liI < taFtrb.size()-1){
                     loWriter.write("\r\n");    
                 }
             }   
@@ -922,22 +924,22 @@ public class ParrillasProgramasImpCron implements Job{
             //########## NIVEL 1  ##########
             for(LmkBrkGenericRowBean loBrk : taNivel1){
                 String lsRow = loBrk.getLsFullRowNivel1();
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 loWriter.write("\r\n");
                 //escribiendoFichero.writeUTF(lsRow);
             }
             //########## NIVEL 2 y 3  ##########
             for(LmkBrkGenericRowBean loBrk : taNivel23){
                 String lsRow = loBrk.getLsFullRowNivel23();
-                loWriter.write(lsRow);
+                loWriter.write(lsRow.trim());
                 loWriter.write("\r\n");
             }     
             //########## LMK_BRK_BREAK ##########
             for(int liI = 0; liI < taNivel45.size(); liI++){//LmkBrkGenericRowBean loBrk : taNivel45){
                 LmkBrkGenericRowBean loBrk = taNivel45.get(liI);
                 String lsRow = loBrk.getLsFullRowNivel45();
-                loWriter.write(lsRow);
-                if(liI < taNivel45.size()){
+                loWriter.write(lsRow.trim());
+                if(liI < taNivel45.size()-1){
                     loWriter.write("\r\n");    
                 }
             }                

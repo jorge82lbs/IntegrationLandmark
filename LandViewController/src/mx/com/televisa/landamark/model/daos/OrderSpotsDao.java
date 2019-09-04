@@ -18,6 +18,10 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import mx.com.televisa.landamark.model.types.LmkLogComercialStatusBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.model.types.inject.LmkSpotsRowBean;
 import mx.com.televisa.landamark.util.ConnectionAs400;
@@ -478,5 +482,50 @@ public class OrderSpotsDao {
        
         return loResponseUpdDao;
     }    
+    
+    public List<LmkLogComercialStatusBean> getLogComercialStatusKO(String tsChannel, 
+                                                                   String tsFecha){
+        List<LmkLogComercialStatusBean> laListReturn = 
+            new ArrayList<LmkLogComercialStatusBean>();
+        
+        Connection              loCnn = new ConnectionAs400().getConnection();
+        ResultSet               loRs = null;
+        String                  lsQueryParadigm = 
+            "SELECT IDPROCESO,\n" + 
+            "       STNID,\n" + 
+            "       BCSTDT,\n" + 
+            "       TIPO,\n" + 
+            "       MENSAJE,\n" + 
+            "       STATUS\n" + 
+            "  FROM EVENTAS.LMK_LOG_COMERCIAL_STATUS\n" + 
+            " WHERE STNID  = '"+tsChannel+"'\n" + 
+            "   AND BCSTDT = '"+tsFecha+"'\n" + 
+            "   AND STATUS = 'KO'";   
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkLogComercialStatusBean loItem = new LmkLogComercialStatusBean();
+                loItem.setLsIdproceso(loRs.getString("IDPROCESO"));                
+                loItem.setLsStnid(loRs.getString("STNID"));
+                loItem.setLsBcstdt(loRs.getString("BCSTDT"));
+                loItem.setLsTipo(loRs.getString("TIPO"));
+                loItem.setLsMensaje(loRs.getString("MENSAJE"));
+                loItem.setLsStatus(loRs.getString("STATUS"));
+                laListReturn.add(loItem);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return laListReturn;
+    }
     
 }

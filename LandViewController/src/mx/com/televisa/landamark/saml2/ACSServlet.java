@@ -531,7 +531,7 @@ public class ACSServlet extends HttpServlet {
         UserMenuBean        loMenu = new UserMenuBean();        
             //(UserMenuBean) new UtilFaces().resolveExpression("#{UserMenuBean}");
         String              lsFlag = "false";
-        lsFlag = "true";
+        //lsFlag = "true";
         
         loMenu.setLsPantallaBitacora(lsFlag);
         loMenu.setLsPantallaGralConfig(lsFlag);
@@ -542,6 +542,7 @@ public class ACSServlet extends HttpServlet {
         loMenu.setLsPantallaProcess(lsFlag);
         loMenu.setLsPantallaStatusFiles(lsFlag);
         loMenu.setLsPantallaCreateFile(lsFlag);
+        loMenu.setLsPantallaPrecios(lsFlag);
         
         loMenu.setLsOprDeleteCron("true");
         loMenu.setLsOprExecuteCron("true");

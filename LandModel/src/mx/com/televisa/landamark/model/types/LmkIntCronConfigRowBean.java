@@ -27,6 +27,24 @@ public class LmkIntCronConfigRowBean {
     private String lsIndCronExpression;
     private String lsIndEstatus;
     private String attribute1;
+    private String attribute14;
+    private String attribute12;
+
+    public void setAttribute14(String attribute14) {
+        this.attribute14 = attribute14;
+    }
+
+    public String getAttribute14() {
+        return attribute14;
+    }
+
+    public void setAttribute12(String attribute12) {
+        this.attribute12 = attribute12;
+    }
+
+    public String getAttribute12() {
+        return attribute12;
+    }
 
     public void setAttribute1(String attribute1) {
         this.attribute1 = attribute1;

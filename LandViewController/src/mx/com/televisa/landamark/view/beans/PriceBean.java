@@ -10,6 +10,12 @@
 
 package mx.com.televisa.landamark.view.beans;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import java.sql.Blob;
+
 import java.text.SimpleDateFormat;
 
 import javax.faces.application.FacesMessage;
@@ -17,14 +23,17 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import mx.com.televisa.landamark.model.AppModuleImpl;
+import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
 import mx.com.televisa.landamark.services.jobs.PriceCron;
@@ -40,12 +49,16 @@ import oracle.adf.view.rich.component.rich.input.RichInputText;
 import oracle.adf.view.rich.component.rich.layout.RichPanelLabelAndMessage;
 import oracle.adf.view.rich.component.rich.output.RichOutputText;
 
+import oracle.adfinternal.view.faces.model.binding.FacesCtrlHierNodeBinding;
+
 import oracle.jbo.ApplicationModule;
 import oracle.jbo.Row;
 import oracle.jbo.client.Configuration;
 import oracle.jbo.uicli.binding.JUCtrlHierBinding;
 
 import org.apache.myfaces.trinidad.model.CollectionModel;
+
+import org.apache.poi.util.IOUtils;
 
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -67,6 +80,8 @@ import org.quartz.impl.StdSchedulerFactory;
  */
 
 public class PriceBean {
+    private RichTable poTbl;
+
     public PriceBean() {
     }
     private RichInputText poNomService;
@@ -266,7 +281,8 @@ public class PriceBean {
             loResponse.setLsResponse("ERROR");
             loResponse.setLsMessage("Es necesario al menos un canal");
         }
-
+        
+        loResponse.setLiAffected(liFinalIdService);
         
         return loResponse;
     }
@@ -346,39 +362,31 @@ public class PriceBean {
         String              lsFinalMessage = "Acción Satisfactoria";
         String              lsColorMessage = "blue";
         //String              lsGeneralAction = lsAction;
-        Integer             liIdUser = null;
-        String              lsUserName = null;
+        Integer             liIdUser = 0;
+        String              lsUserName = "PriceUpdate";
         ApplicationModule   loAm =
             Configuration.createRootApplicationModule(gsAmDef, gsConfig);
         AppModuleImpl loService = (AppModuleImpl)loAm;
         try {
+            try{
             liIdUser = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser") == null ? null :
                 Integer.parseInt(loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser"));
-            //System.out.println(">>>> liIdUser: "+liIdUser);
+            System.out.println(">>>> liIdUser: "+liIdUser);
             lsUserName = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser") == null ? null :
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser").toString();
-            //System.out.println(">>>> lsUserName: "+lsUserName);
-            /*String lsIdService = 
-                loIdService.getValue() == null ? null : 
-                loIdService.getValue().toString();  */  
-            //System.out.println(">>>> lsIdService: "+lsIdService);
-            /*String lsTypeService = 
-                loTypeService.getValue() == null ? null : 
-                loTypeService.getValue().toString();*/
-            //System.out.println(">>>> lsTypeService: "+lsTypeService);
-            
-            /*String lsNameService = 
-                loNameService.getValue() == null ? null : 
-                loNameService.getValue().toString();*/
-            //System.out.println(">>>> lsNameService: "+lsNameService);
-            
-            //String lsServiceAction = lsAction;   
+            System.out.println(">>>> lsUserName: "+lsUserName);
+            }catch(Exception loEx){
+                lsFinalMessage = loEx.getMessage();
+                lsColorMessage = "red";
+                System.out.println("Err 5874 "+loEx.getMessage());
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+                loAm.remove();            
+            }
             String lsIdTrigger = lsIdService + "-" + lsTypeService;
             System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> [EXECUTE] (usuario)*********");
-            //lsGeneralAction = lsServiceAction;
-            //System.out.println(">>>> lsGeneralAction: "+lsGeneralAction);
             ProcessServiceBean loProcessBean = new ProcessServiceBean();
             loProcessBean.setLiIdUser(liIdUser);
             loProcessBean.setLsUserName(lsUserName);
@@ -396,8 +404,7 @@ public class PriceBean {
                     System.out.println(">>>> Ejecutar processServiceExecution para ProcessPriceUpdate (USUARIO): ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
-                                                PriceCron.class,
-                                                loService);
+                                                PriceCron.class);
                     lsColorMessage = loRes.getLsColor();
                     lsFinalMessage = loRes.getLsMessage();
                 //}
@@ -406,13 +413,7 @@ public class PriceBean {
             lsFinalMessage = loEx.getMessage();
             lsColorMessage = "red";
             System.out.println("Err 5874 "+loEx.getMessage());
-        } finally {
-            Configuration.releaseRootApplicationModule(loAm, true);
-            loAm.remove();            
-            //TODO
-            //Refrescar tabla principalll
-            
-        }
+        } 
         StringBuilder loMessage = new StringBuilder("<html><body>");
         loMessage.append("<p style='color:" + lsColorMessage + "'><b>" + lsFinalMessage + "</i></b></p>");
         loMessage.append("</body></html>");        
@@ -431,8 +432,7 @@ public class PriceBean {
      * @return ExecuteServiceResponseBean
      */
     public ExecuteServiceResponseBean processServiceExecution(ProcessServiceBean toPrcBean,
-                                                              Class<? extends Job> loClassCron,
-                                                              AppModuleImpl poService
+                                                              Class<? extends Job> loClassCron
                                                               ){
         ExecuteServiceResponseBean         loRes = new ExecuteServiceResponseBean();
         String                             lsFinalMessage = "";
@@ -442,22 +442,28 @@ public class PriceBean {
             " ha sido ejecutado en segundo plano";
         lsColorMessage = "black";
         boolean lbPrExe = true;
-        LmkIntCronConfigRowBean loRowCron = 
+        /*LmkIntCronConfigRowBean loRowCron = 
             poService.getRowCronConfigByServiceModel(Integer.parseInt(toPrcBean.getLsIdService()));
         if(loRowCron != null){
             if(loRowCron.getLsIndEstatus().equalsIgnoreCase("2")){
                 lbPrExe = false;
             }
-        }
+        }*/
         if(lbPrExe){
+            
+            EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+            
+            /*Esto es para el cron, asi que no influye
             new UtilFaces().updateStatusCronService(Integer.parseInt(toPrcBean.getLsIdService()),
                                                     "1",
                                                     null,
                                                     null,
                                                     null
-                                                    );
+                                                    );*/
             
-            Integer liIndProcess = new UtilFaces().getIdConfigParameterByName("ExecuteCron"); //
+            Integer liIndProcess = 
+                loEntityMappedDao.getGeneralParameterID("ExecuteCron", 
+                                                    "PROCESS_INTEGRATION");
             Integer liNumPgmProcessID = 0;
             Integer liNumEvtbProcessId = 0;
             LmkIntServiceBitacoraRowBean loBean = new LmkIntServiceBitacoraRowBean();
@@ -470,7 +476,12 @@ public class PriceBean {
             loBean.setLsIdBitacora("0");
             loBean.setLiIdUser(toPrcBean.getLiIdUser());
             loBean.setLsUserName(toPrcBean.getLsUserName());
-            new UtilFaces().insertBitacoraServiceService(loBean);
+            
+            loEntityMappedDao.insertBitacoraWs(loBean,
+                                               toPrcBean.getLiIdUser(), 
+                                               toPrcBean.getLsUserName());
+            
+            //new UtilFaces().insertBitacoraServiceService(loBean);
     
             Scheduler loScheduler;
             try {
@@ -554,18 +565,12 @@ public class PriceBean {
      * @return String
      */
     public String executeExecuteAction() {
-        /*System.out.println("Acciones deshabilitadas temporalmente");
-        FacesMessage loMsg;
-        loMsg = new FacesMessage("Acciones deshabilitadas temporalmente");
-        loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
-        FacesContext.getCurrentInstance().addMessage(null, loMsg);
-        */
-        
         ResponseUpdDao loResponse = saveParameters();
         new UtilFaces().hidePopup(getPoPopupExecute());
         if(loResponse != null){
             if(loResponse.getLsResponse().equalsIgnoreCase("OK")){
-                String lsIdService = getPoIdService().getValue().toString();   
+                String lsIdService = String.valueOf(loResponse.getLiAffected());
+                    //getPoIdService().getValue().toString();   
                 String lsUserName = getPoUserName().getValue().toString();
                 //Ejecutar los procesos, 
                 executeProcessAction(lsIdService, 
@@ -688,4 +693,114 @@ public class PriceBean {
     public RichTable getPoTblChannels() {
         return poTblChannels;
     }
+
+    public void downloadFileAction(FacesContext toFacesContext, OutputStream toOutputStream) {
+        FacesContext             loCtx = null;
+        ExternalContext          loExctx = null;
+        HttpServletResponse      loResponse = null;
+        FacesMessage             loMsg = null;        
+        loCtx = FacesContext.getCurrentInstance();        
+        FacesCtrlHierNodeBinding loNode = 
+            (FacesCtrlHierNodeBinding) getPoTbl().getSelectedRowData();
+        String                   lsIdRequest = 
+            loNode.getAttribute("IdLogServices") == null ? "" : 
+            loNode.getAttribute("IdLogServices").toString();                 
+        String                   lsIdService = 
+            loNode.getAttribute("IdService") == null ? "" : 
+            loNode.getAttribute("IdService").toString();    
+        String                   lsIdFileXml = 
+            loNode.getAttribute("IdFileXml") == null ? "" : 
+            loNode.getAttribute("IdFileXml").toString();   
+        String lsTypeService = "Response";
+        
+        loExctx = loCtx.getExternalContext();
+        loResponse = (HttpServletResponse)loExctx.getResponse();
+        try{
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl  loService = (AppModuleImpl)loAm;
+            try{
+                //Crear bean front de la tabla, minimo con nomArch y con el stream
+                LmkIntXmlFilesRowBean loLmkIntXmlFilesRowBean = 
+                    loService.getRowXmlFilesModel(Integer.parseInt(lsIdRequest), 
+                                                  Integer.parseInt(lsIdService), 
+                Integer.parseInt(lsIdFileXml), 
+                                                  lsTypeService
+                                                );
+                if(loLmkIntXmlFilesRowBean != null){
+                    if(loLmkIntXmlFilesRowBean.getLiIdRequest() > 0){
+                        Blob loFileBlob = loService.getBlobFileXml(lsIdRequest,
+                                                              lsIdService,
+                                                              lsTypeService);       
+                        if(loFileBlob != null){
+                            InputStream loIS = loFileBlob.getBinaryStream();                
+                            if(loIS == null){
+                                loMsg = new FacesMessage("El archivo no existe");
+                                loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
+                                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+                            }else{
+                                loResponse.setHeader("Content-Disposition",
+                                                     "attachment; filename=\"" +
+                                                     loLmkIntXmlFilesRowBean.getLsNomFile() + "\"");
+                                ServletOutputStream loOS =loResponse.getOutputStream();        
+                                try{
+                                    IOUtils.copy(loIS, loOS);    
+                                }catch(Exception loExp){
+                                    System.out.println(loExp.getMessage());
+                                }
+                                loOS.flush();
+                                loIS.close();
+                            }
+                        }else{
+                            loMsg = new FacesMessage("El archivo no existe");
+                            loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
+                            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+                        }
+                    
+                    }else{
+                        
+                        toOutputStream.flush();
+                        toOutputStream.close();
+                        ExternalContext    loEctx = toFacesContext.getExternalContext();
+                        String             lsUrl = 
+                            loEctx.getRequestContextPath() + "/faces/pricePage";
+                        try {
+                            loEctx.redirect(lsUrl);
+                        } catch (IOException loEx) {
+                            ;
+                        }
+                        loMsg = new FacesMessage("El archivo no existe");
+                        loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
+                        toFacesContext.addMessage(null, loMsg);
+                    }
+                }else{
+                    loMsg = new FacesMessage("El archivo no existe");
+                    loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
+                    FacesContext.getCurrentInstance().addMessage(null, loMsg);
+                }
+            } catch (Exception loEx) {
+                loMsg = new FacesMessage("Error de Comunicacion " + loEx);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+            }
+        } catch (Exception loEx) {
+            loEx.printStackTrace();
+            loMsg =
+                new FacesMessage("Error al descargar el archivo.");
+            loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null,
+                                                         loMsg);
+        }
+
     }
+
+    public void setPoTbl(RichTable poTbl) {
+        this.poTbl = poTbl;
+    }
+
+    public RichTable getPoTbl() {
+        return poTbl;
+    }
+}

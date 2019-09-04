@@ -22,6 +22,7 @@ import java.util.List;
 
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 
@@ -406,7 +407,7 @@ public class EntityMappedDao {
         try {
             Statement loStmt = loCnn.createStatement();
             loValue = loStmt.executeUpdate(lsQuery);
-            System.out.println("*********** ok ************");
+            //System.out.println("*********** ok ************");
         } catch (SQLException loExSql) {
             System.out.println(loExSql.getMessage());
         }
@@ -515,6 +516,280 @@ public class EntityMappedDao {
             "    AND NOM_PARAMETER = '" + tsName + "'";
         //System.out.println(lsQuery);
         return lsQuery;
+    }
+    
+    
+    /**
+     * Actualiza en la tabla de crones en base de datos
+     * @autor Jorge Luis Bautista Santiago
+     * @param toLMKIntServiceBitacoraTab
+     * @return Integer
+     */
+    public Integer disableInitializedCron() {
+        Integer    loValue = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm =             
+            "UPDATE EVENTAS.LMK_INT_CRON_CONFIG_TAB" +
+            "   SET IND_ESTATUS = '4'" +
+            " WHERE IND_ESTATUS = '2'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loValue = loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loValue;
+    }
+    
+    /**
+     * Actualiza en la tabla de crones en base de datos
+     * @autor Jorge Luis Bautista Santiago
+     * @return Integer
+     */
+    public Integer enableInitializedCron() {
+        Integer    loValue = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "UPDATE EVENTAS.LMK_INT_CRON_CONFIG_TAB" +
+            "   SET IND_ESTATUS = '2'" +
+            " WHERE IND_ESTATUS = '4'";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loValue = loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loValue;
+    }
+    
+    /**
+     * Obtiene direcciones de correo como destinatarios
+     * @autor Jorge Luis Bautista Santiago
+     * @return List
+     */
+    public List<LmkIntCronConfigRowBean> getServicesCronExecution(){
+        List<LmkIntCronConfigRowBean> laServices = new ArrayList<LmkIntCronConfigRowBean>();
+        Connection                    loCnn = new ConnectionAs400().getConnection();
+        ResultSet                     loRs = null;
+        String                        lsQueryParadigm = getQueryServicesExecution();
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                LmkIntCronConfigRowBean loServiceBean = new LmkIntCronConfigRowBean();             
+                loServiceBean.setLiIdService(loRs.getInt("ID_SERVICE"));
+                loServiceBean.setLsIndBeginSchedule(loRs.getString("IND_BEGIN_SCHEDULE"));  
+                loServiceBean.setLsIndEndSchedule(loRs.getString("IND_END_SCHEDULE"));  
+                loServiceBean.setLsIndCronExpression(loRs.getString("IND_CRON_EXPRESSION"));                
+                loServiceBean.setLsIndEstatus(loRs.getString("IND_ESTATUS"));                
+                //loServiceBean.setAttribute14(loRs.getString("ATTRIBUTE14"));  
+                loServiceBean.setAttribute1(loRs.getString("ATTRIBUTE1"));  
+                loServiceBean.setLsIndPeriodicity(loRs.getString("IND_PERIODICITY"));  
+                loServiceBean.setLsIndValTypeSchedule(loRs.getString("IND_VAL_TYPE_SCHEDULE"));  
+                //loServiceBean.setLiNumLastUpdateBy(loRs.getInt("NUM_LAST_UPDATED_BY")); 
+                //loServiceBean.setAttribute12(loRs.getString("ATTRIBUTE12"));
+                //loServiceBean.setFecLastUpdateDate(loRs.getTimestamp("FEC_LAST_UPDATE_DATE"));  
+                laServices.add(loServiceBean);
+            }
+        } catch (SQLException loExSql) {
+            System.out.println("ERROR AL EJECUTAR: ");
+            System.out.println(lsQueryParadigm);
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return laServices;
+    }
+    
+    public String getQueryServicesExecution(){
+        String lsQuery = 
+            "    SELECT ID_CONFIGURATION,\n" + 
+            "		ID_SERVICE,\n" + 
+            "		IND_PERIODICITY,\n" + 
+            "		IND_BEGIN_SCHEDULE,\n" + 
+            "		IND_BEGIN_MINUTE,\n" + 
+            "		IND_BEGIN_SECOND,\n" + 
+            "		IND_END_SCHEDULE,\n" + 
+            "		IND_END_MINUTE,\n" + 
+            "		IND_END_SECOND,\n" + 
+            "		IND_TYPE_SCHEDULE,\n" + 
+            "		IND_VAL_TYPE_SCHEDULE,\n" + 
+            "		IND_MONDAY,\n" + 
+            "		IND_TUESDAY,\n" + 
+            "		IND_WEDNESDAY,\n" + 
+            "		IND_THURSDAY,\n" + 
+            "		IND_FRIDAY,\n" + 
+            "		IND_SATURDAY,\n" + 
+            "		IND_SUNDAY,\n" + 
+            "		IND_DAY_MONTH,\n" + 
+            "		IND_WEEK_MONTH,\n" + 
+            "		IND_CRON_EXPRESSION,\n" + 
+            "		IND_ESTATUS,\n" + 
+            "		ATTRIBUTE_CATEGORY,\n" + 
+            "		ATTRIBUTE1,\n" + 
+            "		ATTRIBUTE2,\n" + 
+            "		ATTRIBUTE3,\n" + 
+            "		ATTRIBUTE4,\n" + 
+            "		ATTRIBUTE5,\n" + 
+            "		ATTRIBUTE6,\n" + 
+            "		ATTRIBUTE7,\n" + 
+            "		ATTRIBUTE8,\n" + 
+            "		ATTRIBUTE9,\n" + 
+            "		ATTRIBUTE10,\n" + 
+            "		ATTRIBUTE11,\n" + 
+            "		ATTRIBUTE12,\n" + 
+            "		ATTRIBUTE13,\n" + 
+            "		ATTRIBUTE14,\n" + 
+            "		ATTRIBUTE15,\n" + 
+            "		FEC_CREATION_DATE,\n" + 
+            "		NUM_CREATED_BY,\n" + 
+            "		FEC_LAST_UPDATE_DATE,\n" + 
+            "		NUM_LAST_UPDATED_BY,\n" + 
+            "           NUM_LAST_UPDATE_LOGIN  \n" + 
+            "     FROM  EVENTAS.LMK_INT_CRON_CONFIG_TAB\n" + 
+            "    WHERE  IND_ESTATUS = '4'";
+        return lsQuery;
+    }
+    
+    /**
+     * Obtiene Valor de Configuracion Sincrona o Asincrona del servicio en cuestion
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsIdService
+     * @return String
+     */
+    public String getTypeService(String tsIdService) {
+        String     lsValue = "";
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = getQueryTypeService(tsIdService);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                lsValue = loRs.getString(1);
+            }
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return lsValue;
+    }
+    
+    /**
+     * Obtiene Consulta Valor de Configuracion Sincrona o Asincrona del servicio en cuestion
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsIdService
+     * @return String
+     */
+    public String getQueryTypeService(String tsIdService){
+        String lsQuery = 
+            "SELECT NOM_SERVICE\n" + 
+            "  FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB \n" + 
+            " WHERE ID_SERVICE = " + tsIdService;
+        return lsQuery;
+    }
+    
+    
+    /**
+     * Obtiene Valor de Configuracion Sincrona o Asincrona del servicio en cuestion
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsIdService
+     * @return String
+     */
+    public String getNameDescService(String tsIdService) {
+        String     lsValue = "";
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = getQueryNameService(tsIdService);
+        //System.out.println(lsQueryParadigm);
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                lsValue = loRs.getString(1);
+            }
+        } catch (SQLException loExSql) {
+            System.out.println("Erro al ex "+loExSql.getCause());
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return lsValue;
+    }
+    
+    /**
+     * Obtiene Consulta Valor de Configuracion Sincrona o Asincrona del servicio en cuestion
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsIdService
+     * @return String
+     */
+    public String getQueryNameService(String tsIdService){
+        String lsQuery = 
+            "SELECT IND_DESC_SERVICE\n" + 
+            "  FROM EVENTAS.LMK_INT_SERVICES_CAT_TAB \n" + 
+            " WHERE ID_SERVICE = " + tsIdService;
+        return lsQuery;
+    }
+    
+    /**
+     * Actualiza en la tabla de crones en base de datos
+     * @autor Jorge Luis Bautista Santiago
+     * @return Integer
+     */
+    public void updateStatusCron(String tsStatus, String tsIdService) {
+        Integer    loValue = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            "UPDATE EVENTAS.LMK_INT_CRON_CONFIG_TAB" +
+            "   SET IND_ESTATUS = '"+tsStatus+"'" +
+            " WHERE ID_SERVICE = "+tsIdService;
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loValue = loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {
+            System.out.println(loExSql.getMessage());
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        //return loValue;
     }
     
 }

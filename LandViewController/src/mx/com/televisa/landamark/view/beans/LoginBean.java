@@ -181,7 +181,7 @@ public class LoginBean {
         UserMenuBean        loMenu = 
             (UserMenuBean) new UtilFaces().resolveExpression("#{UserMenuBean}");
         String              lsFlag = "false";
-        lsFlag = "true";
+        //lsFlag = "true";
         
         loMenu.setLsPantallaBitacora(lsFlag);
         loMenu.setLsPantallaGralConfig(lsFlag);
@@ -192,6 +192,7 @@ public class LoginBean {
         loMenu.setLsPantallaProcess(lsFlag);
         loMenu.setLsPantallaStatusFiles(lsFlag);
         loMenu.setLsPantallaCreateFile(lsFlag);
+        loMenu.setLsPantallaPrecios(lsFlag);
         
         loMenu.setLsOprDeleteCron("true");
         loMenu.setLsOprExecuteCron("true");
@@ -227,12 +228,12 @@ public class LoginBean {
             if (laOperaciones.get(liI).equalsIgnoreCase("PantallaStatusFiles")){
                 loMenu.setLsPantallaStatusFiles(lsFlag);    
             }
-        if (laOperaciones.get(liI).equalsIgnoreCase("PantallaCreationFiles")){
-            loMenu.setLsPantallaCreateFile(lsFlag);    
-        }
-        if (laOperaciones.get(liI).equalsIgnoreCase("PantallaPriceFiles")){
-            loMenu.setLsPantallaPrecios(lsFlag);    
-        }
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaCreationFiles")){
+                loMenu.setLsPantallaCreateFile(lsFlag);    
+            }
+            if (laOperaciones.get(liI).equalsIgnoreCase("PantallaPriceFiles")){
+                loMenu.setLsPantallaPrecios(lsFlag);    
+            }
             if(laOperaciones.get(liI).startsWith("Ch-")){
                 String[] laChn = laOperaciones.get(liI).split("-");
                 if(laChn.length > 1){

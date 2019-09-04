@@ -367,6 +367,7 @@
                                                   fetchSize="#{bindings.LmkIntServicesLogUsrpVwView1.rangeSize}" id="t2"
                                                   columnStretching="column:c22"
                                                   styleClass="AFStretchWidth"
+                                                  binding="#{PriceBean.poTbl}"
                                                   autoHeightRows="25">
                                             <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IdLogServices.name}"
                                                        sortable="true" visible="false"
@@ -426,7 +427,15 @@
                                                        id="c19">
                                                 <af:outputText value="#{row.NomFile}"
                                                                shortDesc="#{bindings.LmkIntServicesLogUsrpVwView1.hints.NomFile.tooltip}"
+                                                               visible="#{row.NomFile == 'Sin Archivo(s)'}"
                                                                id="ot6"/>
+                                                <af:link id="LnkDeRRr" text="#{row.NomFile}"
+                                                         inlineStyle="text-align:center;" 
+                                                         visible="#{row.NomFile != 'Sin Archivo(s)'}"
+                                                         shortDesc="#{row.NomFile}">
+                                                    <af:fileDownloadActionListener method="#{PriceBean.downloadFileAction}" />         
+                                                </af:link>
+                                                
                                             </af:column>
                                             <af:column sortProperty="#{bindings.LmkIntServicesLogUsrpVwView1.hints.IndParameters.name}"
                                                        sortable="true" align="center" width="250"

@@ -31,6 +31,7 @@ public class LmkIntServicesLogUsrpVwViewImpl extends ViewObjectImpl {
         }
         //System.out.println(getQuery());
         setWhereClause(lsWhere);
+        setOrderByClause("FEC_CREATION_DATE DESC");
         super.executeQueryForCollection(toQc, taParams, tiNumUserParams);
     }
 

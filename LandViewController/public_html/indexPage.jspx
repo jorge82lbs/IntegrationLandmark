@@ -59,7 +59,7 @@
                                          halign="center"
                                          layout="vertical"
                                          inlineStyle="border-style:none;"                                         
-                                         visible="false"><!--SAML2-->
+                                         visible="true"><!--SAML2-->
                             <af:spacer width="10" height="28" id="SpcLogin1"/>
                             <af:panelFormLayout id="PnlFrmLoginMsg" visible="true">
                                 <af:panelGroupLayout id="PnlLoginInfo" valign="top" layout="horizontal">
@@ -125,7 +125,7 @@
                     <af:spacer width="10" height="10" id="s1"/>
                     <af:panelGroupLayout id="pgl2" layout="horizontal">
                         <af:button text="Aceptar" id="b1"
-                                   action="#{LoginBean.redirectToHome2}"/>
+                                   action="#{LoginBean.redirectToHome}"/>
                         <af:spacer width="10" height="10" id="s3"/>
                         <af:button text="Cancelar" id="b2"
                                    action="#{LoginBean.closeLoginPopup}"/>
@@ -135,7 +135,7 @@
                 </af:popup>
 
             </af:form>
-            <af:showPopupBehavior popupId="pSaml2" triggerType="load"/>
+            <!--<af:showPopupBehavior popupId="pSaml2" triggerType="load"/>-->
         </af:document>
     </f:view>
 

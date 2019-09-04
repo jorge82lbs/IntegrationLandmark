@@ -3,18 +3,19 @@
 *
 * File: ProcessBean.java
 *
-* Created on:  Febrero 6, 2019 at 11:00
+* Created on:  Septiembre 6, 2019 at 11:00
 *
 * Copyright (c) - Omw - 2019
 */
 package mx.com.televisa.landamark.view.beans;
 
+import org.quartz.JobDataMap;
 import java.io.File;
 import java.io.IOException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,34 +30,29 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import javax.servlet.ServletContext;
 
 import mx.com.televisa.landamark.model.AppModuleImpl;
-import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
-import mx.com.televisa.landamark.model.types.LmkIntServicesCatRowBean;
-import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
+import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
-
 import mx.com.televisa.landamark.model.types.LmkIntListChannelsAllVwRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServicesCatRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 import mx.com.televisa.landamark.services.jobs.AsRunAsCron;
 import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
 import mx.com.televisa.landamark.services.jobs.OrderSpotsCron;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
 import mx.com.televisa.landamark.services.jobs.ResponseBreaksCron;
-import mx.com.televisa.landamark.users.UserMenuBean;
 import mx.com.televisa.landamark.users.UserOperationList;
+import mx.com.televisa.landamark.util.UtilFaces;
+import mx.com.televisa.landamark.view.types.ChannelParameterBean;
 import mx.com.televisa.landamark.view.types.ExecuteServiceResponseBean;
 import mx.com.televisa.landamark.view.types.ProcessServiceBean;
 import mx.com.televisa.landamark.view.types.SelectOneItemBean;
-
-import mx.com.televisa.landamark.util.UtilFaces;
-
-import mx.com.televisa.landamark.view.types.ChannelParameterBean;
 
 import oracle.adf.model.BindingContext;
 import oracle.adf.model.binding.DCBindingContainer;
@@ -74,29 +70,23 @@ import oracle.adf.view.rich.component.rich.layout.RichPanelTabbed;
 import oracle.adf.view.rich.component.rich.layout.RichShowDetailItem;
 import oracle.adf.view.rich.component.rich.nav.RichLink;
 import oracle.adf.view.rich.component.rich.output.RichOutputText;
-
 import oracle.adf.view.rich.context.AdfFacesContext;
 
 import oracle.adfinternal.view.faces.model.binding.FacesCtrlHierNodeBinding;
 
 import oracle.jbo.ApplicationModule;
-import oracle.jbo.Row;
 import oracle.jbo.ViewObject;
 import oracle.jbo.client.Configuration;
 
-import oracle.jbo.uicli.binding.JUCtrlHierBinding;
-
 import org.apache.myfaces.trinidad.component.UIXIterator;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
-
 import org.apache.myfaces.trinidad.event.SelectionEvent;
-import org.apache.myfaces.trinidad.model.CollectionModel;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
@@ -104,6 +94,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
 
 /** Esta clase es un bean que enlaza la pantalla de Configuracion de Servicios<br/><br/>
  *
@@ -247,9 +238,12 @@ public class ProcessBean {
     private UIXIterator poChannelsIterator;
     private RichSelectBooleanCheckbox poSelected;
     private RichInputText poIdServiceByTbl;
+    private RichPopup poPopupRstCronService;
+    private RichInputText poIdUser;
+    private RichInputText poUserName;
 
     /**
-     * Realiza la validación sintáctica de la expresión. 
+     * Realiza la validación sintáctica de la expresión.
      * @param expression
      * @return Object
      */
@@ -649,6 +643,7 @@ public class ProcessBean {
                     loJobDataMap.put("lsTypeProcess", toPrcBean.getLsTypeProcess());
                     loJobDataMap.put("lsServiceName", toPrcBean.getLsServiceName());
                     loJobDataMap.put("lsPathFiles", getRealPath());                    
+                    //loJobDataMap.put("lsPathFiles", "");
                     loScheduler.scheduleJob(loJob, loTrigger);
                     loScheduler.start();
                     
@@ -742,6 +737,7 @@ public class ProcessBean {
                             loJobDataMap.put("lsTypeProcess", toPrcBean.getLsTypeProcess());
                             loJobDataMap.put("lsServiceName", toPrcBean.getLsServiceName());
                             loJobDataMap.put("lsPathFiles", getRealPath());
+                            //loJobDataMap.put("lsPathFiles", "");
                             loScheduler.scheduleJob(loJob, loTrigger);
                             Integer piIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("BeginCron");
@@ -3824,5 +3820,406 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         getPoIdServiceByTbl().setValue(lsIdService);
         
         
+    }
+    
+    public String showResetCronsAction() {
+        new UtilFaces().showPopup(getPoPopupRstCronService());
+        return null;
+    }
+    
+    public String cancelResetCronAction() {
+        new UtilFaces().hidePopup(getPoPopupRstCronService());
+        return null;
+    }
+    
+    public String listCronsAction() {
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        //Integer liRes = loEntityMappedDao.enableInitializedCron();
+        //if(liRes > 0){
+            System.out.println(">>> Se han habilitado crones activos por reinicio - estatus Deshabilitado [4]");                                                
+            LmkIntServiceBitacoraRowBean loEvetvIntServiceBitacoraTab = new LmkIntServiceBitacoraRowBean();
+            loEvetvIntServiceBitacoraTab.setLiIdLogServices(0);
+            loEvetvIntServiceBitacoraTab.setLiIdService(0);
+            loEvetvIntServiceBitacoraTab.setLiIndProcess(0);
+            loEvetvIntServiceBitacoraTab.setLiNumProcessId(0);
+            loEvetvIntServiceBitacoraTab.setLiNumPgmProcessId(0);
+            loEvetvIntServiceBitacoraTab.setLsIndEvento("Se han habilitado crones activos por reinicio");
+            loEntityMappedDao.insertBitacoraWs(loEvetvIntServiceBitacoraTab,0, "Server");
+            listCronsActionBak();
+        //}
+        //Refresh tabla principal
+        new UtilFaces().refreshTableWhereIterator("1 = 1 AND ATTRIBUTE1 = 'System' ",
+                                                  gsEntityIterator,
+                                                  getPoTblMain()
+                                                  );
+        
+        new UtilFaces().hidePopup(getPoPopupRstCronService());
+        return null;
+    }
+
+    public String listCronsActionBak() {
+        boolean lbSuccess = true;
+        String lsIdUser = 
+            getPoIdUser().getValue() == null ? "0" : 
+            getPoIdUser().getValue().toString().trim();
+        //System.out.println("lsIdUser["+lsIdUser+"]");
+        String lsUserName = 
+            getPoUserName().getValue() == null ? "IntLmk" : 
+            getPoUserName().getValue().toString().trim();
+        //System.out.println("lsUserName["+lsUserName+"]");
+        String lsMessage = "";
+        Scheduler scheduler;
+        //System.out.println("*********************************CRONES EN EJECUCION ****************************************");
+        try {
+            scheduler = new StdSchedulerFactory().getScheduler();            
+            for (String groupName : scheduler.getJobGroupNames()) {
+             for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+              String jobName = jobKey.getName();
+              String jobGroup = jobKey.getGroup();
+        
+              //get job's trigger
+              List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+              Date nextFireTime = triggers.get(0).getNextFireTime(); 
+        
+                System.out.println("[jobName] : " + jobName + " [groupName] : "
+                    + jobGroup + " - " + nextFireTime);
+        
+              }    
+            }
+        } catch (SchedulerException e) {
+            System.out.println("Error al listar crones "+e.getMessage());
+            lbSuccess = false;
+            lsMessage += " " + e.getMessage();
+        }
+        //System.out.println("********************************** ELIMINANDO DE MEMORIA *****************************************************");
+        Scheduler schedulerDlt;
+        try {
+            schedulerDlt = new StdSchedulerFactory().getScheduler();            
+            for (String groupName : schedulerDlt.getJobGroupNames()) {
+             for (JobKey jobKey : schedulerDlt.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+              //String jobName = jobKey.getName();
+              //String jobGroup = jobKey.getGroup();
+                  schedulerDlt.deleteJob(jobKey);
+              //get job's trigger
+              //List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+              //Date nextFireTime = triggers.get(0).getNextFireTime(); 
+        
+                //System.out.println("[jobName] : " + jobName + " [groupName] : "
+                //    + jobGroup + " - " + nextFireTime);
+        
+              }    
+            }
+        } catch (SchedulerException e) {
+            System.out.println("Error al ELIMINAR crones "+e.getMessage());
+            lbSuccess = false;
+            lsMessage += " " + e.getMessage();
+        }
+        /*
+        System.out.println("********************************** LISTANDO CRONES EN EJECUCION *****************************************************");
+        Scheduler schedulerBd;
+        try {
+            schedulerBd = new StdSchedulerFactory().getScheduler();            
+            for (String groupName : schedulerBd.getJobGroupNames()) {
+             for (JobKey jobKey : schedulerBd.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+              String jobName = jobKey.getName();
+              String jobGroup = jobKey.getGroup();
+              //get job's trigger
+              List<Trigger> triggers = (List<Trigger>) schedulerBd.getTriggersOfJob(jobKey);
+              Date nextFireTime = triggers.get(0).getNextFireTime(); 
+        
+                System.out.println("[jobName] : " + jobName + " [groupName] : "
+                    + jobGroup + " - " + nextFireTime);
+        
+              }    
+            }
+        } catch (SchedulerException e) {
+            System.out.println("Error al listar crones "+e.getMessage());
+            lbSuccess = false;
+            lsMessage += " " + e.getMessage();
+        }*/
+        //System.out.println("***************************************************************************************");
+        
+        List<LmkIntCronConfigRowBean> laServsCron = 
+            new ArrayList<LmkIntCronConfigRowBean>();
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        laServsCron = loEntityMappedDao.getServicesCronExecution();
+        //System.out.println("Crones inicializados ["+laServsCron.size()+"] CONFIGURADOS Eliminarlos todos..........");
+        for(LmkIntCronConfigRowBean loSerCronBean: laServsCron){
+            //El nombre Key del servicio es idService y nomService
+            //System.out.println("IdService["+loSerCronBean.getLiIdService()+"]");
+            String lsNomService = 
+                loEntityMappedDao.getTypeService(String.valueOf(loSerCronBean.getLiIdService()));
+            String psIdTrigger = loSerCronBean.getLiIdService() + "-" + lsNomService;
+            Scheduler loSchedulerDel;                    
+            //---------------------------------------------------------------------------------
+            try {
+                String    lsNewCronExpression = "0 0 1 1/1 * ? *"; 
+                //System.out.println("Eliminar cualquier cron con ID["+psIdTrigger+"]");
+                loSchedulerDel = new StdSchedulerFactory().getScheduler();
+                Trigger loTrigger = 
+                    TriggerBuilder.newTrigger().withIdentity(psIdTrigger).withSchedule(
+                       CronScheduleBuilder.cronSchedule(lsNewCronExpression)).startNow().build();
+                loSchedulerDel.rescheduleJob(new TriggerKey(psIdTrigger), loTrigger);
+                loSchedulerDel.deleteJob(loTrigger.getJobKey());                        
+                //System.out.println("Cron con ID["+psIdTrigger+"] Eliminado Satifactoriamente");
+            } catch (SchedulerException loEx) {
+                System.out.println("SchedulerException: " + loEx.getMessage());
+                lbSuccess = false;
+                lsMessage += " " + loEx.getMessage();
+            }                                                            
+        }
+        /*
+        System.out.println("--------------- Lista de Crones despues de ser eliminados: ---------------");        
+        try {
+            scheduler = new StdSchedulerFactory().getScheduler();            
+            for (String groupName : scheduler.getJobGroupNames()) {
+             for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+              String jobName = jobKey.getName();
+              String jobGroup = jobKey.getGroup();
+        
+              //get job's trigger
+              List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+              Date nextFireTime = triggers.get(0).getNextFireTime(); 
+        
+                System.out.println("[jobName] : " + jobName + " [groupName] : "
+                    + jobGroup + " - " + nextFireTime);
+        
+              }    
+            }
+        } catch (SchedulerException e) {
+            System.out.println("Error al listar crones "+e.getMessage());               
+        }*/
+        //System.out.println("***************************************************************************************");
+        if(lbSuccess){
+            //System.out.println("Iniciar Crones(nuevos) en el actual despliegue....");
+            for(LmkIntCronConfigRowBean loSerCronBean: laServsCron){
+                //El nombre Key del servicio es idService y nomService
+                //System.out.println("IdService["+loSerCronBean.getLiIdService()+"]");
+                String lsNomService = 
+                    loEntityMappedDao.getTypeService(String.valueOf(loSerCronBean.getLiIdService()));
+                String psIdTrigger = loSerCronBean.getLiIdService() + "-" + lsNomService;
+                //System.out.println(">>>> psIdTrigger["+psIdTrigger+"]");
+                String lsNombreServicio = 
+                    loEntityMappedDao.getNameDescService(String.valueOf(loSerCronBean.getLiIdService()));
+                //System.out.print("lsNombreServicio["+lsNombreServicio+"]");
+                /////////////////// LECTURA DE SPOTS //////////////////////////////////////////
+                if(lsNomService.equalsIgnoreCase("ProcessOrderSpots")){
+                    iniciarCron(psIdTrigger, 
+                                loSerCronBean, 
+                                OrderSpotsCron.class, 
+                                lsIdUser, 
+                                lsUserName,
+                                "ProcessOrderSpots",
+                                lsNombreServicio
+                                );
+                }
+                
+                /////////////////// PROGRAMAS Y CORTES //////////////////////////////////////////
+                if(lsNomService.equalsIgnoreCase("ProcessParrillasProgramas")){
+                    iniciarCron(psIdTrigger, 
+                                loSerCronBean, 
+                                ParrillasProgramasCron.class, 
+                                lsIdUser, 
+                                lsUserName,
+                                "ProcessParrillasProgramas",
+                                lsNombreServicio
+                                );
+                }
+                /////////////////// DUMMY //////////////////////////////////////////
+                if(lsNomService.equalsIgnoreCase("DummyProcess")){
+                    iniciarCron(psIdTrigger, 
+                                loSerCronBean, 
+                                ExecuteDummyCron.class, 
+                                lsIdUser, 
+                                lsUserName,
+                                "DummyProcess",
+                                lsNombreServicio
+                                );
+                }
+                /////////////////// RESPUESTA DE BREAKS //////////////////////////////////////////
+                if(lsNomService.equalsIgnoreCase("ProcessResponseBreaks")){
+                    iniciarCron(psIdTrigger, 
+                                loSerCronBean, 
+                                ResponseBreaksCron.class, 
+                                lsIdUser, 
+                                lsUserName,
+                                "ProcessResponseBreaks",
+                                lsNombreServicio
+                                );
+                }
+                /////////////////// AS RUN AS //////////////////////////////////////////
+                if(lsNomService.equalsIgnoreCase("ProcessAsRunAs")){
+                    iniciarCron(psIdTrigger, 
+                                loSerCronBean, 
+                                AsRunAsCron.class, 
+                                lsIdUser, 
+                                lsUserName,
+                                "ProcessAsRunAs",
+                                lsNombreServicio
+                                );
+                }
+                
+                try{
+                    loEntityMappedDao.updateStatusCron("2",String.valueOf(loSerCronBean.getLiIdService()));
+                }catch(Exception loEx){
+                    System.out.println("Error al update status cron "+loEx.getMessage());
+                }
+                
+                try{
+                    LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
+                    Integer                  liIndProcess = 
+                        new UtilFaces().getIdConfigParameterByName("BeginCron");//
+                    loBitBean.setLiIdLogServices(0);
+                    loBitBean.setLiIdService(loSerCronBean.getLiIdService());
+                    loBitBean.setLiIndProcess(liIndProcess);
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento("Inicio Cron de Servicio "+
+                                             lsNombreServicio);
+                    
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       Integer.parseInt(lsIdUser), 
+                                                       lsUserName);   
+                }catch(Exception loEx){
+                    System.out.println("Error al enviar a bitacora begin cron "+loEx.getMessage());
+                }
+            }        
+            
+            //System.out.println("------- Al final los crones en  ejecucion son: ------------");
+            //System.out.println("***************************************************************************************");
+            try {
+                scheduler = new StdSchedulerFactory().getScheduler();            
+                for (String groupName : scheduler.getJobGroupNames()) {
+                 for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                  String jobName = jobKey.getName();
+                  String jobGroup = jobKey.getGroup();
+            
+                  //get job's trigger
+                  List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+                  Date nextFireTime = triggers.get(0).getNextFireTime(); 
+            
+                    System.out.println("[jobName] : " + jobName + " [groupName] : "
+                        + jobGroup + " - " + nextFireTime);
+            
+                  }    
+                }
+            } catch (SchedulerException e) {
+                System.out.println("Error al listar crones "+e.getMessage());               
+            }   
+            
+            FacesMessage loMsg =
+                new FacesMessage("Crones Reiniciciados Satisfactoriamente");
+            loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }else{
+            FacesMessage loMsg =
+                new FacesMessage(lsMessage);
+            loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }
+        new UtilFaces().hidePopup(getPoPopupRstCronService());
+        return null;
+    }
+    
+    public void iniciarCron(String psIdTrigger,
+                            LmkIntCronConfigRowBean loSerCronBean,
+                            Class<? extends Job> loClassCron,
+                            String lsIdUser,
+                            String lsUserName,
+                            String lsTypeProcess,
+                            String lsServiceName){
+        Scheduler loScheduler;                    
+        System.out.println("Iniciando Cron con ID["+psIdTrigger+"]");
+        try {
+            //System.out.println("Try");
+            Trigger loTrigger = null;
+            loScheduler = new StdSchedulerFactory().getScheduler();
+            JobDetail loJob = 
+                JobBuilder.newJob(loClassCron).build();           
+            //System.out.println("job ok");
+            Date ltCurrent = new Date();
+            String lsCurrDate = "";
+            SimpleDateFormat lodfCurrent = new SimpleDateFormat("yyyy-MM-dd");
+            lsCurrDate = lodfCurrent.format(ltCurrent);
+            Date ltFechaIni = new Date();
+            Date ltFechaFin = new Date();
+            String lsInicio = 
+                loSerCronBean.getLsIndBeginSchedule() == null ? "08:00" : 
+                loSerCronBean.getLsIndBeginSchedule();
+            //System.out.println("Inicio "+lsInicio);
+            String lsFin = 
+                loSerCronBean.getLsIndEndSchedule() == null ? "23:50" : 
+                loSerCronBean.getLsIndEndSchedule();
+            //System.out.println("Fin "+lsFin);
+            String lsEvery =  
+                loSerCronBean.getLsIndValTypeSchedule() == null ? "23" : 
+                loSerCronBean.getLsIndValTypeSchedule();
+            //System.out.println("lsEvery "+lsEvery);
+            Integer liEvery = Integer.parseInt(lsEvery);
+            SimpleDateFormat lodf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            String lsStartDate = lsCurrDate + " " + lsInicio + ":00.0";
+            String lsFinalDate = lsCurrDate + " " + lsFin + ":00.0";
+            try {
+                ltFechaIni = lodf.parse(lsStartDate);
+                ltFechaFin = lodf.parse(lsFinalDate);
+            } catch (ParseException e) {
+                System.out.println("Error al parsear: "+e.getMessage());
+                e.printStackTrace();
+            }
+            //System.out.println("ltFechaIni "+ltFechaIni);
+            //System.out.println("ltFechaFin "+ltFechaFin);
+            if(loSerCronBean.getLsIndPeriodicity().equalsIgnoreCase("MINUTOS")){
+                loTrigger = 
+                    TriggerBuilder.newTrigger().withIdentity(psIdTrigger).withSchedule(
+                SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(liEvery).repeatForever()
+                ).startAt(ltFechaIni).endAt(ltFechaFin).build();
+            }else{//Horas
+                loTrigger = 
+                    TriggerBuilder.newTrigger().withIdentity(psIdTrigger).withSchedule(
+                SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(liEvery).repeatForever()
+                ).startAt(ltFechaIni).endAt(ltFechaFin).build();
+            }
+            //System.out.println("trigger completo");
+            JobDataMap loJobDataMap=  loJob.getJobDataMap();
+            loJobDataMap.put("lsIdService", String.valueOf(loSerCronBean.getLiIdService())); 
+            loJobDataMap.put("liIdUser", lsIdUser); 
+            loJobDataMap.put("lsUserName", lsUserName); 
+            //loJobDataMap.put("lsIdRequest", lsIdRequest); 
+            loJobDataMap.put("lsTypeRequest", "normal");
+            loJobDataMap.put("lsTypeProcess", lsTypeProcess);
+            loJobDataMap.put("lsServiceName", lsServiceName);
+            loJobDataMap.put("lsPathFiles", getRealPath());                    
+            //loJobDataMap.put("lsPathFiles", "");
+            loScheduler.scheduleJob(loJob, loTrigger);  
+            System.out.println("start");
+            loScheduler.start();
+        } catch (Exception loEx) {
+            System.out.println("Error al inicializar tareas " + loEx.getMessage());                    
+        } 
+    }
+    
+
+    public void setPoPopupRstCronService(RichPopup poPopupRstCronService) {
+        this.poPopupRstCronService = poPopupRstCronService;
+    }
+
+    public RichPopup getPoPopupRstCronService() {
+        return poPopupRstCronService;
+    }
+
+    public void setPoIdUser(RichInputText poIdUser) {
+        this.poIdUser = poIdUser;
+    }
+
+    public RichInputText getPoIdUser() {
+        return poIdUser;
+    }
+
+    public void setPoUserName(RichInputText poUserName) {
+        this.poUserName = poUserName;
+    }
+
+    public RichInputText getPoUserName() {
+        return poUserName;
     }
 }

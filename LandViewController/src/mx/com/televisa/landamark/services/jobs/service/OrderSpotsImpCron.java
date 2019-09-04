@@ -31,6 +31,7 @@ import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.LmkIntMappingCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
+import mx.com.televisa.landamark.model.types.LmkLogComercialStatusBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 import mx.com.televisa.landamark.model.types.inject.LmkSpotsRowBean;
 import mx.com.televisa.landamark.services.beans.input.spots.Content;
@@ -109,13 +110,14 @@ public class OrderSpotsImpCron implements Job{
             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                liIdUser, 
                                                lsUserName);   
-            
+            /*
             loUtilMail.buildMailByProcess(liIdLogService, 
                                           Integer.parseInt(lsIdService), 
                                           liIndProcess, 
                                           liIdUser, 
                                           lsUserName,
-                                          lsServiceName);
+                                          lsServiceName,
+                                          "");*/
             
         }
         else{
@@ -138,12 +140,13 @@ public class OrderSpotsImpCron implements Job{
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);  
-                loUtilMail.buildMailByProcess(liIdLogService, 
+                /*loUtilMail.buildMailByProcess(liIdLogService, 
                                               Integer.parseInt(lsIdService), 
                                               liIndProcess, 
                                               liIdUser, 
                                               lsUserName,
-                                              lsServiceName);
+                                              lsServiceName, 
+                                              "");*/
             }
             else{
                 //Si el archivo si fue encontrado, entonces guardar copia en carpeta de WL  
@@ -234,6 +237,7 @@ public class OrderSpotsImpCron implements Job{
                         //String lsBcstdtNomarch = laNomarch[2];
                         String lsStnid = getChannelMapped(lsStnidNomarch);
                         String lsBcstdt = loRes.getLsMessage();
+                        String lsKeyChannel = lsStnid + " - "+lsBcstdt;
                         try{
                         loResReadFile.updateParametersXmlFiles(loXmlFile.getLiAffected(), 
                                                                "["+lsStnid+","+lsBcstdt+"]"
@@ -332,12 +336,19 @@ public class OrderSpotsImpCron implements Job{
                                                                    lsUserName);  
                                 System.out.println("Enviar correo para informar que todo fue con incidencias");
                                 try{
-                                loUtilMail.buildMailByProcess(liIdLogService, 
+                                    
+                                    List<LmkLogComercialStatusBean> laList = 
+                                        loOrderSpotsDao.getLogComercialStatusKO(lsStnid, lsBcstdt);
+                                    
+                                    
+                                loUtilMail.buildMailByProcessErrSpots(liIdLogService, 
                                                               Integer.parseInt(lsIdService), 
                                                               liIndProcess, 
                                                               liIdUser, 
                                                               lsUserName,
-                                                              lsServiceName);
+                                                              lsServiceName,
+                                                              lsKeyChannel,
+                                                              laList);
                                 }catch(Exception loEx){
                                     System.out.println("Error al intentar enviar correo "+loEx.getMessage());
                                 }
@@ -435,7 +446,8 @@ public class OrderSpotsImpCron implements Job{
                                                                   liIndProcess, 
                                                                   liIdUser, 
                                                                   lsUserName,
-                                                                  lsServiceName);
+                                                                  lsServiceName,
+                                                                  lsKeyChannel);
                                     //Actualizar estatus de archivo xml                                    
                                     loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "C");      
                                     System.out.println("Cambiar estatus al archivo de TODO OK (C)");

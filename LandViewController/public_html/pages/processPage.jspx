@@ -177,6 +177,29 @@
                                                   partialTriggers="tbl"
                                                   binding="#{ProcessBean.poIdServiceByTbl}">
                                     </af:inputText>
+                                    
+                                    <af:inputText id="TxtIdUser"
+                                                  label="IdUserc" columns="20"
+                                                  visible="false"
+                                                  value=" #{UserInfoBean.psIdUser}"
+                                                  binding="#{ProcessBean.poIdUser}">
+                                    </af:inputText>
+                                    <af:inputText id="TxtUserName"
+                                                  label="UserNamec" columns="80"
+                                                  visible="false"
+                                                  value=" #{UserInfoBean.psUserName}"
+                                                  binding="#{ProcessBean.poUserName}">
+                                    </af:inputText>
+                                    
+                                    <af:button text="Iniciar Procesos Inactivos"
+                                              id="BtnResetCr"
+                                              icon="/images/Next.gif"
+                                              shortDesc="Iniciar Procesos Inactivos"
+                                              action="#{ProcessBean.showResetCronsAction}">
+                                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                    </af:button>
+                                    
+                                    <af:spacer id="SpcfAx4" width="10" height="15"/>
                                   
                                   
                                    <!-- ######################### TABLA PRINCIPAL SERVICIOS ################# !-->
@@ -253,7 +276,7 @@
                                                      id="LnkParm"
                                                      inlineStyle="text-align:center;"
                                                      partialSubmit="true"
-                                                     visible="true"
+                                                     visible="#{row.NomService != 'ProcessOrderSpots'}"
                                                      actionListener="#{ProcessBean.showAddParameters}"
                                                      shortDesc="Asignar Parámetros al servicio"/>
                                         </af:column>
@@ -262,7 +285,7 @@
                                                    headerText="#{bindings.LmkIntServicesCatVwView1.hints.IdService.label}"
                                                    id="c1">
                                             <af:outputText value="#{row.IdService}"
-                                                           shortDesc="#{bindings.LmkIntServicesCatVwView1.hints.IdService.tooltip}"
+                                                           shortDesc="#{bindings.LmkIntServicesCatVwView1.hints.IdService.tooltip}"                                                           
                                                            id="ot1">
                                                 <af:convertNumber groupingUsed="false"
                                                                   pattern="#{bindings.LmkIntServicesCatVwView1.hints.IdService.format}"/>
@@ -367,8 +390,13 @@
                                             <af:link icon="/images/flag_green.gif"
                                                      id="LnkCronSweb1"
                                                      inlineStyle="text-align:center;"
-                                                     visible="true"
+                                                     visible="#{row.IndCronActive == '2'}"
                                                      shortDesc="Proceceso en Segundo Plano en Ejecución"/>
+                                            <af:link icon="/images/flag_white.gif"
+                                                     id="LnkCronSweb2"
+                                                     inlineStyle="text-align:center;"
+                                                     visible="#{row.IndCronActive == '4'}"
+                                                     shortDesc="Proceceso en Segundo Plano Inactivo"/>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntServicesCatVwView1.hints.IndParameters.name}"
                                                    sortable="true" visible="false"
@@ -1337,6 +1365,41 @@
                                              icon="/images/cancelar.gif"
                                              action="#{ProcessBean.cancelStopAction}"/>
                        </af:panelGroupLayout> 
+                    </af:panelGroupLayout>
+                  </af:panelWindow>
+                </af:popup>
+                
+                <!-- ################## POPUP CONFIRM RESET ALL CRON ######################################## !-->
+                <af:popup id="popupRstCr" contentDelivery="lazyUncached"                          
+                          binding="#{ProcessBean.poPopupRstCronService}">
+                  <af:panelWindow id="PnlRstCr" 
+                               inlineStyle="border-style:none;"
+                               modal="true" 
+                               closeIconVisible="false"
+                               title="Reiniciar Todos los Crones Configurados" 
+                               titleIconSource="/images/page_refresh.gif">
+                    <af:panelGroupLayout layout="vertical" 
+                                      id="PnlRstCrMsg" 
+                                      inlineStyle="border-style:none;" 
+                                      valign="middle" 
+                                      halign="center">
+                      <af:spacer width="10" height="10" id="SpcRstCr"/>
+                      <af:panelLabelAndMessage id="PnlLblMsgRstCr"
+                                               inlineStyle="border-style:none; color:Olive;"
+                                               label="Confirmar Reinicio de Crones"/>
+                      <af:spacer width="50" height="25" id="SpcSRstCr10"/>
+                      <af:panelGroupLayout layout="horizontal" id="PnlRstBtnsCr" 
+                                           inlineStyle="border-style:none;" valign="middle" halign="center">
+                      <af:button text="Aceptar" id="BtnRstOkCr"
+                                 icon="/images/aceptar.gif"
+                                 action="#{ProcessBean.listCronsAction}">
+                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                      </af:button>
+                      <af:spacer width="10" height="25" id="SpcRstCr_11"/>
+                      <af:button text="Cancelar" id="BtnRstCancelarCr"
+                                 icon="/images/cancelar.gif"
+                                 action="#{ProcessBean.cancelResetCronAction}"/>
+                      </af:panelGroupLayout> 
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>

@@ -27,6 +27,7 @@ import mx.com.televisa.landamark.client.email.types.MailBody;
 import mx.com.televisa.landamark.client.email.types.local.EmailDestinationAddress;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 
+import mx.com.televisa.landamark.model.types.LmkLogComercialStatusBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 
 import weblogic.wsee.security.unt.ClientUNTCredentialProvider;
@@ -266,4 +267,152 @@ public class MailManagement {
             }
         }
     }
+    
+    /**
+     * Envia correo correspondiente al resultado de Log Comercial
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsSubject
+     * @param toEmailDestinationAddress
+     * @return boolean
+     */
+    public ResponseUpdDao sendEmailListSpots(String tsSubject, 
+                                          String tsMessage,
+                                          String tsProcess,
+                                          List<EmailDestinationAddress> toEmailDestinationAddress,
+                                          List<LmkLogComercialStatusBean> taList
+                                 ) {
+        ResponseUpdDao loResponse = new ResponseUpdDao();
+        try{
+            String lsHtml =
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-" +
+                "strict.dtd\">\n" + 
+                "       <html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"es-ES\">\n" + 
+                "               <head>\n" + 
+                "            <title>"+tsProcess+"</title>\n" + 
+                "            <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />\n" + 
+                "            <meta name=\"language\" content=\"es\" />\n" + 
+                "        </head>\n" + 
+                "        <body>\n" + 
+                "            <div style='background-color:#0F2F62; height:25px;background:linear-gradient(#040545, " +
+                "#0172AE);background:-webkit-linear-gradient(#040545, #0172AE);background: -ms-linear-background(" +
+                "#040545, #0172AE);filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#040545', " +
+                "EndColorStr='#0172AE');'></div>\n" + 
+                "            <div style='background-color:#fff'>             \n" + 
+                "            <br/>\n" + 
+                "            <label style='font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:" +
+                "bold '>El Proceso de Integraci&oacute;n para "+tsProcess+" ha Finalizado</label><p/>\n" + 
+                "                       <label style='font-family:Arial, Helvetica, sans-serif; font-size:12px; " +
+                "font-weight:bold '>"+tsMessage+"</label><p/>\n" + 
+                
+                "            <table cellpadding='0' cellspacing='0'  style='border-bottom-color:#F79646;border-" +
+                "bottom-width:3px;border-bottom-style:solid;border-top-color:#F79646;border-top-style:solid;border-" +
+                "top-width:3px; '>             \n" + 
+                "                               <tr>\n" + 
+            "                                       <th height='10px' style='font-size:12px; background:#276A7C; " +
+                "font-family:Arial, Helvetica, sans-serif;color:#FFFFFF;padding:3px;'>Canal</th>\n" + 
+            "                                       <th height='10px' style='font-size:12px; background:#276A7C; " +
+                "font-family:Arial, Helvetica, sans-serif;color:#FFFFFF;padding:3px;'>Fecha</th>\n" + 
+            "                                       <th height='10px' style='font-size:12px; background:#276A7C; " +
+                "font-family:Arial, Helvetica, sans-serif;color:#FFFFFF;padding:3px;'>Tipo</th>\n" + 
+            "                                       <th height='10px' style='font-size:12px; background:#276A7C; " +
+                "font-family:Arial, Helvetica, sans-serif;color:#FFFFFF;padding:3px;'>Mensaje</th>\n" + 
+            "                                       <th height='10px' style='font-size:12px; background:#276A7C; " +
+                "font-family:Arial, Helvetica, sans-serif;color:#FFFFFF;padding:3px;'>Estatus</th>\n" + 
+                "                               </tr>\n";
+                
+            for(LmkLogComercialStatusBean loLogCertificadoBean : taList){            
+                lsHtml += 
+                "                               <tr>\n" + 
+                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
+                    "Arial, Helvetica, sans-serif; padding:3px;'> </td>\n" + 
+                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
+                    "Arial, Helvetica, sans-serif; padding:3px;'>"+loLogCertificadoBean.getLsStnid()+"</td>\n" + 
+                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
+                    "Arial, Helvetica, sans-serif; padding:3px;'>"+loLogCertificadoBean.getLsBcstdt()+"</td>\n" + 
+                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
+                    "Arial, Helvetica, sans-serif; padding:3px;'>"+loLogCertificadoBean.getLsTipo()+"</td>\n" + 
+                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
+                    "Arial, Helvetica, sans-serif; padding:3px;'>"+loLogCertificadoBean.getLsMensaje()+"</td>\n" + 
+                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
+                    "Arial, Helvetica, sans-serif; padding:3px;'>"+loLogCertificadoBean.getLsStatus()+"</td>\n" + 
+                "                               </tr>\n";
+            }
+                lsHtml += "            </table>             \n" + 
+                
+                
+                "            <br/>           \n" + 
+                "            <br/>\n" + 
+                "            <label style='font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:" +
+                    "bold '>Integraci&oacute;n Paradigm-Landmark, 2019 Televisa S.A. de C.V</label>            \n" + 
+                "            <br/>\n" + 
+                "            </div>\n" + 
+                "            <div style='float:left; background-color:#F58220;width:7%;height:25px;background:-moz-" +
+                    "linear-gradient(#F1A345, #E17521); background:-webkit-linear-gradient(#F1A345, #E17521);" +
+            "background: -ms-linear-background(#F1A345, #E17521);filter:progid:DXImageTransform.Microsoft.gradient(" +
+                    "startColorStr='#F1A345', EndColorStr='#E17521');'>\n" + 
+                "                       </div>             \n" + 
+                "            <div style='float:left; ;width:86%;height:25px;background:linear-gradient(#040545, " +
+                    "#0172AE);background:-webkit-linear-gradient(#040545, #0172AE);background: -ms-linear-" +
+                    "background(#040545, #0172AE);filter:progid:DXImageTransform.Microsoft.gradient(startColorStr=" +
+                    "'#040545', EndColorStr='#0172AE');'>\n" + 
+                "                       </div>\n" + 
+                "            <div style='float:left; background-color:#F58220;width:7%;height:25px;background:-" +
+                    "moz-linear-gradient(#F1A345, #E17521);background:-webkit-linear-gradient(#F1A345, #E17521);" +
+            "background: -ms-linear-background(#F1A345, #E17521);filter:progid:DXImageTransform.Microsoft.gradient(" +
+                    "startColorStr='#F1A345', EndColorStr='#E17521');'></div>             \n" + 
+                "               </body>\n" + 
+                "       </html>";    
+            System.out.println("Html generado para el correo ================>");
+            System.out.println(lsHtml);
+            //writeFile(lsHtml);
+            SecmanDasEnviarCorreo loSecmanDasSendMail = getDynaWebServiceURLEmail();
+            if(loSecmanDasSendMail != null){
+                try{
+                    Map<String, Object>   loRequestContext =
+                        ((BindingProvider)loSecmanDasSendMail).getRequestContext();                    
+                    setPortCredentialProviderList(loRequestContext);                    
+                    Mail                  loEmail = new Mail();                    
+                    MailHeader            loEmailHeader = new MailHeader();
+                    MailAddress           loEmailAddresFrom = new MailAddress();                    
+                    loEmailAddresFrom.setUserNameAdress("Landmark Integration");
+                    loEmailAddresFrom.setAddress("service_integration_lmk@televisa.com.mx");
+                    loEmailHeader.setAddressFrom(loEmailAddresFrom);
+                    MailAddressCollection loMailAddressCollection =
+                        new MailAddressCollection();
+                    for(EmailDestinationAddress loDest: toEmailDestinationAddress){                        
+                        MailAddress           loEmailAdd = new MailAddress();
+                        //System.out.println("AddressTO username["+loDest.getLsNameTo()+"] address["+loDest.getLsAddressTo()+"]");
+                        loEmailAdd.setUserNameAdress(loDest.getLsNameTo());
+                        loEmailAdd.setAddress(loDest.getLsAddressTo());    
+                        loMailAddressCollection.getMailAddress().add(loEmailAdd);
+                    }
+                    loEmailHeader.setTo(loMailAddressCollection);
+                    loEmailHeader.setSubject(tsSubject);
+                    loEmail.setMailHeader(loEmailHeader);
+                    MailBody              loMailBody = new MailBody();
+                    loMailBody.setBodyType("HTML");
+                    loMailBody.setMessage(lsHtml);
+                    loEmail.setMailBody(loMailBody);
+                    loSecmanDasSendMail.enviarCorreo(loEmail);
+                    loResponse.setLsResponse("OK");
+                    loResponse.setLiAffected(0);
+                    loResponse.setLsMessage("Correo enviado satisfactoriamente");
+                    System.out.println("Fin enviar correo - ok");
+                } catch (Exception loException) {
+                    System.out.println("Error al enviar correo: "+loException.getMessage());
+                    loResponse.setLsResponse("ERROR");
+                    loResponse.setLiAffected(0);
+                    loResponse.setLsMessage(loException.getMessage());
+                }
+            }
+        } catch (Exception loException) {
+            System.out.println("Error crear instancia del servicio de correo de secman: "+loException.getMessage());
+            loResponse.setLsResponse("ERROR");
+            loResponse.setLiAffected(0);
+            loResponse.setLsMessage(loException.getMessage());          
+        }
+        return loResponse;
     }
+    
+    
+}
