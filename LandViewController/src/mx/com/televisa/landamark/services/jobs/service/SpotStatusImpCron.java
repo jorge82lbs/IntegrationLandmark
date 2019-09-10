@@ -1,12 +1,3 @@
-/**
-* Project: Integraton Paradigm - Landmark
-*
-* File: PriceImpCron.java
-*
-* Created on: Agosto 29, 2019 at 11:00
-*
-* Copyright (c) - OMW - 2019
-*/
 package mx.com.televisa.landamark.services.jobs.service;
 
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfint;
@@ -14,7 +5,6 @@ import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 
 import java.text.DateFormat;
@@ -35,7 +25,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
 
@@ -43,7 +32,6 @@ import mx.com.televisa.landamark.client.pricest.SpotConciliacionWS;
 import mx.com.televisa.landamark.client.pricest.SpotConciliacionWSService;
 import mx.com.televisa.landamark.client.pricest.types.ComercialListRequest;
 import mx.com.televisa.landamark.client.pricest.types.SpotConciliacionResponse;
-import mx.com.televisa.landamark.client.pricest.types.SpotConciliacionResult;
 import mx.com.televisa.landamark.client.pricest.types.SpotModulo;
 import mx.com.televisa.landamark.client.pricest.types.User;
 import mx.com.televisa.landamark.model.daos.AsRunAsDao;
@@ -73,35 +61,21 @@ import org.quartz.JobExecutionException;
 import org.tempuri.ILandmarkSpotsSpot;
 import org.tempuri.LandmarkSpotsSpot;
 
-
-/** Clase que ejecuta logica o servicio de Actualizacion de Precios
- * por canal
- *
- * @author Jorge Luis Bautista Santiago - OMW
- *
- * @version 01.00.01
- *
- * @date Julio 29, 2019, 12:00 pm
- */
-public class PriceImpCron implements Job{
-    public PriceImpCron() {
+public class SpotStatusImpCron implements Job{
+    public SpotStatusImpCron() {
         super();
     }
-    
 
     @Override
     public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {  
-        System.out.println("################ Dentro de PriceImpCron #############");
+        System.out.println("################ Dentro de SpotStatusImpCron #############");
         JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
         String                    lsIdService = loDataMap.getString("lsIdService");
         String                    lsIdUser = loDataMap.getString("lsIdUser");
         String                    lsUserName = loDataMap.getString("lsUserName");
         String                    lsTypeProcess = loDataMap.getString("lsTypeProcess");
-        //String                    lsServiceName = loDataMap.getString("lsServiceName");
-        //String                    lsPathFiles = loDataMap.getString("lsPathFiles");
         String                    lsIdLogService = loDataMap.getString("lsIdLogService");
         AsRunAsDao                loAsRunAsDao = new AsRunAsDao();      
-        //PriceDao                  loPriceDao = new PriceDao();
         String                    lsFecInicial = loDataMap.getString("lsFecInicial");
         String                    lsFecFinal = loDataMap.getString("lsFecFinal");
         String                    lsChannel = loDataMap.getString("lsIdChannel");
@@ -113,10 +87,10 @@ public class PriceImpCron implements Job{
         
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         String lsParametersClass = lsChannel+","+lsFecInicial+","+lsFecFinal;
-        System.out.println("["+lsChannel+"]Ejecucion de Cron (Actualizacion de Precios) >> ["+new Date()+"]");
+        System.out.println("["+lsChannel+"]Ejecucion de Cron (SpotStatus) >> ["+new Date()+"]");
         
         //ResponseUpdDao loRes = loPpDao.callLmkProgBrkPr(lsChannel, lsFecInicial, lsFecFinal);
-        System.out.println("Logica de actualizacion de precios por canal configurado["+lsChannel+"]");
+        System.out.println("Logica de SpotStatus por canal configurado["+lsChannel+"]");
         String lsKey = lsChannel + "-" + lsFecInicial;        
         //0.- Validar si es posible procesar, considerar:
         //0.1.- Que se hayan ejecutado los procesos previos, as run as
@@ -135,7 +109,7 @@ public class PriceImpCron implements Job{
         loBitBean.setLiNumProcessId(0);
         loBitBean.setLiNumPgmProcessId(0);
         loBitBean.setLsIndEvento(lsKey + ": Bandera Log Certificado RECON COMPLETE[" + liFlag + "]" +
-            "para Precios");
+            "para SpotStatus");
         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                            liIdUser, 
                                            lsUserName);
@@ -153,12 +127,11 @@ public class PriceImpCron implements Job{
                                          liIdLogService,
                                          liIdService,
                                          liIdUser,
-                                         lsUserName,
-                                         lsTypeProcess);
+                                         lsUserName);
             //2.- Leer el response XML
             if(loArrayOfSpot != null){
                 //2.1.- Por ahora cada dato pasa sin validacion
-                System.out.println("insertar en tablas de control.... DESHABILITAR");
+                System.out.println("insertar en tablas de control");
                 //3.- Insertar en tablas de Alex Morel, con servicio de rafa
                 //DESHABILITAR... por ahora solo lectura
                 
@@ -210,7 +183,7 @@ public class PriceImpCron implements Job{
             
         }
         
-    }
+    }    
     
     private ArrayOfSpot getRequestLandmarkPrices(String tsChannel, 
                                                  String tsInitialDate, 
@@ -218,8 +191,7 @@ public class PriceImpCron implements Job{
                                                  Integer tiIdLogService,
                                                  Integer tiIdService,
                                                  Integer tiIdUser,
-                                                 String tsUserName,
-                                                 String lsTypeProcess){
+                                                 String tsUserName){
         ArrayOfSpot                  loArrOf = new ArrayOfSpot();
         PriceDao                     loPriceDao = new PriceDao();
         Integer                      liIndProcess = 0;
@@ -461,7 +433,7 @@ public class PriceImpCron implements Job{
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
             }*/
-            String lsNomFile = "";
+            //String lsNomFile = "";
             //##################### Insertar Archivo en Base de Datos ############################ 
             /* Al usuario no le interesa el request al servicio de Landmark            
             try{
@@ -536,7 +508,7 @@ public class PriceImpCron implements Job{
                 loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
                 loBitBean.setLiNumProcessId(0);
                 loBitBean.setLiNumPgmProcessId(0);
-                loBitBean.setLsIndEvento("Servicio Landmark invocado para Actualizacion de Precios");
+                loBitBean.setLsIndEvento("Servicio Landmark invocado para SpotStatus");
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    tiIdUser, 
                                                    tsUserName);
@@ -806,7 +778,7 @@ public class PriceImpCron implements Job{
                 loXmlBean.setLiIdUser(tiIdUser);
                 loXmlBean.setLoIndFileStream(loFileXmlRes);
                 loXmlBean.setLsAttribute1(""+tsChannel+","+tsInitialDate+","+tsFinalDate);
-                loXmlBean.setLsAttribute2("PriceFileType");
+                loXmlBean.setLsAttribute2("SpotStatusFileType");
                 // - Guardar archivo en bd
                 XmlFilesDao loXmlFilesDao = new XmlFilesDao();
                 ResponseUpdDao loXmlFile = 

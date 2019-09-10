@@ -47,6 +47,7 @@ import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
 import mx.com.televisa.landamark.services.jobs.OrderSpotsCron;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
 import mx.com.televisa.landamark.services.jobs.ResponseBreaksCron;
+import mx.com.televisa.landamark.services.jobs.SpotStatusCron;
 import mx.com.televisa.landamark.users.UserOperationList;
 import mx.com.televisa.landamark.util.UtilFaces;
 import mx.com.televisa.landamark.view.types.ChannelParameterBean;
@@ -904,7 +905,7 @@ public class ProcessBean {
             String lsTypeService = 
                 loTypeService.getValue() == null ? null : 
                 loTypeService.getValue().toString();
-            //System.out.println(">>>> lsTypeService: "+lsTypeService);
+            System.out.println(">>>> lsTypeService: "+lsTypeService);
             
             String lsNameService = 
                 loNameService.getValue() == null ? null : 
@@ -938,6 +939,19 @@ public class ProcessBean {
                     lsColorMessage = loRes.getLsColor();
                     lsFinalMessage = loRes.getLsMessage();
                 }
+                
+                /*################ PARRILLAS AND PROGRAMAS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessSpotStatus")){
+                    System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                SpotStatusCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                
+                
                 /*################ PARRILLAS AND PROGRAMAS ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessParrillasProgramas")){
                     System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");

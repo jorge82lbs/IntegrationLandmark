@@ -9,8 +9,6 @@
 */
 package mx.com.televisa.landamark.model.daos;
 
-import com.google.common.collect.Lists;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;

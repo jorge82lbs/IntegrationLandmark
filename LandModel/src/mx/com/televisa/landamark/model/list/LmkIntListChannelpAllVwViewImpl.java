@@ -75,6 +75,7 @@ public class LmkIntListChannelpAllVwViewImpl extends ViewObjectImpl {
             lsWhere = getWhereClause();
         }
         //System.out.println(getQuery());
+        setOrderByClause("IND_DESC_SERVICE, NOM_SERVICE");
         setWhereClause(lsWhere);
         super.executeQueryForCollection(toQc, taParams, tiNumUserParams);
     }

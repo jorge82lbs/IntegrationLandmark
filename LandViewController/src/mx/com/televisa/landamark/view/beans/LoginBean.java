@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -25,26 +24,20 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import mx.com.televisa.landamark.client.userpermission.types.Usuario;
-import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
+import mx.com.televisa.landamark.secman.SecurityManagerWs;
 import mx.com.televisa.landamark.users.UserInfoBean;
 import mx.com.televisa.landamark.users.UserMenuBean;
-import mx.com.televisa.landamark.secman.SecurityManagerWs;
-
 import mx.com.televisa.landamark.users.UserOperationList;
 import mx.com.televisa.landamark.util.UtilFaces;
 
 import oracle.adf.view.rich.component.rich.RichPopup;
 import oracle.adf.view.rich.component.rich.input.RichInputText;
-
-import oracle.jbo.ApplicationModule;
-import oracle.jbo.client.Configuration;
 
 /** Esta clase es un bean que enlaza la pantalla de Login<br/><br/>
  *

@@ -263,7 +263,7 @@ public class OrderSpotsImpCron implements Job{
                         loBitBean.setLiIndProcess(liIndProcess);
                         loBitBean.setLiNumProcessId(0);
                         loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento("Ejecucion de LMK_VALIDA_SPOTS("+lsStnid+", "+lsBcstdt+")");
+                        loBitBean.setLsIndEvento("("+loRes.getLiAffected()+" Spots) Ejecucion de LMK_VALIDA_SPOTS("+lsStnid+", "+lsBcstdt+")");
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                            liIdUser, 
                                                            lsUserName);  

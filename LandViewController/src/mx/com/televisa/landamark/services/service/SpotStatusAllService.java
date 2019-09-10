@@ -1,21 +1,22 @@
 /**
 * Project: Integraton Paradigm - Landmark
 *
-* File: PriceImpCron.java
+* File: SpotStatusService.java
 *
-* Created on: Agosto 29, 2019 at 11:00
+* Created on: Septiembre 6, 2019 at 11:00
 *
 * Copyright (c) - OMW - 2019
 */
-package mx.com.televisa.landamark.services.jobs.service;
+package mx.com.televisa.landamark.services.service;
 
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfint;
 import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
+
+import java.sql.SQLException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -39,22 +40,23 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
 
-import mx.com.televisa.landamark.client.pricest.SpotConciliacionWS;
-import mx.com.televisa.landamark.client.pricest.SpotConciliacionWSService;
-import mx.com.televisa.landamark.client.pricest.types.ComercialListRequest;
-import mx.com.televisa.landamark.client.pricest.types.SpotConciliacionResponse;
-import mx.com.televisa.landamark.client.pricest.types.SpotConciliacionResult;
-import mx.com.televisa.landamark.client.pricest.types.SpotModulo;
-import mx.com.televisa.landamark.client.pricest.types.User;
 import mx.com.televisa.landamark.model.daos.AsRunAsDao;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.PriceDao;
+import mx.com.televisa.landamark.model.daos.ServicesParamsDao;
+import mx.com.televisa.landamark.model.daos.SpotStatusDao;
+import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.LandmarkSecurityWsBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
+import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.LmkSpotsBean;
+import mx.com.televisa.landamark.model.types.LmkSpotstatusTrxBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
+import mx.com.televisa.landamark.view.types.BasicInputParameters;
+import mx.com.televisa.landamark.view.types.ResponseService;
 
 import org.datacontract.schemas._2004._07.landmark_classes.ArrayOfSpot;
 import org.datacontract.schemas._2004._07.landmark_classes.Spot;
@@ -65,154 +67,434 @@ import org.datacontract.schemas._2004._07.landmark_parameters.Interactivity;
 import org.datacontract.schemas._2004._07.landmark_parameters.SpotListFilter;
 import org.datacontract.schemas._2004._07.landmark_parameters.SpotListFilterCriteria;
 
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import org.tempuri.ILandmarkSpotsSpot;
 import org.tempuri.LandmarkSpotsSpot;
 
-
-/** Clase que ejecuta logica o servicio de Actualizacion de Precios
- * por canal
+/** Clase que ejecuta logica o servicio de Estado del Spot
  *
  * @author Jorge Luis Bautista Santiago - OMW
  *
  * @version 01.00.01
  *
- * @date Julio 29, 2019, 12:00 pm
+ * @date Septiembre 06, 2019, 12:00 pm
  */
-public class PriceImpCron implements Job{
-    public PriceImpCron() {
+public class SpotStatusAllService {
+    public SpotStatusAllService() {
         super();
     }
     
-
-    @Override
-    public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {  
-        System.out.println("################ Dentro de PriceImpCron #############");
-        JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
-        String                    lsIdService = loDataMap.getString("lsIdService");
-        String                    lsIdUser = loDataMap.getString("lsIdUser");
-        String                    lsUserName = loDataMap.getString("lsUserName");
-        String                    lsTypeProcess = loDataMap.getString("lsTypeProcess");
-        //String                    lsServiceName = loDataMap.getString("lsServiceName");
-        //String                    lsPathFiles = loDataMap.getString("lsPathFiles");
-        String                    lsIdLogService = loDataMap.getString("lsIdLogService");
-        AsRunAsDao                loAsRunAsDao = new AsRunAsDao();      
-        //PriceDao                  loPriceDao = new PriceDao();
-        String                    lsFecInicial = loDataMap.getString("lsFecInicial");
-        String                    lsFecFinal = loDataMap.getString("lsFecFinal");
-        String                    lsChannel = loDataMap.getString("lsIdChannel");
-        Integer                   liIndProcess = 0;
-        EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
-        Integer                   liIdLogService = Integer.parseInt(lsIdLogService);
-        Integer                   liIdService = Integer.parseInt(lsIdService);
-        Integer                   liIdUser = Integer.parseInt(lsIdUser);
+    /**
+     * Funcion principal de la clase
+     * @autor Jorge Luis Bautista Santiago
+     * @param loInput
+     * @return ResponseService
+     */
+    public ResponseService executeService(BasicInputParameters loInput){
+        
+        ResponseService        loResponseService = new ResponseService();
+        EntityMappedDao        loEntityMappedDao = new EntityMappedDao();
+        ServicesParamsDao      loSpDao = new ServicesParamsDao();
+        boolean                lbProcess = true;
+       
+        String lsReturn = "SpotStatus execute";
+        
+        loResponseService.setLiIdRequest(loInput.getLiIdRequest());
+        loResponseService.setLiIdService(loInput.getLiIdService());
+        loResponseService.setLiIdUser(loInput.getLiIdUser());
+        loResponseService.setLsMessageResponse(lsReturn);
+        loResponseService.setLsServiceType(loInput.getLsServiceType());
+        loResponseService.setLsMessageResponse(lsReturn);
+        loResponseService.setLsUserName(loInput.getLsUserName());
+        //Obtener idLog service de la tabla 
+        Integer                   liIdLogService = new ViewObjectDao().getMaxIdParadigm("Log") + 1;
+        LmkIntServicesLogRowBean loSlb = new LmkIntServicesLogRowBean();
+        loSlb.setLiIdLogServices(liIdLogService);
+        loSlb.setLiIdService(loInput.getLiIdService());
+        loSlb.setLiIndProcess(0);
+        loSlb.setLiNumPgmProcessId(loInput.getLiIdRequest());
+        loSlb.setLiNumProcessId(loInput.getLiIdRequest());
+        loSlb.setLiNumUser(loInput.getLiIdUser());
+        loSlb.setLsIndEstatus("1");
+        loSlb.setLsIndResponse("N");
+        loSlb.setLsIndServiceType(loInput.getLsServiceType());
+        loSlb.setLsMessage("Execute "+loInput.getLsServiceName());
+        loSlb.setLsUserName(loInput.getLsUserName());
+        loSlb.setLiIdUser(loInput.getLiIdUser());
+        
+        loEntityMappedDao.insertSimpleServicesLog(loSlb, 
+                                                  loInput.getLiIdUser(), 
+                                                  loInput.getLsUserName()
+                                                  );
         
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
-        String lsParametersClass = lsChannel+","+lsFecInicial+","+lsFecFinal;
-        System.out.println("["+lsChannel+"]Ejecucion de Cron (Actualizacion de Precios) >> ["+new Date()+"]");
-        
-        //ResponseUpdDao loRes = loPpDao.callLmkProgBrkPr(lsChannel, lsFecInicial, lsFecFinal);
-        System.out.println("Logica de actualizacion de precios por canal configurado["+lsChannel+"]");
-        String lsKey = lsChannel + "-" + lsFecInicial;        
-        //0.- Validar si es posible procesar, considerar:
-        //0.1.- Que se hayan ejecutado los procesos previos, as run as
-        //0.2.- Segun Jacobo, validar con el mismo query de log certificado
-        Integer liFlag = 
-            loAsRunAsDao.getFlagInsertLogCertificado(lsFecInicial, 
-                                                     lsChannel
-                                                    );  
-        liIndProcess = 
-        loEntityMappedDao.getGeneralParameterID("FlagReconComplete", 
-                                                "PROCESS_INTEGRATION");
-        
+        Integer                  liIndProcess = 
+            loEntityMappedDao.getGeneralParameterID("ExecuteService", 
+                                                    "PROCESS_INTEGRATION");
         loBitBean.setLiIdLogServices(liIdLogService);
-        loBitBean.setLiIdService(liIdService);
+        loBitBean.setLiIdService(loInput.getLiIdService());
         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
         loBitBean.setLiNumProcessId(0);
         loBitBean.setLiNumPgmProcessId(0);
-        loBitBean.setLsIndEvento(lsKey + ": Bandera Log Certificado RECON COMPLETE[" + liFlag + "]" +
-            "para Precios");
-        loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                           liIdUser, 
-                                           lsUserName);
+        loBitBean.setLsIndEvento("Ejecución de Servicio de SpotStatus");
         
-        if(liFlag > 0){
-            //1.- Consumir servicio de jacobo 
-            //1.1.- Almacenar en bd elemento-valor de: Authorization: Basic
-            //1.2.- Almacenar en bd elemento-valor de: Password7 (encriptado)
-            //1.3.- Almacenar en bd elemento valor de: LMK-Environment
-            //1.4.- Almacenar en bd elemento valor de: 1:tlvtrain
-            ArrayOfSpot loArrayOfSpot = 
-                getRequestLandmarkPrices(lsChannel, 
-                                         lsFecInicial, 
-                                         lsFecFinal,
-                                         liIdLogService,
-                                         liIdService,
-                                         liIdUser,
-                                         lsUserName,
-                                         lsTypeProcess);
-            //2.- Leer el response XML
-            if(loArrayOfSpot != null){
-                //2.1.- Por ahora cada dato pasa sin validacion
-                System.out.println("insertar en tablas de control.... DESHABILITAR");
-                //3.- Insertar en tablas de Alex Morel, con servicio de rafa
-                //DESHABILITAR... por ahora solo lectura
-                
-                //ResponseUpdDao loSetSpot = setArrayOfSpotParadigmRead(loArrayOfSpot);   
-                ResponseUpdDao loSetSpot = 
-                    setArrayOfSpotParadigm(loArrayOfSpot,
-                                           lsChannel, 
-                                           lsFecInicial, 
-                                           lsFecFinal,
-                                           liIdLogService,
-                                           liIdService,
-                                           liIdUser,
-                                           lsUserName,
-                                           lsTypeProcess);   
-                
-                System.out.println(">>>> getLsResponse: "+loSetSpot.getLsResponse());
-                System.out.println(">>>> getLsMessage: "+loSetSpot.getLsMessage());
-                
-                liIndProcess =                             
-                            loEntityMappedDao.getGeneralParameterID("InsertCtrlTable", 
-                                                                    "PROCESS_INTEGRATION");
-                        loBitBean.setLiIdLogServices(liIdLogService);
-                        loBitBean.setLiIdService(liIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento(loSetSpot.getLsMessage());
-                loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                   liIdUser, 
-                                                   lsUserName);
-                
+        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                           loInput.getLiIdUser(), 
+                                           loInput.getLsUserName());                
+                                
+        liIndProcess = loEntityMappedDao.getGeneralParameterID("ExtractParameters", 
+                                                    "PROCESS_INTEGRATION");
+        loBitBean.setLiIdLogServices(liIdLogService);
+        loBitBean.setLiIdService(loInput.getLiIdService());
+        loBitBean.setLiIndProcess(liIndProcess); 
+        loBitBean.setLiNumProcessId(0);
+        loBitBean.setLiNumPgmProcessId(0);
+        loBitBean.setLsIndEvento("Extraer Parámetros para servicio "+loInput.getLsServiceName());
+        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                           loInput.getLiIdUser(), 
+                                           loInput.getLsUserName());
+        // - Extraer parámetros de la tabla
+        List<LmkIntServicesParamsRowBean> loParams = 
+            loSpDao.getLmkIntServicesParams(loBitBean.getLiIdService());
+        
+        if( loParams.size() < 3 ){ //FI, FF y al menos un canal
+            lbProcess = false;
+            liIndProcess = loEntityMappedDao.getGeneralParameterID("ParametersMissing", 
+                                                    "PROCESS_INTEGRATION");
+                    loBitBean.setLiIdLogServices(liIdLogService);
+                    loBitBean.setLiIdService(loInput.getLiIdService());
+                    loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento("Parámetros insuficientes para el Servicio (SpotStatus) " +
+                                             loInput.getLsServiceName());
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       loInput.getLiIdUser(), 
+                                                       loInput.getLsUserName());
+            
+        }
+        else{
+            String lsFecInicial = "";
+            String lsFecFinal = "";
+            List<String> laChannels = new ArrayList<String>();
+            for(LmkIntServicesParamsRowBean loBean:loParams){
+                if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL")){
+                    lsFecInicial = loBean.getLsIndValParameter();
+                }
+                if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                    lsFecFinal = loBean.getLsIndValParameter();
+                }
+                if(!loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL") &&
+                !loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                     if(loBean.getLsIndValParameter().equalsIgnoreCase("1")){
+                         laChannels.add(loBean.getLsIndParameter());
+                     }
+                }
                 
             }
             
-            liIndProcess = 
-                        loEntityMappedDao.getGeneralParameterID("ProcessFinish", 
-                                                                "PROCESS_INTEGRATION");
-                    loBitBean.setLiIdLogServices(liIdLogService);
-                    loBitBean.setLiIdService(liIdService);
-                    loBitBean.setLiIndProcess(liIndProcess);
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento("Proceso finalizado para ["+lsParametersClass+"]");
-            loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                               liIdUser, 
-                                               lsUserName);
+            //Proceso para guardar parametros en la tabla de log services
+            String lsFechasLog = "["+lsFecInicial + ","+lsFecInicial+"]";
+            String lsChannelsLog = "";            
+            for(String lsChannel : laChannels){
+                lsChannelsLog += lsChannel+",";
+            }
+            loEntityMappedDao.updateParametersServiceLog(liIdLogService, 
+                                                         loInput.getLiIdService(), 
+                                                         lsFechasLog, 
+                                                         lsChannelsLog);
             
-            System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
+            //laChannels Contiene todos los canales configurados para este proposito
+            boolean     lbFlagRecon = true;
+            int         liI = 0;
+            AsRunAsDao  loAsRunAsDao = new AsRunAsDao();      
+            while(lbFlagRecon && liI < laChannels.size()){
+                String lsChannel = laChannels.get(liI);
+                Integer liFlag = 
+                    loAsRunAsDao.getFlagInsertLogCertificado(lsFecInicial, 
+                                                             lsChannel
+                                                            );  
+                if(liFlag > 0){
+                    lbFlagRecon = false;
+                }
+                liI++;
+            }
+            
+            
+            liIndProcess = 
+            loEntityMappedDao.getGeneralParameterID("FlagReconComplete", 
+                                                    "PROCESS_INTEGRATION");
+            
+            loBitBean.setLiIdLogServices(liIdLogService);
+            loBitBean.setLiIdService(loInput.getLiIdService());
+            loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
+            loBitBean.setLiNumProcessId(0);
+            loBitBean.setLiNumPgmProcessId(0);
+            loBitBean.setLsIndEvento("Validación de todos los canales, RECON COMPLETE[" + lbFlagRecon + "]" +
+                "para SpotStatus");
+            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                               loInput.getLiIdUser(), 
+                                               loInput.getLsUserName());
+            
+            if(lbFlagRecon){
+                //Eliminar tabla de transaccion
+                SpotStatusDao loSpotStatusDao = new SpotStatusDao();
+                ResponseUpdDao loDel = loSpotStatusDao.deleteRowsSpotStatusTrx();
+                System.out.println("Resultado de eliminar registros: "+loDel.getLsResponse());
+                if(loDel.getLsResponse().equalsIgnoreCase("OK")){                
+                    //Todos los canales superaron la validacion
+                    ArrayOfSpot loArrayOfSpot = 
+                        getRequestLandmarkPrices(laChannels, 
+                                                 lsFecInicial, 
+                                                 lsFecFinal,
+                                                 liIdLogService,
+                                                 loInput.getLiIdService(),                 
+                                                 loInput.getLiIdUser(), 
+                                                 loInput.getLsUserName(),
+                                                 loInput.getLsServiceType());//Verificar este
+                    //2.- Leer el response XML
+                    if(loArrayOfSpot != null){
+                        System.out.println("Leer response xml landmark");
+                        //ResponseUpdDao loSetSpot = setArrayOfSpotParadigm(loArrayOfSpot);   
+                        ResponseUpdDao loSetSpot = 
+                            setArrayOfSpotParadigm(loArrayOfSpot);/*,
+                                                   lsChannelsLog, 
+                                                   lsFecInicial, 
+                                                   lsFecFinal,
+                                                   liIdLogService,
+                                                   loInput.getLiIdService(),
+                                                   loInput.getLiIdUser(), 
+                                                   loInput.getLsUserName(),
+                                                   loInput.getLsServiceType());   */
+                        
+                        System.out.println(">>>> getLsResponse: "+loSetSpot.getLsResponse());
+                        System.out.println(">>>> getLsMessage: "+loSetSpot.getLsMessage());
+                        
+                        liIndProcess =                             
+                                    loEntityMappedDao.getGeneralParameterID("InsertCtrlTable", 
+                                                                            "PROCESS_INTEGRATION");
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(loInput.getLiIdService());
+                                loBitBean.setLiIndProcess(liIndProcess);
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento(loSetSpot.getLsMessage());
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                        loInput.getLiIdUser(), 
+                        loInput.getLsUserName());
+                    }
+                    
+                    liIndProcess = 
+                                loEntityMappedDao.getGeneralParameterID("ProcessFinish", 
+                                                                        "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(loInput.getLiIdService());
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Proceso finalizado para ["+lsChannelsLog+lsFechasLog+"]");
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                    loInput.getLiIdUser(), 
+                    loInput.getLsUserName());
+                }else{
+                    liIndProcess = 
+                                loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                                        "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(loInput.getLiIdService());
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("No es posible eliminar registros de LMK_SPOTSTATUS_TRX");
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                    loInput.getLiIdUser(), 
+                    loInput.getLsUserName());
+                }
+                System.out.println("["+lsChannelsLog+"] FIN DE JOB ["+new Date()+"]");
+            }
+        }
+        return loResponseService;
+    }
+    
+    public ResponseUpdDao setArrayOfSpotParadigm(ArrayOfSpot toArrayOfSpot){
+        boolean lbResult = true;
+        Integer liGeneralNumSpots = 0;
+        String lsMessage = "Proceso de Lectura y Actualización Satisfactorio";
+        List<LmkSpotstatusTrxBean> loAllSpots = new ArrayList<LmkSpotstatusTrxBean>();
+                
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        
+        List<Spot> loListSpot = toArrayOfSpot.getSpot();
+        liGeneralNumSpots = loListSpot.size();
+        loResponseUpdDao.setLiAffected(liGeneralNumSpots);
+        System.out.println("Num spots: "+loListSpot.size());
+        lsMessage = "("+liGeneralNumSpots+" spots) "+lsMessage;
+        for(Spot loSpot : loListSpot){
+            
+            LmkSpotstatusTrxBean loBean = new LmkSpotstatusTrxBean();
+            loBean.setLsAdvertisercode(loSpot.getAdvertiserCode().getValue());
+            
+            loBean.setLsAdvertisercode(loSpot.getAdvertiserCode().getValue());
+            loBean.setLsAgengycode(loSpot.getAgencyCode().getValue());
+            loBean.setLiCampaign(loSpot.getCampaign());
+            loBean.setLiBreakNumber(loSpot.getBreakNumber());
+            loBean.setLiDeal(loSpot.getDeal());
+            loBean.setLsExternalreference(loSpot.getExternalReference().getValue());
+            loBean.setLsIndustryCode(loSpot.getIndustryCode().getValue());
+            loBean.setLiLength(loSpot.getLength());
+            loBean.setLdNomianlprice(loSpot.getNomianlPrice());
+            loBean.setLdRatings(loSpot.getRatings());
+            ////////////////////////////////////////////////////////////////////
+            SimpleDateFormat loSdf = new SimpleDateFormat("yyyy-MM-dd");
+            GregorianCalendar loGc = 
+                loSpot.getScheduledDate().toGregorianCalendar();
+            String lsScheduledate = loSdf.format(loGc.getTime());
+            //System.out.println("lsScheduledate ["+lsScheduledate+"]");
+            loBean.setLsScheduleDate(lsScheduledate);
+            loBean.setLoScheduledate(loSpot.getScheduledDate());                                    
+            ////////////////////////////////////////////////////////////////////
+            loBean.setLiScheduletime(loSpot.getScheduledTime());
+            loBean.setLiSpotnumber(loSpot.getSpotNumber());
+            loBean.setLiSpotsalesareanumber(loSpot.getSpotSalesAreaNumber());
+            loBean.setLiBreakPosition(loSpot.getBreakPosition());
+            loBean.setLiPreemptee(loSpot.getPreemptee());
+            loBean.setLiPreemptor(loSpot.getPreemptor());
+            //loBean.setLsStatus(loSpot.getStatus().getValue());            
+            //Llenar lista de rows de la nueva tabla
+            loAllSpots.add(loBean);
             
         }
         
+        //Validar si existe al menos un registro
+        if(loAllSpots.size() <= 0){
+            lbResult = false;
+            lsMessage = "Sin Spots Para Procesar";
+        }else{
+            SpotStatusDao loSpotStatusDao = new SpotStatusDao();
+            //Insertar todos los spots en la tabla de transaccion
+            boolean lbFlagInsert = true;
+            int liI = 0;
+            System.out.println("Insertar en tabla de control la lista de Spots");
+            /*
+            while(lbFlagInsert && liI < loAllSpots.size()){
+                LmkSpotstatusTrxBean loBean = loAllSpots.get(liI);
+                System.out.print("Advertisercode: "+loBean.getLsAdvertisercode());
+                System.out.print("\tAgengycode: "+loBean.getLsAgengycode());
+                System.out.print("\tSpotnumber: "+loBean.getLiSpotnumber());
+                System.out.print("\tScheduleDate: "+loBean.getLsScheduleDate());
+                System.out.print("\tCampaign: "+loBean.getLiCampaign());
+                System.out.print("\tBreakNumber: "+loBean.getLiBreakNumber());
+                System.out.println("");
+                liI++;
+            }*/
+            
+            while(lbFlagInsert && liI < loAllSpots.size()){
+                LmkSpotstatusTrxBean loBean = loAllSpots.get(liI);
+                ResponseUpdDao loRes = loSpotStatusDao.insertRowSpotStatusTrx(loBean);    
+                if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
+                    lbFlagInsert = false;
+                    lsMessage = loRes.getLsMessage();
+                }
+                liI++;
+            }
+            if(!lbFlagInsert){
+                lbResult = false;
+                loSpotStatusDao.deleteRowsSpotStatusTrx();
+            }else{
+                //Invocar SP final LMK_UPD_SPOTSTATUS
+                System.out.println("Invocar SP final LMK_UPD_SPOTSTATUS");
+                try {
+                    ResponseUpdDao loRes = loSpotStatusDao.callProcedureUpdSpotStatus();
+                    if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
+                        lbResult = false;
+                        lsMessage = loRes.getLsMessage();
+                    }
+                } catch (SQLException e) {
+                    lbResult = false;
+                    lsMessage = e.getMessage();
+                }
+            }
+        }
+        
+        if(lbResult){
+            System.out.println("OK");
+            loResponseUpdDao.setLsResponse("OK");
+        }else{
+            System.out.println("ERROR");
+            loResponseUpdDao.setLsResponse("ERROR");
+        }
+        loResponseUpdDao.setLsMessage(lsMessage);
+        
+        return loResponseUpdDao;
     }
     
-    private ArrayOfSpot getRequestLandmarkPrices(String tsChannel, 
+    
+    public ResponseUpdDao setArrayOfSpotParadigmRead(ArrayOfSpot toArrayOfSpot){
+        boolean lbResult = true;
+        String lsMessage = "Proceso de Inserción y Actualización Satisfactorio";
+        
+        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
+        //PriceDao loPriceDao = new PriceDao();
+                
+        List<Spot> loListSpot = toArrayOfSpot.getSpot();
+        System.out.println("loListSpot.size()= "+loListSpot.size());
+        for(Spot loSpot : loListSpot){
+            
+            Integer liSpotNumber = loSpot.getSpotNumber();            
+            System.out.println("CANAL["+loSpot.getSalesSplitId()+"] SpotNumber["+loSpot.getSpotNumber()+"]");
+            Double ldCpp = loSpot.getCPP();
+            //System.out.println("ldCpp["+ldCpp+"]");
+            //Double ldCppl = loSpot.getCPPL();
+            //Double ldCpt = loSpot.getCPT();
+            //Double ldCptl = loSpot.getCPTL();
+            Integer liLength = loSpot.getLength();
+            //System.out.println("liLength["+liLength+"]");
+            Double ldNominalPrice = loSpot.getNomianlPrice();
+            //System.out.println("ldNominalPrice["+ldNominalPrice+"]");
+            //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
+            Double ldPriceFactor = loSpot.getPriceFactor();
+            //System.out.println("ldPriceFactor["+ldPriceFactor+"]");
+            Double ldRatings = loSpot.getRatings();
+            //System.out.println("ldRatings["+ldRatings+"]");
+            
+            //Se necesitan los valores de 
+            // piOrderID
+            // piSpotID
+            /*List<LmkSpotsBean> loSpotsList = 
+                loPriceDao.getSpotInfo(liSpotNumber);            
+            if(loSpotsList.size() > 0){
+                for(LmkSpotsBean loBean : loSpotsList){
+                    System.out.println(">> getLiOrdId: "+loBean.getLiOrdId());
+                    System.out.println(">> getLiSpotNumber: "+loBean.getLiSpotNumber());
+                    System.out.println(">> getLiSptmstid: "+loBean.getLiSptmstid());
+                }
+            } */
+        }
+        
+        if(lbResult){
+            loResponseUpdDao.setLsResponse("OK");
+        }else{
+            loResponseUpdDao.setLsResponse("ERROR");
+        }
+        loResponseUpdDao.setLsMessage(lsMessage);
+        
+        return loResponseUpdDao;
+    }
+    
+    
+    
+    /**
+     * Obtiene, en base a la fecha, el id_paradigm a manejar en intergracion
+     * @autor Jorge Luis Bautista Santiago     
+     * @return String
+     */
+    public String getIdBitacora(){
+        String lsResponse = null;
+        DateFormat loDf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        lsResponse = loDf.format(new java.util.Date(System.currentTimeMillis()));
+        return lsResponse;
+    }
+    
+    private ArrayOfSpot getRequestLandmarkPrices(List<String> toChannels, 
                                                  String tsInitialDate, 
                                                  String tsFinalDate,
                                                  Integer tiIdLogService,
@@ -225,6 +507,10 @@ public class PriceImpCron implements Job{
         Integer                      liIndProcess = 0;
         EntityMappedDao              loEntityMappedDao = new EntityMappedDao();
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
+        String lsAllChannels = "";
+        for(String lsCanal : toChannels){
+            lsAllChannels += lsCanal+",";
+        }
         try{
             String lsQNameXML = "";
             LandmarkSpotsSpot  loLandmarkSpotsSpot = new LandmarkSpotsSpot();
@@ -295,7 +581,8 @@ public class PriceImpCron implements Job{
             loSpotListFilter.setClients(laClientsJax);
             loSpotListFilter.setConvDemographicNumber(0);
             loSpotListFilter.setCopyCode(0);
-            loSpotListFilter.setCopyProcess(-1);
+            //Cambio de acuerdo a JEJ loSpotListFilter.setCopyProcess(-1);
+            loSpotListFilter.setCopyProcess(1);
             JAXBElement<String> loCurrency = 
                 new JAXBElement<String>(new QName(lsQNameXML, "Currency"),String.class, "MXN");
             loSpotListFilter.setCurrency(loCurrency);        
@@ -388,33 +675,36 @@ public class PriceImpCron implements Job{
             loSpotListFilter.setRatingsHigh(new Float(0.00));
             loSpotListFilter.setRatingsLow(new Float(0.00));
             loSpotListFilter.setRegnBreakout(false);
-            loSpotListFilter.setRetrieveCopy(false);        
+            loSpotListFilter.setRetrieveCopy(false);  
             
             ArrayOfint loObjSales = new ArrayOfint();
             List<Integer> laObjsSales = new ArrayList<Integer>();
-            //Debido a que en esta clase solo llega un canal, no es necesario iterar
-            //Ir al la base de datos para obtener el correspondiente mapeo del actual canal
-            List<String> loListChannels = loPriceDao.getCodPriceChannel(tsChannel);
-            if(loListChannels.size() > 0){
-                laObjsSales.add(Integer.parseInt(loListChannels.get(0)));
-                System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
-            }else{
-                loEntityMappedDao.getGeneralParameterID("ErrorConfig", 
-                                                        "PROCESS_INTEGRATION");
-                loBitBean.setLiIdLogServices(tiIdLogService);
-                loBitBean.setLiIdService(tiIdService);
-                loBitBean.setLiIndProcess(liIndProcess);
-                loBitBean.setLiNumProcessId(0);
-                loBitBean.setLiNumPgmProcessId(0);
-                loBitBean.setLsIndEvento("No existe configuracion para obtener SalesArea de "+tsChannel);
-                loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                   tiIdUser, 
-                                                   tsUserName);
-                
-            }
+            for(String tsChannel : toChannels){
+                //Debido a que en esta clase solo llega un canal, no es necesario iterar
+                //Ir al la base de datos para obtener el correspondiente mapeo del actual canal
+                List<String> loListChannels = loPriceDao.getCodPriceChannel(tsChannel);
+                if(loListChannels.size() > 0){
+                    laObjsSales.add(Integer.parseInt(loListChannels.get(0)));
+                    System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
+                }else{
+                    loEntityMappedDao.getGeneralParameterID("ErrorConfig", 
+                                                            "PROCESS_INTEGRATION");
+                    loBitBean.setLiIdLogServices(tiIdLogService);
+                    loBitBean.setLiIdService(tiIdService);
+                    loBitBean.setLiIndProcess(liIndProcess);
+                    loBitBean.setLiNumProcessId(0);
+                    loBitBean.setLiNumPgmProcessId(0);
+                    loBitBean.setLsIndEvento("No existe configuracion para obtener SalesArea de "+tsChannel);
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       tiIdUser, 
+                                                       tsUserName);
+                    
+                }
+            } 
             loObjSales.setInt(laObjsSales);
             JAXBElement<ArrayOfint> laSales = 
                 new JAXBElement<ArrayOfint>(new QName(lsQNameXML, "SalesAreas"),ArrayOfint.class,loObjSales);
+
             loSpotListFilter.setSalesAreas(laSales);
             
             loSpotListFilter.setSecondaryDemographicNumber(-3);
@@ -461,16 +751,16 @@ public class PriceImpCron implements Job{
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
             }*/
-            String lsNomFile = "";
+            //String lsNomFile = "";
             //##################### Insertar Archivo en Base de Datos ############################ 
-            /* Al usuario no le interesa el request al servicio de Landmark            
+            String lsNomFile = "";
             try{
                 XmlFilesDao loXmlFilesDao = new XmlFilesDao();
                 System.out.println("Guardando archivo xml en bd");
                 ByteArrayOutputStream loBaos = new ByteArrayOutputStream();                     
                 JAXB.marshal(loSpotListFilter, new StreamResult(loBaos));
                 InputStream           loFileXml = new ByteArrayInputStream(loBaos.toByteArray()); 
-                lsNomFile = "PreciosRequest-" + getId() + ".xml";
+                lsNomFile = "SpotStatus REQ - " + getId() + ".xml";
                 LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
                 loXmlBean.setLiIdFileXml(0);
                 loXmlBean.setLiIdRequest(tiIdLogService);
@@ -483,8 +773,8 @@ public class PriceImpCron implements Job{
                 //loXmlBean.setLsNomUserPathFile(sPathFiles);
                 loXmlBean.setLiIdUser(tiIdUser);
                 loXmlBean.setLoIndFileStream(loFileXml);
-                loXmlBean.setLsAttribute1(""+tsChannel+","+tsInitialDate+","+tsFinalDate);
-                loXmlBean.setLsAttribute2("PriceFileType");
+                loXmlBean.setLsAttribute1(""+lsAllChannels+""+tsInitialDate+","+tsFinalDate);
+                loXmlBean.setLsAttribute2("SpotStatuseFileType");
                 // - Guardar archivo en bd
                 ResponseUpdDao loXmlFile = 
                     loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
@@ -524,7 +814,7 @@ public class PriceImpCron implements Job{
                                                    tsUserName);
                 
                 
-            }*/  
+            } 
             
             
             try{
@@ -536,7 +826,7 @@ public class PriceImpCron implements Job{
                 loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
                 loBitBean.setLiNumProcessId(0);
                 loBitBean.setLiNumPgmProcessId(0);
-                loBitBean.setLsIndEvento("Servicio Landmark invocado para Actualizacion de Precios");
+                loBitBean.setLsIndEvento("Servicio Landmark invocado para SpotStatus");
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    tiIdUser, 
                                                    tsUserName);
@@ -558,7 +848,7 @@ public class PriceImpCron implements Job{
                                                        tsUserName);
                 }
                 //########################################################################################
-                /*Al usuario no le interesa el response de Landmark
+                //Al usuario no le interesa el response de Landmark
                 System.out.println("Guardar archivo fisico RESPONSE");
                 try{                      
                     //StreamResult result =
@@ -570,7 +860,7 @@ public class PriceImpCron implements Job{
                     JAXB.marshal(loArrOf, loBaosRes);
                     InputStream           loFileXmlRes = new ByteArrayInputStream(loBaosRes.toByteArray()); 
                     
-                    lsNomFile = "PreciosResponse-" + getId() + ".xml";
+                    lsNomFile = "SpotStatus RES - " + getId() + ".xml";
                     LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
                     loXmlBean.setLiIdFileXml(0);
                     loXmlBean.setLiIdRequest(tiIdLogService);
@@ -583,8 +873,8 @@ public class PriceImpCron implements Job{
                     //loXmlBean.setLsNomUserPathFile(sPathFiles);
                     loXmlBean.setLiIdUser(tiIdUser);
                     loXmlBean.setLoIndFileStream(loFileXmlRes);
-                    loXmlBean.setLsAttribute1(""+tsChannel+","+tsInitialDate+","+tsFinalDate);
-                    loXmlBean.setLsAttribute2("PriceFileType");
+                    loXmlBean.setLsAttribute1(""+lsAllChannels+","+tsInitialDate+","+tsFinalDate);
+                    loXmlBean.setLsAttribute2("SpotStatusFileType");
                     // - Guardar archivo en bd
                     XmlFilesDao loXmlFilesDao = new XmlFilesDao();
                     ResponseUpdDao loXmlFile = 
@@ -625,7 +915,7 @@ public class PriceImpCron implements Job{
                                                            tsUserName);
                         
                     
-                    }*/
+                    }
             }catch(Exception loEx){
                 loArrOf = null;
                 loEntityMappedDao.getGeneralParameterID("GeneralError", 
@@ -670,268 +960,5 @@ public class PriceImpCron implements Job{
         return lsResponse;
     }
     
-    public ResponseUpdDao setArrayOfSpotParadigm(ArrayOfSpot toArrayOfSpot,
-                                                 String tsChannel, 
-                                                 String tsInitialDate, 
-                                                 String tsFinalDate,
-                                                 Integer tiIdLogService,
-                                                 Integer tiIdService,
-                                                 Integer tiIdUser,
-                                                 String tsUserName,
-                                                 String lsTypeProcess){
-        /*
-         *  ns3:SpotNumber
-            ns3:CPP
-            ns3:CPPL
-            ns3:CPT
-            ns3:CPTL
-            ns3:Length
-            ns3:NomianlPrice
-            ns3:TotalNominalPrice
-            ns3:PriceFactor
-            ns3:Ratings
-         */
-        boolean lbResult = true;
-        Integer liGeneralNumSpots = 0;
-        String lsMessage = "Proceso de Inserción y Actualización Satisfactorio";
-        
-        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        PriceDao loPriceDao = new PriceDao();
-        SpotConciliacionWSService loSpotConciliacionWSService = 
-            new SpotConciliacionWSService();        
-        
-        //Invocar servicio de Software and tech
-        SpotConciliacionWS loSpotConciliacionWS = 
-            loSpotConciliacionWSService.getSpotConciliacionWSPort();                
-        ComercialListRequest loClr = new ComercialListRequest();
-        User loUser = new User();
-        
-        List<Spot> loListSpot = toArrayOfSpot.getSpot();
-        liGeneralNumSpots = loListSpot.size();
-        System.out.println("Num spots: "+loListSpot.size());
-        for(Spot loSpot : loListSpot){
-            
-            Integer liSpotNumber = loSpot.getSpotNumber();
-            Double ldCpp = loSpot.getCPP();
-            //Double ldCppl = loSpot.getCPPL();
-            //Double ldCpt = loSpot.getCPT();
-            //Double ldCptl = loSpot.getCPTL();
-            Integer liLength = loSpot.getLength();
-            Double ldNominalPrice = loSpot.getNomianlPrice();
-            //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
-            Double ldPriceFactor = loSpot.getPriceFactor();
-            Double ldRatings = loSpot.getRatings();
-            
-            //Se necesitan los valores de 
-            // piOrderID
-            // piSpotID
-            List<LmkSpotsBean> loSpotsList = 
-                loPriceDao.getSpotInfo(liSpotNumber);
-            
-            if(loSpotsList.size() > 0){
-                
-                SpotModulo loSpotModulo = new SpotModulo();
-                
-                loSpotModulo.setPiOrderID(loSpotsList.get(0).getLiOrdId());
-                loSpotModulo.setPiSpotID(loSpotsList.get(0).getLiSptmstid());
-                loSpotModulo.setPdSpotPrice(ldNominalPrice);
-                loSpotModulo.setPdSpotRating(ldRatings);
-                //TODO loSpotModulo.setPdCPR(ldCpp);ESTO debe tener VALOR, la linea de abajo es temporal
-                loSpotModulo.setPdCPR(1);
-                loSpotModulo.setPdPorcentRecDuration(1);
-                loSpotModulo.setPdPorcentRecPosition(1);
-                loSpotModulo.setPdPorcentRecPiggyBack(1);
-                loSpotModulo.setPdPorcentRecDigital(1);
-                loSpotModulo.setPdPorcentRecManual(ldPriceFactor);
-                loSpotModulo.setPdPorcentFactDuracion(liLength);
-                loClr.getPaSpots().add(loSpotModulo);
-            } 
-        }
-        
-        //Buscar en parametros generales los parametros de loUser
-        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
-        String lsUserNameConciliacion = 
-            loEntityMappedDao.getGeneralParameter("CONC_USERNAME", "CONCILIACION_WS");
-        
-        String lsPasswordConciliacion = 
-            loEntityMappedDao.getGeneralParameter("CONC_PASSWORD", "CONCILIACION_WS");
-        loUser.setPsUserName(lsUserNameConciliacion);
-        loUser.setPsPassword(lsPasswordConciliacion);
-        try{
-            /*
-            try{
-                StreamResult result =
-                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml"+getId()+".xml"));
-                //transformer.transform(loClr, result);
-                JAXB.marshal(loClr, result);
-            }catch(Exception loExp){
-                System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
-            }*/
-            
-            SpotConciliacionResponse loRes = 
-                loSpotConciliacionWS.spotConciliaion(loClr, loUser);
-            /*
-            try{
-                StreamResult result =
-                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml-RESPONSE"+getId()+".xml"));
-                //transformer.transform(loClr, result);
-                JAXB.marshal(loRes, result);
-            }catch(Exception loExp){
-                System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
-            }*/
-            
-            //Guardar en base de datos el archivo response del servicio de conciliacion (es lo que le 
-            //interesa a la gente de berna)
-            LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
-            Integer liIndProcess = 0;
-            //########################################################################################
-            System.out.println("Guardar archivo fisico RESPONSE");
-            try{                      
-                System.out.println("Guardando archivo response xml en bd");
-                ByteArrayOutputStream loBaosRes = new ByteArrayOutputStream();
-                JAXB.marshal(loRes, loBaosRes);
-                InputStream           loFileXmlRes = new ByteArrayInputStream(loBaosRes.toByteArray()); 
-                
-                String lsNomFile = "Conciliacion("+liGeneralNumSpots+")-" + getId() + ".xml";
-                LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
-                loXmlBean.setLiIdFileXml(0);
-                loXmlBean.setLiIdRequest(tiIdLogService);
-                loXmlBean.setLiIdService(tiIdService);
-                loXmlBean.setLsNomFile(lsNomFile);
-                loXmlBean.setLsIndFileType("Response");
-                loXmlBean.setLsIndServiceType(lsTypeProcess);
-                loXmlBean.setLsIndEstatus("C"); //Completo, al llegar aqui toldo se hizo bien
-                loXmlBean.setLsNomUserName(tsUserName);
-                //loXmlBean.setLsNomUserPathFile(sPathFiles);
-                loXmlBean.setLiIdUser(tiIdUser);
-                loXmlBean.setLoIndFileStream(loFileXmlRes);
-                loXmlBean.setLsAttribute1(""+tsChannel+","+tsInitialDate+","+tsFinalDate);
-                loXmlBean.setLsAttribute2("PriceFileType");
-                // - Guardar archivo en bd
-                XmlFilesDao loXmlFilesDao = new XmlFilesDao();
-                ResponseUpdDao loXmlFile = 
-                    loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
-                String lsMessInsert = "";
-                if(loXmlFile.getLsResponse().equalsIgnoreCase("OK")){
-                    lsMessInsert = "El Archivo "+lsNomFile+" se ha guardado en base de datos";
-                }else{
-                    lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
-                                   lsNomFile+"";
-                }
-                liIndProcess = 
-                            loEntityMappedDao.getGeneralParameterID("InsertFile", 
-                                                                    "PROCESS_INTEGRATION");
-                        loBitBean.setLiIdLogServices(tiIdLogService);
-                        loBitBean.setLiIdService(tiIdService);
-                        loBitBean.setLiIndProcess(liIndProcess);
-                        loBitBean.setLiNumProcessId(0);
-                        loBitBean.setLiNumPgmProcessId(0);
-                        loBitBean.setLsIndEvento(lsMessInsert);
-                loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                   tiIdUser, 
-                                                   tsUserName);
-                
-                
-                }catch(Exception loEx){
-                    System.out.println("Error al guardar archivo "+loEx.getMessage());
-                    loEntityMappedDao.getGeneralParameterID("GeneralError", 
-                                                            "PROCESS_INTEGRATION");
-                    loBitBean.setLiIdLogServices(tiIdLogService);
-                    loBitBean.setLiIdService(tiIdService);
-                    loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
-                    loBitBean.setLiNumProcessId(0);
-                    loBitBean.setLiNumPgmProcessId(0);
-                    loBitBean.setLsIndEvento("Error al generar Archivo XML-Request");
-                    loEntityMappedDao.insertBitacoraWs(loBitBean,
-                                                       tiIdUser, 
-                                                       tsUserName);
-                    
-                }
-            
-            
-            /*
-            List<SpotConciliacionResult> laListRes = loRes.getPaSpotResult();
-            boolean lbFlag = true;
-            int liI = 0;
-            while(lbFlag && liI < laListRes.size()){
-                SpotConciliacionResult loConc = laListRes.get(liI);
-                if(loConc.getPaError()!= null){
-                    lbResult = false;
-                    lbFlag = false;
-                    System.out.println("ERROR ["+loConc.getPaError().get(0)+"]");    
-                    lsMessage = loConc.getPaError().get(0).getPsDescription()+
-                                " >> "+loConc.getPaError().get(0).getPsSourceError();
-                }
-                liI++;
-                //System.out.println("SpotID ["+loConc.getPiSpotID()+"]");
-                //System.out.println("Message ["+loConc.getPsMessage()+"]");
-            }   */        
-        }catch(Exception loEx){
-            lbResult = false;
-            lsMessage = "Error en WS conciliacion "+loEx.getMessage();
-            System.out.println("Error al conciliar "+loEx.getMessage());
-        }
-        if(lbResult){
-            loResponseUpdDao.setLsResponse("OK");
-        }else{
-            loResponseUpdDao.setLsResponse("ERROR");
-        }
-        loResponseUpdDao.setLsMessage(lsMessage);
-        
-        return loResponseUpdDao;
-    }
-    
-    public ResponseUpdDao setArrayOfSpotParadigmRead(ArrayOfSpot toArrayOfSpot){
-        boolean lbResult = true;
-        String lsMessage = "Proceso de Inserción y Actualización Satisfactorio";
-        
-        ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        PriceDao loPriceDao = new PriceDao();
-        
-        
-        List<Spot> loListSpot = toArrayOfSpot.getSpot();
-        System.out.println("loListSpot.size()= "+loListSpot.size());
-        for(Spot loSpot : loListSpot){
-            
-            Integer liSpotNumber = loSpot.getSpotNumber();
-            System.out.println("SpotNumber["+loSpot.getSpotNumber()+"]");
-            Double ldCpp = loSpot.getCPP();
-            //System.out.println("ldCpp["+ldCpp+"]");
-            //Double ldCppl = loSpot.getCPPL();
-            //Double ldCpt = loSpot.getCPT();
-            //Double ldCptl = loSpot.getCPTL();
-            Integer liLength = loSpot.getLength();
-            //System.out.println("liLength["+liLength+"]");
-            Double ldNominalPrice = loSpot.getNomianlPrice();
-            //System.out.println("ldNominalPrice["+ldNominalPrice+"]");
-            //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
-            Double ldPriceFactor = loSpot.getPriceFactor();
-            //System.out.println("ldPriceFactor["+ldPriceFactor+"]");
-            Double ldRatings = loSpot.getRatings();
-            //System.out.println("ldRatings["+ldRatings+"]");
-            
-            //Se necesitan los valores de 
-            // piOrderID
-            // piSpotID
-            /*List<LmkSpotsBean> loSpotsList = 
-                loPriceDao.getSpotInfo(liSpotNumber);            
-            if(loSpotsList.size() > 0){
-                for(LmkSpotsBean loBean : loSpotsList){
-                    System.out.println(">> getLiOrdId: "+loBean.getLiOrdId());
-                    System.out.println(">> getLiSpotNumber: "+loBean.getLiSpotNumber());
-                    System.out.println(">> getLiSptmstid: "+loBean.getLiSptmstid());
-                }
-            } */
-        }
-        
-        if(lbResult){
-            loResponseUpdDao.setLsResponse("OK");
-        }else{
-            loResponseUpdDao.setLsResponse("ERROR");
-        }
-        loResponseUpdDao.setLsMessage(lsMessage);
-        
-        return loResponseUpdDao;
-    }
     
 }
