@@ -123,21 +123,21 @@ public class OrderSpotsService {
             
         SftpManagment loSmg = new SftpManagment();
         List<String> laLisSsh = loSmg.getListFileServerSFTP(lsPath, lsExt);
-        System.out.println("Numero de archivos extraidos del server ssh ["+laLisSsh.size()+"]");
+        //System.out.println("Numero de archivos extraidos del server ssh ["+laLisSsh.size()+"]");
         List<String> laInputList = new ArrayList<String>();
         if(laList.size() > 0){
-            System.out.println("Nombres de archivos extraidos la base de datos["+laList.size()+"]");
+            //System.out.println("Nombres de archivos extraidos la base de datos["+laList.size()+"]");
             for(LmkIntXmlFilesRowBean loBean : laList){
                 int liI = 0;
                 lbProcess = true;
-                //System.out.println("Buscar archivos ssh en lista de la base de datos");
+                ////System.out.println("Buscar archivos ssh en lista de la base de datos");
                 while(liI < laLisSsh.size() && lbProcess == true){
                     //- Buscar cada nombre de archivo fisico en el grupo
-                    //System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
+                    ////System.out.println("indexOf: loBean.getLsNomFile()["+loBean.getLsNomFile()+
                       //                 "] VS laLis.get("+liI+")["+laLisSsh.get(liI).indexOf(loBean.getLsNomFile())+"]");
                     if(laLisSsh.get(liI).indexOf(loBean.getLsNomFile()) >= 0){
                         lbProcess = false;//Para que el ciclo sea cortado
-                        //System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
+                        ////System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
                         //Discriminar este registro, ya que ya está procesado
                     }else{
                         laInputList.add(laLisSsh.get(liI));
@@ -147,7 +147,7 @@ public class OrderSpotsService {
                 
             }    
         }else{//Een base de datos no hay ninguno en estatus alta
-            System.out.println("No  existen archivos guarddos es la bd");
+            //System.out.println("No  existen archivos guarddos es la bd");
             laInputList.addAll(laLisSsh);
         }
         

@@ -59,6 +59,8 @@ public class ResponseBreaksDao {
                 loItem.setLsIndFileType(loRs.getString("IND_FILE_TYPE"));
                 loItem.setLsIndServiceType(loRs.getString("IND_SERVICE_TYPE"));                
                 loItem.setLsIndEstatus(loRs.getString("IND_ESTATUS"));
+                
+                loItem.setLsAttribute11(loRs.getString("ATTRIBUTE11"));
                 laList.add(loItem);
             }
         } catch (SQLException loExSql) {

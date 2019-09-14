@@ -397,6 +397,7 @@ public class UtilFaces {
         AppModuleImpl loService = (AppModuleImpl)loAm;
         try {
             lsParameterValue = loService.getParameterValue(tsParameterName);
+            System.out.println(lsParameterValue);
         } catch (Exception loEx) {
             ;
         } finally {
@@ -572,11 +573,11 @@ public class UtilFaces {
      * @return void
      */
     public void insertLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
-        System.out.println("Se puede instanciar appmodule");
+        //System.out.println("Se puede instanciar appmodule");
        ApplicationModule         loAm =
            Configuration.createRootApplicationModule(gsAmDef, gsConfig);
        AppModuleImpl loService = (AppModuleImpl)loAm;
-        System.out.println("Se puede instanciar appmodule.... OK");
+        //System.out.println("Se puede instanciar appmodule.... OK");
        try {
            loService.insertServicesLogModel(toLmkBean);
        } catch (Exception loEx) {
@@ -594,11 +595,11 @@ public class UtilFaces {
      * @return void
      */
     public void insertSimpleLogServiceService(LmkIntServicesLogRowBean toLmkBean) {
-        System.out.println("Se puede instanciar appmodule");
+        //System.out.println("Se puede instanciar appmodule");
        ApplicationModule         loAm =
            Configuration.createRootApplicationModule(gsAmDef, gsConfig);
        AppModuleImpl loService = (AppModuleImpl)loAm;
-        System.out.println("Se puede instanciar appmodule.... OK");
+        //System.out.println("Se puede instanciar appmodule.... OK");
        try {
            loService.insertServicesLogModel(toLmkBean);
        } catch (Exception loEx) {
@@ -670,25 +671,25 @@ public class UtilFaces {
             //"VHJhaW5lZTA3OjJjZWQ2ZTcxNjBhOWUyY2I0YmUyOWMyMDA4NTJiZmM0ZmUyOWQ3NTMxZmYzZmZjNTFmYzE0MDczOTlkOGQ4Yjg=";
         //String lsOriginal = "Trainee07:Password7";
         String lsOriginal = tsCadena;//"Trainee07:Password8";
-        System.out.println("Cadena Original["+lsOriginal+"]");
+        //System.out.println("Cadena Original["+lsOriginal+"]");
         String[] laArray = lsOriginal.split(":");
         if(laArray.length > 0){
-            System.out.println("Cadena Separada:");
-            System.out.println("\tUserName["+laArray[0]+"]");
-            System.out.println("\tPassword["+laArray[1]+"]");
+            //System.out.println("Cadena Separada:");
+            //System.out.println("\tUserName["+laArray[0]+"]");
+            //System.out.println("\tPassword["+laArray[1]+"]");
             MessageDigest loDigest;
             try {
                 loDigest = MessageDigest.getInstance("SHA-256");
                 byte[] loEncodedhash = loDigest.digest(
                   laArray[1].getBytes(StandardCharsets.UTF_8));
                 String lsPwdString = bytesToHex(loEncodedhash);
-                System.out.println("Password Encriptado en SHA-256["+lsPwdString+"]");
+                //System.out.println("Password Encriptado en SHA-256["+lsPwdString+"]");
                 BASE64Encoder   loEncoder = new BASE64Encoder();                
-                System.out.println("##########################################");
+                //System.out.println("##########################################");
                 String lsStringFull = laArray[0]+":"+lsPwdString;
-                System.out.println("Cadena a Encriptar para Base64["+lsStringFull+"]");
+                //System.out.println("Cadena a Encriptar para Base64["+lsStringFull+"]");
                 String lsFullEncodeString = loEncoder.encode(lsStringFull.getBytes());                           
-                System.out.println("Encriptado Completo en base64:\n["+lsFullEncodeString.replaceAll("(\n|\r)", "")+"]");
+                //System.out.println("Encriptado Completo en base64:\n["+lsFullEncodeString.replaceAll("(\n|\r)", "")+"]");
                 loResponseUpdDao.setLsResponse("OK");
                 loResponseUpdDao.setLsMessage(lsFullEncodeString.replaceAll("(\n|\r)", ""));
             } catch (NoSuchAlgorithmException e) {

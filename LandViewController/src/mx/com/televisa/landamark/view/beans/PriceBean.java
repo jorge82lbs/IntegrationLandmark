@@ -372,11 +372,11 @@ public class PriceBean {
             liIdUser = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser") == null ? null :
                 Integer.parseInt(loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser"));
-            System.out.println(">>>> liIdUser: "+liIdUser);
+            //System.out.println(">>>> liIdUser: "+liIdUser);
             lsUserName = 
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser") == null ? null :
                 loService.getValueSessionFromAttribute("loggedPgmIntegrationUser").toString();
-            System.out.println(">>>> lsUserName: "+lsUserName);
+            //System.out.println(">>>> lsUserName: "+lsUserName);
             }catch(Exception loEx){
                 lsFinalMessage = loEx.getMessage();
                 lsColorMessage = "red";
@@ -386,7 +386,7 @@ public class PriceBean {
                 loAm.remove();            
             }
             String lsIdTrigger = lsIdService + "-" + lsTypeService;
-            System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> [EXECUTE] (usuario)*********");
+            //System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> [EXECUTE] (usuario)*********");
             ProcessServiceBean loProcessBean = new ProcessServiceBean();
             loProcessBean.setLiIdUser(liIdUser);
             loProcessBean.setLsUserName(lsUserName);
@@ -401,7 +401,7 @@ public class PriceBean {
             if(lsTypeService != null){
                 /*################ ACTUALIZACION DE PRECIOS ############################*/
                 //if(lsTypeService.equalsIgnoreCase("ProcessParrillasProgramas")){
-                    System.out.println(">>>> Ejecutar processServiceExecution para ProcessPriceUpdate (USUARIO): ");
+                    //System.out.println(">>>> Ejecutar processServiceExecution para ProcessPriceUpdate (USUARIO): ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 PriceCron.class);

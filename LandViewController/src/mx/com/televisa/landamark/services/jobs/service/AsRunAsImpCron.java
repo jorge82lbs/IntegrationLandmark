@@ -74,9 +74,9 @@ public class AsRunAsImpCron implements Job{
         AsRunAsDao                loAsRunAsDao = new AsRunAsDao();
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         String lsParametersClass = lsChannel+","+lsFecInicial+","+lsFecFinal;
-        System.out.println("["+lsChannel+"]Ejecucion de Cron (As Run As) >> ["+new Date()+"]");
+        //System.out.println("["+lsChannel+"]Ejecucion de Cron (As Run As) >> ["+new Date()+"]");
         
-        System.out.println("Logica de actualizacion de precios por canal configurado["+lsChannel+"]");
+        //System.out.println("Logica de actualizacion de precios por canal configurado["+lsChannel+"]");
         
         String lsKey = lsChannel + "-" + lsFecInicial;        
         //#################### Agregar logica del servicio ##########################
@@ -99,7 +99,7 @@ public class AsRunAsImpCron implements Job{
         
         if(liFlag > 0){
             //2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENREA_ASRUN(‘2CAN’,’2018-11-01’)    los parámetros de entrada son los mismos de siempre: Canal y Fecha
-            System.out.println("2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENERA_ASRUN("+lsChannel+","+lsFecInicial+")    los parámetros de entrada son los mismos de siempre: Canal y Fecha");
+            //System.out.println("2)      Ejecutar el SP :  CALL EVENTAS.LMK_GENERA_ASRUN("+lsChannel+","+lsFecInicial+")    los parámetros de entrada son los mismos de siempre: Canal y Fecha");
             try {
                 ResponseUpdDao loCll = loAsRunAsDao.callProcedureGeneraAsRun(lsChannel, lsFecInicial);
                 if(loCll.getLsResponse().equalsIgnoreCase("OK")){
@@ -217,10 +217,10 @@ public class AsRunAsImpCron implements Job{
                             }
                         
                             try{
-                                System.out.println("Actualizar log certificado (mandar a bitacora)");
+                                //System.out.println("Actualizar log certificado (mandar a bitacora)");
                                 ResponseUpdDao loResponseUpdDao = 
                                     loAsRunAsDao.getUpdateLogCertificado(lsChannel, lsFecInicial);
-                                System.out.println("Actualizar log certificado (mandar a bitacora)....OK");    
+                                //System.out.println("Actualizar log certificado (mandar a bitacora)....OK");    
                                 liIndProcess = 
                                             new UtilFaces().getIdConfigParameterByName("CallProcedure");//
                                 loBitBean.setLiIdLogServices(liIdLogService);
@@ -240,7 +240,7 @@ public class AsRunAsImpCron implements Job{
                         
                         //Eliminar archivo fisico del servidor
                         /*try{
-                            System.out.println("Eliminando archivo "+loFileAsRunAs.getName());
+                            //System.out.println("Eliminando archivo "+loFileAsRunAs.getName());
                             loFileAsRunAs.delete();
                             System.out.println("Eliminando archivo ok...");
                         }catch(Exception loExDel){
@@ -288,7 +288,7 @@ public class AsRunAsImpCron implements Job{
                     }
                 }
                 else{
-                    System.out.println("Agregar a bitacora el fallo");
+                    //System.out.println("Agregar a bitacora el fallo");
                     liIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("GeneralError");
                             loBitBean.setLiIdLogServices(liIdLogService);
@@ -303,7 +303,7 @@ public class AsRunAsImpCron implements Job{
                                                        lsUserName);
                 }
             } catch (SQLException e) {
-                System.out.println("Error al llamar proceure genera as run ");
+                //System.out.println("Error al llamar proceure genera as run ");
                 liIndProcess = 
                             new UtilFaces().getIdConfigParameterByName("GeneralError");
                         loBitBean.setLiIdLogServices(liIdLogService);
@@ -321,7 +321,7 @@ public class AsRunAsImpCron implements Job{
         
         }
         else{
-            System.out.println("Bandera Recon complete");
+            //System.out.println("Bandera Recon complete");
             liIndProcess = 
                         new UtilFaces().getIdConfigParameterByName("GeneralError");
                     loBitBean.setLiIdLogServices(liIdLogService);
@@ -347,7 +347,7 @@ public class AsRunAsImpCron implements Job{
                                            liIdUser, 
                                            lsUserName);
         
-        System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
+        //System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
     }
     
     /**
@@ -360,7 +360,7 @@ public class AsRunAsImpCron implements Job{
                                String tsPath,
                                String tsFilename) throws Exception{
         File loFileResponse = new File(tsPath+""+tsFilename);
-        System.out.println("Ruta: "+loFileResponse.getPath());
+        //System.out.println("Ruta: "+loFileResponse.getPath());
         try {
             FileWriter loWriter = new FileWriter(loFileResponse, true);
             for(String lsLine : laLineAsRun){

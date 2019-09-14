@@ -1403,6 +1403,80 @@
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>
+                
+                
+                <!-- ################################### POPUP ALTA PARAMETROS GZ ##################################################### !-->
+                <af:popup id="popupParmsGz" contentDelivery="lazyUncached" clientComponent="true"
+                          binding="#{ProcessBean.poPopupParamsGz}" partialTriggers="pt1:tbl:LnkParm">
+                    <af:panelWindow id="PnlSaveParamsGz" modal="true" closeIconVisible="false"
+                                    title="Asignación de Parámetros" titleIconSource="/images/note_new.gif" 
+                                    inlineStyle="border-style:none; width:35em; height:20em;"
+                                    partialTriggers="pt1:tbl:LnkParm">
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpParamsGz" valign="middle" halign="center"
+                        styleClass="AFStretchWidth" >
+                            <af:panelFormLayout id="PnlFrmParamsGz" rows="5" maxColumns="1">     
+                                    <af:inputText label="idServicio"                                                  
+                                                  shortDesc="idServicio"
+                                                  visible="false"
+                                                  id="TxtParamsIdServiceGz"
+                                                  binding="#{ProcessBean.poParamsIdServiceGz}">
+                                    </af:inputText>
+                                    <af:inputText label=" "                                                  
+                                                  shortDesc="Servicio"
+                                                  id="TxtParamsServiceGz"
+                                                  readOnly="true"
+                                                  binding="#{ProcessBean.poParamsNomServiceGz}"
+                                                  inlineStyle="font-weight:bolder; font-size:large;">
+                                    </af:inputText>
+                            </af:panelFormLayout>
+                            <af:spacer width="10" height="5" id="spa12gz"/>
+                            
+                        <af:panelGroupLayout layout="horizontal" id="PnlGrpPDatGz" valign="middle" halign="left"
+                        styleClass="AFStretchWidth">
+                            <af:panelFormLayout id="PnlFrmParamsdGz" rows="5" maxColumns="1">     
+                            
+                                <af:inputText id="TxtParamsFilename" label="Prefijo Nombre de Archivo"
+                                              columns="25" 
+                                              visible="true"
+                                              binding="#{ProcessBean.poParamsFileName}">
+                                </af:inputText>
+                            
+                              <af:inputText id="TxtParamsTbl" label="Nombre de Tabla"
+                                              columns="25" 
+                                              visible="true"
+                                              binding="#{ProcessBean.poParamsNomTblGz}">
+                                </af:inputText>
+                                    
+                                    <af:selectOneChoice label="Proceso" id="soc3"
+                                    binding="#{ProcessBean.poParamsTypeTbl}">
+                                        <af:selectItem label="DCDP" value="DCDP" id="si1"/>
+                                        <af:selectItem label="DCDT" value="DCDT" id="si2"/>
+                                        <af:selectItem label="DEAL" value="DEAL" id="si3"/>
+                                        <af:selectItem label="DEMD" value="DEMD" id="si4"/>
+                                    </af:selectOneChoice>
+                                    
+                            </af:panelFormLayout>
+                            </af:panelGroupLayout>
+                            <af:spacer width="10" height="5" id="sp4a12Gz"/>
+                            <af:separator id="s153grtGz"/>
+                                                             
+                            <af:panelGroupLayout id="PnPgGz">
+                                <af:button text="Aceptar" id="BtmnAltPmGz" icon="/images/aceptar.gif"
+                                            shortDesc="Guardar"
+                                           action="#{ProcessBean.saveParamsGzAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
+                                <af:spacer width="10" height="10" id="SpcLoadPmGz"/>
+                                <af:button text="Cancelar" id="BtnCancelPmtGz" icon="/images/cancelar.gif" 
+                                shortDesc="Cierra el Popup" immediate="true"
+                                           action="#{ProcessBean.cancelSaveParamsGzAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:panelWindow>
+                </af:popup>
+                
                
                 <!-- ################################### POPUP LOADING .... ##################################### !-->
                 <af:popup id="popLoading" contentDelivery="immediate">

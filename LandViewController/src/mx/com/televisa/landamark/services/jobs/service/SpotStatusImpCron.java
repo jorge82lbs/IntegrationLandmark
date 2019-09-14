@@ -68,7 +68,7 @@ public class SpotStatusImpCron implements Job{
 
     @Override
     public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {  
-        System.out.println("################ Dentro de SpotStatusImpCron #############");
+        //System.out.println("################ Dentro de SpotStatusImpCron #############");
         JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
         String                    lsIdService = loDataMap.getString("lsIdService");
         String                    lsIdUser = loDataMap.getString("lsIdUser");
@@ -87,10 +87,10 @@ public class SpotStatusImpCron implements Job{
         
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         String lsParametersClass = lsChannel+","+lsFecInicial+","+lsFecFinal;
-        System.out.println("["+lsChannel+"]Ejecucion de Cron (SpotStatus) >> ["+new Date()+"]");
+        //System.out.println("["+lsChannel+"]Ejecucion de Cron (SpotStatus) >> ["+new Date()+"]");
         
         //ResponseUpdDao loRes = loPpDao.callLmkProgBrkPr(lsChannel, lsFecInicial, lsFecFinal);
-        System.out.println("Logica de SpotStatus por canal configurado["+lsChannel+"]");
+        //System.out.println("Logica de SpotStatus por canal configurado["+lsChannel+"]");
         String lsKey = lsChannel + "-" + lsFecInicial;        
         //0.- Validar si es posible procesar, considerar:
         //0.1.- Que se hayan ejecutado los procesos previos, as run as
@@ -131,7 +131,7 @@ public class SpotStatusImpCron implements Job{
             //2.- Leer el response XML
             if(loArrayOfSpot != null){
                 //2.1.- Por ahora cada dato pasa sin validacion
-                System.out.println("insertar en tablas de control");
+                //System.out.println("insertar en tablas de control");
                 //3.- Insertar en tablas de Alex Morel, con servicio de rafa
                 //DESHABILITAR... por ahora solo lectura
                 
@@ -147,8 +147,8 @@ public class SpotStatusImpCron implements Job{
                                            lsUserName,
                                            lsTypeProcess);   
                 
-                System.out.println(">>>> getLsResponse: "+loSetSpot.getLsResponse());
-                System.out.println(">>>> getLsMessage: "+loSetSpot.getLsMessage());
+                //System.out.println(">>>> getLsResponse: "+loSetSpot.getLsResponse());
+                //System.out.println(">>>> getLsMessage: "+loSetSpot.getLsMessage());
                 
                 liIndProcess =                             
                             loEntityMappedDao.getGeneralParameterID("InsertCtrlTable", 
@@ -179,7 +179,7 @@ public class SpotStatusImpCron implements Job{
                                                liIdUser, 
                                                lsUserName);
             
-            System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
+            //System.out.println("["+lsChannel+"] FIN DE JOB ["+new Date()+"]");
             
         }
         
@@ -369,7 +369,7 @@ public class SpotStatusImpCron implements Job{
             List<String> loListChannels = loPriceDao.getCodPriceChannel(tsChannel);
             if(loListChannels.size() > 0){
                 laObjsSales.add(Integer.parseInt(loListChannels.get(0)));
-                System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
+                //System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
             }else{
                 loEntityMappedDao.getGeneralParameterID("ErrorConfig", 
                                                         "PROCESS_INTEGRATION");
@@ -422,8 +422,8 @@ public class SpotStatusImpCron implements Job{
             loHeaders.put(loLsWs.getLsNameUser(), Collections.singletonList(loLsWs.getLsValueUser()));
             loHeaders.put(loLsWs.getLsNamePassword(), Collections.singletonList(loLsWs.getLsValuePassword()));
             loReqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, loHeaders);
-            System.out.println("SETT SECURITY.....OK");
-            System.out.println("Guardar archivo fisico REQUEST");
+            //System.out.println("SETT SECURITY.....OK");
+            //System.out.println("Guardar archivo fisico REQUEST");
             /*
             try{                        
                 StreamResult result =
@@ -614,7 +614,7 @@ public class SpotStatusImpCron implements Job{
             }
         }catch(Exception loExGral){
             loArrOf = null;
-            System.out.println("Error general al consumir servicio");
+            //System.out.println("Error general al consumir servicio");
             loEntityMappedDao.getGeneralParameterID("GeneralError", 
                                                     "PROCESS_INTEGRATION");
             loBitBean.setLiIdLogServices(tiIdLogService);
@@ -680,7 +680,7 @@ public class SpotStatusImpCron implements Job{
         
         List<Spot> loListSpot = toArrayOfSpot.getSpot();
         liGeneralNumSpots = loListSpot.size();
-        System.out.println("Num spots: "+loListSpot.size());
+        //System.out.println("Num spots: "+loListSpot.size());
         for(Spot loSpot : loListSpot){
             
             Integer liSpotNumber = loSpot.getSpotNumber();
@@ -757,9 +757,9 @@ public class SpotStatusImpCron implements Job{
             LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
             Integer liIndProcess = 0;
             //########################################################################################
-            System.out.println("Guardar archivo fisico RESPONSE");
+            //System.out.println("Guardar archivo fisico RESPONSE");
             try{                      
-                System.out.println("Guardando archivo response xml en bd");
+                //System.out.println("Guardando archivo response xml en bd");
                 ByteArrayOutputStream loBaosRes = new ByteArrayOutputStream();
                 JAXB.marshal(loRes, loBaosRes);
                 InputStream           loFileXmlRes = new ByteArrayInputStream(loBaosRes.toByteArray()); 
@@ -805,7 +805,7 @@ public class SpotStatusImpCron implements Job{
                 
                 
                 }catch(Exception loEx){
-                    System.out.println("Error al guardar archivo "+loEx.getMessage());
+                    //System.out.println("Error al guardar archivo "+loEx.getMessage());
                     loEntityMappedDao.getGeneralParameterID("GeneralError", 
                                                             "PROCESS_INTEGRATION");
                     loBitBean.setLiIdLogServices(tiIdLogService);
@@ -862,13 +862,13 @@ public class SpotStatusImpCron implements Job{
         
         
         List<Spot> loListSpot = toArrayOfSpot.getSpot();
-        System.out.println("loListSpot.size()= "+loListSpot.size());
+        //System.out.println("loListSpot.size()= "+loListSpot.size());
         for(Spot loSpot : loListSpot){
             
             Integer liSpotNumber = loSpot.getSpotNumber();
-            System.out.println("SpotNumber["+loSpot.getSpotNumber()+"]");
+            //System.out.println("SpotNumber["+loSpot.getSpotNumber()+"]");
             Double ldCpp = loSpot.getCPP();
-            //System.out.println("ldCpp["+ldCpp+"]");
+            ////System.out.println("ldCpp["+ldCpp+"]");
             //Double ldCppl = loSpot.getCPPL();
             //Double ldCpt = loSpot.getCPT();
             //Double ldCptl = loSpot.getCPTL();

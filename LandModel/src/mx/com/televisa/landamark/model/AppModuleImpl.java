@@ -567,7 +567,7 @@ public class AppModuleImpl extends ApplicationModuleImpl {
             loRow.setNumLastUpdateLogin(liIdUser);
             loRow.setNumLastUpdatedBy(liIdUser);
             loObj.insertRow(loRow);          
-            System.out.println("Insertando en LmkIntServicesLogTab........ OK");
+            //System.out.println("Insertando en LmkIntServicesLogTab........ OK");
         } catch (Exception loEx) {
             System.out.println("Insert ERROR insertServicesLogModel !!"+loEx.getMessage());
         }finally{                        

@@ -56,7 +56,7 @@ public class ParrillasProgramasService {
      * @return ResponseService
      */
     public ResponseService executeService(BasicInputParameters loInput){
-        System.out.println("Dentro deexecuteService ya de ParrillasProgramasService");
+        //System.out.println("Dentro deexecuteService ya de ParrillasProgramasService");
         ResponseService        loResponseService = new ResponseService();
         EntityMappedDao        loEntityMappedDao = new EntityMappedDao();
         ServicesParamsDao      loSpDao = new ServicesParamsDao();
@@ -71,9 +71,9 @@ public class ParrillasProgramasService {
         loResponseService.setLsMessageResponse(lsReturn);
         loResponseService.setLsUserName(loInput.getLsUserName());
         //Obtener idLog service de la tabla 
-        System.out.println("Obtener idLogService");
+        //System.out.println("Obtener idLogService");
         Integer                   liIdLogService = new ViewObjectDao().getMaxIdParadigm("Log") + 1;
-        System.out.println("Obtener idLogService "+liIdLogService);
+        //System.out.println("Obtener idLogService "+liIdLogService);
         LmkIntServicesLogRowBean loSlb = new LmkIntServicesLogRowBean();
         loSlb.setLiIdLogServices(liIdLogService);
         loSlb.setLiIdService(loInput.getLiIdService());
@@ -87,7 +87,7 @@ public class ParrillasProgramasService {
         loSlb.setLsMessage("Execute "+loInput.getLsServiceName());
         loSlb.setLsUserName(loInput.getLsUserName());
         loSlb.setLiIdUser(loInput.getLiIdUser());
-        System.out.println("insertLogServiceService....  ");
+        //System.out.println("insertLogServiceService....  ");
         
         //new UtilFaces().insertLogServiceService(loSlb);
         loEntityMappedDao.insertSimpleServicesLog(loSlb, 

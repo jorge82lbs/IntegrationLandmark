@@ -61,7 +61,7 @@
   </filter>
   <filter>
       <filter-name>ApplicationSessionExpiryFilter</filter-name>
-      <filter-class>mx.com.televisa.landamark.saml2.SSOFilter</filter-class>
+      <filter-class>mx.com.televisa.landamark.filters.SessionFilter</filter-class>
    </filter>   
   <filter-mapping>
     <filter-name>trinidad</filter-name>

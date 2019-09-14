@@ -188,7 +188,7 @@
                                                   selectedRowKeys="#{bindings.LmkIntMappingCatVwView1.collectionModel.selectedRow}"
                                                   selectionListener="#{bindings.LmkIntMappingCatVwView1.collectionModel.makeCurrent}"
                                                   rowSelection="single"
-                                                  fetchSize="#{bindings.LmkIntMappingCatVwView1.rangeSize}"
+                                                  fetchSize="-1"
                                                   id="tblMain"
                                               filterVisible="true"
                                               styleClass="AFStretchWidth"

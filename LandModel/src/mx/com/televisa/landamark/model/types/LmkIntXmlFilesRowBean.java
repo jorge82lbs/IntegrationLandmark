@@ -20,6 +20,15 @@ public class LmkIntXmlFilesRowBean {
     private Integer liIdUser;
     private String lsAttribute1;
     private String lsAttribute2;
+    private String lsAttribute11;
+
+    public void setLsAttribute11(String lsAttribute11) {
+        this.lsAttribute11 = lsAttribute11;
+    }
+
+    public String getLsAttribute11() {
+        return lsAttribute11;
+    }
 
     public void setLsAttribute2(String lsAttribute2) {
         this.lsAttribute2 = lsAttribute2;

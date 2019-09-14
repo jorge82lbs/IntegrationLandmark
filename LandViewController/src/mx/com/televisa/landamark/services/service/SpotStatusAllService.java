@@ -14,6 +14,7 @@ import com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 
 import java.sql.SQLException;
@@ -204,9 +205,10 @@ public class SpotStatusAllService {
                                                          lsChannelsLog);
             
             //laChannels Contiene todos los canales configurados para este proposito
-            boolean     lbFlagRecon = true;
+            /*boolean     lbFlagRecon = true;
             int         liI = 0;
             AsRunAsDao  loAsRunAsDao = new AsRunAsDao();      
+            
             while(lbFlagRecon && liI < laChannels.size()){
                 String lsChannel = laChannels.get(liI);
                 Integer liFlag = 
@@ -234,12 +236,12 @@ public class SpotStatusAllService {
             loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                loInput.getLiIdUser(), 
                                                loInput.getLsUserName());
-            
-            if(lbFlagRecon){
+            */
+            //if(lbFlagRecon){
                 //Eliminar tabla de transaccion
                 SpotStatusDao loSpotStatusDao = new SpotStatusDao();
                 ResponseUpdDao loDel = loSpotStatusDao.deleteRowsSpotStatusTrx();
-                System.out.println("Resultado de eliminar registros: "+loDel.getLsResponse());
+                System.out.println("NE- Resultado de eliminar registros: "+loDel.getLsResponse());
                 if(loDel.getLsResponse().equalsIgnoreCase("OK")){                
                     //Todos los canales superaron la validacion
                     ArrayOfSpot loArrayOfSpot = 
@@ -310,7 +312,7 @@ public class SpotStatusAllService {
                     loInput.getLsUserName());
                 }
                 System.out.println("["+lsChannelsLog+"] FIN DE JOB ["+new Date()+"]");
-            }
+            //}
         }
         return loResponseService;
     }
@@ -348,7 +350,6 @@ public class SpotStatusAllService {
             GregorianCalendar loGc = 
                 loSpot.getScheduledDate().toGregorianCalendar();
             String lsScheduledate = loSdf.format(loGc.getTime());
-            //System.out.println("lsScheduledate ["+lsScheduledate+"]");
             loBean.setLsScheduleDate(lsScheduledate);
             loBean.setLoScheduledate(loSpot.getScheduledDate());                                    
             ////////////////////////////////////////////////////////////////////
@@ -442,19 +443,19 @@ public class SpotStatusAllService {
             Integer liSpotNumber = loSpot.getSpotNumber();            
             System.out.println("CANAL["+loSpot.getSalesSplitId()+"] SpotNumber["+loSpot.getSpotNumber()+"]");
             Double ldCpp = loSpot.getCPP();
-            //System.out.println("ldCpp["+ldCpp+"]");
+            System.out.println("ldCpp["+ldCpp+"]");
             //Double ldCppl = loSpot.getCPPL();
             //Double ldCpt = loSpot.getCPT();
             //Double ldCptl = loSpot.getCPTL();
             Integer liLength = loSpot.getLength();
-            //System.out.println("liLength["+liLength+"]");
+            System.out.println("liLength["+liLength+"]");
             Double ldNominalPrice = loSpot.getNomianlPrice();
-            //System.out.println("ldNominalPrice["+ldNominalPrice+"]");
+            System.out.println("ldNominalPrice["+ldNominalPrice+"]");
             //Double ldTotalNominalPrice = loSpot.getTotalNominalPrice();
             Double ldPriceFactor = loSpot.getPriceFactor();
-            //System.out.println("ldPriceFactor["+ldPriceFactor+"]");
+            System.out.println("ldPriceFactor["+ldPriceFactor+"]");
             Double ldRatings = loSpot.getRatings();
-            //System.out.println("ldRatings["+ldRatings+"]");
+            System.out.println("ldRatings["+ldRatings+"]");
             
             //Se necesitan los valores de 
             // piOrderID
@@ -507,17 +508,19 @@ public class SpotStatusAllService {
         Integer                      liIndProcess = 0;
         EntityMappedDao              loEntityMappedDao = new EntityMappedDao();
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
+        //System.out.println("dentro de getRequestLandmarkPrices");
         String lsAllChannels = "";
         for(String lsCanal : toChannels){
             lsAllChannels += lsCanal+",";
         }
         try{
+            //System.out.println("dentro de getRequestLandmarkPrices try.....");
             String lsQNameXML = "";
             LandmarkSpotsSpot  loLandmarkSpotsSpot = new LandmarkSpotsSpot();
             ILandmarkSpotsSpot loInstanceLandmarkSpotsSpot = 
                 loLandmarkSpotsSpot.getBasicHttpBindingILandmarkSpotsSpot();
             // Add your code to call the desired methods.
-            SpotListFilter loSpotListFilter = new SpotListFilter();        
+            SpotListFilter loSpotListFilter = new SpotListFilter();     
             loSpotListFilter.setAlternateSchedule(0);
             ArrayOfint loObjAs = new ArrayOfint();
             List<Integer> laObjsAs = new ArrayList<Integer>();
@@ -582,7 +585,7 @@ public class SpotStatusAllService {
             loSpotListFilter.setConvDemographicNumber(0);
             loSpotListFilter.setCopyCode(0);
             //Cambio de acuerdo a JEJ loSpotListFilter.setCopyProcess(-1);
-            loSpotListFilter.setCopyProcess(1);
+            loSpotListFilter.setCopyProcess(0);
             JAXBElement<String> loCurrency = 
                 new JAXBElement<String>(new QName(lsQNameXML, "Currency"),String.class, "MXN");
             loSpotListFilter.setCurrency(loCurrency);        
@@ -624,7 +627,7 @@ public class SpotStatusAllService {
             } catch (DatatypeConfigurationException e) {
                 System.out.println("Error Fechas : "+e.getMessage());
             }
-            loFilterTime.setEndTime(235959);        
+            loFilterTime.setEndTime(255959);        
             Date loDateStart;
             try {
                 loDateStart = loSdf.parse(tsInitialDate);
@@ -639,7 +642,7 @@ public class SpotStatusAllService {
             } catch (DatatypeConfigurationException e) {
                 System.out.println("Error Fechas 999: "+e.getMessage());
             }        
-            loFilterTime.setStartTime(60000);        
+            loFilterTime.setStartTime(20000);        
             loFilterDateTime.add(loFilterTime);
             laFdt.setFilterDateTime(loFilterDateTime);
             JAXBElement<ArrayOfFilterDateTime> laFilterDateTimes = 
@@ -685,7 +688,7 @@ public class SpotStatusAllService {
                 List<String> loListChannels = loPriceDao.getCodPriceChannel(tsChannel);
                 if(loListChannels.size() > 0){
                     laObjsSales.add(Integer.parseInt(loListChannels.get(0)));
-                    System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
+                    //System.out.println("Sales Area obtenida ["+loListChannels.get(0)+"] de "+tsChannel);
                 }else{
                     loEntityMappedDao.getGeneralParameterID("ErrorConfig", 
                                                             "PROCESS_INTEGRATION");
@@ -704,9 +707,7 @@ public class SpotStatusAllService {
             loObjSales.setInt(laObjsSales);
             JAXBElement<ArrayOfint> laSales = 
                 new JAXBElement<ArrayOfint>(new QName(lsQNameXML, "SalesAreas"),ArrayOfint.class,loObjSales);
-
             loSpotListFilter.setSalesAreas(laSales);
-            
             loSpotListFilter.setSecondaryDemographicNumber(-3);
             loSpotListFilter.setSecondaryRatingsSupplier(false);                
             
@@ -742,15 +743,15 @@ public class SpotStatusAllService {
             loReqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, loHeaders);
             System.out.println("SETT SECURITY.....OK");
             System.out.println("Guardar archivo fisico REQUEST");
-            /*
+            
             try{                        
                 StreamResult result =
-                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Alex"+getId()+".xml"));
+                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Landmark"+getId()+".xml"));
                 //transformer.transform(source, result);
                 JAXB.marshal(loSpotListFilter, result);
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
-            }*/
+            }
             //String lsNomFile = "";
             //##################### Insertar Archivo en Base de Datos ############################ 
             String lsNomFile = "";
@@ -849,14 +850,14 @@ public class SpotStatusAllService {
                 }
                 //########################################################################################
                 //Al usuario no le interesa el response de Landmark
-                System.out.println("Guardar archivo fisico RESPONSE");
-                try{                      
-                    //StreamResult result =
-                    //new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Response-Alex"+getId()+".xml"));
-                    //JAXB.marshal(loArrOf, result);
-                    
+                System.out.println("Guardar archivo fisico RESPONSE local");
+                try{ /*                     
+                    StreamResult result =
+                    new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Response-Landmark"+getId()+".xml"));
+                    JAXB.marshal(loArrOf, result);
+                    */
                     System.out.println("Guardando archivo response xml en bd");
-                    ByteArrayOutputStream loBaosRes = new ByteArrayOutputStream();
+                    /*ByteArrayOutputStream loBaosRes = new ByteArrayOutputStream();
                     JAXB.marshal(loArrOf, loBaosRes);
                     InputStream           loFileXmlRes = new ByteArrayInputStream(loBaosRes.toByteArray()); 
                     
@@ -899,7 +900,7 @@ public class SpotStatusAllService {
                                                        tiIdUser, 
                                                        tsUserName);
                     
-                    
+                    */
                     }catch(Exception loEx){
                         System.out.println("Error al guardar archivo "+loEx.getMessage());
                         loEntityMappedDao.getGeneralParameterID("GeneralError", 
@@ -930,9 +931,10 @@ public class SpotStatusAllService {
                                                    tiIdUser, 
                                                    tsUserName);
             }
-        }catch(Exception loExGral){
+        }
+        catch(Exception loExGral){
             loArrOf = null;
-            System.out.println("Error general al consumir servicio");
+            System.out.println("Error general al consumir servicio "+loExGral.getMessage());
             loEntityMappedDao.getGeneralParameterID("GeneralError", 
                                                     "PROCESS_INTEGRATION");
             loBitBean.setLiIdLogServices(tiIdLogService);

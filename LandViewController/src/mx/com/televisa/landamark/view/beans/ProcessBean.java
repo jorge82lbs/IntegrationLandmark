@@ -44,6 +44,7 @@ import mx.com.televisa.landamark.model.types.LmkIntServicesCatRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
 import mx.com.televisa.landamark.services.jobs.AsRunAsCron;
 import mx.com.televisa.landamark.services.jobs.ExecuteDummyCron;
+import mx.com.televisa.landamark.services.jobs.FileGzipCron;
 import mx.com.televisa.landamark.services.jobs.OrderSpotsCron;
 import mx.com.televisa.landamark.services.jobs.ParrillasProgramasCron;
 import mx.com.televisa.landamark.services.jobs.ResponseBreaksCron;
@@ -242,6 +243,12 @@ public class ProcessBean {
     private RichPopup poPopupRstCronService;
     private RichInputText poIdUser;
     private RichInputText poUserName;
+    private RichPopup poPopupParamsGz;
+    private RichInputText poParamsIdServiceGz;
+    private RichInputText poParamsNomServiceGz;
+    private RichInputText poParamsNomTblGz;
+    private RichSelectOneChoice poParamsTypeTbl;
+    private RichInputText poParamsFileName;
 
     /**
      * Realiza la validación sintáctica de la expresión.
@@ -268,12 +275,7 @@ public class ProcessBean {
         String lsIdService = 
             getPoIdServiceByTbl().getValue() == null ? "0" : 
             getPoIdServiceByTbl().getValue().toString();           
-        
-        UserOperationList loUserOperationList = (UserOperationList)resolveExpression("#{UserOperationList}");
-        for(String lsOperation : loUserOperationList.getLaOpertations()){
-            System.out.println("lsOperation: "+lsOperation);            
-        } 
-        
+       
         if(lsIdService.equalsIgnoreCase("0")){
             FacesCtrlHierNodeBinding loNode = 
                 (FacesCtrlHierNodeBinding) getPoTblMain().getSelectedRowData();
@@ -905,7 +907,7 @@ public class ProcessBean {
             String lsTypeService = 
                 loTypeService.getValue() == null ? null : 
                 loTypeService.getValue().toString();
-            System.out.println(">>>> lsTypeService: "+lsTypeService);
+            //System.out.println(">>>> lsTypeService: "+lsTypeService);
             
             String lsNameService = 
                 loNameService.getValue() == null ? null : 
@@ -914,7 +916,7 @@ public class ProcessBean {
             
             String lsServiceAction = lsAction;   
             String lsIdTrigger = lsIdService + "-" + lsTypeService;
-            System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> ["+lsServiceAction+"]*********");
+            //System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> ["+lsServiceAction+"]*********");
             lsGeneralAction = lsServiceAction;
             //System.out.println(">>>> lsGeneralAction: "+lsGeneralAction);
             ProcessServiceBean loProcessBean = new ProcessServiceBean();
@@ -931,7 +933,7 @@ public class ProcessBean {
             if(lsTypeService != null){
                 /*################ DUMMY ############################*/
                 if(lsTypeService.equalsIgnoreCase("DummyProcess")){
-                    System.out.println(">>>> Ejecutar processServiceExecution para DummyProcess: ");
+                    //System.out.println(">>>> Ejecutar processServiceExecution para DummyProcess: ");
                     ExecuteServiceResponseBean loRes =
                     processServiceExecution(loProcessBean, 
                                             ExecuteDummyCron.class,
@@ -942,7 +944,7 @@ public class ProcessBean {
                 
                 /*################ PARRILLAS AND PROGRAMAS ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessSpotStatus")){
-                    System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
+                    //System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 SpotStatusCron.class,
@@ -954,7 +956,7 @@ public class ProcessBean {
                 
                 /*################ PARRILLAS AND PROGRAMAS ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessParrillasProgramas")){
-                    System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
+                    //System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 ParrillasProgramasCron.class,
@@ -964,7 +966,7 @@ public class ProcessBean {
                 }
                 /*################ BUSCAR ARCHIVO REMOTO DE BREAKS ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessResponseBreaks")){
-                    System.out.println(">>>> Ejecutar ProcessResponseBreaks para Respuesta de breaks: ");
+                    //System.out.println(">>>> Ejecutar ProcessResponseBreaks para Respuesta de breaks: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 ResponseBreaksCron.class,
@@ -974,7 +976,7 @@ public class ProcessBean {
                 }
                 /*################ PROCESO AS RUN AS ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessAsRunAs")){
-                    System.out.println(">>>> Ejecutar ProcessAsRunAs: ");
+                    //System.out.println(">>>> Ejecutar ProcessAsRunAs: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 AsRunAsCron.class,
@@ -984,7 +986,7 @@ public class ProcessBean {
                 }
                 /*################ PROCESO LECTURA DE ORDENES/SPOTS ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessOrderSpots")){
-                    System.out.println(">>>> Ejecutar ProcessOrderSpots Lectura de Ordenes y/o spots: ");
+                    //System.out.println(">>>> Ejecutar ProcessOrderSpots Lectura de Ordenes y/o spots: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 OrderSpotsCron.class,
@@ -992,6 +994,18 @@ public class ProcessBean {
                     lsColorMessage = loRes.getLsColor();
                     lsFinalMessage = loRes.getLsMessage();
                 }
+                
+                /*################ PROCESO LECTURA DE ARCHIVO GZIP ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessFileGzip")){
+                    //System.out.println(">>>> Ejecutar ProcessFileGzip Descomprimir gzip: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                FileGzipCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                
                 
             }                        
         } catch (Exception loEx) {
@@ -1104,11 +1118,11 @@ public class ProcessBean {
 
         liIdService = getPoIdServiceSelected().getValue() == null ? 0 : 
             Integer.parseInt(getPoIdServiceSelected().getValue().toString());      
-        System.out.println("liIdService: "+liIdService);
+        //System.out.println("liIdService: "+liIdService);
         lsIndPeriodicity = 
             getPoIdTabSelected().getValue() == null ? "" : 
             getPoIdTabSelected().getValue().toString();   
-        System.out.println("lsIndPeriodicity: "+lsIndPeriodicity);
+        //System.out.println("lsIndPeriodicity: "+lsIndPeriodicity);
         if(liIdService > 0){
             // ###################### MINUTOS ##########################
             if(lsIndPeriodicity.equalsIgnoreCase("MINUTOS")){
@@ -1194,17 +1208,17 @@ public class ProcessBean {
             }
             // ###################### HORAS ##########################
             if(lsIndPeriodicity.equalsIgnoreCase("HORAS")){
-                System.out.println("Configuracion para HORAS");
+                //System.out.println("Configuracion para HORAS");
                 
                 lsIndHourDeadLine = 
                     getPoDeadLineHoras().getValue() == null ? null : 
                     getPoDeadLineHoras().getValue().toString(); 
-                System.out.println("lsIndHourDeadLine: "+lsIndHourDeadLine);                
+                //System.out.println("lsIndHourDeadLine: "+lsIndHourDeadLine);                
 
                 lsIndMinuteDeadLine = 
                     getPoDeadLineMinHoras().getValue() == null ? null : 
                     getPoDeadLineMinHoras().getValue().toString(); 
-                System.out.println("lsIndMinuteDeadLine: "+lsIndMinuteDeadLine);                               
+                //System.out.println("lsIndMinuteDeadLine: "+lsIndMinuteDeadLine);                               
                 // Validar si es RadioBegin
                 String lsEveryValue = null;
                 String lsHours = null;
@@ -1214,20 +1228,20 @@ public class ProcessBean {
                     lsIndValTypeSchedule = 
                         getPoCadaHoras().getValue() == null ? null : 
                         getPoCadaHoras().getValue().toString();
-                    System.out.println("lsIndValTypeSchedule: "+lsIndValTypeSchedule);
+                    //System.out.println("lsIndValTypeSchedule: "+lsIndValTypeSchedule);
                     lsEveryValue = lsIndValTypeSchedule;
-                    System.out.println("lsEveryValue: "+lsEveryValue);
+                    //System.out.println("lsEveryValue: "+lsEveryValue);
                     if(lsIndValTypeSchedule == null){
                         lbProcess = false;
                     }
                     lsHours = 
                         getPoBeginHoras().getValue() == null ? "" : 
                         getPoBeginHoras().getValue().toString();
-                    System.out.println("lsHours: "+lsHours);
+                    //System.out.println("lsHours: "+lsHours);
                     lsMinutes = 
                         getPoBeginMinutes().getValue() == null ? "" : 
                         getPoBeginMinutes().getValue().toString();
-                    System.out.println("lsMinutes: "+lsMinutes);
+                    //System.out.println("lsMinutes: "+lsMinutes);
                     if(lsHours.equalsIgnoreCase("")){
                         lsHours = "23";
                     }
@@ -1236,32 +1250,32 @@ public class ProcessBean {
                     }
                     lsIndHourBegin = lsHours;
                     lsIndMinuteBegin = lsMinutes;
-                    System.out.println("###### lsIndHourBegin: "+lsIndBeginSchedule);
-                    System.out.println("###### lsIndMinuteBegin: "+lsIndMinuteBegin);
+                    //System.out.println("###### lsIndHourBegin: "+lsIndBeginSchedule);
+                    //System.out.println("###### lsIndMinuteBegin: "+lsIndMinuteBegin);
                     lsIndBeginSchedule = new UtilFaces().buildTimeCron(lsHours, lsMinutes);
-                    System.out.println("lsIndBeginSchedule: "+lsIndBeginSchedule);
+                    //System.out.println("lsIndBeginSchedule: "+lsIndBeginSchedule);
                 //}                    
                 // Validar si es RadioBegin
                 lsIndHourBegin = lsHours;
                 lsIndMinuteBegin = lsMinutes;
-                System.out.println("######***** lsIndHourBegin: "+lsIndBeginSchedule);
-                System.out.println("######****** lsIndMinuteBegin: "+lsIndMinuteBegin);                
+                //System.out.println("######***** lsIndHourBegin: "+lsIndBeginSchedule);
+                //System.out.println("######****** lsIndMinuteBegin: "+lsIndMinuteBegin);                
                 lsIndTypeSchedule = "EVERY";
                 
                 lsIndValTypeSchedule = 
                     getPoCadaHoras().getValue() == null ? null : 
                     getPoCadaHoras().getValue().toString();
-                System.out.println("lsIndValTypeSchedule: "+lsIndValTypeSchedule);
+                //System.out.println("lsIndValTypeSchedule: "+lsIndValTypeSchedule);
                 lsEveryValue = lsIndValTypeSchedule;
-                System.out.println("lsEveryValue: "+lsEveryValue);
+                //System.out.println("lsEveryValue: "+lsEveryValue);
                 lsHours = 
                     getPoBeginHoras().getValue() == null ? "" : 
                     getPoBeginHoras().getValue().toString();
-                System.out.println("lsHours: "+lsHours);
+                //System.out.println("lsHours: "+lsHours);
                 lsMinutes = 
                     getPoBeginMinutes().getValue() == null ? "" : 
                     getPoBeginMinutes().getValue().toString();
-                System.out.println("lsMinutes: "+lsMinutes);
+                //System.out.println("lsMinutes: "+lsMinutes);
                 if(lsHours.equalsIgnoreCase("")){
                     lsHours = "23";
                 }
@@ -1269,13 +1283,13 @@ public class ProcessBean {
                 if(lsMinutes.equalsIgnoreCase("")){
                     lsMinutes = "59";
                 }
-                System.out.println("lsMinutes: "+lsMinutes);
+                //System.out.println("lsMinutes: "+lsMinutes);
                 lsIndBeginSchedule = new UtilFaces().buildTimeCron(lsHours, lsMinutes);
-                System.out.println("lsIndBeginSchedule: "+lsIndBeginSchedule);
+                //System.out.println("lsIndBeginSchedule: "+lsIndBeginSchedule);
                 if(lsIndBeginSchedule.equalsIgnoreCase("ERROR")){
                     lbProcess = false;
                 }   
-                System.out.println("lbProcess 001: "+lbProcess);
+                //System.out.println("lbProcess 001: "+lbProcess);
                 if(lbProcess){
                     liIndDayMonth = null;
                     liIndWeekMonth = null;
@@ -1285,50 +1299,50 @@ public class ProcessBean {
                                                                    "false",
                                                                    lsHours,
                                                                    lsMinutes);
-                    System.out.println("lsCronConfig: "+lsCronConfig);
+                    //System.out.println("lsCronConfig: "+lsCronConfig);
                     lsIndCronExpression = "0 0 " + lsIndValTypeSchedule + " 1/1 * ? *";
 //                            new UtilFaces().getCronExpression(lsCronConfig);
-System.out.println("llsIndCronExpression: "+lsIndCronExpression);
+//System.out.println("llsIndCronExpression: "+lsIndCronExpression);
                     String lsLunes =
                         getPoLunHoras().getValue() == null ? "" : 
                         getPoLunHoras().getValue().toString();
-                    System.out.println("lsLunes 001: "+lsLunes);
+                    //System.out.println("lsLunes 001: "+lsLunes);
                     if(lsLunes.equalsIgnoreCase("true")){liIndMonday = 1;}else{liIndMonday = 0;}
                     
                     String lsMartes = 
                         getPoMarHoras().getValue() == null ? "" :
                         getPoMarHoras().getValue().toString();
-                    System.out.println("lsMartes 001: "+lsMartes);
+                    //System.out.println("lsMartes 001: "+lsMartes);
                     if(lsMartes.equalsIgnoreCase("true")){liIndTuesday = 1;}else{liIndTuesday = 0;}
                     
                     String lsMiercoles = 
                         getPoMieHoras().getValue() == null ? "" : 
                         getPoMieHoras().getValue().toString();
-                    System.out.println("lsMiercoles 001: "+lsMiercoles);
+                    //System.out.println("lsMiercoles 001: "+lsMiercoles);
                     if(lsMiercoles.equalsIgnoreCase("true")){liIndWednesday = 1;}else{liIndWednesday = 0;}
                     
                     String lsJueves =
                         getPoJueHoras().getValue() == null ? "" :
                         getPoJueHoras().getValue().toString();
-                    System.out.println("lsJueves 001: "+lsJueves);
+                    //System.out.println("lsJueves 001: "+lsJueves);
                     if(lsJueves.equalsIgnoreCase("true")){liIndThursday = 1;}else{liIndThursday = 0;}
                     
                     String lsViernes = 
                         getPoVieHoras().getValue() == null ? "" : 
                         getPoVieHoras().getValue().toString();
-                    System.out.println("lsViernes 001: "+lsViernes);
+                    //System.out.println("lsViernes 001: "+lsViernes);
                     if(lsViernes.equalsIgnoreCase("true")){liIndFriday = 1;}else{liIndFriday = 0;}
                     
                     String lsSabado = 
                         getPoSabHoras().getValue() == null ? "" : 
                         getPoSabHoras().getValue().toString();
-                    System.out.println("lsSabado 001: "+lsSabado);
+                    //System.out.println("lsSabado 001: "+lsSabado);
                     if(lsSabado.equalsIgnoreCase("true")){liIndSaturday = 1;}else{liIndSaturday = 0;}
                     
                     String lsDomingo = 
                         getPoDomHoras().getValue() == null ? "" : 
                         getPoDomHoras().getValue().toString();
-                    System.out.println("lsDomingo 001: "+lsDomingo);
+                    //System.out.println("lsDomingo 001: "+lsDomingo);
                     if(lsDomingo.equalsIgnoreCase("true")){liIndSunday = 1;}else{liIndSunday = 0;}
                 }
                 resetMinuteTab();
@@ -1498,7 +1512,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
                 resetHoursTab();
                 resetDaysTab();  
             }            
-            System.out.println("lbProcess 002: "+lbProcess);
+            //System.out.println("lbProcess 002: "+lbProcess);
             if(lbProcess){
                 if(lsIndCronExpression != null){                                    
                     ApplicationModule         loAm = 
@@ -1510,7 +1524,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
                         //validar si es un update o insert
                         Integer liIdConfigurationUpd = 
                             loService.searchIdCronConfigModel(liIdService);
-                        System.out.println("buscar con liIdService: "+liIdService);
+                        //System.out.println("buscar con liIdService: "+liIdService);
                         if(lsIndMinuteDeadLine != null){
                             if(lsIndMinuteDeadLine.length()<2){
                                 lsIndMinuteDeadLine = "0"+lsIndMinuteDeadLine;
@@ -1892,42 +1906,84 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loNode.getAttribute("IndDescService") == null ? "" : 
             loNode.getAttribute("IndDescService").toString();        
         
-        getPoParamsIdService().setValue(lsIdService);     
-        getPoParamsNomService().setValue(lsDesService);
+        String                   lsProcessService = 
+            loNode.getAttribute("NomService") == null ? "" : 
+            loNode.getAttribute("NomService").toString();        
+        System.out.println("lsProcessService["+lsProcessService+"]");
+        if(lsProcessService.equalsIgnoreCase("ProcessFileGzip")){
+            getPoParamsIdServiceGz().setValue(lsIdService);     
+            getPoParamsNomServiceGz().setValue(lsDesService);
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl loService = 
+                (AppModuleImpl)loAm;        
+            try{
+                List<LmkIntServicesParamsRowBean> loColBean = 
+                    new ArrayList<LmkIntServicesParamsRowBean>();
+                loColBean = loService.getParametersServiceByIdService(Integer.parseInt(lsIdService));
                 
-        ApplicationModule         loAm = 
-            Configuration.createRootApplicationModule(gsAmDef, gsConfig);
-        AppModuleImpl loService = 
-            (AppModuleImpl)loAm;        
-        try{
-            List<LmkIntServicesParamsRowBean> loColBean = 
-                new ArrayList<LmkIntServicesParamsRowBean>();
-            loColBean = loService.getParametersServiceByIdService(Integer.parseInt(lsIdService));
-            
-            if(loColBean.size()>0){
-                for(LmkIntServicesParamsRowBean loBean : loColBean){
-                    if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL")){
-                        getPoInitialDate().setValue(loBean.getLsIndValParameter());    
+                if(loColBean.size() > 0){
+                    for(LmkIntServicesParamsRowBean loBean : loColBean){
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("TABLE")){
+                            getPoParamsNomTblGz().setValue(loBean.getLsIndValParameter());    
+                        }
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("TABLE_TYPE")){
+                            getPoParamsTypeTbl().setValue(loBean.getLsIndValParameter()); 
+                        }
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("PREFIX_FILE_NAME")){
+                            getPoParamsFileName().setValue(loBean.getLsIndValParameter()); 
+                        }
                     }
-                    if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
-                        getPoFinalDate().setValue(loBean.getLsIndValParameter());    
-
-                    }
+                }else{
+                    getPoParamsNomTblGz().setValue(null);    
+                    getPoParamsTypeTbl().setValue(null);    
                 }
-            }else{
-                getPoInitialDate().setValue(null);    
-                getPoFinalDate().setValue(null);    
+            }catch (Exception loEx) {
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("No es posible obtener parémetros " + loEx);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
             }
-        }catch (Exception loEx) {
-            FacesMessage loMsg;
-            loMsg = new FacesMessage("No es posible obtener parémetros " + loEx);
-            loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
-            FacesContext.getCurrentInstance().addMessage(null, loMsg);
-        } finally {
-            Configuration.releaseRootApplicationModule(loAm, true);
+            new UtilFaces().showPopup(getPoPopupParamsGz());
+        }else{
+            getPoParamsIdService().setValue(lsIdService);     
+            getPoParamsNomService().setValue(lsDesService);
+                    
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl loService = 
+                (AppModuleImpl)loAm;        
+            try{
+                List<LmkIntServicesParamsRowBean> loColBean = 
+                    new ArrayList<LmkIntServicesParamsRowBean>();
+                loColBean = loService.getParametersServiceByIdService(Integer.parseInt(lsIdService));
+                
+                if(loColBean.size()>0){
+                    for(LmkIntServicesParamsRowBean loBean : loColBean){
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL")){
+                            getPoInitialDate().setValue(loBean.getLsIndValParameter());    
+                        }
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                            getPoFinalDate().setValue(loBean.getLsIndValParameter());    
+    
+                        }
+                    }
+                }else{
+                    getPoInitialDate().setValue(null);    
+                    getPoFinalDate().setValue(null);    
+                }
+            }catch (Exception loEx) {
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("No es posible obtener parémetros " + loEx);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+            }
+            new UtilFaces().showPopup(getPoPopupParams());
         }
-               
-        new UtilFaces().showPopup(getPoPopupParams());
     }
     
     /**
@@ -2399,35 +2455,35 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         String  lsIndPeriodicity = 
             toRowCron.getLsIndPeriodicity() == null ? "": 
             toRowCron.getLsIndPeriodicity();
-        System.out.println("lsIndPeriodicity: "+lsIndPeriodicity);
+        //System.out.println("lsIndPeriodicity: "+lsIndPeriodicity);
         String  lsIndBeginSchedule = 
             toRowCron.getLsIndBeginSchedule() == null ? "": 
             toRowCron.getLsIndBeginSchedule();
-        System.out.println("lsIndBeginSchedule: "+lsIndBeginSchedule);
+        //System.out.println("lsIndBeginSchedule: "+lsIndBeginSchedule);
         String  lsIndTypeSchedule =
             toRowCron.getLsIndTypeSchedule() == null ? "": 
             toRowCron.getLsIndTypeSchedule();           
-        System.out.println("lsIndTypeSchedule: "+lsIndTypeSchedule);
+        //System.out.println("lsIndTypeSchedule: "+lsIndTypeSchedule);
         String  lsIndValTypeSchedule = 
             toRowCron.getLsIndValTypeSchedule() == null ? "": 
             toRowCron.getLsIndValTypeSchedule();    
-        System.out.println("lsIndValTypeSchedule: "+lsIndValTypeSchedule);
+        //System.out.println("lsIndValTypeSchedule: "+lsIndValTypeSchedule);
         String  lsHourDl  = 
             toRowCron.getLsIndEndMinute() == null ? "": 
             toRowCron.getLsIndEndMinute();
-        System.out.println("lsHourDl: "+lsHourDl);
+        //System.out.println("lsHourDl: "+lsHourDl);
         String  lsMinuteDl   = 
             toRowCron.getLsIndEndSecond() == null ? "": 
             toRowCron.getLsIndEndSecond();
-        System.out.println("lsMinuteDl: "+lsMinuteDl);
+        //System.out.println("lsMinuteDl: "+lsMinuteDl);
         String  lsHourBegin  = 
             toRowCron.getLsIndBeginMinute() == null ? "": 
             toRowCron.getLsIndBeginMinute();
-        System.out.println("lsHourBegin: "+lsHourBegin);
+        //System.out.println("lsHourBegin: "+lsHourBegin);
         String  lsMinuteBegin   = 
             toRowCron.getLsIndBeginSecond() == null ? "": 
             toRowCron.getLsIndBeginSecond();
-        System.out.println("lsMinuteBegin: "+lsMinuteBegin);
+        //System.out.println("lsMinuteBegin: "+lsMinuteBegin);
         //String  lsAttribute1 = toRowCron.getAttribute1() == null ? "" : toRowCron.getAttribute1();
         boolean lbMonday = false;
         boolean lbTuesday = false;
@@ -2438,25 +2494,25 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         boolean lbSunday = false;
        
         Integer piIndMonday = toRowCron.getLiIndMonday();
-        System.out.println("piIndMonday: "+piIndMonday);
+        //System.out.println("piIndMonday: "+piIndMonday);
         if(piIndMonday != null){lbMonday = piIndMonday == 1 ? true : false;}        
         Integer piIndTuesday = toRowCron.getLiIndTuesday();
-        System.out.println("piIndTuesday: "+piIndTuesday);
+        //System.out.println("piIndTuesday: "+piIndTuesday);
         if(piIndMonday != null){lbTuesday = piIndTuesday == 1 ? true : false;}
         Integer piIndWednesday = toRowCron.getLiIndWednesday();
-        System.out.println("piIndWednesday: "+piIndWednesday);
+        //System.out.println("piIndWednesday: "+piIndWednesday);
         if(piIndMonday != null){lbWednesday = piIndWednesday == 1 ? true : false;}
         Integer piIndThursday = toRowCron.getLiIndThursday();
-        System.out.println("piIndThursday: "+piIndThursday);
+        //System.out.println("piIndThursday: "+piIndThursday);
         if(piIndMonday != null){lbThursday = piIndThursday == 1 ? true : false;}
         Integer piIndFriday = toRowCron.getLiIndFriday();
-        System.out.println("piIndFriday: "+piIndFriday);
+        //System.out.println("piIndFriday: "+piIndFriday);
         if(piIndMonday != null){lbFriday = piIndFriday == 1 ? true : false;}
         Integer piIndSaturday = toRowCron.getLiIndSaturday();
-        System.out.println("piIndSaturday: "+piIndSaturday);
+        //System.out.println("piIndSaturday: "+piIndSaturday);
         if(piIndMonday != null){lbSaturday = piIndSaturday == 1 ? true : false;}
         Integer piIndSunday = toRowCron.getLiIndSunday();
-        System.out.println("piIndSunday: "+piIndSunday);
+        //System.out.println("piIndSunday: "+piIndSunday);
         if(piIndMonday != null){lbSunday = piIndSunday == 1 ? true : false;}
         getPoIdTabSelected().setValue(lsIndPeriodicity);
         String lsStatusService = null;
@@ -2470,7 +2526,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         getPoServiceToCronStatus().setText("Estado: "+lsStatusService);
         //getPoServiceToCronStatus().setVisible(true);
         if(lsIndPeriodicity.equalsIgnoreCase("MINUTOS")){  
-            System.out.println("Configuracion para MINUTOS");
+            //System.out.println("Configuracion para MINUTOS");
             resetHoursTab();
             resetDaysTab();
             resetWeeksTab();            
@@ -3734,10 +3790,10 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         try {
             File loFileResponse = File.createTempFile("azt|", null);
             lsPath = loFileResponse.getAbsolutePath().split("azt|")[0];
-            System.out.println("AbsolutePath: "+loFileResponse.getAbsolutePath());
-            System.out.println("getCanonicalPath: "+loFileResponse.getCanonicalPath());
-            System.out.println("Path: "+loFileResponse.getPath());
-            System.out.println("RETURN: "+lsPath);
+            //System.out.println("AbsolutePath: "+loFileResponse.getAbsolutePath());
+            //System.out.println("getCanonicalPath: "+loFileResponse.getCanonicalPath());
+            //System.out.println("Path: "+loFileResponse.getPath());
+            //System.out.println("RETURN: "+lsPath);
             loFileResponse.deleteOnExit();
         } catch (IOException e) {
             System.out.println("Eerror al crear archivo temporal: "+e.getMessage());;
@@ -3850,7 +3906,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
         EntityMappedDao loEntityMappedDao = new EntityMappedDao();
         //Integer liRes = loEntityMappedDao.enableInitializedCron();
         //if(liRes > 0){
-            System.out.println(">>> Se han habilitado crones activos por reinicio - estatus Deshabilitado [4]");                                                
+            //System.out.println(">>> Se han habilitado crones activos por reinicio - estatus Deshabilitado [4]");                                                
             LmkIntServiceBitacoraRowBean loEvetvIntServiceBitacoraTab = new LmkIntServiceBitacoraRowBean();
             loEvetvIntServiceBitacoraTab.setLiIdLogServices(0);
             loEvetvIntServiceBitacoraTab.setLiIdService(0);
@@ -4143,7 +4199,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
                             String lsTypeProcess,
                             String lsServiceName){
         Scheduler loScheduler;                    
-        System.out.println("Iniciando Cron con ID["+psIdTrigger+"]");
+        //System.out.println("Iniciando Cron con ID["+psIdTrigger+"]");
         try {
             //System.out.println("Try");
             Trigger loTrigger = null;
@@ -4205,7 +4261,7 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
             loJobDataMap.put("lsPathFiles", getRealPath());                    
             //loJobDataMap.put("lsPathFiles", "");
             loScheduler.scheduleJob(loJob, loTrigger);  
-            System.out.println("start");
+            //System.out.println("start");
             loScheduler.start();
         } catch (Exception loEx) {
             System.out.println("Error al inicializar tareas " + loEx.getMessage());                    
@@ -4235,5 +4291,151 @@ System.out.println("llsIndCronExpression: "+lsIndCronExpression);
 
     public RichInputText getPoUserName() {
         return poUserName;
+    }
+
+    public void setPoPopupParamsGz(RichPopup poPopupParamsGz) {
+        this.poPopupParamsGz = poPopupParamsGz;
+    }
+
+    public RichPopup getPoPopupParamsGz() {
+        return poPopupParamsGz;
+    }
+
+    public void setPoParamsIdServiceGz(RichInputText poParamsIdServiceGz) {
+        this.poParamsIdServiceGz = poParamsIdServiceGz;
+    }
+
+    public RichInputText getPoParamsIdServiceGz() {
+        return poParamsIdServiceGz;
+    }
+
+    public void setPoParamsNomServiceGz(RichInputText poParamsNomServiceGz) {
+        this.poParamsNomServiceGz = poParamsNomServiceGz;
+    }
+
+    public RichInputText getPoParamsNomServiceGz() {
+        return poParamsNomServiceGz;
+    }
+
+    public void setPoParamsNomTblGz(RichInputText poParamsNomTblGz) {
+        this.poParamsNomTblGz = poParamsNomTblGz;
+    }
+
+    public RichInputText getPoParamsNomTblGz() {
+        return poParamsNomTblGz;
+    }
+
+    public void setPoParamsTypeTbl(RichSelectOneChoice poParamsTypeTbl) {
+        this.poParamsTypeTbl = poParamsTypeTbl;
+    }
+
+    public RichSelectOneChoice getPoParamsTypeTbl() {
+        return poParamsTypeTbl;
+    }
+
+    public String saveParamsGzAction() {
+        boolean lbSuccess = true;
+        String  lsMessErr = "OK";
+        String                   lsIdService = 
+            getPoParamsIdServiceGz().getValue() == null ? "" : 
+            getPoParamsIdServiceGz().getValue().toString();
+                
+        String lsNomTabla = 
+            getPoParamsNomTblGz().getValue() == null ? null : 
+            getPoParamsNomTblGz().getValue().toString();
+        
+        String lsTipoProceso = 
+            getPoParamsTypeTbl().getValue() == null ? null : 
+            getPoParamsTypeTbl().getValue().toString();
+        
+        String lsFileName = 
+            getPoParamsFileName().getValue() == null ? null : 
+            getPoParamsFileName().getValue().toString();
+        
+        if(lsNomTabla != null && lsTipoProceso != null && lsFileName != null){
+        
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl loService = 
+                (AppModuleImpl)loAm;        
+            try{
+                loService.deleteServicesParamsModelByServ(Integer.parseInt(lsIdService));
+                LmkIntServicesParamsRowBean loLmkFiBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdFi = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loLmkFiBean.setLiIdParameterServ(liIdFi);
+                loLmkFiBean.setLiIdService(Integer.parseInt(lsIdService));
+                loLmkFiBean.setLsIndEstatus("1");
+                loLmkFiBean.setLsIndParameter("TABLE");
+                loLmkFiBean.setLsIndValParameter(lsNomTabla);                        
+                loService.insertServicesParamsModel(loLmkFiBean); 
+                
+                LmkIntServicesParamsRowBean loPrefixBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdPrefix = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loPrefixBean.setLiIdParameterServ(liIdPrefix);
+                loPrefixBean.setLiIdService(Integer.parseInt(lsIdService));
+                loPrefixBean.setLsIndEstatus("1");
+                loPrefixBean.setLsIndParameter("PREFIX_FILE_NAME");
+                loPrefixBean.setLsIndValParameter(lsFileName);                        
+                loService.insertServicesParamsModel(loPrefixBean); 
+                
+                LmkIntServicesParamsRowBean loLmkFfBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdFf = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loLmkFfBean.setLiIdParameterServ(liIdFf);
+                loLmkFfBean.setLiIdService(Integer.parseInt(lsIdService));
+                loLmkFfBean.setLsIndEstatus("1");
+                loLmkFfBean.setLsIndParameter("TABLE_TYPE");
+                loLmkFfBean.setLsIndValParameter(lsTipoProceso);                        
+                loService.insertServicesParamsModel(loLmkFfBean); 
+                
+            } catch (Exception loEx) {
+                lbSuccess = false;   
+                lsMessErr = loEx.getMessage();
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+            }            
+            if(lbSuccess){
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("Parámetros asignados correctamente");
+                loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }else{
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("Error de Comunicacion " + lsMessErr);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }
+            new UtilFaces().hidePopup(getPoPopupParamsGz());                        
+        }else{
+            FacesMessage loMsg;
+            loMsg = new FacesMessage("El nombre de la Tabla, Pefijo y el Tipo de Proceso son requeridos");
+            loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }
+        return null;
+    }
+
+    public String cancelSaveParamsGzAction() {
+        new UtilFaces().hidePopup(getPoPopupExecute());      
+        FacesContext       loContext = FacesContext.getCurrentInstance();
+        ExternalContext    loEctx = loContext.getExternalContext();
+        String             lsUrl = 
+            loEctx.getRequestContextPath() + "/faces/processPage";
+        try {
+            loEctx.redirect(lsUrl);
+        } catch (IOException loEx) {
+            ;
+        }
+        return null;
+    }
+
+    public void setPoParamsFileName(RichInputText poParamsFileName) {
+        this.poParamsFileName = poParamsFileName;
+    }
+
+    public RichInputText getPoParamsFileName() {
+        return poParamsFileName;
     }
 }

@@ -230,7 +230,7 @@ public class BitacoraBean {
             lsQuery += " AND DATE(FEC_CREATION_DATE) <= ('" + 
                        convertDateMask(ltDateFin, "yyyy-MM-dd") + "')";                
         }
-        System.out.println(lsQuery);
+        //System.out.println(lsQuery);
         new UtilFaces().refreshTableWhereIterator(lsQuery, gsEntityIterator, getPoTblLog());
         return null;
     }

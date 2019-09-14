@@ -14,7 +14,7 @@ public class ProcessMailCron implements Job{
 
     @Override
     public void execute(JobExecutionContext toJobExecutionContext) throws JobExecutionException {
-        System.out.println("Ejecucion de Cron >> ProcesMailCron ["+new Date()+"]");
+        //System.out.println("Ejecucion de Cron >> ProcesMailCron ["+new Date()+"]");
         JobDataMap                loDataMap = toJobExecutionContext.getJobDetail().getJobDataMap();
         String                    lsIdService = loDataMap.getString("lsIdService");  
         String                    lsUserName = loDataMap.getString("lsUserName");

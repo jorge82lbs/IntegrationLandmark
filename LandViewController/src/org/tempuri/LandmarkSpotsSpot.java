@@ -11,6 +11,7 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
+import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.util.UtilFaces;
 
 
@@ -34,7 +35,8 @@ public class LandmarkSpotsSpot extends Service {
         URL url = null;
         WebServiceException e = null;
         try {
-            String lsDynaUrl = new UtilFaces().getConfigParameterByName("WsLandmarkSpotService");
+            EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+            String lsDynaUrl = loEntityMappedDao.getGeneralParameter("WsLandmarkSpotService", "WS_LANDMARK");
             url = new URL(lsDynaUrl);
             //url =
               //  new URL("http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?wsdl#%7Bhttp%3A%2F%2Ftempuri.org%2F%7DLandmarkSpotsSpot");

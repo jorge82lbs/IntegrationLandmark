@@ -109,25 +109,25 @@ public class CreationBean{
         Integer liFinalIdService = -1;
         
         String lsIdService = getPoIdService().getValue().toString();
-        System.out.println("lsIdService["+lsIdService+"]");
+        //System.out.println("lsIdService["+lsIdService+"]");
         String lsUserName = getPoUserName().getValue().toString();
-        System.out.println("lsUserName["+lsUserName+"]");
+        //System.out.println("lsUserName["+lsUserName+"]");
         String lsFecInicial = 
             getPoInitialDate().getValue() == null ? null : 
             getPoInitialDate().getValue().toString();      
-        System.out.println("lsFecInicial["+lsFecInicial+"]");
+        //System.out.println("lsFecInicial["+lsFecInicial+"]");
         String lsFecFinal = 
             getPoFinalDate().getValue() == null ? null : 
             getPoFinalDate().getValue().toString(); 
-        System.out.println("lsFecFinal["+lsFecFinal+"]");
+        //System.out.println("lsFecFinal["+lsFecFinal+"]");
         if(lsFecInicial != null && lsFecFinal != null){
             if(Integer.parseInt(lsIdService) < 0){
                 //verificar en la bd si ya existe un servicio de cortes con este usuario
                 Integer liIdService = getIdCortesyProgramasByUser(lsUserName);
-                System.out.println("verificar en la bd si ya existe un servicio de cortes con este usuario ["+liIdService+"]");
+                //System.out.println("verificar en la bd si ya existe un servicio de cortes con este usuario ["+liIdService+"]");
                 if(liIdService <= 0){
                     liIdService = new ViewObjectDao().getMaxIdServicesCatalog() + 1;    
-                    System.out.println("idServicio Consecutivo["+liIdService+"]");
+                    //System.out.println("idServicio Consecutivo["+liIdService+"]");
                     String lsDescService = "Cortes y Programas - "+lsUserName;
                     String lsNomService = "ProcessParrillasProgramas";
                     String lsIndServiceWsdl = "";
@@ -170,9 +170,9 @@ public class CreationBean{
                     }
                 }
                 liFinalIdService = liIdService;
-                System.out.println("liFinalIdService(Final): "+liFinalIdService);
+                //System.out.println("liFinalIdService(Final): "+liFinalIdService);
             }else{
-                System.out.println("liFinalIdService(Final) caso contrario: "+liFinalIdService);
+                //System.out.println("liFinalIdService(Final) caso contrario: "+liFinalIdService);
                 liFinalIdService = Integer.parseInt(lsIdService);
             }
             
@@ -184,7 +184,7 @@ public class CreationBean{
                 AppModuleImpl loService = 
                     (AppModuleImpl)loAm;        
                 try{
-                    System.out.println("deleteServicesParamsModelByServ: "+liFinalIdService);
+                    //System.out.println("deleteServicesParamsModelByServ: "+liFinalIdService);
                     loService.deleteServicesParamsModelByServ(liFinalIdService);
                     try {
                         CollectionModel   loModel =
@@ -217,7 +217,7 @@ public class CreationBean{
                                 loLmkParamBean.setLsIndEstatus("1");   
                                 
                                 loService.insertServicesParamsModel(loLmkParamBean);
-                                System.out.println("insertando canal: "+loLmkParamBean.getLiIdService());
+                                //System.out.println("insertando canal: "+loLmkParamBean.getLiIdService());
                             }
                             
                         }
@@ -237,7 +237,7 @@ public class CreationBean{
                     //loLmkFiBean.setLsIndValParameter(lsFecIni);                        
                     loLmkFiBean.setLsIndValParameter(lsFecInicial);                        
                     loService.insertServicesParamsModel(loLmkFiBean); 
-                    System.out.println("insertando Fechas Inicial: "+liFinalIdService);
+                    //System.out.println("insertando Fechas Inicial: "+liFinalIdService);
                     LmkIntServicesParamsRowBean loLmkFfBean = new LmkIntServicesParamsRowBean();            
                     Integer                  liIdFf = 
                         new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
@@ -248,7 +248,7 @@ public class CreationBean{
                     //loLmkFfBean.setLsIndValParameter(lsFecFin);                        
                     loLmkFfBean.setLsIndValParameter(lsFecFinal);                        
                     loService.insertServicesParamsModel(loLmkFfBean);     
-                    System.out.println("insertando Fechas Final: "+liFinalIdService);
+                    //System.out.println("insertando Fechas Final: "+liFinalIdService);
                     loResponse.setLsResponse("OK");
                     loResponse.setLsMessage("OK");
                     
@@ -273,7 +273,7 @@ public class CreationBean{
             loResponse.setLsMessage("Es necesario al menos un canal");
         }
         
-        System.out.println("liFinalIdService CLASS["+liFinalIdService+"]");
+        //System.out.println("liFinalIdService CLASS["+liFinalIdService+"]");
         loResponse.setLiAffected(liFinalIdService);
 
         
@@ -286,7 +286,6 @@ public class CreationBean{
      * @return String
      */
     public String saveAction() {
-        System.out.println("Dentro de save Action");
         ResponseUpdDao loResponse = saveParameters();
         
         if(loResponse != null){
@@ -359,7 +358,6 @@ public class CreationBean{
         //String              lsGeneralAction = lsAction;
         Integer             liIdUser = null;
         String              lsUserName = null;
-        System.out.println("dentro de eexecuteProcessAction");
         ApplicationModule   loAm =
             Configuration.createRootApplicationModule(gsAmDef, gsConfig);
         AppModuleImpl loService = (AppModuleImpl)loAm;
@@ -368,7 +366,6 @@ public class CreationBean{
                 liIdUser = 
                     loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser") == null ? null :
                     Integer.parseInt(loService.getValueSessionFromAttribute("loggedPgmIntegrationIdUser"));
-                System.out.println(">>>> liIdUser: "+liIdUser);
                 lsUserName = 
                     loService.getValueSessionFromAttribute("loggedPgmIntegrationUser") == null ? null :
                     loService.getValueSessionFromAttribute("loggedPgmIntegrationUser").toString();
@@ -381,9 +378,9 @@ public class CreationBean{
                 Configuration.releaseRootApplicationModule(loAm, true);
             }
             
-            System.out.println(">>>> lsUserName: "+lsUserName);
+            //System.out.println(">>>> lsUserName: "+lsUserName);
             String lsIdTrigger = lsIdService + "-" + lsTypeService;
-            System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> [EXECUTE] (usuario)*********");
+            //System.out.println("********** lsIdTrigger["+lsIdTrigger+"] ==> [EXECUTE] (usuario)*********");
             //lsGeneralAction = lsServiceAction;
             //System.out.println(">>>> lsGeneralAction: "+lsGeneralAction);
             ProcessServiceBean loProcessBean = new ProcessServiceBean();
@@ -400,7 +397,7 @@ public class CreationBean{
             if(lsTypeService != null){
                 /*################ PARRILLAS AND PROGRAMAS ############################*/
                 //if(lsTypeService.equalsIgnoreCase("ProcessParrillasProgramas")){
-                    System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas (USUARIO): ");
+                    //System.out.println(">>>> Ejecutar processServiceExecution para ProcessParrillasProgramas (USUARIO): ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
                                                 ParrillasProgramasCron.class);
@@ -569,11 +566,11 @@ public class CreationBean{
             if(loResponse.getLsResponse().equalsIgnoreCase("OK")){
                 String lsIdService = String.valueOf(loResponse.getLiAffected());
                     //getPoIdService().getValue().toString(); 
-                System.out.println("lsIdService a ejcutar["+lsIdService+"]");
+                //System.out.println("lsIdService a ejcutar["+lsIdService+"]");
                 String lsUserName = getPoUserName().getValue().toString();
-                System.out.println("lsUserName a ejcutar["+lsUserName+"]");
+                //System.out.println("lsUserName a ejcutar["+lsUserName+"]");
                 //Ejecutar los procesos, 
-                System.out.println("Ejecutar prrogramas por usuario");
+                //System.out.println("Ejecutar prrogramas por usuario");
                 executeProcessAction(lsIdService, 
                                      "ProcessParrillasProgramas",
                                      "Parrillas Cortes y Programas por "+ lsUserName

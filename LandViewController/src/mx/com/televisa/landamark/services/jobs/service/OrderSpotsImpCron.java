@@ -123,10 +123,10 @@ public class OrderSpotsImpCron implements Job{
         else{
             //Validar nombre del archivo
             boolean lbRes = validateNomarch(lsFileName);
-            System.out.println("Validar Nombre del Archivo:["+lbRes+"]");
+            //System.out.println("Validar Nombre del Archivo:["+lbRes+"]");
             
             lbRes = true;
-            System.out.println("Por el momento cambiar a true:["+lbRes+"]");
+            //System.out.println("Por el momento cambiar a true:["+lbRes+"]");
             
             if(!lbRes){
                 liIndProcess = 
@@ -154,15 +154,15 @@ public class OrderSpotsImpCron implements Job{
                 //Guardar en base de datos (estatus=P (en paradigm))
                 //##################### Insertar Archivo en Base de Datos ############################ 
                 try {
-                    System.out.println("leyendo archivo de: ["+lsPathFiles+lsFileName+"]");
+                    //System.out.println("leyendo archivo de: ["+lsPathFiles+lsFileName+"]");
                     File loFileInput = new File (lsPathFiles+lsFileName);
                     XmlFilesDao loXmlFilesDao = new XmlFilesDao();
                     LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
                     FileInputStream loFis = new FileInputStream(loFileInput);
                     
-                    System.out.println("lsRequestMaster["+lsRequestMaster+"] >>> Debe ser el id del LOG");
-                    System.out.println("lsIdService["+lsIdService+"]");
-                    System.out.println("lsIdUser["+lsIdUser+"]");
+                    //System.out.println("lsRequestMaster["+lsRequestMaster+"] >>> Debe ser el id del LOG");
+                    //System.out.println("lsIdService["+lsIdService+"]");
+                    //System.out.println("lsIdUser["+lsIdUser+"]");
                     
                     loXmlBean.setLiIdFileXml(0);
                     loXmlBean.setLiIdRequest(liIdLogService);
@@ -187,10 +187,10 @@ public class OrderSpotsImpCron implements Job{
                         lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
                                        lsFileName+" size: "+loFileInput.getTotalSpace();
                     }
-                    System.out.println("Insertar en bitacora que se ha insertado registro para monitoreo");
+                    //System.out.println("Insertar en bitacora que se ha insertado registro para monitoreo");
                     liIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("InsertFile");//
-                    System.out.println("liIndProcess["+liIndProcess+"]");
+                    //System.out.println("liIndProcess["+liIndProcess+"]");
                     loBitBean.setLiIdLogServices(liIdLogService);
                     loBitBean.setLiIdService(liIdService);
                     loBitBean.setLiIndProcess(liIndProcess);
@@ -203,7 +203,7 @@ public class OrderSpotsImpCron implements Job{
                     
                     //Leer archivo (estatus=W (leido))
                     //Aquí va la lectura del xml, el archivo fisico 
-                    System.out.println("Leer e insertar spots en paradigm");
+                    //System.out.println("Leer e insertar spots en paradigm");
                     ResponseUpdDao loRes = insertSpotsParadimg(lsPathFiles, lsFileName);
                     if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
                         liIndProcess = 
@@ -224,7 +224,7 @@ public class OrderSpotsImpCron implements Job{
                         
                     }
                     else{//Continuar como dice el flujo de Jacobo
-                        System.out.println("Spots de xml insertados en tablas temporales de paradigm.... OK");
+                        //System.out.println("Spots de xml insertados en tablas temporales de paradigm.... OK");
                         //Actualizar estatus de archivo xml, leido, en tablas temporales
                         ResponseBreaksDao loResReadFile = new ResponseBreaksDao();
                         loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "W");
@@ -243,15 +243,15 @@ public class OrderSpotsImpCron implements Job{
                                                                "["+lsStnid+","+lsBcstdt+"]"
                                                                );
                         }catch(Exception loEx){
-                            System.out.println("Error al actualizar parametros "+loEx.getMessage());
+                            //System.out.println("Error al actualizar parametros "+loEx.getMessage());
                         }
                         /*String lsBcstdt = getBcstdtMapped(lsBcstdtNomarch,
                                                           "yyyymmdd",
                                                           "yyyy-mm-dd");*/
-                        System.out.println("####################################");
-                        System.out.println("lsStnid["+lsStnid+"]");
-                        System.out.println("lsBcstdt["+lsBcstdt+"]");
-                        System.out.println("####################################");
+                        //System.out.println("####################################");
+                        //System.out.println("lsStnid["+lsStnid+"]");
+                        //System.out.println("lsBcstdt["+lsBcstdt+"]");
+                        //System.out.println("####################################");
                         
                         OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
                         // 2)      Ejecutar el SP…. EVENTAS.LMK_VALIDA_SPOTS(STNID, BCSTDT)
@@ -267,12 +267,12 @@ public class OrderSpotsImpCron implements Job{
                         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                            liIdUser, 
                                                            lsUserName);  
-                        System.out.println("Validando spots con  callLmkValidaSpotsPr");
+                        //System.out.println("Validando spots con  callLmkValidaSpotsPr");
                         ResponseUpdDao loResValida = 
                              loOrderSpotsDao.callLmkValidaSpotsPr(lsStnid, lsBcstdt);
                         
                         if(!loResValida.getLsResponse().equalsIgnoreCase("OK")){
-                            System.out.println("Error callLmkValidaSpotsPr "+loResValida.getLsMessage());
+                            //System.out.println("Error callLmkValidaSpotsPr "+loResValida.getLsMessage());
                             liIndProcess = 
                                         new UtilFaces().getIdConfigParameterByName("ValidateError");//
                             loBitBean.setLiIdLogServices(liIdLogService);
@@ -293,7 +293,7 @@ public class OrderSpotsImpCron implements Job{
                             // la información… Si la tabla tiene un solo registro con el Status Igual a OK, entonces se procede 
                             // al punto 4.. Si hay errores, aquí definiremos por el campo de TIPO .. a quien se los 
                             // enviaremos vía correo.
-                            System.out.println("Validacion OK de LMK_LOG_COMERCIAL_STATUS ");
+                            //System.out.println("Validacion OK de LMK_LOG_COMERCIAL_STATUS ");
                             liIndProcess = 
                                         new UtilFaces().getIdConfigParameterByName("ExeProcedure");//
                             loBitBean.setLiIdLogServices(liIdLogService);
@@ -307,9 +307,9 @@ public class OrderSpotsImpCron implements Job{
                                                                lsUserName);  
                             Integer liNumOk = 
                                 loOrderSpotsDao.validateOkStatusSpots(lsStnid, lsBcstdt);
-                            System.out.println("Numero de spots en OK ["+liNumOk+"]");
+                            //System.out.println("Numero de spots en OK ["+liNumOk+"]");
                             if(liNumOk == 0){//No  existe ningun registro con OK
-                                System.out.println("Todos los spots contienen incidencias");
+                                //System.out.println("Todos los spots contienen incidencias");
                                 liIndProcess = 
                                             new UtilFaces().getIdConfigParameterByName("GeneralError");//
                                 loBitBean.setLiIdLogServices(liIdLogService);
@@ -334,7 +334,7 @@ public class OrderSpotsImpCron implements Job{
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                    liIdUser, 
                                                                    lsUserName);  
-                                System.out.println("Enviar correo para informar que todo fue con incidencias");
+                                //System.out.println("Enviar correo para informar que todo fue con incidencias");
                                 try{
                                     
                                     List<LmkLogComercialStatusBean> laList = 
@@ -354,13 +354,13 @@ public class OrderSpotsImpCron implements Job{
                                 }
                                 //Actualizar estatus de archivo xml, leido, en tablas temporales
                                 loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "E");
-                                System.out.println("Cambiando status al archivo");
+                                //System.out.println("Cambiando status al archivo");
                                 
                             }
                             else{//Se procede al punto 4
                                 boolean lbSendMail = true;
                                 //  4)      Ejecutar el SP… EVENTAS.LMK_GENERA_SPOTS(STNID, BCSTDT)
-                                System.out.println("Generar spots LMK_GENERA_SPOTS");
+                                //System.out.println("Generar spots LMK_GENERA_SPOTS");
                                 liIndProcess = 
                                             new UtilFaces().getIdConfigParameterByName("CallProcedure");//
                                 loBitBean.setLiIdLogServices(liIdLogService);
@@ -375,9 +375,9 @@ public class OrderSpotsImpCron implements Job{
                                 
                                 ResponseUpdDao loResGeneraSpots = 
                                     loOrderSpotsDao.callLmkGeneraSpotsPr(lsStnid, lsBcstdt);
-                                System.out.println("Resultado de: LMK_GENERA_LOGS "+loResGeneraSpots.getLsResponse());
+                                //System.out.println("Resultado de: LMK_GENERA_LOGS "+loResGeneraSpots.getLsResponse());
                                 if(!loResGeneraSpots.getLsResponse().equalsIgnoreCase("OK")){
-                                    System.out.println("ERROR LMK_GENERA_SPOTS "+loResGeneraSpots.getLsMessage());
+                                    //System.out.println("ERROR LMK_GENERA_SPOTS "+loResGeneraSpots.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
                                                 new UtilFaces().getIdConfigParameterByName("GeneralError");//
@@ -404,12 +404,12 @@ public class OrderSpotsImpCron implements Job{
                                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                                    liIdUser, 
                                                                    lsUserName);  
-                                System.out.println("Generar LMK_GENERA_LOGS");
+                                //System.out.println("Generar LMK_GENERA_LOGS");
                                 ResponseUpdDao loResGeneraLogs = 
                                     loOrderSpotsDao.callLmkGeneraLogsPr(lsStnid, lsBcstdt);
-                                System.out.println("Resultado de: LMK_GENERA_LOGS "+loResGeneraLogs.getLsResponse());
+                                //System.out.println("Resultado de: LMK_GENERA_LOGS "+loResGeneraLogs.getLsResponse());
                                 if(!loResGeneraLogs.getLsResponse().equalsIgnoreCase("OK")){
-                                    System.out.println("ERROR LMK_GENERA_LOGS "+loResGeneraLogs.getLsMessage());
+                                    //System.out.println("ERROR LMK_GENERA_LOGS "+loResGeneraLogs.getLsMessage());
                                     lbSendMail = false;
                                     liIndProcess = 
                                                 new UtilFaces().getIdConfigParameterByName("GeneralError");//
@@ -426,7 +426,7 @@ public class OrderSpotsImpCron implements Job{
                                 //  6)      Al termino de este último SP se enviará un correo de notificación a la gente de Trafico Log que su Log ha sido procesado correctamente desde Landmark ATS.
                                 if(lbSendMail){
                                     //Enviar Correo
-                                    System.out.println("Enviar Correo informando que todo OK");
+                                    //System.out.println("Enviar Correo informando que todo OK");
                                     liIndProcess = 
                                                 new UtilFaces().getIdConfigParameterByName("SendEmail");//
                                     loBitBean.setLiIdLogServices(liIdLogService);
@@ -440,7 +440,7 @@ public class OrderSpotsImpCron implements Job{
                                                                        liIdUser, 
                                                                        lsUserName);  
                                     
-                                    System.out.println("Enviar correo");
+                                    //System.out.println("Enviar correo");
                                     loUtilMail.buildMailByProcess(liIdLogService, 
                                                                   Integer.parseInt(lsIdService), 
                                                                   liIndProcess, 
@@ -450,11 +450,11 @@ public class OrderSpotsImpCron implements Job{
                                                                   lsKeyChannel);
                                     //Actualizar estatus de archivo xml                                    
                                     loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "C");      
-                                    System.out.println("Cambiar estatus al archivo de TODO OK (C)");
+                                    //System.out.println("Cambiar estatus al archivo de TODO OK (C)");
                                 }else{
                                     //Actualizar estatus de archivo xml
                                     loResReadFile.updateEstatusXmlFiles(loXmlFile.getLiAffected(), "E");   
-                                    System.out.println("Cambiar estatus al archivo a ERROR (E)");
+                                    //System.out.println("Cambiar estatus al archivo a ERROR (E)");
                                 }
                                 
                                 String lsPathReaded = 
@@ -504,7 +504,7 @@ public class OrderSpotsImpCron implements Job{
     public boolean validateNomarch(String lsFileName){
         boolean lbResponse = true;
         String[] laNameArr = lsFileName.split("\\.");
-        System.out.println("laNameArr.length["+laNameArr.length+"]");
+        //System.out.println("laNameArr.length["+laNameArr.length+"]");
         if(laNameArr.length != 5){
             lbResponse = false;
         }
@@ -561,17 +561,17 @@ public class OrderSpotsImpCron implements Job{
      */
     public ResponseUpdDao insertSpotsParadimg(String tsFilePath, String tsFileName){
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        System.out.println("-------------------- SPOTS -------------------------");    
+        //System.out.println("-------------------- SPOTS -------------------------");    
         try {  
             String lsFileRead = tsFilePath+tsFileName;
-            System.out.println("Se debe de leer de : ["+lsFileRead+"]");            
+            //System.out.println("Se debe de leer de : ["+lsFileRead+"]");            
             //lsFileRead = "C:\\Comercializacion\\Landmark\\AppUtilConsole\\Client\\SP.9C9C.20190329.90639.XML";
             //System.out.println("pero por el momeneto se LEE de "+lsFileRead);
-            JAXBContext context = JAXBContext.newInstance(Spots.class );
+            JAXBContext context = JAXBContext.newInstance(Spots.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             Spots loSpots = (Spots)unmarshaller.unmarshal(new File(lsFileRead));
-            System.out.println("numero de spots: "+loSpots.getSpot().size());    
-            System.out.println("1)  Se insertan los datos en la tabla EVENTAS.LMK_SPOTS \n( los últimos 8 datos de esta tabla se dejan en blanco porque serán usados por el procedimiento para ligar información de Paradigm)");    
+            //System.out.println("numero de spots: "+loSpots.getSpot().size());    
+            //System.out.println("1)  Se insertan los datos en la tabla EVENTAS.LMK_SPOTS \n( los últimos 8 datos de esta tabla se dejan en blanco porque serán usados por el procedimiento para ligar información de Paradigm)");    
             OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
             int liI = 0;
             boolean lbSpots = true;
@@ -581,7 +581,7 @@ public class OrderSpotsImpCron implements Job{
                 Spot loSpot = loSpots.getSpot().get(liI);
                 if(liI == 0){
                     lsFecha = loSpot.getScheduleDate();
-                    System.out.println("Fecha para procesar: ["+lsFecha+"]");
+                    //System.out.println("Fecha para procesar: ["+lsFecha+"]");
                 }
                 LmkSpotsRowBean loLmkSpotsRowBean = new LmkSpotsRowBean();
                 loLmkSpotsRowBean = getLmkSpotsRowBeanBySpot(loSpot);

@@ -396,7 +396,6 @@ public class GralConfigBean {
                     loLmkBean.setLsStatus(lsStatusTab);
                     
                     loService.insertGeneralParameterModel(loLmkBean);            
-                    System.out.println("Insert OK");
                 }else{
                     FacesMessage loMsg;
                     loMsg = new FacesMessage("No es Posible Encriptar " + lsValueParameter + 

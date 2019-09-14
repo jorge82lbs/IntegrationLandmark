@@ -64,6 +64,6 @@ public class AsRunAsCron implements Job{
         AsRunAsService loService = new AsRunAsService();
         ResponseService loPits = loService.executeService(loInput);
         
-        System.out.println("ID["+liIdRequest+"]Finish de Cron >> "+lsTypeProcess+" ["+loPits.getLsMessageResponse()+"]");
+        //System.out.println("ID["+liIdRequest+"]Finish de Cron >> "+lsTypeProcess+" ["+loPits.getLsMessageResponse()+"]");
     }
 }

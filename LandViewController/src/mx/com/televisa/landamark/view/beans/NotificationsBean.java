@@ -95,34 +95,34 @@ public class NotificationsBean {
         
         Integer                    liIdNotification = 
             new ViewObjectDao().getMaxIdParadigm("Notifications") + 1;
-        System.out.println("########## liIdNotification: "+liIdNotification);
+        //System.out.println("########## liIdNotification: "+liIdNotification);
         
         String                   lsIdService = 
             getPoSaveIdService().getValue() == null ? "" : 
             getPoSaveIdService().getValue().toString();
         
-        System.out.println("########## lsIdService: "+lsIdService);
+        //System.out.println("########## lsIdService: "+lsIdService);
         
         String                   liIndProcess = 
             getPoSaveIndProcessSel().getValue() == null ? "" : 
             getPoSaveIndProcessSel().getValue().toString();
-        System.out.println("########## liIndProcess: "+liIndProcess);
+        //System.out.println("########## liIndProcess: "+liIndProcess);
         String                   lsIndUsersGroup = 
             getPoSaveIndUsersGroupSel().getValue() == null ? "" : 
             getPoSaveIndUsersGroupSel().getValue().toString();
-        System.out.println("########## lsIndUsersGroup: "+lsIndUsersGroup);
+        //System.out.println("########## lsIndUsersGroup: "+lsIndUsersGroup);
         String                   lsIndSubject = 
             getPoSaveIndSubject().getValue() == null ? "" : 
             getPoSaveIndSubject().getValue().toString();
-        System.out.println("########## lsIndSubject: "+lsIndSubject);
+        //System.out.println("########## lsIndSubject: "+lsIndSubject);
         String                   lsIndMessage = 
             getPoSaveIndMessage().getValue() == null ? "" : 
             getPoSaveIndMessage().getValue().toString();
-        System.out.println("########## lsIndMessage: "+lsIndMessage);
+        //System.out.println("########## lsIndMessage: "+lsIndMessage);
         String                     lsIndEstatus = 
             getPoPopSaveStatus().getValue() == null ? "":
             getPoPopSaveStatus().getValue().toString();
-        System.out.println("########## lsIndEstatus: "+lsIndEstatus);
+        //System.out.println("########## lsIndEstatus: "+lsIndEstatus);
         String                     lsStatusTab = "0";
         if(lsIndEstatus.equalsIgnoreCase("true")){
             lsStatusTab = "1";
@@ -328,7 +328,6 @@ public class NotificationsBean {
                 loLmkBean.setLsIndMessage(lsIndMessage);                
                 loLmkBean.setLsIndEstatus(lsStatusTab);
                 loService.updateNotificationsModel(loLmkBean);  
-                System.out.println("Update success!!!");
             } catch (Exception loEx) {
                 FacesMessage loMsg;
                 loMsg = new FacesMessage("Error de Comunicacion " + loEx);
@@ -482,9 +481,6 @@ public class NotificationsBean {
         String                   lsDesService = 
         getPoNomService().getValue() == null ? "0" : 
         getPoNomService().getValue().toString(); 
-        
-        System.out.println("lsIdService: "+lsIdService);
-        System.out.println("lsDesService: "+lsDesService);
         
         getPoSaveIdService().setValue(lsIdService);    
         getPoSaveIndService().setValue(lsDesService);    
@@ -784,8 +780,7 @@ public class NotificationsBean {
     public void selectServiceListener(ValueChangeEvent loValueChangeEvent) {
         String lsIdService = 
             loValueChangeEvent.getNewValue() == null ? null : 
-            loValueChangeEvent.getNewValue().toString();
-        System.out.println("lsIdService: "+lsIdService);
+            loValueChangeEvent.getNewValue().toString();        
         if(lsIdService == null){
             getPoTblMain().setVisible(false);
         }

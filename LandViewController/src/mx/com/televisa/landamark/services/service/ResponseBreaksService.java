@@ -105,21 +105,21 @@ public class ResponseBreaksService {
             
             SftpManagment loSmg = new SftpManagment();
             List<String> laLisSsh = loSmg.getListFileServerSFTP(lsPath, lsExt);
-            System.out.println("numero de archivos extraídos del server ssh ["+laLisSsh.size()+"]");
+            //System.out.println("numero de archivos extraídos del server ssh ["+laLisSsh.size()+"]");
             for(LmkIntXmlFilesRowBean loBean : laListPgm){
                 int liI = 0;
                 lbProcess = true;
                 while(liI < laLisSsh.size() && lbProcess == true){
                     //- Buscar cada nombre de archivo fisico en el grupo                    
                     if(laLisSsh.get(liI).indexOf(loBean.getLsNomFile()) >= 0){
-                        System.out.println("indexOf: [ADF]loBean.getLsNomFile()["+loBean.getLsNomFile()+
-                                           "] VS [FTP]laLis.get("+liI+")["+laLisSsh.get(liI).indexOf(loBean.getLsNomFile())+"]");
+                        //System.out.println("indexOf: [ADF]loBean.getLsNomFile()["+loBean.getLsNomFile()+
+                                          // "] VS [FTP]laLis.get("+liI+")["+laLisSsh.get(liI).indexOf(loBean.getLsNomFile())+"]");
                         //Es verdadero
-                        System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
+                        //System.out.println("COINCIDENCIA ENCONTRADA PARA ("+loBean.getLsNomFile()+")");
                         lbProcess = false;
                         String lsStatus = "C";
                         //Verificar si contiene la cadena de error
-                        System.out.println(""+laLisSsh.get(liI)+".indexOf(\"FAIL\"): "+laLisSsh.get(liI).indexOf("FAIL"));
+                        //System.out.println(""+laLisSsh.get(liI)+".indexOf(\"FAIL\"): "+laLisSsh.get(liI).indexOf("FAIL"));
                         if(laLisSsh.get(liI).indexOf("FAIL") >= 0){
                             lsStatus = "E";
                         }                    

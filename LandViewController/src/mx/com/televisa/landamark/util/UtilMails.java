@@ -68,7 +68,7 @@ public class UtilMails {
                 //-----------------------------------------------------------------------
                 
                 if(laTo.size() > 0){
-                    System.out.println("Si existen destinatarios");
+                    //System.out.println("Si existen destinatarios");
                     //Obtener la descripcion del idProcess
                     EntityMappedDao loEntityMappedDao = new EntityMappedDao();
                     List<LmkIntConfigParamRowBean> loPrcss = 
@@ -107,7 +107,7 @@ public class UtilMails {
             lsMessBit = "Correo NO enviado el grupo no existe Configuracion de Notificaciones";
         }
         
-        System.out.println("Insertar en bitacora ERROR al enviar email");
+        //System.out.println("Insertar en bitacora ERROR al enviar email");
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
         
@@ -166,7 +166,7 @@ public class UtilMails {
                 //-----------------------------------------------------------------------
                 
                 if(laTo.size() > 0){
-                    System.out.println("Si existen destinatarios");
+                    //System.out.println("Si existen destinatarios");
                     //Obtener la descripcion del idProcess
                     EntityMappedDao loEntityMappedDao = new EntityMappedDao();
                     List<LmkIntConfigParamRowBean> loPrcss = 
@@ -206,7 +206,7 @@ public class UtilMails {
             lsMessBit = "Correo NO enviado el grupo no existe Configuracion de Notificaciones";
         }
         
-        System.out.println("Insertar en bitacora ERROR al enviar email");
+        //System.out.println("Insertar en bitacora ERROR al enviar email");
         LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         EntityMappedDao           loEntityMappedDao = new EntityMappedDao();
         

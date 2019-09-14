@@ -496,7 +496,7 @@ public class MappingBean {
             lsQuery += " AND UPPER(IND_DESCRIPTION) LIKE '" +
                        lsDescription.toUpperCase() + "%'";
         }
-        System.out.println(lsQuery);
+        //System.out.println(lsQuery);
         new UtilFaces().refreshTableWhereIterator(lsQuery,
                                                   gsEntityIterator,
                                                   getPoTblMain()
