@@ -13,30 +13,31 @@ package mx.com.televisa.landamark.services.service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.io.FileNotFoundException;
-
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+
+import java.sql.SQLException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.FileGzipDao;
-import mx.com.televisa.landamark.model.daos.ResponseBreaksDao;
 import mx.com.televisa.landamark.model.daos.ServicesParamsDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.model.daos.XmlFilesDao;
 import mx.com.televisa.landamark.model.types.GzipDcdpTrxBean;
+import mx.com.televisa.landamark.model.types.GzipDcdtTrxBean;
+import mx.com.televisa.landamark.model.types.GzipDealTrxBean;
+import mx.com.televisa.landamark.model.types.GzipDemdTrxBean;
 import mx.com.televisa.landamark.model.types.LmkIntServiceBitacoraRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesLogRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntServicesParamsRowBean;
@@ -77,6 +78,7 @@ public class FileGzipService {
         Integer                liIdService = loInput.getLiIdService();
         Integer                liIdUser =  loInput.getLiIdUser();
         String                 lsUserName = loInput.getLsUserName();
+        FileGzipDao            loFileGzipDao = new FileGzipDao();
        
         String lsReturn = "Lectura de archivo gz execute";
         loResponseService.setLiIdRequest(loInput.getLiIdRequest());
@@ -233,8 +235,7 @@ public class FileGzipService {
                     //Extraer archivo fisico .gz del direcorio remoto
                     File loFileInput = new File(lsPathFiles+lsFullNomArch);                    
                     try {
-                        boolean lbContinue = true;                        
-                        FileGzipDao loFileGzipDao = new FileGzipDao();
+                        boolean lbContinue = true;                                                
                         //Verificar si existe en la bd
                         String lsWhere = 
                             " AND UPPER(NOM_FILE) = UPPER('"+lsFullNomArch+"') ";
@@ -294,17 +295,169 @@ public class FileGzipService {
                                 //Insertar en tabla correspondiente
                                 //Llamado de stored proceure
                                 //Fin    
+                                String lsMesDelete = "";
                                 System.out.println("Descomprimir OK");
-                                //File loFileUnzip = new File(lsFullNomArchExtracted);
+                                try{
+                                    loFileGzipDao.deleteTrx(lsTable);                                    
+                                    lsMesDelete = "Eliminacion de registros deprecados satisfactorio";
+                                }catch(Exception loExDel){
+                                    lsMesDelete = loExDel.getMessage();
+                                }
+                                
+                                liIndProcess = loEntityMappedDao.getGeneralParameterID("Execute", 
+                                                                        "PROCESS_INTEGRATION");
+                                loBitBean.setLiIdLogServices(liIdLogService);
+                                loBitBean.setLiIdService(loInput.getLiIdService());
+                                loBitBean.setLiIndProcess(liIndProcess); 
+                                loBitBean.setLiNumProcessId(0);
+                                loBitBean.setLiNumPgmProcessId(0);
+                                loBitBean.setLsIndEvento(lsMesDelete + " en " + 
+                                                         lsTable);
+                                loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                   loInput.getLiIdUser(), 
+                                                                   loInput.getLsUserName());
+                                System.out.println("Rollback a registros insertados en " + 
+                                                         lsTable);
+                                
+                                
                                 ResponseUpdDao loRdd = 
                                     readWriteFile(lsFullNomArchExtracted, 
                                                   lsTableType,
+                                                  lsTable,
                                                   loBitBean,
                                                   loInput.getLiIdUser(), 
-                                                  loInput.getLsUserName(),
-                                                  loInput.getLsServiceName()
+                                                  loInput.getLsUserName()
                                                   );
-                                
+                                if(loRdd.getLsResponse().equalsIgnoreCase("OK")){
+                                    liIndProcess = loEntityMappedDao.getGeneralParameterID("ExtractData", 
+                                                                            "PROCESS_INTEGRATION");
+                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                    loBitBean.setLiIdService(loInput.getLiIdService());
+                                    loBitBean.setLiIndProcess(liIndProcess); 
+                                    loBitBean.setLiNumProcessId(0);
+                                    loBitBean.setLiNumPgmProcessId(0);
+                                    loBitBean.setLsIndEvento(loRdd.getLsMessage() + " en Tabla Auxiliar " + 
+                                                             loInput.getLsServiceName());
+                                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                       loInput.getLiIdUser(), 
+                                                                       loInput.getLsUserName());
+                                    System.out.println("Registros insertados en tabla");
+
+                                    try {
+                                        System.out.println("Llamando a stored procuedure");
+                                        ResponseUpdDao loCall = 
+                                        loFileGzipDao.callProcedureLoadTable(lsTable);
+                                        
+                                        liIndProcess = loEntityMappedDao.getGeneralParameterID("CallProcedure", 
+                                                                                "PROCESS_INTEGRATION");
+                                        loBitBean.setLiIdLogServices(liIdLogService);
+                                        loBitBean.setLiIdService(loInput.getLiIdService());
+                                        loBitBean.setLiIndProcess(liIndProcess); 
+                                        loBitBean.setLiNumProcessId(0);
+                                        loBitBean.setLiNumPgmProcessId(0);
+                                        loBitBean.setLsIndEvento("Llamada a LMK_CARGA_TABLAS("+lsTable+") " + 
+                                                                 loCall.getLsMessage());
+                                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                           loInput.getLiIdUser(), 
+                                                                           loInput.getLsUserName());
+                                        
+                                        //Guadar archivo loFileInput
+                                        
+                                        Long llSizeFile = loFileInput.lastModified();
+                                        
+                                        //##################### Insertar Archivo en Base de Datos ############################ 
+                                        try {
+                                            XmlFilesDao loXmlFilesDao = new XmlFilesDao();
+                                            LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
+                                            //FileInputStream loFis = new FileInputStream(loFileAsRunAs);
+                                            
+                                            loXmlBean.setLiIdFileXml(0);
+                                            loXmlBean.setLiIdRequest(liIdLogService);
+                                            loXmlBean.setLiIdService(liIdService);
+                                            loXmlBean.setLsNomFile(loFileInput.getName());
+                                            loXmlBean.setLsIndFileType("Response");
+                                            loXmlBean.setLsIndServiceType(loInput.getLsServiceType());
+                                            loXmlBean.setLsIndEstatus("C"); //De Completo
+                                            loXmlBean.setLsNomUserName(lsUserName);
+                                            loXmlBean.setLsNomUserPathFile(lsPathFiles);
+                                            loXmlBean.setLiIdUser(liIdUser);
+                                            loXmlBean.setLoIndFileStream(loFis);
+                                            loXmlBean.setLsAttribute1(lsTableLog);
+                                            loXmlBean.setLsAttribute2("FileGzipType");
+                                            loXmlBean.setLsAttribute11(String.valueOf(llSizeFile));
+                                            // - Guardar archivo en bd
+                                            ResponseUpdDao loXmlFile = 
+                                                loXmlFilesDao.insertLmkIntXmlFilesTab(loXmlBean);
+                                            String lsMessInsert = "";
+                                            if(loXmlFile.getLsResponse().equalsIgnoreCase("OK")){
+                                                lsMessInsert = "El Archivo "+loFileInput.getName()+" se ha guardado en base de datos";
+                                            }else{
+                                                lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
+                                                               loFileInput.getName()+" size: "+loFileInput.getTotalSpace();
+                                            }
+                                            liIndProcess = 
+                                                        new UtilFaces().getIdConfigParameterByName("InsertFile");//
+                                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                                    loBitBean.setLiIdService(liIdService);
+                                                    loBitBean.setLiIndProcess(liIndProcess);
+                                                    loBitBean.setLiNumProcessId(0);
+                                                    loBitBean.setLiNumPgmProcessId(0);
+                                                    loBitBean.setLsIndEvento(lsMessInsert);
+                                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                               liIdUser, 
+                                                                               lsUserName);
+                                            
+                                            loFileInput.deleteOnExit();
+                                            
+                                        } catch (Exception e) {
+                                            System.out.println("Error al convertir File en FileInputStream: "+e.getMessage());
+                                            liIndProcess = 
+                                                        new UtilFaces().getIdConfigParameterByName("GeneralError");
+                                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                                    loBitBean.setLiIdService(liIdService);
+                                                    loBitBean.setLiIndProcess(liIndProcess);
+                                                    loBitBean.setLiNumProcessId(0);
+                                                    loBitBean.setLiNumPgmProcessId(0);
+                                                    loBitBean.setLsIndEvento("No es posible guardar el Archivo: "+
+                                                                             loFileInput.getName()+e.getMessage());
+                                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                               liIdUser, 
+                                                                               lsUserName);
+                                        }
+                                        
+                                    } catch (SQLException e) {
+                                        liIndProcess = loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                                                "PROCESS_INTEGRATION");
+                                        loBitBean.setLiIdLogServices(liIdLogService);
+                                        loBitBean.setLiIdService(loInput.getLiIdService());
+                                        loBitBean.setLiIndProcess(liIndProcess); 
+                                        loBitBean.setLiNumProcessId(0);
+                                        loBitBean.setLiNumPgmProcessId(0);
+                                        loBitBean.setLsIndEvento(lsTable + " >> Excepcion " + 
+                                                                 e.getMessage());
+                                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                           loInput.getLiIdUser(), 
+                                                                           loInput.getLsUserName());
+                                    }
+
+
+                                }else{
+                                    loFileGzipDao.deleteTrx(lsTable);
+                                    liIndProcess = loEntityMappedDao.getGeneralParameterID("GeneralError", 
+                                                                            "PROCESS_INTEGRATION");
+                                    loBitBean.setLiIdLogServices(liIdLogService);
+                                    loBitBean.setLiIdService(loInput.getLiIdService());
+                                    loBitBean.setLiIndProcess(liIndProcess); 
+                                    loBitBean.setLiNumProcessId(0);
+                                    loBitBean.setLiNumPgmProcessId(0);
+                                    loBitBean.setLsIndEvento("Rollback a registros insertados en " + 
+                                                             lsTable);
+                                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                                       loInput.getLiIdUser(), 
+                                                                       loInput.getLsUserName());
+                                    System.out.println("Rollback a registros insertados en " + 
+                                                             lsTable);
+                                }
                                 
                                 
                                 
@@ -353,11 +506,13 @@ public class FileGzipService {
     
     public ResponseUpdDao readWriteFile(String tsFileUnziped, 
                                         String tsFileType,
-                                        LmkIntServiceBitacoraRowBean loBitBean,
+                                        String tsTable,
+                                        LmkIntServiceBitacoraRowBean toBitacora,
                                         Integer tiIdUser,
-                                        String tsUserName,
-                                        String tsServiceName){
+                                        String tsUserName){
         ResponseUpdDao loRes = new ResponseUpdDao();
+        FileGzipDao    loFileGzipDao = new FileGzipDao();
+        LmkIntServiceBitacoraRowBean loBitBean = new LmkIntServiceBitacoraRowBean();
         FileReader loFileUnzip;
         Integer liIndProcess = 0;
         EntityMappedDao loEntityMappedDao = new EntityMappedDao();
@@ -366,6 +521,7 @@ public class FileGzipService {
             loFileUnzip = new FileReader(tsFileUnziped);
             BufferedReader loBuffReader = new BufferedReader(loFileUnzip);
             String lsLine;
+            String lsMessage = "";
             try {
                 if(tsFileType.equalsIgnoreCase("DCDP")){
                     List<GzipDcdpTrxBean> laDcdpList = new ArrayList<GzipDcdpTrxBean>();
@@ -459,27 +615,397 @@ public class FileGzipService {
                     }
                     System.out.println("**********Tamaño lista Dcdp["+laDcdpList.size()+"]***********");
                     if(laDcdpList.size() > 0){
-                        //Insertar lineas en tabla
+                        //for(GzipDcdpTrxBean loBean : laDcdpList){
+                        boolean lbFlag = true;
+                        int liI = 0;
+                        while(lbFlag && liI < laDcdpList.size()){
+                            GzipDcdpTrxBean loBean = laDcdpList.get(liI);
+                            ResponseUpdDao loResp = 
+                                loFileGzipDao.insertDcdpTrx(tsTable, loBean);    
+                            if(!loResp.getLsResponse().equalsIgnoreCase("OK")){
+                                lbFlag = false;
+                            }
+                            liI++;
+                        }
+                        if(!lbFlag){
+                            loRes.setLsResponse("ERROR");
+                            System.out.println("Uno o mas registros no fueron insertados");
+                            liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                    "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                            loBitBean.setLiIdService(toBitacora.getLiIdService());
+                            loBitBean.setLiIndProcess(liIndProcess); 
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Uno o mas registros no fueron insertados");
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               tiIdUser, 
+                                                               tsUserName);
+                        }else{
+                            loRes.setLsResponse("OK");
+                        }
+                        lsMessage = "["+liI+"/"+laDcdpList.size()+"] Registros Insertados";
                     }else{
+                        loRes.setLsResponse("ERROR");
                         System.out.println("Sin lineas para procesar[DCDP]");
-                    }
-                    
+                        liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                "PROCESS_INTEGRATION");
+                        loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                        loBitBean.setLiIdService(toBitacora.getLiIdService());
+                        loBitBean.setLiIndProcess(liIndProcess); 
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Sin lineas para procesar[DCDP]");
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           tiIdUser, 
+                                                           tsUserName);
+                    }                    
                 }
                 if(tsFileType.equalsIgnoreCase("DCDT")){
+                    List<GzipDcdtTrxBean> laDcdtList = new ArrayList<GzipDcdtTrxBean>();
                     while ((lsLine = loBuffReader.readLine()) != null) {
-                        System.out.println(lsLine);
+                        String[] laLineDcdt = lsLine.split("\\|");
+                        if(laLineDcdt.length > 0){
+                            //Verificar si el dato[0] es un numero
+                            if(validateRegularExpression(laLineDcdt[0],"^[0-9]+$")){
+                                GzipDcdtTrxBean loBean = new GzipDcdtTrxBean();
+                                //loBean.setLiCampNo(Integer.parseInt(laLineDcdp[0]));
+                                //System.out.println("setLiCampNo["+laLineDcdp[0]+"]");
+                                if(!laLineDcdt[0].isEmpty()){
+                                    loBean.setLiCampNo(Integer.parseInt(laLineDcdt[0]));
+                                }else{
+                                    loBean.setLiCampNo(null);
+                                }
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[1]));
+                                //System.out.println("setLiDealNo["+laLineDcdp[1]+"]");
+                                if(!laLineDcdt[1].isEmpty()){
+                                    loBean.setLiDealNo(Integer.parseInt(laLineDcdt[1]));
+                                }else{
+                                    loBean.setLiDealNo(null);
+                                }
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[2]));
+                                //System.out.println("setLiDcdpNo["+laLineDcdp[2]+"]");
+                                if(!laLineDcdt[2].isEmpty()){
+                                    loBean.setLiDcdpNo(Integer.parseInt(laLineDcdt[2]));
+                                }else{
+                                    loBean.setLiDcdpNo(null);
+                                }
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[3]));
+                                //System.out.println("setLiDcdtSttDay["+laLineDcdp[3]+"]");
+                                if(!laLineDcdt[3].isEmpty()){
+                                    loBean.setLiDcdtSttDay(Integer.parseInt(laLineDcdt[3]));
+                                }else{
+                                    loBean.setLiDcdtSttDay(null);
+                                }
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[4]));
+                                //System.out.println("setLiDcdtSttTime["+laLineDcdp[4]+"]");
+                                if(!laLineDcdt[4].isEmpty()){
+                                    loBean.setLiDcdtSttTime(Integer.parseInt(laLineDcdt[4]));
+                                }else{
+                                    loBean.setLiDcdtSttTime(null);
+                                }
+                                
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[5]));
+                                //System.out.println("setLiEndDay["+laLineDcdp[5]+"]");
+                                if(!laLineDcdt[5].isEmpty()){
+                                    loBean.setLiEndDay(Integer.parseInt(laLineDcdt[5]));
+                                }else{
+                                    loBean.setLiEndDay(null);
+                                }
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[6]));
+                                //System.out.println("setLiEndTime["+laLineDcdp[6]+"]");
+                                if(!laLineDcdt[6].isEmpty()){
+                                    loBean.setLiEndTime(Integer.parseInt(laLineDcdt[6]));
+                                }else{
+                                    loBean.setLiEndTime(null);
+                                }
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[7]));
+                                //System.out.println("setLiNoOfChanges["+laLineDcdp[7]+"]");
+                                if(!laLineDcdt[7].isEmpty()){
+                                    loBean.setLiNoOfChanges(Integer.parseInt(laLineDcdt[7]));
+                                }else{
+                                    loBean.setLiNoOfChanges(null);
+                                }
+                                
+                                //loBean.setLiSareNo(Integer.parseInt(laLineDcdp[8]));
+                                //System.out.println("setLiSareNo["+laLineDcdp[8]+"]");
+                                if(!laLineDcdt[8].isEmpty()){
+                                    loBean.setLiSareNo(Integer.parseInt(laLineDcdt[8]));
+                                }else{
+                                    loBean.setLiSareNo(null);
+                                }
+                                
+                                laDcdtList.add(loBean);
+                            }
+                        }
+                        //System.out.println(lsLine);
+                    }
+                    System.out.println("**********Tamaño lista Dcdt["+laDcdtList.size()+"]***********");
+                    if(laDcdtList.size() > 0){
+                        //for(GzipDcdpTrxBean loBean : laDcdpList){
+                        boolean lbFlag = true;
+                        int liI = 0;
+                        while(lbFlag && liI < laDcdtList.size()){
+                            GzipDcdtTrxBean loBean = laDcdtList.get(liI);
+                            ResponseUpdDao loResp = 
+                                loFileGzipDao.insertDcdtTrx(tsTable, loBean);    
+                            if(!loResp.getLsResponse().equalsIgnoreCase("OK")){
+                                lbFlag = false;
+                            }
+                            liI++;
+                        }
+                        if(!lbFlag){
+                            loRes.setLsResponse("ERROR");
+                            System.out.println("Uno o mas registros no fueron insertados");
+                            liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                    "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                            loBitBean.setLiIdService(toBitacora.getLiIdService());
+                            loBitBean.setLiIndProcess(liIndProcess); 
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Uno o mas registros no fueron insertados");
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               tiIdUser, 
+                                                               tsUserName);
+                        }else{
+                            loRes.setLsResponse("OK");
+                        }
+                        lsMessage = "["+liI+"/"+laDcdtList.size()+"] Registros Insertados";
+                    }else{
+                        loRes.setLsResponse("ERROR");
+                        System.out.println("Sin lineas para procesar[DCDT]");
+                        liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                "PROCESS_INTEGRATION");
+                        loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                        loBitBean.setLiIdService(toBitacora.getLiIdService());
+                        loBitBean.setLiIndProcess(liIndProcess); 
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Sin lineas para procesar[DCDT]");
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           tiIdUser, 
+                                                           tsUserName);
                     }
                 }
                 if(tsFileType.equalsIgnoreCase("DEAL")){
-                    
+                    List<GzipDealTrxBean> laDealList = new ArrayList<GzipDealTrxBean>();
+                    while ((lsLine = loBuffReader.readLine()) != null) {
+                        String[] laLineDeal = lsLine.split("\\|");
+                        if(laLineDeal.length > 0){
+                            //Verificar si el dato[0] es un numero
+                            if(validateRegularExpression(laLineDeal[0],"^[0-9]+$")){
+                                GzipDealTrxBean loBean = new GzipDealTrxBean();
+                                
+                                //loBean.setLiDcdpNo(Integer.parseInt(laLineDcdp[0]));
+                                //System.out.println("setLiDealNo["+laLineDcdp[0]+"]");
+                                if(!laLineDeal[0].isEmpty()){
+                                    loBean.setLiDealNo(Integer.parseInt(laLineDeal[0]));
+                                }else{
+                                    loBean.setLiDealNo(null);
+                                }
+                                                                
+                                //System.out.println("setLiMasterDeal["+laLineDcdp[1]+"]");
+                                if(!laLineDeal[1].isEmpty()){
+                                    loBean.setLiMasterDeal(Integer.parseInt(laLineDeal[1]));
+                                }else{
+                                    loBean.setLiMasterDeal(null);
+                                }
+                                
+                                //System.out.println("setLiMasterDeal["+laLineDcdp[1]+"]");
+                                if(!laLineDeal[1].isEmpty()){
+                                    loBean.setLiMasterDeal(Integer.parseInt(laLineDeal[1]));
+                                }else{
+                                    loBean.setLiMasterDeal(null);
+                                }
+                                
+                                //System.out.println("setLsClntCode["+laLineDcdp[2]+"]");
+                                if(!laLineDeal[2].isEmpty()){
+                                    loBean.setLsClntCode(laLineDeal[2]);
+                                }else{
+                                    loBean.setLsClntCode(null);
+                                }
+                                
+                                //System.out.println("setLsStatus["+laLineDcdp[3]+"]");
+                                if(!laLineDeal[3].isEmpty()){
+                                    loBean.setLsStatus(laLineDeal[3]);
+                                }else{
+                                    loBean.setLsStatus(null);
+                                }
+                                
+                                //System.out.println("setLsSttDate["+laLineDcdp[15]+"]");
+                                if(!laLineDeal[15].isEmpty()){
+                                    loBean.setLsSttDate(laLineDeal[15]);
+                                }else{
+                                    loBean.setLsSttDate(null);
+                                }
+                                
+                                //System.out.println("setLsEndDate["+laLineDcdp[16]+"]");
+                                if(!laLineDeal[16].isEmpty()){
+                                    loBean.setLsEndDate(laLineDeal[16]);
+                                }else{
+                                    loBean.setLsEndDate(null);
+                                }
+                                
+                                laDealList.add(loBean);
+                            }
+                        }
+                        //System.out.println(lsLine);
+                    }
+                    System.out.println("**********Tamaño lista Deal["+laDealList.size()+"]***********");
+                    if(laDealList.size() > 0){
+                        //for(GzipDcdpTrxBean loBean : laDcdpList){
+                        boolean lbFlag = true;
+                        int liI = 0;
+                        while(lbFlag && liI < laDealList.size()){
+                            GzipDealTrxBean loBean = laDealList.get(liI);
+                            ResponseUpdDao loResp = 
+                                loFileGzipDao.insertDealTrx(tsTable, loBean);    
+                            if(!loResp.getLsResponse().equalsIgnoreCase("OK")){
+                                lbFlag = false;
+                            }
+                            liI++;
+                        }
+                        if(!lbFlag){
+                            loRes.setLsResponse("ERROR");
+                            System.out.println("Uno o mas registros no fueron insertados");
+                            liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                    "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                            loBitBean.setLiIdService(toBitacora.getLiIdService());
+                            loBitBean.setLiIndProcess(liIndProcess); 
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Uno o mas registros no fueron insertados");
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               tiIdUser, 
+                                                               tsUserName);
+                        }else{
+                            loRes.setLsResponse("OK");
+                        }
+                        lsMessage = "["+liI+"/"+laDealList.size()+"] Registros Insertados";
+                    }else{
+                        loRes.setLsResponse("ERROR");
+                        System.out.println("Sin lineas para procesar[DEAL]");
+                        liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                "PROCESS_INTEGRATION");
+                        loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                        loBitBean.setLiIdService(toBitacora.getLiIdService());
+                        loBitBean.setLiIndProcess(liIndProcess); 
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Sin lineas para procesar[DEAL]");
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           tiIdUser, 
+                                                           tsUserName);
+                    }
                 }
                 if(tsFileType.equalsIgnoreCase("DEMD")){
-                    
+                    List<GzipDemdTrxBean> laDemdList = new ArrayList<GzipDemdTrxBean>();
+                    while ((lsLine = loBuffReader.readLine()) != null) {
+                        String[] laLineDemd = lsLine.split("\\|");
+                        if(laLineDemd.length > 0){
+                            //Verificar si el dato[0] es un numero
+                            if(validateRegularExpression(laLineDemd[0],"^[0-9]+$")){
+                                GzipDemdTrxBean loBean = new GzipDemdTrxBean();
+                                
+                                //System.out.println("setLiDealNo["+laLineDcdp[0]+"]");
+                                if(!laLineDemd[0].isEmpty()){
+                                    loBean.setLiDealNo(Integer.parseInt(laLineDemd[0]));
+                                }else{
+                                    loBean.setLiDealNo(null);
+                                }
+                                 
+                                //System.out.println("setLiDemoNo["+laLineDcdp[1]+"]");
+                                if(!laLineDemd[1].isEmpty()){
+                                    loBean.setLiDemoNo(Integer.parseInt(laLineDemd[1]));
+                                }else{
+                                    loBean.setLiDemoNo(null);
+                                }                               
+                                
+                                //System.out.println("setLdRevenuePerc["+laLineDcdp[4]+"]");
+                                if(!laLineDemd[4].isEmpty()){
+                                    loBean.setLdRevenuePerc(Double.parseDouble(laLineDemd[4]));
+                                }else{
+                                    loBean.setLdRevenuePerc(null);
+                                }
+                                
+                                //System.out.println("setLiSareNo["+laLineDcdp[9]+"]");
+                                if(!laLineDemd[9].isEmpty()){
+                                    loBean.setLiSareNo(Integer.parseInt(laLineDemd[9]));
+                                }else{
+                                    loBean.setLiSareNo(null);
+                                }
+                                
+                                //System.out.println("setLdCpp["+laLineDcdp[10]+"]");
+                                if(!laLineDemd[10].isEmpty()){
+                                    loBean.setLdCpp(Double.parseDouble(laLineDemd[10]));
+                                }else{
+                                    loBean.setLdCpp(null);
+                                }
+                                
+                                laDemdList.add(loBean);
+                            }
+                        }
+                        //System.out.println(lsLine);
+                    }
+                    System.out.println("**********Tamaño lista Demd["+laDemdList.size()+"]***********");
+                    if(laDemdList.size() > 0){
+                        //for(GzipDcdpTrxBean loBean : laDcdpList){
+                        boolean lbFlag = true;
+                        int liI = 0;
+                        while(lbFlag && liI < laDemdList.size()){
+                            GzipDemdTrxBean loBean = laDemdList.get(liI);
+                            ResponseUpdDao loResp = 
+                                loFileGzipDao.insertDemdTrx(tsTable, loBean);    
+                            if(!loResp.getLsResponse().equalsIgnoreCase("OK")){
+                                lbFlag = false;
+                            }
+                            liI++;
+                        }
+                        if(!lbFlag){
+                            loRes.setLsResponse("ERROR");
+                            System.out.println("Uno o mas registros no fueron insertados");
+                            liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                    "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                            loBitBean.setLiIdService(toBitacora.getLiIdService());
+                            loBitBean.setLiIndProcess(liIndProcess); 
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento("Uno o mas registros no fueron insertados");
+                            loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                               tiIdUser, 
+                                                               tsUserName);
+                        }else{
+                            loRes.setLsResponse("OK");
+                        }
+                        lsMessage = "["+liI+"/"+laDemdList.size()+"] Registros Insertados";
+                    }else{
+                        loRes.setLsResponse("ERROR");
+                        System.out.println("Sin lineas para procesar[DEMD]");
+                        liIndProcess = loEntityMappedDao.getGeneralParameterID("NoData", 
+                                                                "PROCESS_INTEGRATION");
+                        loBitBean.setLiIdLogServices(toBitacora.getLiIdLogServices());
+                        loBitBean.setLiIdService(toBitacora.getLiIdService());
+                        loBitBean.setLiIndProcess(liIndProcess); 
+                        loBitBean.setLiNumProcessId(0);
+                        loBitBean.setLiNumPgmProcessId(0);
+                        loBitBean.setLsIndEvento("Sin lineas para procesar[DEMD]");
+                        loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                           tiIdUser, 
+                                                           tsUserName);
+                    }
                 }
-                
                 loFileUnzip.close();
-                loRes.setLsResponse("OK");
-                loRes.setLsMessage("OK");
+                loRes.setLsMessage(lsMessage);
             } catch (IOException e) {
                 loRes.setLsResponse("ERROR");
                 loRes.setLsMessage(e.getMessage());
