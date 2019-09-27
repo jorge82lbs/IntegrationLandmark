@@ -147,6 +147,38 @@ public class UtilFaces {
             System.out.println(loIntExp.getMessage());
         }
     }
+    
+    /**
+     * Actualiza iterador de la tabla principal con condiciones de busqueda
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsWhere
+     * @param tsIteraror
+     * @param toRichTable
+     * @return void
+     */
+    public void refreshTableOriginalIterator(Integer tiIdService,
+                                             String tsIteraror, 
+                                             RichTable toRichTable
+                                            ) {
+        if(tiIdService > 0){        
+            try{
+                DCBindingContainer loDCBinding = 
+                    (DCBindingContainer)BindingContext.getCurrent().getCurrentBindingsEntry();         
+                DCIteratorBinding  loDCIterator = 
+                    loDCBinding.findIteratorBinding(tsIteraror);        
+                ViewObject         loVO = loDCIterator.getViewObject();
+                //loVO.setWhereClause(" ID_SERVICE = " + tiIdService);
+                System.out.println(loVO.getWhereClause());   
+                System.out.println(loVO.getQuery());   
+                loVO.executeQuery();
+                AdfFacesContext.getCurrentInstance().addPartialTarget(toRichTable);
+            }catch(Exception loIntExp){
+                System.out.println("Error al actualiza front tsIteraror "+tsIteraror);   
+                System.out.println(loIntExp.getMessage());
+            }
+        }
+    }
+    
 
     /**
      * Obtiene la expresion cron desde un servicio REST

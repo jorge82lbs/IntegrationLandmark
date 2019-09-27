@@ -90,10 +90,10 @@ public class OrderSpotsImpCron implements Job{
         //Ir mediante ssh por el archivo a servidor de lanmdark
         String lsPathRemote = 
             loEntityMappedDao.getGeneralParameter("PATH_SPOTS_INPUT", "SSH_CONNECTION");
-        
+        System.out.println("lsPathRemote["+lsPathRemote+"] ###################");
         ResponseUpdDao loResDn = 
             loSftpManagment.downloadFileSFTP(lsPathRemote, lsPathFiles, lsFileName, lsFileName);
-        
+        System.out.println("se ha descargado el archivo ["+lsFileName+"]");
         if(!loResDn.getLsResponse().equalsIgnoreCase("OK")){
             //Archivo no encontrado
             // Si por alguna razon ya lo borraron, es decir que no fue encontrado, mandar error a bitacora
@@ -154,15 +154,15 @@ public class OrderSpotsImpCron implements Job{
                 //Guardar en base de datos (estatus=P (en paradigm))
                 //##################### Insertar Archivo en Base de Datos ############################ 
                 try {
-                    //System.out.println("leyendo archivo de: ["+lsPathFiles+lsFileName+"]");
+                    System.out.println("leyendo archivo de: ["+lsPathFiles+lsFileName+"]");
                     File loFileInput = new File (lsPathFiles+lsFileName);
                     XmlFilesDao loXmlFilesDao = new XmlFilesDao();
                     LmkIntXmlFilesRowBean loXmlBean = new LmkIntXmlFilesRowBean();
                     FileInputStream loFis = new FileInputStream(loFileInput);
                     
-                    //System.out.println("lsRequestMaster["+lsRequestMaster+"] >>> Debe ser el id del LOG");
-                    //System.out.println("lsIdService["+lsIdService+"]");
-                    //System.out.println("lsIdUser["+lsIdUser+"]");
+                    System.out.println("lsRequestMaster["+lsRequestMaster+"] >>> Debe ser el id del LOG");
+                    System.out.println("lsIdService["+lsIdService+"]");
+                    System.out.println("lsIdUser["+lsIdUser+"]");
                     
                     loXmlBean.setLiIdFileXml(0);
                     loXmlBean.setLiIdRequest(liIdLogService);
@@ -187,7 +187,7 @@ public class OrderSpotsImpCron implements Job{
                         lsMessInsert = "Error " + loXmlFile.getLsMessage() + " al guardar archivo "+
                                        lsFileName+" size: "+loFileInput.getTotalSpace();
                     }
-                    //System.out.println("Insertar en bitacora que se ha insertado registro para monitoreo");
+                    System.out.println("Insertar en bitacora que se ha insertado registro para monitoreo");
                     liIndProcess = 
                                 new UtilFaces().getIdConfigParameterByName("InsertFile");//
                     //System.out.println("liIndProcess["+liIndProcess+"]");
@@ -203,7 +203,7 @@ public class OrderSpotsImpCron implements Job{
                     
                     //Leer archivo (estatus=W (leido))
                     //Aquí va la lectura del xml, el archivo fisico 
-                    //System.out.println("Leer e insertar spots en paradigm");
+                    System.out.println("Leer e insertar spots en paradigm");
                     ResponseUpdDao loRes = insertSpotsParadimg(lsPathFiles, lsFileName);
                     if(!loRes.getLsResponse().equalsIgnoreCase("OK")){
                         liIndProcess = 
@@ -243,7 +243,7 @@ public class OrderSpotsImpCron implements Job{
                                                                "["+lsStnid+","+lsBcstdt+"]"
                                                                );
                         }catch(Exception loEx){
-                            //System.out.println("Error al actualizar parametros "+loEx.getMessage());
+                            System.out.println("Error al actualizar parametros "+loEx.getMessage());
                         }
                         /*String lsBcstdt = getBcstdtMapped(lsBcstdtNomarch,
                                                           "yyyymmdd",
@@ -561,7 +561,7 @@ public class OrderSpotsImpCron implements Job{
      */
     public ResponseUpdDao insertSpotsParadimg(String tsFilePath, String tsFileName){
         ResponseUpdDao loResponseUpdDao = new ResponseUpdDao();
-        //System.out.println("-------------------- SPOTS -------------------------");    
+        System.out.println("-------------------- SPOTS -------------------------");    
         try {  
             String lsFileRead = tsFilePath+tsFileName;
             //System.out.println("Se debe de leer de : ["+lsFileRead+"]");            
@@ -570,8 +570,8 @@ public class OrderSpotsImpCron implements Job{
             JAXBContext context = JAXBContext.newInstance(Spots.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             Spots loSpots = (Spots)unmarshaller.unmarshal(new File(lsFileRead));
-            //System.out.println("numero de spots: "+loSpots.getSpot().size());    
-            //System.out.println("1)  Se insertan los datos en la tabla EVENTAS.LMK_SPOTS \n( los últimos 8 datos de esta tabla se dejan en blanco porque serán usados por el procedimiento para ligar información de Paradigm)");    
+            System.out.println("numero de spots: "+loSpots.getSpot().size());    
+            System.out.println("1)  Se insertan los datos en la tabla EVENTAS.LMK_SPOTS \n( los últimos 8 datos de esta tabla se dejan en blanco porque serán usados por el procedimiento para ligar información de Paradigm)");    
             OrderSpotsDao loOrderSpotsDao = new OrderSpotsDao();
             int liI = 0;
             boolean lbSpots = true;
@@ -610,6 +610,7 @@ public class OrderSpotsImpCron implements Job{
                 }
                 
             }else{
+                System.out.println("todo ok... leido");
                 loResponseUpdDao.setLiAffected(loSpots.getSpot().size());
                 loResponseUpdDao.setLsResponse("OK");
                 loResponseUpdDao.setLsMessage(lsFecha); //Fecha para procesar
@@ -746,6 +747,10 @@ public class OrderSpotsImpCron implements Job{
             toSpot.getProgrammeName() == null ? "null" : 
             toSpot.getProgrammeName().replace("'", "''");                   
         
+        String lsPosreqcode =             
+            toSpot.getPosReqCode() == null ? null : 
+            toSpot.getPosReqCode().replace("'", "''");    
+        
         String lsBookingPosition = "null";
         
         String lsAdvid = "null";        
@@ -813,6 +818,8 @@ public class OrderSpotsImpCron implements Job{
         loSpotsRowBean.setLiMstlogedtid(liMstlogedtid);
         
         loSpotsRowBean.setLsSalesArea(lsSalesArea);
+        
+        loSpotsRowBean.setLsPosReqCode(lsPosreqcode);
         
         
         if(toSpot.getContents() != null){

@@ -118,6 +118,9 @@ public class OrderSpotsDao {
         if(toBean.getLsCopyComments() != null ){
             lsQuery += "                       COPY_COMMENT,\n";
         }
+        if(toBean.getLsPosReqCode() != null ){
+            lsQuery += "                       POSREQCODE,\n";
+        }//Cambio solicitado por JEJ, 20190926
             lsQuery +=             
             "                       MULTI_PART_MEMBER,\n" + 
             //"                       BOOKING_POSITION,\n" + 
@@ -170,6 +173,9 @@ public class OrderSpotsDao {
         }
         if(toBean.getLsCopyComments() != null ){
             lsQuery += "                       '"+toBean.getLsCopyComments()+"',\n";
+        }
+        if(toBean.getLsPosReqCode() != null ){
+            lsQuery += "                       '"+toBean.getLsPosReqCode()+"',\n";
         }
             lsQuery += 
             "                       "+toBean.getLiMultiPartMember()+",\n" + 

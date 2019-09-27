@@ -210,4 +210,112 @@ public class PriceDao {
         return liReturn;
     }
     
+    
+    /**
+     * Obtiene bandera para procesamiento en log certificado
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsDate
+     * @param tsChannels
+     * @return List
+     */  
+    public Integer getFlagInsertLogCertificadoMod(String tsDate, 
+                                               String tsChannels) {
+        Integer    liReturn = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = getQueryInsertLogCertificadoMod(tsDate, tsChannels);
+        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            liReturn = loStmt.executeUpdate(lsQueryParadigm);
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
+    }
+    
+    /**
+     * Genera instruccion para obtener bandera para procesamiento en log certificado
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsDate
+     * @param tsChannels
+     * @return List
+     */  
+    public String getQueryInsertLogCertificadoMod(String tsDate, String tsChannels) {
+        
+        String lsQuery = "INSERT INTO EVENTAS.LMK_LOG_CERTIFICADO_PROCESADO(STNID,BCSTDT,STATUS)\n" + 
+        "SELECT\n" + 
+        "    LOGHDR.STNID,\n" + 
+        "    LOGHDR.BCSTDT,\n" + 
+        "    1\n" + 
+        "FROM PARADB.LOGHDR LOGHDR\n" + 
+        "WHERE LOGHDR.STNID = '" + tsChannels + "' \n" + 
+        "AND LOGHDR.BCSTDT >= '"+tsDate+"' -- PARAMETRO INICIAL DE FECHA\n" + 
+        "AND (LOGHDR.STNID,LOGHDR.BCSTDT) NOT IN (SELECT A.STNID, A.BCSTDT " +
+            " FROM EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO A\n" + 
+        "                                         WHERE LOGHDR.STNID = A.STNID\n" + 
+        "                                         AND LOGHDR.BCSTDT = A.BCSTDT)\n" + 
+        "AND LOGHDR.LOGEDTLCK >= 7031\n" + 
+        "GROUP BY LOGHDR.STNID,LOGHDR.BCSTDT\n" + 
+        "ORDER BY  LOGHDR.STNID,LOGHDR.BCSTDT\n";
+                
+        return lsQuery;
+    }
+    
+    /**
+     * Elimina de la tabla de control de log certificado
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsDate
+     * @param tsChannels
+     * @return Integer
+     */  
+    public Integer deleteLogCertificado(String tsDate, 
+                                        String tsChannels
+                                        ) {
+        Integer    liReturn = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = 
+            getQueryDeleteCertificado(tsDate, tsChannels);
+        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loStmt.executeUpdate(lsQueryParadigm);
+            liReturn = 66;
+        } catch (SQLException loExSql) {
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liReturn;
+    }
+    
+    /**
+     * Genera instruccion para obtener bandera para procesamiento en log certificado
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsDate
+     * @param tsChannels
+     * @return List
+     */  
+    public String getQueryDeleteCertificado(String tsDate, String tsChannels) {
+        
+        String lsQuery = 
+            "DELETE\n" + 
+            "  FROM EVENTAS.LMK_LOG_CERTIFICADO_PROCESADO\n" + 
+            " WHERE STNID  = '"+tsChannels+"'\n" + 
+            "   AND BCSTDT = '"+tsDate+"'";
+                
+        return lsQuery;
+    }
+    
 }

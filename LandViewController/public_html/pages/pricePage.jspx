@@ -77,7 +77,8 @@
                                                   id="TxtIdService"
                                                   visible="false"
                                                   value="#{UserMenuBean.lsUserIdServicePrecios}"
-                                                  binding="#{PriceBean.poIdService}">
+                                                  binding="#{PriceBean.poIdService}"
+                                                  partialTriggers="BtmnAltPm BtmnPrPm">
                                     </af:inputText>
                                     <af:inputText label=" "
                                                   shortDesc="Servicio"
@@ -114,6 +115,12 @@
                             </af:panelGroupLayout>
                             <af:spacer width="10" height="5" id="sp4a12"/>
                             <af:separator id="s153grt"/>
+                            <af:link text=" " id="BtnResetTblPar"
+                                        icon="/images/action_refresh.gif" 
+                                        visible="false"
+                                        shortDesc="Reiniciar tabla de Parámetros"
+                                 action="#{PriceBean.refreshParametersTable}">
+                            </af:link>
                             <!-- ################################### TABLA DE CANALES DE PARAMETROS GENERALES ##################################################### !-->
                             <af:panelGroupLayout layout="scroll" id="PnlGrpIter" valign="middle" halign="left"
                             inlineStyle="border-style:none; height:25em;">
@@ -207,7 +214,7 @@
                                             </af:inputText>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.NomParameter.name}"
-                                                   filterable="true" sortable="true" align="center" 
+                                                   filterable="false" sortable="true" align="center" 
                                                    headerText="Canal" width="80"
                                                    id="c6">
                                             <af:inputText value="#{row.bindings.NomParameter.inputValue}"
@@ -221,7 +228,7 @@
                                             </af:inputText>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndValueParameter.name}"
-                                                   filterable="true" sortable="true" align="center"
+                                                   filterable="false" sortable="true" align="center"
                                                    headerText="Descripción"  width="130"
                                                    id="c9">
                                             <af:inputText value="#{row.bindings.IndValueParameter.inputValue}"
@@ -235,7 +242,7 @@
                                             </af:inputText>
                                         </af:column>
                                         <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.IndDescParameter.name}"
-                                                   filterable="true" sortable="true" align="center"
+                                                   filterable="false" sortable="true" align="center"
                                                    headerText="Grupo" width="130"
                                                    id="c7">
                                             <af:inputText value="#{row.bindings.IndDescParameter.inputValue}"
@@ -327,6 +334,23 @@
                                                 <f:validator binding="#{row.bindings.Selected.validator}"/>
                                             </af:inputText>-->
                                         </af:column>
+                                        
+                                        
+                                        <af:column sortProperty="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.name}"
+                                                   filterable="false" sortable="true" align="center"
+                                                   headerText="Activo" width="50" visible="false"
+                                                   id="c134">
+                                         <af:inputText value="#{row.bindings.Selected.inputValue}"
+                                                          label="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.label}"                                                          
+                                                          columns="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.displayWidth}"
+                                                          maximumLength="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.precision}"
+                                                          shortDesc="#{bindings.LmkIntListChannelpAllVwView1.hints.Selected.tooltip}"
+                                                          id="it13">
+                                                <f:validator binding="#{row.bindings.Selected.validator}"/>
+                                            </af:inputText>
+                                        </af:column>
+                                        
+                                        
                                     </af:table>
                             
                             </af:panelGroupLayout> 

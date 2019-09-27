@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.televisa.landamark.client.email.types.local.EmailDestinationAddress;
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LmkIntConfigParamRowBean;
 import mx.com.televisa.landamark.model.types.LmkIntCronConfigRowBean;
@@ -791,5 +792,61 @@ public class EntityMappedDao {
         }
         //return loValue;
     }
+    
+    /**
+         * Obtiene direcciones de correo como destinatarios
+         * @autor Jorge Luis Bautista Santiago
+         * @return List
+         */
+        public List<EmailDestinationAddress> getDestinationAddress(String tsIdService, String tsGroup, String tsProcess){
+            List<EmailDestinationAddress> loEmails = new ArrayList<EmailDestinationAddress>();
+            Connection                    loCnn = new ConnectionAs400().getConnection();
+            ResultSet                     loRs = null;
+            String                        lsQueryParadigm = getQueryEmailsDyna(tsIdService,tsGroup,tsProcess);
+            try {
+                Statement loStmt = loCnn.createStatement();
+                loRs = loStmt.executeQuery(lsQueryParadigm);  
+                while(loRs.next()){
+                    EmailDestinationAddress loEmailBean = new EmailDestinationAddress();             
+                    loEmailBean.setLsNameTo(loRs.getString("NOM_PARAMETER") == null ? null : 
+                                              loRs.getString("NOM_PARAMETER").trim());
+                    loEmailBean.setLsAddressTo(loRs.getString("NOM_PARAMETER") == null ? null : 
+                                              loRs.getString("NOM_PARAMETER").trim());    
+                    System.out.println("TO("+loEmailBean.getLsNameTo()+") TO_ADD("+loEmailBean.getLsAddressTo()+")");
+                    loEmails.add(loEmailBean);
+                }
+            } catch (SQLException loExSql) {
+                System.out.println("ERROR AL EJECUTAR: ");
+                System.out.println(lsQueryParadigm);
+                loExSql.printStackTrace();
+            }
+            finally{
+                try {
+                    loCnn.close();
+                    loRs.close();
+                } catch (SQLException loEx) {
+                    loEx.printStackTrace();
+                }
+            }
+            return loEmails;
+        }
+        
+       
+        public String getQueryEmailsDyna(String tsIdService, String tsGroup, String tsProcess){
+            String lsQuery = 
+                "SELECT DISTINCT CPT.NOM_PARAMETER,\n" + 
+                "       CPT.IND_VALUE_PARAMETER\n" + 
+                "  FROM EVENTAS.LMK_INT_CONFIG_PARAM_TAB    CPT,\n" + 
+                "       EVENTAS.LMK_INT_NOTIFICATIONS_TAB   NTF\n" + 
+                " WHERE 1 = 1 \n" + 
+                "   AND NTF.IND_USERS_GROUP         = CPT.IND_DESC_PARAMETER\n" + 
+                "   AND NTF.ID_SERVICE              = "+tsIdService+"\n" + 
+                "   AND CPT.IND_ESTATUS             = '1'\n" + 
+                "   AND CPT.IND_VALUE_PARAMETER     = '"+tsProcess+"' \n" + 
+                "   AND CPT.IND_DESC_PARAMETER      = '"+tsGroup+"'\n" + 
+                "   AND CPT.IND_USED_BY             = 'EMAIL_WSINTEGRATION'";
+            return lsQuery;
+        }
+        
     
 }

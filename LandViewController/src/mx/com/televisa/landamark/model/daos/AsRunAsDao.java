@@ -66,6 +66,9 @@ public class AsRunAsDao {
         return liReturn;
     }
     
+    
+    
+    
     /**
      * Genera instruccion para obtener bandera para procesamiento en log certificado
      * @autor Jorge Luis Bautista Santiago
@@ -93,6 +96,8 @@ public class AsRunAsDao {
                 
         return lsQuery;
     }
+    
+    
     
     /**
      * Ejecuta procedimiento en base de datos para el encabezado de la orden
@@ -178,7 +183,7 @@ public class AsRunAsDao {
             "       TRIM(INDUSTRY_CODE) COD_ASRUN\n" + 
             "  FROM EVENTAS.LMK_AS_RUN\n" + 
             " WHERE STNID = '"+tsStnid+"'\n" + 
-            "   AND BCSTDT = '"+tsBcstdt+"'";
+            "   AND BCSTDT >= '"+tsBcstdt+"'";//20190926 - Mayor que, ya que así lo solicita JEJ
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -293,7 +298,7 @@ public class AsRunAsDao {
         "UPDATE EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO\n" + 
                 "   SET STATUS = '0'\n" + 
                 " WHERE STNID = '" + tsChannels + "'\n" + 
-                "   AND BCSTDT = '" + tsDate + "'";
+                "   AND BCSTDT >= '" + tsDate + "'"; //20190926 - Mayor que, ya que así lo solicita JEJ
         System.out.println(lsQueryParadigm);
         try {
             Statement loStmt = loCnn.createStatement();

@@ -78,6 +78,7 @@
                                                   shortDesc="idServicio"
                                                   id="TxtIdService"
                                                   visible="false"
+                                                  partialTriggers="BtmnAltPm BtmnPrPm"
                                                   value="#{UserMenuBean.lsUserIdServiceCortes}"
                                                   binding="#{CreationBean.poIdService}">
                                     </af:inputText>

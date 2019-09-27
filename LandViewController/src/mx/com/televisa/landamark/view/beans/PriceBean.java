@@ -18,6 +18,9 @@ import java.sql.Blob;
 
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -122,8 +125,9 @@ public class PriceBean {
         ResponseUpdDao loResponse = new ResponseUpdDao();
         Integer liCount = 0;
         Integer liFinalIdService = -1;
-        
+        System.out.println(" 01 liFinalIdService["+liFinalIdService+"]");
         String lsIdService = getPoIdService().getValue().toString();    
+        System.out.println(" 02 liFinalIdService["+liFinalIdService+"]");
         String lsUserName = getPoUserName().getValue().toString();
                 
         String lsFecInicial = 
@@ -136,9 +140,10 @@ public class PriceBean {
             if(Integer.parseInt(lsIdService) < 0){
                 //verificar en la bd si ya existe un servicio de cortes con este usuario
                 Integer liIdService = getIdPreciosByUser(lsUserName);
+                System.out.println(" 001 liIdService["+liIdService+"]");
                 if(liIdService <= 0){
                     liIdService = new ViewObjectDao().getMaxIdServicesCatalog() + 1;    
-                    
+                    System.out.println(" 002 liIdService["+liIdService+"]");
                     String lsDescService = "Actualización de Precios - "+lsUserName;
                     String lsNomService = "ProcessPriceUpdate";
                     String lsIndServiceWsdl = "";
@@ -160,6 +165,7 @@ public class PriceBean {
                     AppModuleImpl loService = 
                         (AppModuleImpl)loAm;        
                     try{
+                        System.out.println(" 003(insert) liIdService["+liIdService+"]");
                         LmkIntServicesCatRowBean loLmkBean = new LmkIntServicesCatRowBean();
                         loLmkBean.setLiIdService(liIdService);
                         loLmkBean.setLsNomService(lsNomService);
@@ -174,6 +180,7 @@ public class PriceBean {
                         loService.insertServicesCatModel(loLmkBean);  
                     
                     } catch (Exception loEx) {
+                        System.out.println("Err 088 "+loEx.getMessage());
                         loResponse.setLsResponse("ERROR");
                         loResponse.setLsMessage("Error al insertar Servicio " + loEx);
                     } finally {
@@ -181,20 +188,24 @@ public class PriceBean {
                     }
                 }
                 liFinalIdService = liIdService;
-                //System.out.println("liFinalIdService(Final): "+liFinalIdService);
+                System.out.println("liFinalIdService(Final): "+liFinalIdService);
             }else{
                 liFinalIdService = Integer.parseInt(lsIdService);
             }
-            
+            System.out.println(" 08 liFinalIdService["+liFinalIdService+"]");
             if(liFinalIdService > 0){
                 //String lsFecIni = convertDateMask(ltDateIni, "yyyy-MM-dd");
                 //String lsFecFin = convertDateMask(ltDateFin, "yyyy-MM-dd");
+                //List<LmkIntServicesParamsRowBean> laParameters = 
+                  //  new ArrayList<LmkIntServicesParamsRowBean>();
                 ApplicationModule         loAm = 
                     Configuration.createRootApplicationModule(gsAmDef, gsConfig);
                 AppModuleImpl loService = 
                     (AppModuleImpl)loAm;        
                 try{
+                    System.out.println("eliminando parametros deprecados");
                     loService.deleteServicesParamsModelByServ(liFinalIdService);
+                    System.out.println("eliminando parametros deprecados.........OK");
                     try {
                         CollectionModel   loModel =
                             (CollectionModel)getPoTblChannels().getValue();
@@ -203,7 +214,11 @@ public class PriceBean {
                         DCIteratorBinding loIteratorBinding =
                             loBinding.getDCIteratorBinding();
                         Row[]             laRows = loIteratorBinding.getAllRowsInRange();
+                        System.out.println("laRows.length["+laRows.length+"]");
+                        liCount = 0;
+                        
                         for (int liI = 0; liI < laRows.length; liI++) {
+                            System.out.println("liI["+liI+"]");
                             String lsSelected = 
                                 laRows[liI].getAttribute("Selected") == null ? "false" :
                                 laRows[liI].getAttribute("Selected").toString();
@@ -224,13 +239,15 @@ public class PriceBean {
                                 loLmkParamBean.setLsIndParameter(lsCanal);
                                 loLmkParamBean.setLsIndValParameter(lsValue);                        
                                 loLmkParamBean.setLsIndEstatus("1");   
-                                
+                                System.out.println("Canal["+lsCanal+"] Valor["+lsValue+"] ");
+                                //laParameters.add(loLmkParamBean);
                                 loService.insertServicesParamsModel(loLmkParamBean);
                                 
                             }
                             
                         }
                     } catch (Exception loEx) {
+                        System.out.println("Err 088 "+loEx.getMessage());
                         loResponse.setLsResponse("ERROR");
                         loResponse.setLsMessage(loEx.getMessage());
                         loEx.printStackTrace();
@@ -244,7 +261,8 @@ public class PriceBean {
                     loLmkFiBean.setLsIndEstatus("1");
                     loLmkFiBean.setLsIndParameter("FECHA_INICIAL");
                     //loLmkFiBean.setLsIndValParameter(lsFecIni);                        
-                    loLmkFiBean.setLsIndValParameter(lsFecInicial);                        
+                    loLmkFiBean.setLsIndValParameter(lsFecInicial);        
+                    //laParameters.add(loLmkFiBean);
                     loService.insertServicesParamsModel(loLmkFiBean); 
                     
                     LmkIntServicesParamsRowBean loLmkFfBean = new LmkIntServicesParamsRowBean();            
@@ -255,13 +273,15 @@ public class PriceBean {
                     loLmkFfBean.setLsIndEstatus("1");
                     loLmkFfBean.setLsIndParameter("FECHA_FINAL");
                     //loLmkFfBean.setLsIndValParameter(lsFecFin);                        
-                    loLmkFfBean.setLsIndValParameter(lsFecFinal);                        
+                    loLmkFfBean.setLsIndValParameter(lsFecFinal);   
+                    //laParameters.add(loLmkFfBean);
                     loService.insertServicesParamsModel(loLmkFfBean);     
                     
                     loResponse.setLsResponse("OK");
                     loResponse.setLsMessage("OK");
                     
                 } catch (Exception loEx) {   
+                    System.out.println("Err 088 "+loEx.getMessage());
                     loResponse.setLsResponse("ERROR");
                     loResponse.setLsMessage(loEx.getMessage());
                 } finally {
@@ -282,6 +302,8 @@ public class PriceBean {
             loResponse.setLsMessage("Es necesario al menos un canal");
         }
         
+        getPoIdService().setValue(liFinalIdService);
+        System.out.println(" 10 liFinalIdService["+liFinalIdService+"]");
         loResponse.setLiAffected(liFinalIdService);
         
         return loResponse;
@@ -313,9 +335,27 @@ public class PriceBean {
             loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
             FacesContext.getCurrentInstance().addMessage(null, loMsg);
         }
+        //Refrescar la pagina
+        //refresParametersTable(loResponse.getLiAffected());
         
         return null;
     }
+    
+    
+    
+    /**
+     * Actualiza la tabla de parametros a su estado inicial
+     * @autor Jorge Luis Bautista Santiago  
+     * @return String
+     */
+    public String refresParametersTable(Integer tiIdService) {
+        new UtilFaces().refreshTableOriginalIterator(tiIdService,
+                                                     "LmkIntListChannelpAllVwView1Iterator",
+                                                     getPoTblChannels()
+                                                    );
+        return null;
+    }
+
     
     /**
      * Convierte a cadena una fecha con la mascara deseada
@@ -553,7 +593,7 @@ public class PriceBean {
         String lsUserName = getPoUserName().getValue().toString();
         new UtilFaces().refreshTableWhereIterator("USER_NAME = '"+lsUserName+"'",
                                                   gsEntityIterator,
-                                                  getPoTblChannels()
+                                                  getPoTbl()
                                                   );
         return null;
     }
@@ -570,9 +610,12 @@ public class PriceBean {
         if(loResponse != null){
             if(loResponse.getLsResponse().equalsIgnoreCase("OK")){
                 String lsIdService = String.valueOf(loResponse.getLiAffected());
+                System.out.println("executeExecuteAction>>> lsIdService["+lsIdService+"]");
                     //getPoIdService().getValue().toString();   
                 String lsUserName = getPoUserName().getValue().toString();
+                System.out.println("executeExecuteAction>>> lsUserName["+lsUserName+"]");
                 //Ejecutar los procesos, 
+                //System.out.println("barni Por el momento no ejecutar!!!!!!!!!!!!!!!!!!!!!!!!");
                 executeProcessAction(lsIdService, 
                                      "ProcessPriceUpdate",
                                      "Actualizacion de Precios por "+ lsUserName
@@ -802,5 +845,15 @@ public class PriceBean {
 
     public RichTable getPoTbl() {
         return poTbl;
+    }
+
+    public String refreshParametersTable() {
+        
+        String lsIdService = 
+            getPoIdService().getValue() == null ? "0" : 
+            getPoIdService().getValue().toString();    
+                
+        refresParametersTable(Integer.parseInt(lsIdService));
+        return null;
     }
 }

@@ -46,6 +46,8 @@ public class Spot {
     @XmlElement
     private String SpotSalesClassification;
     @XmlElement
+    private String PosReqCode;
+    @XmlElement
     private String SequenceNumber;
     @XmlElement
     private String ProductKey;
@@ -178,6 +180,14 @@ public class Spot {
 
     public String getSpotSalesClassification() {
         return SpotSalesClassification;
+    }
+
+    public void setPosReqCode(String PosReqCode) {
+        this.PosReqCode = PosReqCode;
+    }
+
+    public String getPosReqCode() {
+        return PosReqCode;
     }
 
     public void setSequenceNumber(String SequenceNumber) {

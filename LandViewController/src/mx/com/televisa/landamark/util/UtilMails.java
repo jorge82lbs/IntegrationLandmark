@@ -54,10 +54,15 @@ public class UtilMails {
         if(laConfig.size() > 0){// Validar que existan
             // Obtener destintarios ene base al grupo de usuarios    
             if(laConfig.get(0).getLsIndUsersGroup() != null){
-                SecurityManagerWs loSecman = new SecurityManagerWs();
+                //SecurityManagerWs loSecman = new SecurityManagerWs();
+                EntityMappedDao loEntityMappedDao = new EntityMappedDao();                
+                List<LmkIntConfigParamRowBean> laProcess = loEntityMappedDao.getParametersById(tiIdProcess);
                 List<EmailDestinationAddress> laTo = 
-                    loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
-                
+                    //loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
+                loEntityMappedDao.getDestinationAddress(String.valueOf(tiIdService), 
+                                                        laConfig.get(0).getLsIndUsersGroup(),
+                                                        laProcess.get(0).getLsNomParameter()
+                                                        );
                 //-----------------------------------------------------------------------
                 /*System.out.println("Por lo pronto mandar correo solo a jlbautistas");
                 laTo.clear();
@@ -70,7 +75,7 @@ public class UtilMails {
                 if(laTo.size() > 0){
                     //System.out.println("Si existen destinatarios");
                     //Obtener la descripcion del idProcess
-                    EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+                    //EntityMappedDao loEntityMappedDao = new EntityMappedDao();
                     List<LmkIntConfigParamRowBean> loPrcss = 
                         loEntityMappedDao.getParametersById(tiIdProcess);
                     
@@ -152,10 +157,17 @@ public class UtilMails {
         if(laConfig.size() > 0){// Validar que existan
             // Obtener destintarios ene base al grupo de usuarios    
             if(laConfig.get(0).getLsIndUsersGroup() != null){
-                SecurityManagerWs loSecman = new SecurityManagerWs();
+                //SecurityManagerWs loSecman = new SecurityManagerWs();
+                //List<EmailDestinationAddress> laTo = 
+                    //loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
+                EntityMappedDao loEntityMappedDao = new EntityMappedDao();                
+                List<LmkIntConfigParamRowBean> laProcess = loEntityMappedDao.getParametersById(tiIdProcess);
                 List<EmailDestinationAddress> laTo = 
-                    loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
-                
+                    //loSecman.getListEmailAddressByGroup(laConfig.get(0).getLsIndUsersGroup());
+                loEntityMappedDao.getDestinationAddress(String.valueOf(tiIdService), 
+                                                        laConfig.get(0).getLsIndUsersGroup(),
+                                                        laProcess.get(0).getLsNomParameter()
+                                                        );
                 //-----------------------------------------------------------------------
                 /*System.out.println("Por lo pronto mandar correo solo a jlbautistas");
                 laTo.clear();
@@ -168,7 +180,7 @@ public class UtilMails {
                 if(laTo.size() > 0){
                     //System.out.println("Si existen destinatarios");
                     //Obtener la descripcion del idProcess
-                    EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+                    //EntityMappedDao loEntityMappedDao = new EntityMappedDao();
                     List<LmkIntConfigParamRowBean> loPrcss = 
                         loEntityMappedDao.getParametersById(tiIdProcess);
                     

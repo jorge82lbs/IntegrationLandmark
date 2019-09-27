@@ -47,6 +47,15 @@ public class LmkSpotsRowBean {
     private String  lsIndustryCode;
     private String  lsCopyComments;
     private String  lsSalesArea;
+    private String  lsPosReqCode;
+
+    public void setLsPosReqCode(String lsPosReqCode) {
+        this.lsPosReqCode = lsPosReqCode;
+    }
+
+    public String getLsPosReqCode() {
+        return lsPosReqCode;
+    }
 
     public void setLsSalesArea(String lsSalesArea) {
         this.lsSalesArea = lsSalesArea;

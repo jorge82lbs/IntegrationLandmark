@@ -273,6 +273,7 @@ public class CreationBean{
             loResponse.setLsMessage("Es necesario al menos un canal");
         }
         
+        getPoIdService().setValue(liFinalIdService);
         //System.out.println("liFinalIdService CLASS["+liFinalIdService+"]");
         loResponse.setLiAffected(liFinalIdService);
 

@@ -158,7 +158,7 @@
                                                             action="bitacoraPage"
                                                             rendered="#{UserMenuBean.lsPantallaBitacora}"
                                                             icon="/images/page_find.gif"/>
-                                                            <!--
+                                         <!--                   
                                         <af:commandMenuItem id="MnuTemp13" text="Salir"
                                                             partialSubmit="true"
                                                             shortDesc="Salir" 

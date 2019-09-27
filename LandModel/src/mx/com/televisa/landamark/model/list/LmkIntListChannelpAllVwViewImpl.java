@@ -64,6 +64,7 @@ public class LmkIntListChannelpAllVwViewImpl extends ViewObjectImpl {
             }
             
             // Mostrar solo los canales de fuerza de ventas configurado
+            System.out.println("lsListChannels: "+lsListChannels);
             if(lsListChannels.length() > 0){
                 lsWhere += " AND IND_DESC_PARAMETER IN ("+lsListChannels+") ";   
             }else{
@@ -74,7 +75,10 @@ public class LmkIntListChannelpAllVwViewImpl extends ViewObjectImpl {
         else{
             lsWhere = getWhereClause();
         }
-        //System.out.println(getQuery());
+        
+        System.out.println(getWhereClause());
+        System.out.println("################################");
+        System.out.println(getQuery());
         setOrderByClause("IND_DESC_SERVICE, NOM_SERVICE");
         setWhereClause(lsWhere);
         super.executeQueryForCollection(toQc, taParams, tiNumUserParams);

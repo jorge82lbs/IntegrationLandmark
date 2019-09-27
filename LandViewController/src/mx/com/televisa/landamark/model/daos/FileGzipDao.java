@@ -1,5 +1,7 @@
 package mx.com.televisa.landamark.model.daos;
 
+import java.io.IOException;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +19,7 @@ import mx.com.televisa.landamark.model.types.GzipDcdpTrxBean;
 import mx.com.televisa.landamark.model.types.GzipDcdtTrxBean;
 import mx.com.televisa.landamark.model.types.GzipDealTrxBean;
 import mx.com.televisa.landamark.model.types.GzipDemdTrxBean;
+import mx.com.televisa.landamark.model.types.GzipPredTrxBean;
 import mx.com.televisa.landamark.model.types.LmkIntXmlFilesRowBean;
 import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 
@@ -445,7 +448,6 @@ public class FileGzipDao {
         CallableStatement loCallStmt = null;
         System.out.println("Parametros(callProcedureLoadTable).........");
         System.out.println("tsTableName: ["+tsTableName+"]");
-        //System.out.println("ltDate: ["+ltDate+"]");
         String            lsQueryParadigm = "call EVENTAS.LMK_CARGA_TABLAS(?)";
         try {
             loCallStmt = loCnn.prepareCall(lsQueryParadigm);
@@ -454,6 +456,7 @@ public class FileGzipDao {
             loResponseUpdDao.setLsResponse("OK");
             loResponseUpdDao.setLiAffected(0);
             loResponseUpdDao.setLsMessage("Success");
+            //loResponseUpdDao.setLsMessage("Deshabilitado");
         } catch (SQLException loExSql) {
             System.out.println("ERROR AL EJECUTAR: ");
             System.out.println(lsQueryParadigm);
@@ -486,6 +489,7 @@ public class FileGzipDao {
         } catch (InterruptedException e) {;
         }
     */
+       
         Connection loCnn = new ConnectionAs400().getConnection();
         Integer    liIdXml = getMaxIdParadigm("RstXmlFiles") + 1;
         try {
@@ -505,9 +509,10 @@ public class FileGzipDao {
             "                                            ATTRIBUTE1,\n" + 
             "                                            ATTRIBUTE2,\n" + 
             "                                            ATTRIBUTE11,\n" + 
+            "                                            ATTRIBUTE12,\n" + 
             "                                            IND_FILE_STREAM\n" + 
             "                                           )\n" + 
-            "                                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "                                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement loStmt = loCnn.prepareStatement(lsSql);
             loStmt.setInt(1, liIdXml);
             loStmt.setInt(2, toXmlFile.getLiIdRequest());
@@ -525,12 +530,12 @@ public class FileGzipDao {
             loStmt.setString(14, toXmlFile.getLsAttribute1());
             loStmt.setString(15, toXmlFile.getLsAttribute2());
             loStmt.setString(16, toXmlFile.getLsAttribute11());
-            loStmt.setBinaryStream(17, toXmlFile.getLoIndFileStream());
+            loStmt.setString(17, toXmlFile.getLsAttribute12());
+            loStmt.setBinaryStream(18, toXmlFile.getLoIndFileStream());
             loStmt.execute();
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("OK");
             loResponse.setLiAffected(liIdXml);
-           
         } catch (SQLException loExSql) {
             System.out.println("ERROR XML_FILE: "+loExSql.getMessage());
             loResponse.setLsResponse("ERROR");
@@ -633,5 +638,75 @@ public class FileGzipDao {
         }
         return liReturn;
     }
+    
+    /**
+     * Se inserta registro en la tabla definida como tipo Demd
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsTableName
+     * @param toBean
+     * @return ResponseUpdDao
+     */   
+    public ResponseUpdDao insertPredTrx(String tsTableName, 
+                                        GzipPredTrxBean toBean
+                                       ){
+        ResponseUpdDao loRes = new ResponseUpdDao();
+        Integer    liReturn = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        String     lsQueryParadigm = getQueryInsertPredTrx(tsTableName, toBean);
+        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            liReturn = loStmt.executeUpdate(lsQueryParadigm);
+            loRes.setLiAffected(liReturn);
+            loRes.setLsResponse("OK");
+            loRes.setLsMessage("OK");
+        } catch (SQLException loExSql) {
+            loRes.setLiAffected(0);
+            loRes.setLsResponse("ERROR");
+            loRes.setLsMessage(loExSql.getMessage());
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loRes;
+    }
+    
+    
+    /**
+     * Crea instruccio para insertar registro en la tabla definida como tipo Demd
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsTableName
+     * @param toBean
+     * @return String
+     */   
+    public String getQueryInsertPredTrx(String tsTableName,
+                                       GzipPredTrxBean toBean){
+       String lsQuery = 
+           "INSERT INTO "+tsTableName+" (";
+        if(toBean.getLsDemoNo()!= null){ lsQuery += "  DEMO_NO,\n";}
+        if(toBean.getLsPredSareNo()!= null){ lsQuery += "  PRED_DARE_NO,\n";}
+        if(toBean.getLsBrekSchedDate()!= null){ lsQuery += "  BREAK_SCHED_DATE,\n";}
+        if(toBean.getLsBreakNo()!= null){ lsQuery += "  BREAK_NO,\n";}
+        if(toBean.getLsNoOfRtgs()!= null){ lsQuery += "  NO_OF_RTGS,\n";}
+        if(toBean.getLsSareNo()!= null){ lsQuery += "  SARE_NO\n";}
+        lsQuery += 
+           "                             )\n" + 
+           "                      VALUES (";
+        if(toBean.getLsDemoNo()!= null){ lsQuery += " "+toBean.getLsDemoNo()+",--DEMO_NO\n";}
+        if(toBean.getLsPredSareNo()!= null){ lsQuery += " "+toBean.getLsPredSareNo()+",--PRED_DARE_NO\n";}
+        if(toBean.getLsBrekSchedDate()!= null){ lsQuery += " '"+toBean.getLsBrekSchedDate()+"',--BREAK_SCHED_DATE\n";}
+        if(toBean.getLsBreakNo()!= null){ lsQuery += " "+toBean.getLsBreakNo()+",--BREAK_NO\n";}
+        if(toBean.getLsNoOfRtgs()!= null){ lsQuery += " "+toBean.getLsNoOfRtgs()+",--NO_OF_RTGS\n";}
+        if(toBean.getLsSareNo()!= null){ lsQuery += " "+toBean.getLsSareNo()+"--SARE_NO\n";}
+        lsQuery += 
+           "                             )";
+       return lsQuery;
+    }
+    
     
 }

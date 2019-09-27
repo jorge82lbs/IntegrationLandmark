@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import mx.com.televisa.landamark.client.userpermission.types.Usuario;
+import mx.com.televisa.landamark.model.AppModuleImpl;
 import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.model.daos.ViewObjectDao;
 import mx.com.televisa.landamark.secman.SecurityManagerWs;
@@ -38,6 +39,9 @@ import mx.com.televisa.landamark.util.UtilFaces;
 
 import oracle.adf.view.rich.component.rich.RichPopup;
 import oracle.adf.view.rich.component.rich.input.RichInputText;
+
+import oracle.jbo.ApplicationModule;
+import oracle.jbo.client.Configuration;
 
 /** Esta clase es un bean que enlaza la pantalla de Login<br/><br/>
  *
@@ -359,7 +363,7 @@ public class LoginBean {
      * @return String
      */
     public String exitAppIntegraion() {
-        /*String              lsAmDef =
+        String              lsAmDef =
             "mx.com.televisa.landamark.model.AppModuleImpl";
         String              lsConfig = "AppModuleLocal";
         ExternalContext     loEctx = 
@@ -395,8 +399,8 @@ public class LoginBean {
             System.out.println("Error al salir "+loEx.getMessage());
             loEx.printStackTrace();
         }
-        */
         
+        /*
         try {
             ExternalContext     loEctx = 
                 FacesContext.getCurrentInstance().getExternalContext();
@@ -413,7 +417,7 @@ public class LoginBean {
             loEx.printStackTrace();
         }
         
-        
+        */
         return null;
     }
 

@@ -60,7 +60,7 @@ public class MailManagement {
         String                lsDynaUrl = loEntityMappedDao.getGeneralParameter(lsName, lsUsedBy);
         if(!lsDynaUrl.equalsIgnoreCase("")){
             try{
-                System.out.println("WSDL "+lsDynaUrl);
+                //System.out.println("WSDL "+lsDynaUrl);
                 loWsdlDocLocation = new URL(lsDynaUrl);
                 loSecmanDasEnviarCorreo.create(loWsdlDocLocation, loQname);
                 loSecmanDasSendMail = loSecmanDasEnviarCorreo.getSecmanDasEnviarCorreoSoap12HttpPort();    
@@ -323,8 +323,6 @@ public class MailManagement {
             for(LmkLogComercialStatusBean loLogCertificadoBean : taList){            
                 lsHtml += 
                 "                               <tr>\n" + 
-                "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
-                    "Arial, Helvetica, sans-serif; padding:3px;'> </td>\n" + 
                 "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +
                     "Arial, Helvetica, sans-serif; padding:3px;'>"+loLogCertificadoBean.getLsStnid()+"</td>\n" + 
                 "                                       <td style='font-size:12px; background:#B6DDE8;font-family:" +

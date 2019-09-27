@@ -12,7 +12,6 @@
   BindingStyle="JDBC">
   <Attribute
     Name="RowId1"
-    IsNotNull="true"
     Precision="53"
     ColumnName="ROW_ID"
     SQLType="FLOAT"
@@ -26,8 +25,7 @@
     SQLType="INTEGER"
     Type="java.lang.Integer"
     ColumnType="INTEGER"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true"/>
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"/>
   <Attribute
     Name="NomService"
     Precision="150"
@@ -35,8 +33,7 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="150"/>
     </DesignTime>
@@ -48,8 +45,7 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="150"/>
     </DesignTime>
@@ -60,8 +56,7 @@
     SQLType="INTEGER"
     Type="java.lang.Integer"
     ColumnType="INTEGER"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true"/>
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"/>
   <Attribute
     Name="NomParameter"
     Precision="50"
@@ -69,8 +64,7 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="50"/>
     </DesignTime>
@@ -82,8 +76,7 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="350"/>
     </DesignTime>
@@ -95,8 +88,7 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="50"/>
     </DesignTime>
@@ -108,8 +100,7 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="150"/>
     </DesignTime>
@@ -121,59 +112,50 @@
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="1"/>
     </DesignTime>
   </Attribute>
   <Attribute
     Name="FecCreationDate"
-    IsNotNull="true"
     ColumnName="FEC_CREATION_DATE"
     SQLType="TIMESTAMP"
     Type="java.sql.Timestamp"
     ColumnType="TIMESTAMP"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true"/>
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"/>
   <Attribute
     Name="ValMostrar"
-    IsNotNull="true"
     Precision="5"
     ColumnName="VAL_MOSTRAR"
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="5"/>
     </DesignTime>
   </Attribute>
   <Attribute
     Name="ValValue"
-    IsNotNull="true"
     Precision="9"
     ColumnName="VAL_VALUE"
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="9"/>
     </DesignTime>
   </Attribute>
   <Attribute
     Name="Selected"
-    IsNotNull="true"
     Precision="5"
     ColumnName="SELECTED"
     SQLType="VARCHAR"
     Type="java.lang.String"
     ColumnType="VARCHAR"
-    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW"
-    PrimaryKey="true">
+    TableName="EVENTAS.LMK_INT_LIST_CHANNELP_ALL_VW">
     <DesignTime>
       <Attr Name="_DisplaySize" Value="5"/>
     </DesignTime>
@@ -186,19 +168,6 @@
     </DesignTime>
     <AttrArray Name="Attributes">
       <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.RowId1"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IdService"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.NomService"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IndDescService"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IdParameter"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.NomParameter"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IndDescParameter"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IndUsedBy"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IndValueParameter"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.IndEstatus"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.FecCreationDate"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.ValMostrar"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.ValValue"/>
-      <Item Value="mx.com.televisa.landamark.model.list.LmkIntListChannelpAllVw.Selected"/>
     </AttrArray>
   </Key>
 </Entity>

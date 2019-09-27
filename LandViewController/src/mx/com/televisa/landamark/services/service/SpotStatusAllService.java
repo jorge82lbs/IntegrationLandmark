@@ -743,7 +743,7 @@ public class SpotStatusAllService {
             loReqCtx.put(MessageContext.HTTP_REQUEST_HEADERS, loHeaders);
             System.out.println("SETT SECURITY.....OK");
             System.out.println("Guardar archivo fisico REQUEST");
-            
+            /*
             try{                        
                 StreamResult result =
                 new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Landmark"+getId()+".xml"));
@@ -751,7 +751,7 @@ public class SpotStatusAllService {
                 JAXB.marshal(loSpotListFilter, result);
             }catch(Exception loExo){
                 System.out.println("Error al Guardar archivo fisico "+loExo.getMessage());
-            }
+            }*/
             //String lsNomFile = "";
             //##################### Insertar Archivo en Base de Datos ############################ 
             String lsNomFile = "";

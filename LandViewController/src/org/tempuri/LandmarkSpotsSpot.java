@@ -37,6 +37,7 @@ public class LandmarkSpotsSpot extends Service {
         try {
             EntityMappedDao loEntityMappedDao = new EntityMappedDao();
             String lsDynaUrl = loEntityMappedDao.getGeneralParameter("WsLandmarkSpotService", "WS_LANDMARK");
+            System.out.println("wslandmark: "+lsDynaUrl);
             url = new URL(lsDynaUrl);
             //url =
               //  new URL("http://corpklhlatap2t.corp.televisa.com.mx:91/LandmarkSpotsSpot.svc?wsdl#%7Bhttp%3A%2F%2Ftempuri.org%2F%7DLandmarkSpotsSpot");

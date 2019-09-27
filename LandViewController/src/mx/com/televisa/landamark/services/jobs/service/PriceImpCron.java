@@ -17,6 +17,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 
+import java.math.BigDecimal;
+
+import java.math.RoundingMode;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -99,9 +103,8 @@ public class PriceImpCron implements Job{
         String                    lsTypeProcess = loDataMap.getString("lsTypeProcess");
         //String                    lsServiceName = loDataMap.getString("lsServiceName");
         //String                    lsPathFiles = loDataMap.getString("lsPathFiles");
-        String                    lsIdLogService = loDataMap.getString("lsIdLogService");
-        AsRunAsDao                loAsRunAsDao = new AsRunAsDao();      
-        //PriceDao                  loPriceDao = new PriceDao();
+        String                    lsIdLogService = loDataMap.getString("lsIdLogService");  
+        PriceDao                  loPriceDao = new PriceDao();
         String                    lsFecInicial = loDataMap.getString("lsFecInicial");
         String                    lsFecFinal = loDataMap.getString("lsFecFinal");
         String                    lsChannel = loDataMap.getString("lsIdChannel");
@@ -121,10 +124,17 @@ public class PriceImpCron implements Job{
         //0.- Validar si es posible procesar, considerar:
         //0.1.- Que se hayan ejecutado los procesos previos, as run as
         //0.2.- Segun Jacobo, validar con el mismo query de log certificado
+        
+        //Eliminar registros deprecados 20190925
+        loPriceDao.deleteLogCertificado(lsFecInicial, 
+                                        lsChannel
+                                        ); 
+        
+        
         Integer liFlag = 
-            loAsRunAsDao.getFlagInsertLogCertificado(lsFecInicial, 
-                                                     lsChannel
-                                                    );  
+            loPriceDao.getFlagInsertLogCertificadoMod(lsFecInicial, 
+                                                      lsChannel
+                                                     );  
         liIndProcess = 
         loEntityMappedDao.getGeneralParameterID("FlagReconComplete", 
                                                 "PROCESS_INTEGRATION");
@@ -134,7 +144,7 @@ public class PriceImpCron implements Job{
         loBitBean.setLiIndProcess(liIndProcess); //Tipo de Proceso
         loBitBean.setLiNumProcessId(0);
         loBitBean.setLiNumPgmProcessId(0);
-        loBitBean.setLsIndEvento(lsKey + ": Bandera Log Certificado RECON COMPLETE[" + liFlag + "]" +
+        loBitBean.setLsIndEvento(lsKey + ": Bandera Log Certificado RECON COMPLETE[" + liFlag + "] de LMK" +
             "para Precios");
         loEntityMappedDao.insertBitacoraWs(loBitBean,
                                            liIdUser, 
@@ -455,7 +465,7 @@ public class PriceImpCron implements Job{
             /*
             try{                        
                 StreamResult result =
-                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-Alex"+getId()+".xml"));
+                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Request-LMK"+getId()+".xml"));
                 //transformer.transform(source, result);
                 JAXB.marshal(loSpotListFilter, result);
             }catch(Exception loExo){
@@ -722,6 +732,17 @@ public class PriceImpCron implements Job{
             Double ldPriceFactor = loSpot.getPriceFactor();
             Double ldRatings = loSpot.getRatings();
             
+            Double ldCPRCalc = 0.0;
+            
+            if(ldNominalPrice > 0 && ldRatings > 0){
+                ldCPRCalc = ldNominalPrice / ldRatings;                
+                BigDecimal loFormatNumber = new BigDecimal(ldCPRCalc);
+                loFormatNumber = loFormatNumber.setScale(2, RoundingMode.DOWN);
+                ldCPRCalc = loFormatNumber.doubleValue();
+            }//else{
+               // System.out.println("###### No es posible dividir ya que ldNominalPrice o ldRatings son cero##########");
+            //}
+                        
             //Se necesitan los valores de 
             // piOrderID
             // piSpotID
@@ -737,13 +758,16 @@ public class PriceImpCron implements Job{
                 loSpotModulo.setPdSpotPrice(ldNominalPrice);
                 loSpotModulo.setPdSpotRating(ldRatings);
                 //TODO loSpotModulo.setPdCPR(ldCpp);ESTO debe tener VALOR, la linea de abajo es temporal
-                loSpotModulo.setPdCPR(1);
+                //loSpotModulo.setPdCPR(1);
+                loSpotModulo.setPdCPR(ldCPRCalc);
+                
                 loSpotModulo.setPdPorcentRecDuration(1);
                 loSpotModulo.setPdPorcentRecPosition(1);
                 loSpotModulo.setPdPorcentRecPiggyBack(1);
                 loSpotModulo.setPdPorcentRecDigital(1);
                 loSpotModulo.setPdPorcentRecManual(ldPriceFactor);
-                loSpotModulo.setPdPorcentFactDuracion(liLength);
+                //loSpotModulo.setPdPorcentFactDuracion(liLength);
+                loSpotModulo.setPdPorcentFactDuracion(ldPriceFactor);//Solicitud de JEJ 20190925
                 loClr.getPaSpots().add(loSpotModulo);
             } 
         }

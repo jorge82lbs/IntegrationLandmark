@@ -4438,4 +4438,10 @@ public class ProcessBean {
     public RichInputText getPoParamsFileName() {
         return poParamsFileName;
     }
+
+    public String viewDestinersAction() {
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        loEntityMappedDao.getDestinationAddress("5", "GpoSistemas","CreateFile");
+        return null;
+    }
 }

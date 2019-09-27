@@ -200,7 +200,15 @@
                                     </af:button>
                                     
                                     <af:spacer id="SpcfAx4" width="10" height="15"/>
-                                  
+                                    
+                                    <af:button text="getDestinatarios"
+                                              id="BtnVerDest"
+                                              icon="/images/Accounting.gif"
+                                              shortDesc="Ver Destinatarios"
+                                              visible="false"
+                                              action="#{ProcessBean.viewDestinersAction}">
+                                        <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                    </af:button>
                                   
                                    <!-- ######################### TABLA PRINCIPAL SERVICIOS ################# !-->
                                     <af:table value="#{bindings.LmkIntServicesCatVwView1.collectionModel}"
@@ -1453,6 +1461,7 @@
                                         <af:selectItem label="DCDT" value="DCDT" id="si2"/>
                                         <af:selectItem label="DEAL" value="DEAL" id="si3"/>
                                         <af:selectItem label="DEMD" value="DEMD" id="si4"/>
+                                        <af:selectItem label="PRED" value="PRED" id="si5"/>
                                     </af:selectOneChoice>
                                     
                             </af:panelFormLayout>

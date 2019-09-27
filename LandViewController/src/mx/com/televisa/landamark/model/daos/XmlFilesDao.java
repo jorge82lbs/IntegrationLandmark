@@ -93,7 +93,7 @@ public class XmlFilesDao {
             loResponse.setLsResponse("OK");
             loResponse.setLsMessage("OK");
             loResponse.setLiAffected(liIdXml);
-           
+           System.out.println("Fin de guardar archivo gzip");
         } catch (SQLException loExSql) {
             System.out.println("ERROR XML_FILE: "+loExSql.getMessage());
             loResponse.setLsResponse("ERROR");
