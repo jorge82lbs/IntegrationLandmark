@@ -549,6 +549,8 @@ public class ACSServlet extends HttpServlet {
         loMenu.setLsOprInitStopCron("true");
         loMenu.setLsOprInsertCron("true");
         
+        loMenu.setLsShowExit("false");
+        
         List<String>        laOperaciones = 
             getSecmanUserOperations(tsUserName);
         for (int liI = 0; liI < laOperaciones.size(); liI++) {

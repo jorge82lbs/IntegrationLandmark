@@ -52,6 +52,16 @@ public class UserMenuBean {
     private String lsOprInitStopCron;
 
     private String lsPantallaCreateFile;
+    
+    private String lsShowExit;
+
+    public void setLsShowExit(String lsShowExit) {
+        this.lsShowExit = lsShowExit;
+    }
+
+    public String getLsShowExit() {
+        return lsShowExit;
+    }
 
     public void setLsPantallaPrecios(String lsPantallaPrecios) {
         this.lsPantallaPrecios = lsPantallaPrecios;

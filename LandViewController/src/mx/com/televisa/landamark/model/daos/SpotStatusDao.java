@@ -124,8 +124,10 @@ public class SpotStatusDao {
             "                                       SPOTNUMBER,\n" + 
         "                                       BREAKPOSITION,\n" + 
         "                                       PREEMPTEE,\n" + 
-        "                                       PREEMPTOR,\n" + 
-            "                                       SPOTSALESAREANUMBER\n" + 
+        "                                       PREEMPTOR,\n"; 
+        if(loBean.getLdRatings()!= null){ lsQuery += "  RATINGS,\n";}
+        if(loBean.getLsRatingsType()!= null){ lsQuery += "  RATINGTYPE,\n";}
+            lsQuery += "                                       SPOTSALESAREANUMBER\n" + 
             "				       )\n" + 
             "				VALUES ('"+loBean.getLsAdvertisercode()+"',--ADVERTISERCODE,\n" + 
             "                                       '"+loBean.getLsAgengycode()+"',--AGENGYCODE,\n" + 
@@ -141,8 +143,10 @@ public class SpotStatusDao {
             "                                       "+loBean.getLiSpotnumber()+",--SPOTNUMBER,\n" + 
         "                                       "+loBean.getLiBreakPosition()+",--BREAKPOSITION,\n" + 
         "                                       "+loBean.getLiPreemptee()+",--PREEMPTEE,\n" + 
-        "                                       "+loBean.getLiPreemptor()+",--PREEMPTOR,\n" + 
-            "                                       "+loBean.getLiSpotsalesareanumber()+"--SPOTSALESAREANUMBER,\n" + 
+        "                                       "+loBean.getLiPreemptor()+",--PREEMPTOR,\n";
+        if(loBean.getLdRatings()!= null){ lsQuery += " "+loBean.getLdRatings()+",--RATINGS\n";}
+        if(loBean.getLsRatingsType()!= null){ lsQuery += " "+loBean.getLsRatingsType()+",--RATINGTYPE\n";}
+            lsQuery +=  "                                       "+loBean.getLiSpotsalesareanumber()+"--SPOTSALESAREANUMBER,\n" + 
             "				      )";
                 
         return lsQuery;

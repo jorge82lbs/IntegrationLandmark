@@ -158,13 +158,14 @@
                                                             action="bitacoraPage"
                                                             rendered="#{UserMenuBean.lsPantallaBitacora}"
                                                             icon="/images/page_find.gif"/>
-                                         <!--                   
+                                                         
                                         <af:commandMenuItem id="MnuTemp13" text="Salir"
                                                             partialSubmit="true"
+                                                            visible="#{UserMenuBean.lsShowExit}"
                                                             shortDesc="Salir" 
                                                             icon="/images/logout-icon16x16.png">
                                             <af:showPopupBehavior popupId="::PopSalir" triggerType="click"/>
-                                        </af:commandMenuItem> -->
+                                        </af:commandMenuItem>
                             </af:group>                            
                          </af:menuBar>
                        </af:toolbox>

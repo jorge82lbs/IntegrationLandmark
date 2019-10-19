@@ -133,7 +133,6 @@ public class SpotStatusImpCron implements Job{
                 //2.1.- Por ahora cada dato pasa sin validacion
                 //System.out.println("insertar en tablas de control");
                 //3.- Insertar en tablas de Alex Morel, con servicio de rafa
-                //DESHABILITAR... por ahora solo lectura
                 
                 //ResponseUpdDao loSetSpot = setArrayOfSpotParadigmRead(loArrayOfSpot);   
                 ResponseUpdDao loSetSpot = 

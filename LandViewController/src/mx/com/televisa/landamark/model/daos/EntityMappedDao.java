@@ -608,7 +608,7 @@ public class EntityMappedDao {
             }
         } catch (SQLException loExSql) {
             System.out.println("ERROR AL EJECUTAR: ");
-            System.out.println(lsQueryParadigm);
+            //System.out.println(lsQueryParadigm);
             loExSql.printStackTrace();
         }
         finally{
@@ -812,12 +812,12 @@ public class EntityMappedDao {
                                               loRs.getString("NOM_PARAMETER").trim());
                     loEmailBean.setLsAddressTo(loRs.getString("NOM_PARAMETER") == null ? null : 
                                               loRs.getString("NOM_PARAMETER").trim());    
-                    System.out.println("TO("+loEmailBean.getLsNameTo()+") TO_ADD("+loEmailBean.getLsAddressTo()+")");
+                    //System.out.println("TO("+loEmailBean.getLsNameTo()+") TO_ADD("+loEmailBean.getLsAddressTo()+")");
                     loEmails.add(loEmailBean);
                 }
             } catch (SQLException loExSql) {
                 System.out.println("ERROR AL EJECUTAR: ");
-                System.out.println(lsQueryParadigm);
+                //System.out.println(lsQueryParadigm);
                 loExSql.printStackTrace();
             }
             finally{

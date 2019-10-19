@@ -360,7 +360,12 @@ public class SpotStatusAllService {
             loBean.setLiPreemptee(loSpot.getPreemptee());
             loBean.setLiPreemptor(loSpot.getPreemptor());
             //loBean.setLsStatus(loSpot.getStatus().getValue());            
-            //Llenar lista de rows de la nueva tabla
+            
+            //Se agregan 2 campos, solicitud por JEJ 20191017
+            loBean.setLdRatings(loSpot.getRatings());
+            loBean.setLsRatingsType(loSpot.getRatingType().getValue());
+            //
+            
             loAllSpots.add(loBean);
             
         }

@@ -273,9 +273,7 @@ public class FileGzipService {
                         }else{
                             System.out.println("No existen archivos en la bd, NO insertar en bitacora ");
                         }
-                        if(lbContinue){                            
-                            System.out.println("Barni es un dinosaurio");
-                            
+                        if(lbContinue){                                                        
                             FileInputStream loFis = new FileInputStream(loFileInput);
                             FileInputStream loFis2 = new FileInputStream(loFileInput);
                             //Extraer Archivo comprimido GZ

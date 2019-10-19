@@ -40,6 +40,8 @@ import mx.com.televisa.landamark.util.UtilFaces;
 import oracle.adf.view.rich.component.rich.RichPopup;
 import oracle.adf.view.rich.component.rich.input.RichInputText;
 
+import oracle.adf.view.rich.component.rich.layout.RichPanelGroupLayout;
+
 import oracle.jbo.ApplicationModule;
 import oracle.jbo.client.Configuration;
 
@@ -56,6 +58,7 @@ public class LoginBean {
     private RichInputText poPassword;
     private RichPopup poPopupExitConfirm;
     private RichPopup poLoginPopup;
+    private RichPanelGroupLayout poInitDialogBox;
 
     public void setPoLoginPopup(RichPopup poLoginPopup) {
         this.poLoginPopup = poLoginPopup;
@@ -76,90 +79,103 @@ public class LoginBean {
      * @return String
      */
     public String loginAction() {
-        String  lsUserName = 
-            getPoUserName().getValue() == null ? null : 
-            getPoUserName().getValue().toString();
-        String  lsPassword = 
-            getPoPassword().getValue() == null ? null : 
-            getPoPassword().getValue().toString();      
-        boolean lbFlagError = false;
-        String  lsErrorMessage = null;
-        String  lsTokenSecman;
-        if (lsUserName != null && lsPassword != null) {                        
-            try {                
-                
-                //lsTokenSecman = validateSecmanUser(lsUserName, lsPassword); 
-                lsTokenSecman = "123456789"; //TEMPORAL
-                if (lsTokenSecman != null) {
-                    Usuario loUserIntegration = getSecmanUserPermission(lsUserName);
-                    if(loUserIntegration != null){
-                    //if(true){
-                        //Settear Datos--------------------------
-                        FacesContext        loContext = FacesContext.getCurrentInstance();
-                        ExternalContext     loEctx = loContext.getExternalContext();        
-                        HttpServletRequest  loRequest = (HttpServletRequest)loEctx.getRequest();
-                        HttpSession         loSession = loRequest.getSession(true);
-                        loSession.setAttribute("session.pgmIntegration", "true");
-                        UserInfoBean        loUserInfo = 
-                            (UserInfoBean) new UtilFaces().resolveExpression("#{UserInfoBean}");            
-                        DateFormat          ldDateFormat = 
-                            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        Date                ldDate = new Date();                    
-                        /*
-                        loUserInfo.setPsUserFullName("Bautista Santiago Jorge Luis");//loUserIntegration.getNomMostrar().getNomMostrar());
-                        loUserInfo.setPsEmail("jlbautistas@teleevisa.com.mx");//loUserIntegration.getMailUsuario().getMailUsuario());
-                        loUserInfo.setPsIdUser("666");//loUserIntegration.getIdUsuario().getIdUsuario());
-                        loUserInfo.setPsUserName("jlbautistas");//loUserIntegration.getUserName().getUserName());
-                        */
-                        loUserInfo.setPsUserFullName(loUserIntegration.getNomMostrar().getNomMostrar());
-                        loUserInfo.setPsEmail(loUserIntegration.getMailUsuario().getMailUsuario());
-                        loUserInfo.setPsIdUser(loUserIntegration.getIdUsuario().getIdUsuario());
-                        loUserInfo.setPsUserName(loUserIntegration.getUserName().getUserName());
-                        
-                        loUserInfo.setPsDateTimeLogin(ldDateFormat.format(ldDate));
-                        loUserInfo.setPsToken(lsTokenSecman);
-                        loSession.setAttribute("loggedPgmIntegrationUser", loUserInfo.getPsUserName());                             
-                        loSession.setAttribute("loggedPgmIntegrationIdUser", loUserInfo.getPsIdUser()); 
-                        
-                        UserMenuBean loUserMenuBean = getUserMenuBean(lsUserName);
-                        
-                        //Agregar informacion de Cortes y Programa
-                        loSession.setAttribute("idServiceCortes", loUserMenuBean.getLsUserIdServiceCortes());
-                        loSession.setAttribute("listChannelsCortes", loUserMenuBean.getLsUserListChannelsCortes());                             
-                        
-                        //Agregar informacion de Actualizacion de Precios
-                        loSession.setAttribute("idServicePrecios", loUserMenuBean.getLsUserIdServicePrecios());
-                        loSession.setAttribute("listChannelsPrecios", loUserMenuBean.getLsUserListChannelsPrecios());                             
-                        
-                        String              lsUrl = 
-                            loEctx.getRequestContextPath() + "/faces/homePage";
-                        loEctx.redirect(lsUrl);
-                    }
-                    else{
-                        lbFlagError = true;
-                        lsErrorMessage = "No es Posible Obtener Permisos";
-                    }
-                }
-            } catch (IOException loEx) {
-                lbFlagError = true;
-                lsErrorMessage = loEx.getMessage();
-            } catch (Exception loExp) {
-                lbFlagError = true;
-                lsErrorMessage = loExp.getMessage();
-            }
-        }
-        else{
-            lbFlagError = true;
-            lsErrorMessage = "Los Campos Son Requeridos";
-        }
-        if(lbFlagError){
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        String lsValSaml2 = 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG") == null ? "1" : 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG");
+        
+        
+        if(lsValSaml2.equalsIgnoreCase("0")){//Por Saml2    
             FacesMessage loMsg = 
-                new FacesMessage(lsErrorMessage);
-            loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                new FacesMessage("No es posible iniciar con SAML2, \n Favor de revisar la configuración");
+            loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
             FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }else{//Por Secman
+        
+            String  lsUserName = 
+                getPoUserName().getValue() == null ? null : 
+                getPoUserName().getValue().toString();
+            String  lsPassword = 
+                getPoPassword().getValue() == null ? null : 
+                getPoPassword().getValue().toString();      
+            boolean lbFlagError = false;
+            String  lsErrorMessage = null;
+            String  lsTokenSecman;
+            if (lsUserName != null && lsPassword != null) {                        
+                try {                
+                    
+                    lsTokenSecman = validateSecmanUser(lsUserName, lsPassword); 
+                    //lsTokenSecman = "123456789"; //TEMPORAL
+                    if (lsTokenSecman != null) {
+                        Usuario loUserIntegration = getSecmanUserPermission(lsUserName);
+                        if(loUserIntegration != null){
+                        //if(true){
+                            //Settear Datos--------------------------
+                            FacesContext        loContext = FacesContext.getCurrentInstance();
+                            ExternalContext     loEctx = loContext.getExternalContext();        
+                            HttpServletRequest  loRequest = (HttpServletRequest)loEctx.getRequest();
+                            HttpSession         loSession = loRequest.getSession(true);
+                            loSession.setAttribute("session.pgmIntegration", "true");
+                            UserInfoBean        loUserInfo = 
+                                (UserInfoBean) new UtilFaces().resolveExpression("#{UserInfoBean}");            
+                            DateFormat          ldDateFormat = 
+                                new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                            Date                ldDate = new Date();                    
+                            /*
+                            loUserInfo.setPsUserFullName("Bautista Santiago Jorge Luis");//loUserIntegration.getNomMostrar().getNomMostrar());
+                            loUserInfo.setPsEmail("jlbautistas@teleevisa.com.mx");//loUserIntegration.getMailUsuario().getMailUsuario());
+                            loUserInfo.setPsIdUser("666");//loUserIntegration.getIdUsuario().getIdUsuario());
+                            loUserInfo.setPsUserName("jlbautistas");//loUserIntegration.getUserName().getUserName());
+                            */
+                            loUserInfo.setPsUserFullName(loUserIntegration.getNomMostrar().getNomMostrar());
+                            loUserInfo.setPsEmail(loUserIntegration.getMailUsuario().getMailUsuario());
+                            loUserInfo.setPsIdUser(loUserIntegration.getIdUsuario().getIdUsuario());
+                            loUserInfo.setPsUserName(loUserIntegration.getUserName().getUserName());
+                            
+                            loUserInfo.setPsDateTimeLogin(ldDateFormat.format(ldDate));
+                            loUserInfo.setPsToken(lsTokenSecman);
+                            loSession.setAttribute("loggedPgmIntegrationUser", loUserInfo.getPsUserName());                             
+                            loSession.setAttribute("loggedPgmIntegrationIdUser", loUserInfo.getPsIdUser()); 
+                            
+                            UserMenuBean loUserMenuBean = getUserMenuBean(lsUserName);
+                            
+                            //Agregar informacion de Cortes y Programa
+                            loSession.setAttribute("idServiceCortes", loUserMenuBean.getLsUserIdServiceCortes());
+                            loSession.setAttribute("listChannelsCortes", loUserMenuBean.getLsUserListChannelsCortes());                             
+                            
+                            //Agregar informacion de Actualizacion de Precios
+                            loSession.setAttribute("idServicePrecios", loUserMenuBean.getLsUserIdServicePrecios());
+                            loSession.setAttribute("listChannelsPrecios", loUserMenuBean.getLsUserListChannelsPrecios());                             
+                            
+                            String              lsUrl = 
+                                loEctx.getRequestContextPath() + "/faces/homePage";
+                            loEctx.redirect(lsUrl);
+                        }
+                        else{
+                            lbFlagError = true;
+                            lsErrorMessage = "No es Posible Obtener Permisos";
+                        }
+                    }
+                } catch (IOException loEx) {
+                    lbFlagError = true;
+                    lsErrorMessage = loEx.getMessage();
+                } catch (Exception loExp) {
+                    lbFlagError = true;
+                    lsErrorMessage = loExp.getMessage();
+                }
+            }
+            else{
+                lbFlagError = true;
+                lsErrorMessage = "Los Campos Son Requeridos";
+            }
+            if(lbFlagError){
+                FacesMessage loMsg = 
+                    new FacesMessage(lsErrorMessage);
+                loMsg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }
+        
         }
-        
-        
         return null;
     }
     
@@ -195,6 +211,8 @@ public class LoginBean {
         loMenu.setLsOprExecuteCron("true");
         loMenu.setLsOprInitStopCron("true");
         loMenu.setLsOprInsertCron("true");
+        
+        loMenu.setLsShowExit("true");
         
         List<String>        laOperaciones = 
             getSecmanUserOperations(tsUserName);
@@ -478,19 +496,52 @@ public class LoginBean {
     }
 
     public String closeLoginPopup() {
-        poLoginPopup.hide();
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        String lsValSaml2 = 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG") == null ? "1" : 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG");
+        
+        //System.out.println("lsValSaml2["+lsValSaml2+"]");
+        if(lsValSaml2.equalsIgnoreCase("0")){//Por Saml2
+        FacesMessage loMsg = 
+            new FacesMessage("No es posible iniciar mediante Security Manager \n Favor de revisar la Configuración");
+        loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
+        FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }else{//Por secman
+            System.out.println("seteando a visible");
+            getPoInitDialogBox().setVisible(true);
+            System.out.println("seteando a visible...OK");
+            poLoginPopup.hide();
+        }
+        
         return null;
     }
     
-    public String redirectToHome() {        
-        ExternalContext     loEctx = 
-            FacesContext.getCurrentInstance().getExternalContext();
-        HttpServletRequest loReq = (HttpServletRequest) loEctx.getRequest();
-        HttpSession         loSession = loReq.getSession();
-        loReq.setAttribute("loginUserReq", true);
-        loSession.setAttribute("loginUserSes", true);
+    public String redirectToHome() {    
         
-        return "homePage";
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        String lsValSaml2 = 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG") == null ? "1" : 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG");
+        
+        //System.out.println("lsValSaml2["+lsValSaml2+"]");
+        if(lsValSaml2.equalsIgnoreCase("0")){//Por Saml2        
+            ExternalContext     loEctx = 
+                FacesContext.getCurrentInstance().getExternalContext();
+            HttpServletRequest loReq = (HttpServletRequest) loEctx.getRequest();
+            HttpSession         loSession = loReq.getSession();
+            loReq.setAttribute("loginUserReq", true);
+            loSession.setAttribute("loginUserSes", true);
+            return "homePage";
+        }else{
+            FacesMessage loMsg = 
+                new FacesMessage("No es posible iniciar mediante SAML2 \n Favor de revisar la Configuración");
+            loMsg.setSeverity(FacesMessage.SEVERITY_WARN);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            return null;
+        }
+        
+        
     }
     
     public String redirectToHome2() {
@@ -574,5 +625,12 @@ public class LoginBean {
         }
         return null;
     }
-    
+
+    public void setPoInitDialogBox(RichPanelGroupLayout poInitDialogBox) {
+        this.poInitDialogBox = poInitDialogBox;
+    }
+
+    public RichPanelGroupLayout getPoInitDialogBox() {
+        return poInitDialogBox;
+    }
 }

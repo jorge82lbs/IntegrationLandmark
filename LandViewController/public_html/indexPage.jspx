@@ -58,8 +58,10 @@
                         <af:panelGroupLayout id="PnlUsrPwd" valign="middle"
                                          halign="center"
                                          layout="vertical"
-                                         inlineStyle="border-style:none;"                                         
-                                         visible="false"><!--SAML2-->
+                                         inlineStyle="border-style:none;"    
+                                         partialTriggers="b2"
+                                         binding="#{LoginBean.poInitDialogBox}"
+                                         ><!--SAML2-->
                             <af:spacer width="10" height="28" id="SpcLogin1"/>
                             <af:panelFormLayout id="PnlFrmLoginMsg" visible="true">
                                 <af:panelGroupLayout id="PnlLoginInfo" valign="top" layout="horizontal">
@@ -110,19 +112,23 @@
                   </af:dialog>
                 </af:popup>
             
-                <af:popup childCreation="deferred" autoCancel="disabled"
+                <af:popup childCreation="deferred" autoCancel="disabled" 
                   id="pSaml2" binding="#{LoginBean.poLoginPopup}">
                 <af:panelWindow id="pw1" title="Iniciar Sesi&#243;n"
                             titleIconSource="/images/icon_security.gif"
                             modal="true">
                 <af:panelGroupLayout id="pgl1" layout="vertical"
                                      halign="center">
+                    <af:spacer width="396" height="15" id="s0"/>
                     <af:image source="/images/logo-televisa_80x62.jpeg" shortDesc="Televisa-logo"
                               id="i1"/>
                     <af:spacer width="10" height="10" id="s2"/>
                     <af:outputLabel value="Se iniciar&#225; sesi&#243;n con Active Directory Televisa"
-                                    id="ol1"/>
+                                    id="ol1" inlineStyle="font-weight:bold;"/>
                     <af:spacer width="10" height="10" id="s1"/>
+                    <af:outputLabel value="Cancelar para iniciar sesi&#243;n con Security Manager - Televisa"
+                                    id="ol12" inlineStyle="color:Olive;"/>
+                    <af:spacer width="10" height="10" id="s12"/>
                     <af:panelGroupLayout id="pgl2" layout="horizontal">
                         <af:button text="Aceptar" id="b1"
                                    action="#{LoginBean.redirectToHome}"/>

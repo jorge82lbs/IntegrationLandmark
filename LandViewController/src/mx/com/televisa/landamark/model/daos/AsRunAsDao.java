@@ -183,7 +183,8 @@ public class AsRunAsDao {
             "       TRIM(INDUSTRY_CODE) COD_ASRUN\n" + 
             "  FROM EVENTAS.LMK_AS_RUN\n" + 
             " WHERE STNID = '"+tsStnid+"'\n" + 
-            "   AND BCSTDT >= '"+tsBcstdt+"'";//20190926 - Mayor que, ya que así lo solicita JEJ
+            "   AND BCSTDT = '"+tsBcstdt+"'";//20190926 - Mayor que, ya que así lo solicita JEJ
+        //Se regresa a = ya que se generará un archivo por fecha
         try {
             Statement loStmt = loCnn.createStatement();
             loRs = loStmt.executeQuery(lsQueryParadigm);  
@@ -218,7 +219,7 @@ public class AsRunAsDao {
         Connection loCnn = new ConnectionAs400().getConnection();
         ResultSet  loRs = null;
         String     lsQueryParadigm = 
-            "SELECT TRIM(SALES_AREA) PREFIX_SA\n" + 
+            "SELECT DISTINCT TRIM(SALES_AREA) PREFIX_SA\n" + 
             "  FROM EVENTAS.LMK_AS_RUN\n" + 
             " WHERE STNID = '"+tsStnid+"'\n" + 
             "   AND BCSTDT = '"+tsBcstdt+"'";
@@ -298,7 +299,7 @@ public class AsRunAsDao {
         "UPDATE EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO\n" + 
                 "   SET STATUS = '0'\n" + 
                 " WHERE STNID = '" + tsChannels + "'\n" + 
-                "   AND BCSTDT >= '" + tsDate + "'"; //20190926 - Mayor que, ya que así lo solicita JEJ
+                "   AND BCSTDT = '" + tsDate + "'"; 
         System.out.println(lsQueryParadigm);
         try {
             Statement loStmt = loCnn.createStatement();
@@ -321,5 +322,127 @@ public class AsRunAsDao {
         }
         return loResponse;
     }    
+    
+    
+    /**
+     * Obtiene la cadena a argegar al archivo
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsStnid
+     * @param tsBcstdt
+     * @return List
+     */
+    public List<String> getFechasPorCanal(String tsStnid, String tsBcstdt) {
+        List<String>    laCodAsRunAs = new ArrayList<String>();
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = 
+            "SELECT DISTINCT BCSTDT\n" + 
+            "      FROM EVENTAS.LMK_AS_RUN \n" + 
+            "     WHERE STNID = '"+tsStnid+"' \n" + 
+            "       AND BCSTDT >= '"+tsBcstdt+"'\n" + 
+            " ORDER BY BCSTDT";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                laCodAsRunAs.add(loRs.getString(1));
+            }
+        } catch (SQLException loExSql) {
+            System.out.println("ERROR AL EJECUTAR: ");
+            System.out.println(lsQueryParadigm);
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return laCodAsRunAs;
+    }
+    
+    /**
+     * Obtiene la cadena a argegar al archivo
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsStnid
+     * @param tsBcstdt
+     * @return List
+     */
+    public Integer getFlagProcess(String tsStnid, String tsBcstdt) {
+        Integer liRes = 0;
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = 
+            "SELECT COUNT(1)\n" + 
+            "  FROM EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO\n" + 
+            " WHERE STNID = '"+tsStnid+"' \n" + 
+            "  AND BCSTDT = '"+tsBcstdt+"'\n" + 
+            "  AND STATUS = 1";
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                liRes = loRs.getInt(1);
+            }
+        } catch (SQLException loExSql) {
+            System.out.println("ERROR AL EJECUTAR: ");
+            System.out.println(lsQueryParadigm);
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return liRes;
+    }
+    
+    /**
+     * Obtiene la cadena a argegar al archivo
+     * @autor Jorge Luis Bautista Santiago
+     * @param tsStnid
+     * @param tsBcstdt
+     * @return List
+     */
+    public List<String> getFechasPorCanalByEvetv(String tsStnid, String tsBcstdt) {
+        List<String>    laCodAsRunAs = new ArrayList<String>();
+        Connection loCnn = new ConnectionAs400().getConnection();
+        ResultSet  loRs = null;
+        String     lsQueryParadigm = 
+            "SELECT DISTINCT BCSTDT\n" + 
+            "      FROM EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO \n" + 
+            "     WHERE STNID = '"+tsStnid+"' \n" + 
+            "       AND BCSTDT >= '"+tsBcstdt+"'\n" + 
+            "       AND STATUS = 1\n" + 
+            " ORDER BY BCSTDT";
+        
+            //System.out.println(lsQueryParadigm);
+        
+        try {
+            Statement loStmt = loCnn.createStatement();
+            loRs = loStmt.executeQuery(lsQueryParadigm);  
+            while(loRs.next()){
+                laCodAsRunAs.add(loRs.getString(1));
+            }
+        } catch (SQLException loExSql) {
+            System.out.println("ERROR AL EJECUTAR: ");
+            System.out.println(lsQueryParadigm);
+            loExSql.printStackTrace();
+        }
+        finally{
+            try {
+                loCnn.close();
+                loRs.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return laCodAsRunAs;
+    }
     
 }

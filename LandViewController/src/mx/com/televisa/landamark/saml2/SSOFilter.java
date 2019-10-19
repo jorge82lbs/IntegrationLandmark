@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import javax.servlet.http.HttpSession;
 
+import mx.com.televisa.landamark.model.daos.EntityMappedDao;
 import mx.com.televisa.landamark.saml2.OpenSAMLUtils;
 import mx.com.televisa.landamark.saml2.SPCredentials;
 import mx.com.televisa.landamark.saml2.SSOParameters;
@@ -61,25 +62,36 @@ public class SSOFilter implements Filter {
     private FilterConfig _filterConfig = null;
 
     public void init(FilterConfig toFilterConfig) throws ServletException {
-        _filterConfig = toFilterConfig;
+        //System.out.println("init de SSOFilter...");
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        String lsValSaml2 = 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG") == null ? "1" : 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG");
         
-        JavaCryptoValidationInitializer loJavaCryptoValidationInitializer = new JavaCryptoValidationInitializer();
-        try {
-            loJavaCryptoValidationInitializer.init();
-        } catch (InitializationException loIEx) {
-            loIEx.printStackTrace();
-        }
-
-        for (Provider loJceProvider : Security.getProviders()) {
-            System.out.println(loJceProvider.getInfo());
-        }
-
-        try {
-            System.out.println("Initializing");
-            InitializationService.initialize();
-        } catch (Throwable loT) {
-            loT.printStackTrace();
-            throw new RuntimeException("Initialization failed");
+        //System.out.println("lsValSaml2["+lsValSaml2+"]");
+        if(lsValSaml2.equalsIgnoreCase("0")){//Por Saml2
+            _filterConfig = toFilterConfig;
+            
+            JavaCryptoValidationInitializer loJavaCryptoValidationInitializer = new JavaCryptoValidationInitializer();
+            try {
+                loJavaCryptoValidationInitializer.init();
+            } catch (InitializationException loIEx) {
+                loIEx.printStackTrace();
+            }
+            
+            for (Provider loJceProvider : Security.getProviders()) {
+                System.out.println(loJceProvider.getInfo());
+            }
+            
+            try {
+                System.out.println("Initializing");
+                InitializationService.initialize();
+            } catch (Throwable loT) {
+                loT.printStackTrace();
+                throw new RuntimeException("Initialization failed");
+            }
+        }else{ //por secman
+            _filterConfig = toFilterConfig;
         }
     }
 
@@ -90,55 +102,93 @@ public class SSOFilter implements Filter {
     public void doFilter(ServletRequest toRequest, ServletResponse toResponse,
                          FilterChain toChain) throws IOException,
                                                    ServletException {
-        //System.out.println("SSO Filter");
-        HttpServletRequest loHttpServletRequest = (HttpServletRequest)toRequest;
-        HttpServletResponse loHttpServletResponse = (HttpServletResponse)toResponse;
+        //System.out.println("Ejecutando.... SSO Filter");
         
-        // LoginPage requested
-        if(((HttpServletRequest)toRequest).getPathInfo().startsWith("/indexPage")) {
-            // Is Authenticated
-            if (loHttpServletRequest.getSession().getAttribute(SSOParameters.psAUTHENTICATED_SESSION_ATTRIBUTE) != null) {
-                // Forward to HomePage
-                forwardToPage(toRequest, toResponse, "/faces/homePage");
-            } else {
-                // Continue to LoginPage
-                toChain.doFilter(toRequest, toResponse);
-            }
-        } else { // Other page requested
-            // Is authenticated
-            if (loHttpServletRequest.getSession().getAttribute(SSOParameters.psAUTHENTICATED_SESSION_ATTRIBUTE) != null) {
-                // Verify page requested
-                // Page restricted
-                if(!validatePage(loHttpServletRequest)) {
+        EntityMappedDao loEntityMappedDao = new EntityMappedDao();
+        String lsValSaml2 = 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG") == null ? "1" : 
+            loEntityMappedDao.getGeneralParameter("SAML2","SECURITY_CONFIG");
+        
+        //System.out.println("lsValSaml2["+lsValSaml2+"]");
+        if(lsValSaml2.equalsIgnoreCase("0")){//Por Saml2                    
+            HttpServletRequest loHttpServletRequest = (HttpServletRequest)toRequest;
+            HttpServletResponse loHttpServletResponse = (HttpServletResponse)toResponse;
+            
+            // LoginPage requested
+            if(((HttpServletRequest)toRequest).getPathInfo().startsWith("/indexPage")) {
+                // Is Authenticated
+                if (loHttpServletRequest.getSession().getAttribute(SSOParameters.psAUTHENTICATED_SESSION_ATTRIBUTE) != null) {
                     // Forward to HomePage
                     forwardToPage(toRequest, toResponse, "/faces/homePage");
-                // Page OK
                 } else {
-                    // Continue to page requested
+                    // Continue to LoginPage
                     toChain.doFilter(toRequest, toResponse);
                 }
-            // Not authenticated
-            } else {
-                //Verify login app attribute
-                Boolean lbSes =
-                    (Boolean) loHttpServletRequest.getSession().getAttribute("loginUserSes");
-                //System.out.println("loginUserSes: " + lbSes);
-                // Login app attribute not present
-                if(lbSes == null || lbSes == false) {
-                    // Forward to login page
-                    forwardToPage(toRequest, toResponse, "/faces/indexPage");
-                // Login app attribute present
+            } else { // Other page requested
+                // Is authenticated
+                if (loHttpServletRequest.getSession().getAttribute(SSOParameters.psAUTHENTICATED_SESSION_ATTRIBUTE) != null) {
+                    // Verify page requested
+                    // Page restricted
+                    if(!validatePage(loHttpServletRequest)) {
+                        // Forward to HomePage
+                        forwardToPage(toRequest, toResponse, "/faces/homePage");
+                    // Page OK
+                    } else {
+                        // Continue to page requested
+                        toChain.doFilter(toRequest, toResponse);
+                    }
+                // Not authenticated
                 } else {
-                    // Redirect to Azure AD SSO SAML2
-                    setGotoURLOnSession(loHttpServletRequest);
+                    //Verify login app attribute
+                    Boolean lbSes =
+                        (Boolean) loHttpServletRequest.getSession().getAttribute("loginUserSes");
+                    //System.out.println("loginUserSes: " + lbSes);
+                    // Login app attribute not present
+                    if(lbSes == null || lbSes == false) {
+                        // Forward to login page
+                        forwardToPage(toRequest, toResponse, "/faces/indexPage");
+                    // Login app attribute present
+                    } else {
+                        // Redirect to Azure AD SSO SAML2
+                        setGotoURLOnSession(loHttpServletRequest);
+                        try {
+                            redirectUserForAuthentication(loHttpServletResponse);
+                        } catch (Exception loEx) {
+                            loEx.printStackTrace();
+                        }
+                    }
+                    //loHttpServletRequest.getSession().removeAttribute("loginUserSes");
+                    loHttpServletRequest.getSession().removeAttribute("loginUserSes");
+                }
+            }
+        }else{//Por secman
+            HttpServletRequest loHttpRequest = (HttpServletRequest)toRequest;
+            HttpSession        loSession = loHttpRequest.getSession();
+            //System.out.println("Session - Host = " + toRequest.getServerName());
+            //System.out.println("Session - Port = " + toRequest.getServerPort());
+            if (loSession.getAttribute("session.pgmIntegration") == null) {
+                if(((HttpServletRequest)toRequest).getPathInfo().startsWith("/indexPage")) {}
+                else {
                     try {
-                        redirectUserForAuthentication(loHttpServletResponse);
-                    } catch (Exception loEx) {
+                        loHttpRequest.getRequestDispatcher("/error.html").forward(toRequest, 
+                                                                                  toResponse);
+                        return;
+                    }
+                    catch (ServletException loEx) {
+                        loEx.printStackTrace();
+                    }
+                    catch (IOException loEx) {
                         loEx.printStackTrace();
                     }
                 }
-                //loHttpServletRequest.getSession().removeAttribute("loginUserSes");
-                loHttpServletRequest.getSession().removeAttribute("loginUserSes");
+            }
+            
+            try {
+                toChain.doFilter(toRequest, toResponse);
+            } catch (IOException loEx) {
+                loEx.printStackTrace();
+            } catch (ServletException loEx) {
+                loEx.printStackTrace();
             }
         }
     }

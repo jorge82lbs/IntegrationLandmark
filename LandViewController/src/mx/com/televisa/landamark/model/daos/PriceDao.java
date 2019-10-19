@@ -9,10 +9,14 @@
 */
 package mx.com.televisa.landamark.model.daos;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.List;
 import mx.com.televisa.landamark.model.cnn.ConnectionAs400;
 import mx.com.televisa.landamark.model.types.LandmarkSecurityWsBean;
 import mx.com.televisa.landamark.model.types.LmkSpotsBean;
+import mx.com.televisa.landamark.model.types.ResponseUpdDao;
 
 /** Clase que accede a base de datos para metodos genericos de
  * Actualizacion de Precios
@@ -258,7 +263,7 @@ public class PriceDao {
         "WHERE LOGHDR.STNID = '" + tsChannels + "' \n" + 
         "AND LOGHDR.BCSTDT >= '"+tsDate+"' -- PARAMETRO INICIAL DE FECHA\n" + 
         "AND (LOGHDR.STNID,LOGHDR.BCSTDT) NOT IN (SELECT A.STNID, A.BCSTDT " +
-            " FROM EVENTAS.EVETV_LOG_CERTIFICADO_PROCESADO A\n" + 
+            " FROM EVENTAS.LMK_LOG_CERTIFICADO_PROCESADO A\n" + 
         "                                         WHERE LOGHDR.STNID = A.STNID\n" + 
         "                                         AND LOGHDR.BCSTDT = A.BCSTDT)\n" + 
         "AND LOGHDR.LOGEDTLCK >= 7031\n" + 
@@ -317,5 +322,69 @@ public class PriceDao {
                 
         return lsQuery;
     }
+    
+    /**
+     * Ejecuta procedimiento en base de datos para el encabezado de la orden
+     * @autor Jorge Luis Bautista Santiago
+     * @param toOrdHeaderModulosTab
+     * @return ResponseUpdDao
+     */
+    public ResponseUpdDao callPostConciliation(String tsStnid, String tsBcstdt) throws SQLException {
+        ResponseUpdDao    loResponseUpdDao = new ResponseUpdDao();
+        Connection        loCnn = new ConnectionAs400().getConnection();
+        CallableStatement loCallStmt = null;
+        System.out.println("Parametros(callPostConciliation).........");
+        System.out.println("tsStnid: ["+tsStnid+"]");
+        System.out.println("tsBcstdt: ["+tsBcstdt+"]");
+        java.sql.Date     ltDate = getDateYYYYMMDD(tsBcstdt);
+        //System.out.println("ltDate: ["+ltDate+"]");
+        String            lsQueryParadigm = "call PCOM.CA_UPDATE_COSTO_SERVICIO(?,?)";
+        try {
+            loCallStmt = loCnn.prepareCall(lsQueryParadigm);
+            loCallStmt.setString(1, tsStnid);
+            loCallStmt.setDate(2, ltDate);
+            loCallStmt.execute();
+            loResponseUpdDao.setLsResponse("OK");
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage("Success");
+        } catch (SQLException loExSql) {
+            System.out.println("ERROR AL EJECUTAR: ");
+            System.out.println(lsQueryParadigm);
+            loResponseUpdDao.setLsResponse("ERROR");
+            loResponseUpdDao.setLiAffected(0);
+            loResponseUpdDao.setLsMessage("ERROR: "+loExSql.getMessage());
+            System.out.println(loExSql.getMessage());
+            throw loExSql;
+        }
+        finally{
+            try {
+                loCnn.close();
+            } catch (SQLException loEx) {
+                loEx.printStackTrace();
+            }
+        }
+        return loResponseUpdDao;
+    }
+    
+    /**
+     * Convierte una cadena en formato fecha a una fecha real sql con ese mismo formato
+     * @autor Jorge Luis Bautista Santiago
+     * @param lsDateStr
+     * @return java.sql.Date
+     */
+    private java.sql.Date getDateYYYYMMDD(String lsDateStr){
+        SimpleDateFormat loFormatText = new SimpleDateFormat("yyyy-MM-dd");
+        String           lsStrDate = lsDateStr;
+        java.util.Date             ltDatePivot = null;
+        try {
+            ltDatePivot = loFormatText.parse(lsStrDate);
+        } catch (ParseException loEx) {
+            System.out.println("ERROR al PARSEAR (getDateYYYYMMDD)");
+            loEx.printStackTrace();
+        }
+        java.sql.Date ltDateResponse = new java.sql.Date(ltDatePivot.getTime());
+        return ltDateResponse;
+    }
+
     
 }

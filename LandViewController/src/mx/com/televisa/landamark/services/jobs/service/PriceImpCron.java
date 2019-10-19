@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 
 import java.math.RoundingMode;
 
+import java.sql.SQLException;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -199,7 +201,39 @@ public class PriceImpCron implements Job{
                 loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                    liIdUser, 
                                                    lsUserName);
-                
+
+                /// SP ALEX MOREL
+                try {
+                    ResponseUpdDao loResConc = 
+                        loPriceDao.callPostConciliation(lsChannel, lsFecInicial);
+                    
+                    liIndProcess =                             
+                                loEntityMappedDao.getGeneralParameterID("CallProcedure", 
+                                                                        "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento(loResConc.getLsMessage());
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       liIdUser, 
+                                                       lsUserName);
+                    
+                } catch (SQLException e) {
+                    liIndProcess =                             
+                                loEntityMappedDao.getGeneralParameterID("CallProcedure", 
+                                                                        "PROCESS_INTEGRATION");
+                            loBitBean.setLiIdLogServices(liIdLogService);
+                            loBitBean.setLiIdService(liIdService);
+                            loBitBean.setLiIndProcess(liIndProcess);
+                            loBitBean.setLiNumProcessId(0);
+                            loBitBean.setLiNumPgmProcessId(0);
+                            loBitBean.setLsIndEvento(e.getMessage());
+                    loEntityMappedDao.insertBitacoraWs(loBitBean,
+                                                       liIdUser, 
+                                                       lsUserName);
+                }
                 
             }
             
@@ -568,6 +602,15 @@ public class PriceImpCron implements Job{
                                                        tsUserName);
                 }
                 //########################################################################################
+                /*
+                try{                      
+                    StreamResult result =
+                    new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\Response-Alex"+getId()+".xml"));
+                    JAXB.marshal(loArrOf, result);
+                }catch(Exception loEs){
+                    System.out.println("Error en response alex "+loEs.getCause());
+                }*/
+                
                 /*Al usuario no le interesa el response de Landmark
                 //System.out.println("Guardar archivo fisico RESPONSE");
                 try{                      
@@ -732,17 +775,88 @@ public class PriceImpCron implements Job{
             Double ldPriceFactor = loSpot.getPriceFactor();
             Double ldRatings = loSpot.getRatings();
             
-            Double ldCPRCalc = 0.0;
             
-            if(ldNominalPrice > 0 && ldRatings > 0){
-                ldCPRCalc = ldNominalPrice / ldRatings;                
-                BigDecimal loFormatNumber = new BigDecimal(ldCPRCalc);
-                loFormatNumber = loFormatNumber.setScale(2, RoundingMode.DOWN);
-                ldCPRCalc = loFormatNumber.doubleValue();
-            }//else{
-               // System.out.println("###### No es posible dividir ya que ldNominalPrice o ldRatings son cero##########");
-            //}
+            
+            
+            Double ldCPRCalc = 0.0;
+            Double ldCPRCalc2 = 0.0;
+            
+            
+            if(getNumsDecimals(ldNominalPrice) > 2){
+            
+                if(ldNominalPrice > 0 && ldRatings > 0){
+                    if(ldPriceFactor >= 1){
+                        ldCPRCalc = (ldNominalPrice / ldRatings) * ldPriceFactor;   
+                        //ldCPRCalc2 = ldCPRCalc;      
                         
+                        BigDecimal loFormatNumber = new BigDecimal(ldCPRCalc);
+                        loFormatNumber = loFormatNumber.setScale(3, RoundingMode.HALF_UP);
+                        ldCPRCalc = loFormatNumber.doubleValue();
+                        
+                    }else{
+                        ldCPRCalc = (ldNominalPrice / ldRatings) / ldPriceFactor;                
+                        ldCPRCalc2 = ldCPRCalc;                    
+                        BigDecimal loFormatNumber = new BigDecimal(ldCPRCalc);
+                        loFormatNumber = loFormatNumber.setScale(3, RoundingMode.HALF_UP);
+                        ldCPRCalc = loFormatNumber.doubleValue();
+                    }
+                     
+                }
+                
+            }else{//El numero de decimales son 2 o menos
+                if(ldNominalPrice > 0 && ldRatings > 0){
+                    if(ldPriceFactor >= 1){
+                        ldCPRCalc = (ldNominalPrice / ldRatings) * ldPriceFactor;   
+                        //ldCPRCalc2 = ldCPRCalc;      
+                        
+                        BigDecimal loFormatNumber = new BigDecimal(ldCPRCalc);
+                        loFormatNumber = loFormatNumber.setScale(3, RoundingMode.HALF_UP);
+                        ldCPRCalc = loFormatNumber.doubleValue();
+                        
+                    }else{
+                        ldCPRCalc = (ldNominalPrice / ldRatings) / ldPriceFactor;                
+                        ldCPRCalc2 = ldCPRCalc;                    
+                        BigDecimal loFormatNumber = new BigDecimal(ldCPRCalc);
+                        loFormatNumber = loFormatNumber.setScale(3, RoundingMode.HALF_UP);
+                        ldCPRCalc = loFormatNumber.doubleValue();
+                    }
+                     
+                }
+                
+            }
+            
+            if(ldNominalPrice > 0){
+                
+                ldNominalPrice = getNominalPriceFormat(ldNominalPrice);
+                
+                
+                /*BigDecimal loNumberNp = new BigDecimal(ldNominalPrice);
+                loNumberNp = loNumberNp.setScale(2, RoundingMode.HALF_UP);
+                ldNominalPrice = loNumberNp.doubleValue();*/
+                
+                
+                //BigDecimal loFormatNumber = new BigDecimal(ldNominalPrice);
+                //loFormatNumber = loFormatNumber.setScale(2, RoundingMode.UP);
+                
+                /*
+                if(ldPriceFactor >= 1){
+                    ldNominalPrice = (ldCPRCalc * ldRatings) / ldPriceFactor;
+                }else{
+                    ldNominalPrice = (ldCPRCalc * ldRatings) * ldPriceFactor;
+                }*/
+                
+                
+                /*
+                BigDecimal loFormatNumber = new BigDecimal(ldNominalPrice);
+                loFormatNumber = loFormatNumber.setScale(2, RoundingMode.HALF_UP);
+                ldNominalPrice = loFormatNumber.doubleValue();*/
+
+                //ldNominalPrice = getValidateDecimal(ldNominalPrice);
+                    
+            }
+            
+            
+                  
             //Se necesitan los valores de 
             // piOrderID
             // piSpotID
@@ -769,6 +883,14 @@ public class PriceImpCron implements Job{
                 //loSpotModulo.setPdPorcentFactDuracion(liLength);
                 loSpotModulo.setPdPorcentFactDuracion(ldPriceFactor);//Solicitud de JEJ 20190925
                 loClr.getPaSpots().add(loSpotModulo);
+                /*
+                System.out.println("liSpotNumber["+liSpotNumber+"]\t " +
+                    "NominalPrice(Original)["+loSpot.getNomianlPrice()+"]\t\t" +
+                    "NominalPrice["+ldNominalPrice+"]\t\t " +
+                    "Ratings["+ldRatings+"]\t\t " +
+                    "CPRCalc["+ldCPRCalc+"]\t\t " +
+                    "PriceFactor["+ldPriceFactor+"]");*/
+                
             } 
         }
         
@@ -785,11 +907,11 @@ public class PriceImpCron implements Job{
             /*
             try{
                 StreamResult result =
-                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml"+getId()+".xml"));
+                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\PriceXml"+getId()+".xml"));
                 //transformer.transform(loClr, result);
                 JAXB.marshal(loClr, result);
             }catch(Exception loExp){
-                //System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
+                System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
             }*/
             
             SpotConciliacionResponse loRes = 
@@ -797,11 +919,11 @@ public class PriceImpCron implements Job{
             /*
             try{
                 StreamResult result =
-                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\PriceXml-RESPONSE"+getId()+".xml"));
+                new StreamResult(new File("C:\\Users\\Jorge-OMW\\Desktop\\pruebas\\PriceXml-RESPONSE"+getId()+".xml"));
                 //transformer.transform(loClr, result);
                 JAXB.marshal(loRes, result);
             }catch(Exception loExp){
-                //System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
+                System.out.println("Error al guardar archivo fisico de invocacion a conc "+loExp.getMessage());
             }*/
             
             //Guardar en base de datos el archivo response del servicio de conciliacion (es lo que le 
@@ -956,6 +1078,71 @@ public class PriceImpCron implements Job{
         loResponseUpdDao.setLsMessage(lsMessage);
         
         return loResponseUpdDao;
+    }
+    
+    public Double getValidateDecimal(Double tdNumber){
+        Double ldRes = tdNumber;
+        
+        String lsCad = String.valueOf(tdNumber);
+        String[] lsCadArr = lsCad.split("\\.");
+        //System.out.println(lsCadArr.length);
+        if(lsCadArr.length > 1){
+            //System.out.println(lsCadArr[1].length());
+            if(lsCadArr[1].length() > 2){
+                BigDecimal loFormatNumber = new BigDecimal(tdNumber);
+                loFormatNumber = loFormatNumber.setScale(2, RoundingMode.HALF_UP);
+                ldRes = loFormatNumber.doubleValue();
+            }
+            
+        }
+                        
+        return ldRes;
+    }
+    
+    public Integer getNumsDecimals(Double tdNumber){
+        Integer ldRes = 0;
+        
+        String lsCad = String.valueOf(tdNumber);
+        String[] lsCadArr = lsCad.split("\\.");
+        //System.out.println(lsCadArr.length);
+        if(lsCadArr.length > 1){
+            //System.out.println(lsCadArr[1].length());
+            ldRes = lsCadArr[1].length();
+            
+        }
+                        
+        return ldRes;
+    }
+    
+    public Double getNominalPriceFormat(Double tdNumber){
+        Double ldRes = tdNumber;
+        boolean lbRound = false;
+        String lsCad = String.valueOf(tdNumber);
+        String[] lsCadArr = lsCad.split("\\.");
+        //System.out.println(lsCadArr.length);
+        if(lsCadArr.length > 1){
+            //System.out.println(lsCadArr[1].length());
+            if(lsCadArr[1].length() == 3){
+                lsCadArr[1].charAt(2);
+                if(lsCadArr[1].charAt(2) == '5'){
+                    lbRound = true;                  
+                }
+                
+            }
+            
+        }
+        
+        if(lbRound){
+            BigDecimal loFormatNumber = new BigDecimal(tdNumber);
+            loFormatNumber = loFormatNumber.setScale(2, RoundingMode.UP);
+            ldRes = loFormatNumber.doubleValue();
+        }else{
+            BigDecimal loFormatNumber = new BigDecimal(tdNumber);
+            loFormatNumber = loFormatNumber.setScale(2, RoundingMode.HALF_UP);
+            ldRes = loFormatNumber.doubleValue();
+        }
+                        
+        return ldRes;
     }
     
 }

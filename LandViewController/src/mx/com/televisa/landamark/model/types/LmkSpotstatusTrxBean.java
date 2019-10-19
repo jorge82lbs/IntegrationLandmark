@@ -29,6 +29,15 @@ public class LmkSpotstatusTrxBean {
     private Integer liBreakPosition;
     private Integer liPreemptee;
     private Integer liPreemptor;
+    private String lsRatingsType;
+
+    public void setLsRatingsType(String lsRatingsType) {
+        this.lsRatingsType = lsRatingsType;
+    }
+
+    public String getLsRatingsType() {
+        return lsRatingsType;
+    }
 
     public void setLiBreakPosition(Integer liBreakPosition) {
         this.liBreakPosition = liBreakPosition;
