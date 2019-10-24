@@ -215,7 +215,8 @@ public class PriceImpCron implements Job{
                             loBitBean.setLiIndProcess(liIndProcess);
                             loBitBean.setLiNumProcessId(0);
                             loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento(loResConc.getLsMessage());
+                            loBitBean.setLsIndEvento("PCOM.CA_UPDATE_COSTO_SERVICIO("+lsChannel+","+lsFecInicial+")"+
+                                                     loResConc.getLsMessage());
                     loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                        liIdUser, 
                                                        lsUserName);
@@ -229,7 +230,8 @@ public class PriceImpCron implements Job{
                             loBitBean.setLiIndProcess(liIndProcess);
                             loBitBean.setLiNumProcessId(0);
                             loBitBean.setLiNumPgmProcessId(0);
-                            loBitBean.setLsIndEvento(e.getMessage());
+                            loBitBean.setLsIndEvento("PCOM.CA_UPDATE_COSTO_SERVICIO("+lsChannel+","+lsFecInicial+")"+
+                                                     e.getMessage());
                     loEntityMappedDao.insertBitacoraWs(loBitBean,
                                                        liIdUser, 
                                                        lsUserName);
@@ -862,6 +864,14 @@ public class PriceImpCron implements Job{
             // piSpotID
             List<LmkSpotsBean> loSpotsList = 
                 loPriceDao.getSpotInfo(liSpotNumber);
+            
+            if(ldNominalPrice == 0){
+                ldNominalPrice = 1.0;
+                ldRatings = 1.0;
+                ldCPRCalc = 1.0;
+            }
+            
+            
             
             if(loSpotsList.size() > 0){
                 

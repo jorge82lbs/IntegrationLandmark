@@ -145,7 +145,7 @@ public class SpotStatusDao {
         "                                       "+loBean.getLiPreemptee()+",--PREEMPTEE,\n" + 
         "                                       "+loBean.getLiPreemptor()+",--PREEMPTOR,\n";
         if(loBean.getLdRatings()!= null){ lsQuery += " "+loBean.getLdRatings()+",--RATINGS\n";}
-        if(loBean.getLsRatingsType()!= null){ lsQuery += " "+loBean.getLsRatingsType()+",--RATINGTYPE\n";}
+        if(loBean.getLsRatingsType()!= null){ lsQuery += " '"+loBean.getLsRatingsType()+"',--RATINGTYPE\n";}
             lsQuery +=  "                                       "+loBean.getLiSpotsalesareanumber()+"--SPOTSALESAREANUMBER,\n" + 
             "				      )";
                 
