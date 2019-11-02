@@ -249,6 +249,11 @@ public class ProcessBean {
     private RichInputText poParamsNomTblGz;
     private RichSelectOneChoice poParamsTypeTbl;
     private RichInputText poParamsFileName;
+    private RichPopup poPopupParamsFec;
+    private RichInputText poParamsIdServiceFec;
+    private RichInputText poParamsNomServiceFec;
+    private RichInputDate poInitialDateFec;
+    private RichInputDate poFinalDateFec;
 
     /**
      * Realiza la validación sintáctica de la expresión.
@@ -997,6 +1002,26 @@ public class ProcessBean {
                 
                 /*################ PROCESO LECTURA DE ARCHIVO GZIP ############################*/
                 if(lsTypeService.equalsIgnoreCase("ProcessFileGzip")){
+                    //System.out.println(">>>> Ejecutar ProcessFileGzip Descomprimir gzip: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                FileGzipCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                /*################ PROCESO LECTURA DE CAMPAÑAS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessCampaigns")){
+                    //System.out.println(">>>> Ejecutar ProcessFileGzip Descomprimir gzip: ");
+                    ExecuteServiceResponseBean loRes =
+                        processServiceExecution(loProcessBean, 
+                                                FileGzipCron.class,
+                                                loService);
+                    lsColorMessage = loRes.getLsColor();
+                    lsFinalMessage = loRes.getLsMessage();
+                }
+                /*################ PROCESO LECTURA COPYS ############################*/
+                if(lsTypeService.equalsIgnoreCase("ProcessCopys")){
                     //System.out.println(">>>> Ejecutar ProcessFileGzip Descomprimir gzip: ");
                     ExecuteServiceResponseBean loRes =
                         processServiceExecution(loProcessBean, 
@@ -1910,7 +1935,47 @@ public class ProcessBean {
             loNode.getAttribute("NomService") == null ? "" : 
             loNode.getAttribute("NomService").toString();        
         System.out.println("lsProcessService["+lsProcessService+"]");
-        if(lsProcessService.equalsIgnoreCase("ProcessFileGzip")){
+        
+        if(lsProcessService.equalsIgnoreCase("ProcessCampaign") ||
+        lsProcessService.equalsIgnoreCase("ProcessCopys")){
+            getPoParamsIdServiceFec().setValue(lsIdService);     
+            getPoParamsNomServiceFec().setValue(lsDesService);
+                    
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl loService = 
+                (AppModuleImpl)loAm;        
+            try{
+                List<LmkIntServicesParamsRowBean> loColBean = 
+                    new ArrayList<LmkIntServicesParamsRowBean>();
+                loColBean = loService.getParametersServiceByIdService(Integer.parseInt(lsIdService));
+                
+                if(loColBean.size()>0){
+                    for(LmkIntServicesParamsRowBean loBean : loColBean){
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_INICIAL")){
+                            getPoInitialDateFec().setValue(loBean.getLsIndValParameter());    
+                        }
+                        if(loBean.getLsIndParameter().equalsIgnoreCase("FECHA_FINAL")){
+                            getPoFinalDateFec().setValue(loBean.getLsIndValParameter());    
+            
+                        }
+                    }
+                }else{
+                    getPoInitialDate().setValue(null);    
+                    getPoFinalDate().setValue(null);    
+                }
+            }catch (Exception loEx) {
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("No es posible obtener parémetros " + loEx);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+            }
+            new UtilFaces().showPopup(getPoPopupParamsFec());
+            
+        }
+        else if(lsProcessService.equalsIgnoreCase("ProcessFileGzip")){
             getPoParamsIdServiceGz().setValue(lsIdService);     
             getPoParamsNomServiceGz().setValue(lsDesService);
             ApplicationModule         loAm = 
@@ -4442,6 +4507,143 @@ public class ProcessBean {
     public String viewDestinersAction() {
         EntityMappedDao loEntityMappedDao = new EntityMappedDao();
         loEntityMappedDao.getDestinationAddress("5", "GpoSistemas","CreateFile");
+        return null;
+    }
+
+    public void setPoPopupParamsFec(RichPopup poPopupParamsFec) {
+        this.poPopupParamsFec = poPopupParamsFec;
+    }
+
+    public RichPopup getPoPopupParamsFec() {
+        return poPopupParamsFec;
+    }
+
+    public void setPoParamsIdServiceFec(RichInputText poParamsIdServiceFec) {
+        this.poParamsIdServiceFec = poParamsIdServiceFec;
+    }
+
+    public RichInputText getPoParamsIdServiceFec() {
+        return poParamsIdServiceFec;
+    }
+
+    public void setPoParamsNomServiceFec(RichInputText poParamsNomServiceFec) {
+        this.poParamsNomServiceFec = poParamsNomServiceFec;
+    }
+
+    public RichInputText getPoParamsNomServiceFec() {
+        return poParamsNomServiceFec;
+    }
+
+    public void setPoInitialDateFec(RichInputDate poInitialDateFec) {
+        this.poInitialDateFec = poInitialDateFec;
+    }
+
+    public RichInputDate getPoInitialDateFec() {
+        return poInitialDateFec;
+    }
+
+    public void setPoFinalDateFec(RichInputDate poFinalDateFec) {
+        this.poFinalDateFec = poFinalDateFec;
+    }
+
+    public RichInputDate getPoFinalDateFec() {
+        return poFinalDateFec;
+    }
+    
+    /**
+     * Guarda en base de datos los valores de los parametros del serevicio
+     * @autor Jorge Luis Bautista Santiago
+     * @return String
+     */
+    public String saveParamsActionFec() {
+        boolean lbSuccess = true;
+        String  lsMessErr = "OK";
+        String  lsIdService = 
+            getPoParamsIdServiceFec().getValue() == null ? "" : 
+            getPoParamsIdServiceFec().getValue().toString();
+        
+        /* Fechas */
+        java.util.Date ltDateIni = 
+            getPoInitialDateFec().getValue() == null ? null : 
+            (java.util.Date)getPoInitialDateFec().getValue();        
+        java.util.Date ltDateFin = 
+            getPoFinalDateFec().getValue() == null ? null : 
+            (java.util.Date)getPoFinalDateFec().getValue(); 
+        
+        if(ltDateIni != null && ltDateFin != null){            
+        
+            String lsFecIni = convertDateMask(ltDateIni, "yyyy-MM-dd");
+            String lsFecFin = convertDateMask(ltDateFin, "yyyy-MM-dd");
+            ApplicationModule         loAm = 
+                Configuration.createRootApplicationModule(gsAmDef, gsConfig);
+            AppModuleImpl loService = 
+                (AppModuleImpl)loAm;        
+            try{
+                loService.deleteServicesParamsModelByServ(Integer.parseInt(lsIdService));
+                
+                LmkIntServicesParamsRowBean loLmkFiBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdFi = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loLmkFiBean.setLiIdParameterServ(liIdFi);
+                loLmkFiBean.setLiIdService(Integer.parseInt(lsIdService));
+                loLmkFiBean.setLsIndEstatus("1");
+                loLmkFiBean.setLsIndParameter("FECHA_INICIAL");
+                loLmkFiBean.setLsIndValParameter(lsFecIni);                        
+                loService.insertServicesParamsModel(loLmkFiBean); 
+                
+                LmkIntServicesParamsRowBean loLmkFfBean = new LmkIntServicesParamsRowBean();            
+                Integer                  liIdFf = 
+                    new ViewObjectDao().getMaxIdParadigm("ServParameters") + 1;
+                loLmkFfBean.setLiIdParameterServ(liIdFf);
+                loLmkFfBean.setLiIdService(Integer.parseInt(lsIdService));
+                loLmkFfBean.setLsIndEstatus("1");
+                loLmkFfBean.setLsIndParameter("FECHA_FINAL");
+                loLmkFfBean.setLsIndValParameter(lsFecFin);                        
+                loService.insertServicesParamsModel(loLmkFfBean); 
+                
+            } catch (Exception loEx) {
+                lbSuccess = false;   
+                lsMessErr = loEx.getMessage();
+            } finally {
+                Configuration.releaseRootApplicationModule(loAm, true);
+            }            
+            if(lbSuccess){
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("Parámetros asignados correctamente");
+                loMsg.setSeverity(FacesMessage.SEVERITY_INFO);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }else{
+                FacesMessage loMsg;
+                loMsg = new FacesMessage("Error de Comunicacion " + lsMessErr);
+                loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+                FacesContext.getCurrentInstance().addMessage(null, loMsg);
+            }
+            new UtilFaces().hidePopup(getPoPopupParamsFec());                        
+        }else{
+            FacesMessage loMsg;
+            loMsg = new FacesMessage("Las fechas son Requeridas");
+            loMsg.setSeverity(FacesMessage.SEVERITY_FATAL);
+            FacesContext.getCurrentInstance().addMessage(null, loMsg);
+        }
+        return null;
+    }
+
+    /**
+     * Cancela accion de guardar parametros del servicio
+     * @autor Jorge Luis Bautista Santiago
+     * @return String
+     */
+    public String cancelSaveParamsActionFec() {
+        new UtilFaces().hidePopup(getPoPopupExecute());      
+        FacesContext       loContext = FacesContext.getCurrentInstance();
+        ExternalContext    loEctx = loContext.getExternalContext();
+        String             lsUrl = 
+            loEctx.getRequestContextPath() + "/faces/processPage";
+        try {
+            loEctx.redirect(lsUrl);
+        } catch (IOException loEx) {
+            ;
+        }
         return null;
     }
 }

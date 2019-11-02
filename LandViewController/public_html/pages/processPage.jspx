@@ -795,8 +795,7 @@
                             </af:panelGroupLayout>
                         </af:panelGroupLayout>
                     </af:panelWindow>
-                </af:popup>
-                
+                </af:popup>                
                 <!-- ################################### POPUP ALTA PARAMETROS (NO USADO) ##################################################### !-->
                 <af:popup id="popupMergePar" contentDelivery="lazyUncached"
                           binding="#{ProcessBean.poPopupMerge}">
@@ -854,7 +853,6 @@
                         </af:panelGroupLayout>
                     </af:panelWindow>
                 </af:popup>
-                
                 <!-- ################################### POPUP ALTA PARAMETROS ##################################################### !-->
                 <af:popup id="popupParms" contentDelivery="lazyUncached" clientComponent="true"
                           binding="#{ProcessBean.poPopupParams}" partialTriggers="pt1:tbl:LnkParm">
@@ -939,7 +937,6 @@
                         </af:panelGroupLayout>
                     </af:panelWindow>
                 </af:popup>
-                
                 <!-- ################################### POPUP CONFIGURACION DE CRON ##################################################### !-->
                 <af:popup id="popupCronPar" contentDelivery="lazyUncached"
                           binding="#{ProcessBean.poPopupCron}">
@@ -1247,7 +1244,6 @@
                         </af:panelGroupLayout>
                     </af:panelWindow>
                 </af:popup>
-                
                 <!-- ################################### POPUP EXECUTE SERVICE #################################### !-->
                 <af:popup id="popupExecute" contentDelivery="lazyUncached"                          
                           binding="#{ProcessBean.poPopupExecute}"
@@ -1291,7 +1287,6 @@
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>
-               
                <!-- ################################### POPUP BEGIN SERVICE #################################### !-->
                 <af:popup id="popupBegin" contentDelivery="lazyUncached"                          
                           binding="#{ProcessBean.poPopupBegin}"
@@ -1334,7 +1329,6 @@
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>
-               
                 <!-- ################################### POPUP STOP SERVICE #################################### !-->
                 <af:popup id="popupStop" contentDelivery="lazyUncached"                          
                           binding="#{ProcessBean.poPopupStop}"
@@ -1376,7 +1370,6 @@
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>
-                
                 <!-- ################## POPUP CONFIRM RESET ALL CRON ######################################## !-->
                 <af:popup id="popupRstCr" contentDelivery="lazyUncached"                          
                           binding="#{ProcessBean.poPopupRstCronService}">
@@ -1411,8 +1404,6 @@
                     </af:panelGroupLayout>
                   </af:panelWindow>
                 </af:popup>
-                
-                
                 <!-- ################################### POPUP ALTA PARAMETROS GZ ##################################################### !-->
                 <af:popup id="popupParmsGz" contentDelivery="lazyUncached" clientComponent="true"
                           binding="#{ProcessBean.poPopupParamsGz}" partialTriggers="pt1:tbl:LnkParm">
@@ -1479,6 +1470,70 @@
                                 <af:button text="Cancelar" id="BtnCancelPmtGz" icon="/images/cancelar.gif" 
                                 shortDesc="Cierra el Popup" immediate="true"
                                            action="#{ProcessBean.cancelSaveParamsGzAction}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:panelWindow>
+                </af:popup>
+                <!-- ################################### POPUP ALTA PARAMETROS (SOLO FECHAS) ##################################################### !-->
+                <af:popup id="popupParmsFec" contentDelivery="lazyUncached" clientComponent="true"
+                          binding="#{ProcessBean.poPopupParamsFec}" partialTriggers="pt1:tbl:LnkParm">
+                    <af:panelWindow id="PnlSaveParamsFec" modal="true" closeIconVisible="false"
+                                    title="Asignación de Parámetros" titleIconSource="/images/note_new.gif" 
+                                    inlineStyle="border-style:none; width:25em; height:18em;"
+                                    partialTriggers="pt1:tbl:LnkParm">
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpParamsFec" valign="middle" halign="center"
+                        styleClass="AFStretchWidth" >
+                            <!--<af:panelFormLayout id="PnlFrmParamsFec" rows="5" maxColumns="1" inlineStyle="text-align:center; alignment-adjust:central;">  -->   
+                                    <af:inputText label="idServicio"                                                  
+                                                  shortDesc="idServicio"
+                                                  visible="false"
+                                                  id="TxtParamsIdServiceFec"
+                                                  binding="#{ProcessBean.poParamsIdServiceFec}">
+                                    </af:inputText>
+                                    <af:inputText label=" "                                                  
+                                                  shortDesc="Servicio"
+                                                  id="TxtParamsServiceFec"
+                                                  readOnly="true"
+                                                  binding="#{ProcessBean.poParamsNomServiceFec}"
+                                                  inlineStyle="font-weight:bolder; font-size:large;">
+                                    </af:inputText>
+                            <!--</af:panelFormLayout>-->
+                            <af:spacer width="10" height="5" id="spa12Fec"/>
+                            
+                        <af:panelGroupLayout layout="vertical" id="PnlGrpPDatFec" valign="middle" halign="center"
+                        styleClass="AFStretchWidth">
+                        <af:panelFormLayout id="PnlFrmParamsdFec" rows="5" maxColumns="1" styleClass="AFStretchWidth" > 
+                            <af:inputDate label="Fecha Incial" 
+                                           id="TxtFilterFecIniFec" 
+                                           columns="9" 
+                                           binding="#{ProcessBean.poInitialDateFec}"                                                       
+                                           >
+                                <af:convertDateTime pattern="yyyy-MM-dd" secondaryPattern="yyyy/MM/dd"/>
+                              </af:inputDate>
+                              <af:inputDate label="Fecha Final"                                                       
+                                           id="TxtFilterFecFinFec" 
+                                           columns="9" 
+                                           binding="#{ProcessBean.poFinalDateFec}"
+                                           >
+                                <af:convertDateTime pattern="yyyy-MM-dd" secondaryPattern="yyyy/MM/dd"/>
+                              </af:inputDate>
+                            </af:panelFormLayout>
+                            </af:panelGroupLayout>
+                            <af:spacer width="10" height="5" id="sp4a12Fec"/>
+                            <af:separator id="s153grtFec"/>
+                            <af:spacer width="10" height="10" id="spa1Fec"/>
+                            <af:panelGroupLayout id="PnPgFec">
+                                <af:button text="Aceptar" id="BtmnAltPmFec" icon="/images/aceptar.gif"
+                                            shortDesc="Guardar"
+                                           action="#{ProcessBean.saveParamsActionFec}">
+                                    <af:clientListener method="enforcePreventUserInput" type="action"/>
+                                </af:button>
+                                <af:spacer width="10" height="10" id="SpcLoadPmFec"/>
+                                <af:button text="Cancelar" id="BtnCancelPmtFec" icon="/images/cancelar.gif" 
+                                shortDesc="Cierra el Popup" immediate="true"
+                                           action="#{ProcessBean.cancelSaveParamsActionFec}">
                                     <af:clientListener method="enforcePreventUserInput" type="action"/>
                                 </af:button>
                             </af:panelGroupLayout>
